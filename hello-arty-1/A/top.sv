@@ -18,5 +18,4 @@ module top (
             led[0] <= 1'b1;
         end
     end
-
 endmodule
