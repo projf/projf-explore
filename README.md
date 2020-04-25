@@ -1,2 +1,3 @@
-# projf-explore-src
-Exploring FPGAs design sources from projectf.io.
+# Project F: Exploring FPGAs
+
+* [Hello Arty 1](https://projectf.io/posts/hello-arty-1/) - [src](hello-arty-1)
