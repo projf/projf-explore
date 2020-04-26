@@ -1,4 +1,4 @@
-## Project F: Arty A7-35 Vivado Board Constraints
+## Project F: Hello Arty - Arty A7-35 Vivado Board Constraints
 ## (C)2020 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/hello-arty-1/
 

@@ -12,13 +12,13 @@ module top (
     );
     
     always_ff @(posedge clk) begin
-        if(sw[0] == 1) begin
+        if (sw[0]) begin
             led[1:0] <= 2'b11;
         end else begin
             led[1:0] <= 2'b00;
         end
 
-        if(sw[1] == 1) begin
+        if (sw[1]) begin
             led[3:2] <= 2'b11;
         end else begin
             led[3:2] <= 2'b00;
