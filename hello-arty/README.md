@@ -1,4 +1,4 @@
-# Hello Arty Part 1
+# Hello Arty
 
 This folder contains the SystemVerilog designs to accompany **[Hello Arty](https://projectf.io/posts/hello-arty-1/)**.
 
