@@ -1,4 +1,4 @@
-// Project F: Hello Arty 1B - Top
+// Project F: Hello Arty B - Top
 // (C)2020 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hello-arty-1/
 

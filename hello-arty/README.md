@@ -1,9 +1,9 @@
 # Hello Arty Part 1
 
-This folder contains the SystemVerilog designs to accompany **Hello Arty**.
+This folder contains the SystemVerilog designs to accompany **[Hello Arty](https://projectf.io/posts/hello-arty-1/)**.
 
 * [Hello Arty - Part 1](https://projectf.io/posts/hello-arty-1/)
-  * [src A](A/top.sv)
-  * [src B](B/top.sv)
-  * [src C](C/top.sv)
-* [constraints](arty.xdc)
+  * [A source](A/top.sv)
+  * [B source](B/top.sv)
+  * [C source](C/top.sv)
+* [constraints](arty.xdc) for all designs
