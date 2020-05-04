@@ -6,16 +6,11 @@
 `timescale 1ns / 1ps
 
 module top (
-    input wire logic clk,
-    input wire logic [3:0] sw,
-    output     logic [3:0] led
+    input wire logic sw,
+    output     logic led
     );
-    
-    always_ff @(posedge clk) begin
-        if (sw[0]) begin
-            led[0] <= 1;
-        end else begin
-            led[0] <= 1;
-        end
+
+    always_comb begin
+        led = sw;
     end
 endmodule
