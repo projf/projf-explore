@@ -6,7 +6,7 @@
 `timescale 1ns / 1ps
 
 module top (
-    input wire logic [3:0] sw,
+    input wire logic [1:0] sw,
     output     logic [3:0] led
     );
   
