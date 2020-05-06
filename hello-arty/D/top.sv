@@ -12,7 +12,7 @@ module top (
     );
 
     always_comb begin
-        if (sw[0] && sw[1]) begin
+        if (sw[0] == 0 && sw[1] == 1) begin
             led[3:0] = btn[0] ? 4'b1001 : 4'b0110;
         end else begin
             led[3:0] = 4'b0000;

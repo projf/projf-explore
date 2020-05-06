@@ -1,6 +1,6 @@
-## Project F: Hello Arty D - Vivado Board Constraints
+## Project F: Hello Arty J - Vivado Board Constraints
 ## (C)2020 Will Green, Open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/hello-arty-1/
+## Learn more at https://projectf.io/posts/hello-arty-2/
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]
@@ -8,7 +8,7 @@ set_property CFGBVS VCCO [current_design]
 
 ## Master Clock: 100 MHz
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports {clk}];
-create_clock -name clk -period 10.00 [get_ports {clk}];
+create_clock -name clk_100m -period 10.00 [get_ports {clk}];
 
 ## RGB LEDs
 set_property -dict {PACKAGE_PIN G6  IOSTANDARD LVCMOS33} [get_ports {led_r[0]}];
