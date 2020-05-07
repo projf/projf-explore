@@ -15,4 +15,4 @@ This folder contains the SystemVerilog designs to accompany the Project F **[Hel
   * [I source](I/)
   * [J source](J/)
 
-All the designs are under the permissive [MIT licence](../LICENCE), but the posts themselves are subject to normal copyright restrictions.
+All the designs are under the permissive [MIT licence](../LICENSE), but the posts themselves are subject to normal copyright restrictions.

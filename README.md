@@ -4,4 +4,4 @@ This repository contains the SystemVerilog designs to accompany the Project F [E
 
 * **Hello Arty**: [Design Source](hello-arty) - [Post 1](https://projectf.io/posts/hello-arty-1/) - [Post 2](https://projectf.io/posts/hello-arty-2/)
 
-All the designs are under the permissive [MIT licence](LICENCE), but the posts themselves are subject to normal copyright restrictions.
+All the designs are under the permissive [MIT licence](LICENSE), but the posts themselves are subject to normal copyright restrictions.
