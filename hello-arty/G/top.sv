@@ -10,9 +10,14 @@ module top (
     output     logic [3:0] led
     );
 
+    localparam DIV_BY = 27'd100_000_000 - 27'd1;
+
     logic stb;
-    logic [39:0] cnt;
-    always_ff @(posedge clk) {stb, cnt} <= cnt + 40'd10995;
+    logic [26:0] cnt = 0;
+    always_ff @(posedge clk) begin
+        cnt <= (cnt < DIV_BY) ? cnt + 1 : 0;
+        stb <= (cnt == DIV_BY) ? 1 : 0;
+    end
 
     always_ff @(posedge clk) begin
         if (stb) led <= led + 1;
