@@ -6,7 +6,6 @@ puts "INFO: Project F - Beam Project Creation Script"
 
 # Set the reference directory for source file relative paths
 set origin_dir "./.."
-set common_dir "${origin_dir}/../common"
 
 # Set the project name
 set _xil_proj_name_ "beam"
@@ -48,7 +47,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${origin_dir}/display_timings.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
