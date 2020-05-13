@@ -1,0 +1,10 @@
+# Xilinx Vivado
+*.cache
+*.hw
+*.ip_user_files
+*.runs
+*.sim
+*.srcs
+*.Xil
+*.xpr
+webtalk.*
