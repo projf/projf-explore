@@ -1,6 +1,6 @@
-## Project F: FPGA on Screen: Beam - Arty A7-35 Vivado Board Constraints
+## Project F: Exploring FPGA Graphics: Beam - Arty A7-35 Vivado Board Constraints
 ## (C)2020 Will Green, Open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/universe-in-box/
+## Learn more at https://projectf.io/posts/fpga-graphics/
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]

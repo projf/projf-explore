@@ -1,14 +1,14 @@
-# Project F: Create Project F: Square Vivado Project
+# Project F: Create Project F: Beam Vivado Project
 # (C)2020 Will Green, Open source hardware released under the MIT License
-# Learn more at https://projectf.io/posts/fpga-on-screen/
+# Learn more at https://projectf.io/posts/fpga-graphics/
 
-puts "INFO: Project F - Square Project Creation Script"
+puts "INFO: Project F - Beam Project Creation Script"
 
 # Set the reference directory for source file relative paths
 set origin_dir "./.."
 
 # Set the project name
-set _xil_proj_name_ "square"
+set _xil_proj_name_ "beam"
 
 # Set the directory path for the project
 set orig_proj_dir "[file normalize "$origin_dir/project"]"

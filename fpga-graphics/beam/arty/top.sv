@@ -1,6 +1,6 @@
 // Project F: Beam - Top
 // (C)2020 Will Green, Open Source Hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-on-screen/
+// Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
