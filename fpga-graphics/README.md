@@ -6,8 +6,12 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the post
 
 ## iCEBreaker Build
 
-A makefile will be added shortly. Until then, you can run the following.  
-Replace `top_square` with `top_beam` to build the second project.
+A makefile will be added shortly. Until then, you can run the following.
+
+> Problems Building?  
+> If you have problems building, your tools are probably too old. You can find the latest versions in their respective GitHub repos: [Yosys](https://github.com/YosysHQ/yosys), [NextPNR]((https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
+
+_Replace `top_square` with `top_beam` to build the second project._
 
 ### 12-bit DVI Pmod
 
