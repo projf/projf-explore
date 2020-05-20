@@ -1,4 +1,4 @@
-// Project F: Beam - Display Timings Test Bench
+// Project F: FPGA Graphics - Display Timings Test Bench
 // (C)2020 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
@@ -12,30 +12,28 @@ module display_timings_tb();
     logic rst;
     logic clk_100m;
 
-    // divide 100 MHz clock by four to create 25 MHz strobe
-    logic stb_pix = 0;
-    logic [1:0] cnt = 0;
-    always_ff @(posedge clk_100m) begin
-        {stb_pix, cnt} <= cnt + 1;
-    end
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_locked;
+    clock_gen clock_640x480 (
+       .clk(clk_100m),
+       .rst(rst),
+       .clk_pix,
+       .clk_locked
+    );
 
-    logic hsync;
-    logic vsync;
-    logic [9:0] sx;
-    logic [9:0] sy;
+    // display timings
+    logic [9:0] sx, sy;
+    logic hsync, vsync;
     logic de;
-    logic frame_start;
-
     display_timings timings_640x480 (
-        .clk(clk_100m),
-        .stb_pix,
-        .rst,
+        .clk_pix,
+        .rst(!clk_locked),
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de,
-        .frame_start
+        .de
     );
 
     // generate clock
@@ -46,6 +44,6 @@ module display_timings_tb();
         clk_100m = 1;
 
         #100 rst = 0;
-        #18_000_000 $finish;
+        #18_000_000 $finish;  // 18 ms (one frame is 16.7 ms)
     end
 endmodule

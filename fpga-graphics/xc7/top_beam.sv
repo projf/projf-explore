@@ -1,49 +1,42 @@
-// Project F: Beam - Top
+// Project F: Top Beam (Arty with Pmod VGA)
 // (C)2020 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top (
+module top_beam (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic vga_hsync,        // horizontal sync
     output      logic vga_vsync,        // vertical sync
-    output      logic [3:0] vga_red,    // 4-bit VGA red
-    output      logic [3:0] vga_green,  // 4-bit VGA green
-    output      logic [3:0] vga_blue    // 4-bit VGA blue
+    output      logic [3:0] vga_r,      // 4-bit VGA red
+    output      logic [3:0] vga_g,      // 4-bit VGA green
+    output      logic [3:0] vga_b       // 4-bit VGA blue
     );
 
-    // divide 100 MHz clock by four to create 25 MHz strobe
-    logic stb_pix;
-    logic [1:0] cnt;
-    always_ff @(posedge clk_100m) begin
-        {stb_pix, cnt} <= cnt + 1;
-    end
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_locked;
+    clock_gen clock_640x480 (
+       .clk(clk_100m),
+       .rst(!btn_rst),  // reset button is active low
+       .clk_pix,
+       .clk_locked
+    );
 
-    // screen position
-    logic [9:0] sx;
-    logic [9:0] sy;
-
-    // blanking signals: sync and data enable
-    logic vsync;
-    logic hsync;
+    // display timings
+    logic [9:0] sx, sy;
+    logic hsync, vsync;
     logic de;
-
-    // frame start: high for one cycle at frame start
-    logic frame_start;
-
     display_timings timings_640x480 (
-        .clk(clk_100m),
-        .stb_pix,
-        .rst(!btn_rst),  // reset button is active low
+        .clk_pix,
+        .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync,
-        .vsync,
-        .de,
-        .frame_start
+        .hsync(vga_hsync),
+        .vsync(vga_vsync),
+        .de
     );
 
     // size of screen (including blanking)
@@ -53,12 +46,14 @@ module top (
     // square 'Q' - origin at top-left
     localparam Q_SIZE = 32; // square size in pixels
     localparam Q_SPEED = 4; // pixels moved per frame
-    logic [9:0] qx;         // horizontal square position
-    logic [9:0] qy;         // vertical square position
+    logic [9:0] qx, qy;     // square position
+
+    logic animate;  // high for one clock tick at start of blanking
+    always_comb animate = (sy == 480 && sx == 0);
 
     // update square position once per frame
-    always_ff @(posedge clk_100m) begin
-        if (stb_pix && frame_start) begin
+    always_ff @(posedge clk_pix) begin
+        if (animate) begin
             if (qx >= H_RES - Q_SIZE) begin
                 qx <= 0;
                 qy <= (qy >= V_RES - Q_SIZE) ? 0 : qy + Q_SIZE;
@@ -77,10 +72,8 @@ module top (
 
     // VGA output
     always_comb begin
-        vga_hsync = hsync;
-        vga_vsync = vsync;
-        vga_red   = !de ? 4'h0 : (q_draw ? 4'hD : 4'h3);
-        vga_green = !de ? 4'h0 : (q_draw ? 4'hA : 4'h7);
-        vga_blue  = !de ? 4'h0 : (q_draw ? 4'h3 : 4'hD);
+        vga_r     = !de ? 4'h0 : (q_draw ? 4'hD : 4'h3);
+        vga_g     = !de ? 4'h0 : (q_draw ? 4'hA : 4'h7);
+        vga_b     = !de ? 4'h0 : (q_draw ? 4'h3 : 4'hD);
     end
 endmodule

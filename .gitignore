@@ -8,3 +8,6 @@
 *.Xil
 *.xpr
 webtalk.*
+
+# IceStorm
+build/
