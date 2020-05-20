@@ -11,9 +11,9 @@ module top_square (
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
     output      logic dvi_de,       // DVI data enable
-    output      logic dvi_r0, dvi_r1, dvi_r2, dvi_r3,   // 4-bit DVI red
-    output      logic dvi_g0, dvi_g1, dvi_g2, dvi_g3,   // 4-bit DVI green
-    output      logic dvi_b0, dvi_b1, dvi_b2, dvi_b3    // 4-bit DVI blue
+    output      logic [0:3] dvi_r,  // 4-bit DVI red
+    output      logic [0:3] dvi_g,  // 4-bit DVI green
+    output      logic [0:3] dvi_b,  // 4-bit DVI blue
     );
 
     // generate pixel clock
@@ -47,8 +47,8 @@ module top_square (
     always_comb begin
         dvi_clk = clk_pix;
         dvi_de  = de;
-        {dvi_r3, dvi_r2, dvi_r1, dvi_r0} = !de ? 4'h0 : (q_draw ? 4'hD : 4'h3);
-        {dvi_g3, dvi_g2, dvi_g1, dvi_g0} = !de ? 4'h0 : (q_draw ? 4'hA : 4'h7);
-        {dvi_b3, dvi_b2, dvi_b1, dvi_b0} = !de ? 4'h0 : (q_draw ? 4'h3 : 4'hD);
+        dvi_r[3:0] = !de ? 4'h0 : (q_draw ? 4'hD : 4'h3);
+        dvi_g[3:0]  = !de ? 4'h0 : (q_draw ? 4'hA : 4'h7);
+        dvi_b[3:0]  = !de ? 4'h0 : (q_draw ? 4'h3 : 4'hD);
     end
 endmodule
