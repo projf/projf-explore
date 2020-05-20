@@ -36,7 +36,7 @@ icepack build/out.asc build/out.bin
 
 ### Problems Building?
 
-If you have problems building, your tools are probably too old. You can find the latest versions in their respective GitHub repos: [Yosys](https://github.com/YosysHQ/yosys), [NextPNR]((https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
+If you have problems building, your tools are probably too old. You can find the latest versions in their respective GitHub repos: [Yosys](https://github.com/YosysHQ/yosys), [NextPNR](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
 
 ## Vivado Project
 
