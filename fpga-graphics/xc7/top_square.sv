@@ -27,7 +27,6 @@ module top_square (
 
     // display timings
     logic [9:0] sx, sy;
-    logic hsync, vsync;
     logic de;
     display_timings timings_640x480 (
         .clk_pix,
