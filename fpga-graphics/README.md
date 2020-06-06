@@ -6,7 +6,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the post
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker with the included makefile.
+You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
 
 For example, to build the DVI version of top_beam:
 
