@@ -1,4 +1,4 @@
-## Project F: Exploring FPGA Graphics: Arty A7-35T Vivado Board Constraints
+## Project F: FPGA Graphics: Arty A7-35T Vivado Board Constraints
 ## (C)2020 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
