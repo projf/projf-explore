@@ -1,4 +1,4 @@
-## Project F: Exploring FPGA Graphics: iCEBreaker Board Constraints (DVI)
+## Project F: FPGA Graphics: iCEBreaker Board Constraints (DVI)
 ## (C)2020 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
@@ -13,15 +13,15 @@ set_io -nowarn dvi_clk      38
 set_io -nowarn dvi_hsync    31
 set_io -nowarn dvi_vsync    28
 set_io -nowarn dvi_de       32
-set_io -nowarn dvi_r0       48
-set_io -nowarn dvi_r1        2
-set_io -nowarn dvi_r2        3
-set_io -nowarn dvi_r3        4
-set_io -nowarn dvi_g0       44
-set_io -nowarn dvi_g1       45
-set_io -nowarn dvi_g2       46
-set_io -nowarn dvi_g3       47
-set_io -nowarn dvi_b0       34
-set_io -nowarn dvi_b1       36
-set_io -nowarn dvi_b2       42
-set_io -nowarn dvi_b3       43
+set_io -nowarn dvi_r[0]     48
+set_io -nowarn dvi_r[1]      2
+set_io -nowarn dvi_r[2]      3
+set_io -nowarn dvi_r[3]      4
+set_io -nowarn dvi_g[0]     44
+set_io -nowarn dvi_g[1]     45
+set_io -nowarn dvi_g[2]     46
+set_io -nowarn dvi_g[3]     47
+set_io -nowarn dvi_b[0]     34
+set_io -nowarn dvi_b[1]     36
+set_io -nowarn dvi_b[2]     42
+set_io -nowarn dvi_b[3]     43

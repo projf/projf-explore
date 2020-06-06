@@ -1,4 +1,4 @@
-## Project F: Exploring FPGA Graphics: iCEBreaker Board Constraints (VGA)
+## Project F: FPGA Graphics: iCEBreaker Board Constraints (VGA)
 ## (C)2020 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
@@ -11,15 +11,15 @@ set_io -nowarn btn_rst      10
 ## 12-bit Pmod VGA on Pmod 1A/1B
 set_io -nowarn vga_hsync    42
 set_io -nowarn vga_vsync    36
-set_io -nowarn vga_r0        4
-set_io -nowarn vga_r1        2
-set_io -nowarn vga_r2       47
-set_io -nowarn vga_r3       45
-set_io -nowarn vga_b0        3
-set_io -nowarn vga_b1       48
-set_io -nowarn vga_b2       46
-set_io -nowarn vga_b3       44
-set_io -nowarn vga_g0       43
-set_io -nowarn vga_g1       38
-set_io -nowarn vga_g2       34
-set_io -nowarn vga_g3       31
+set_io -nowarn vga_r[0]      4
+set_io -nowarn vga_r[1]      2
+set_io -nowarn vga_r[2]     47
+set_io -nowarn vga_r[3]     45
+set_io -nowarn vga_b[0]      3
+set_io -nowarn vga_b[1]     48
+set_io -nowarn vga_b[2]     46
+set_io -nowarn vga_b[3]     44
+set_io -nowarn vga_g[0]     43
+set_io -nowarn vga_g[1]     38
+set_io -nowarn vga_g[2]     34
+set_io -nowarn vga_g[3]     31

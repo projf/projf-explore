@@ -6,13 +6,13 @@
 `timescale 1ns / 1ps
 
 module top_square (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst,          // reset button (active low)
-    output      logic vga_hsync,        // horizontal sync
-    output      logic vga_vsync,        // vertical sync
-    output      logic [3:0] vga_r,      // 4-bit VGA red
-    output      logic [3:0] vga_g,      // 4-bit VGA green
-    output      logic [3:0] vga_b       // 4-bit VGA blue
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
     // generate pixel clock
@@ -26,7 +26,8 @@ module top_square (
     );
 
     // display timings
-    logic [9:0] sx, sy;
+    localparam CORDW = 10;  // screen coordinate width in bits
+    logic [CORDW-1:0] sx, sy;
     logic de;
     display_timings timings_640x480 (
         .clk_pix,
@@ -44,8 +45,8 @@ module top_square (
 
     // VGA output
     always_comb begin
-        vga_r     = !de ? 4'h0 : (q_draw ? 4'hD : 4'h3);
-        vga_g     = !de ? 4'h0 : (q_draw ? 4'hA : 4'h7);
-        vga_b     = !de ? 4'h0 : (q_draw ? 4'h3 : 4'hD);
+        vga_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        vga_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        vga_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule
