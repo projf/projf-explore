@@ -8,7 +8,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the post
 
 You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
 
-For example, to build the DVI version of top_beam:
+For example, to build the DVI version of `top_beam`:
 
 ```bash
 cd ice40
@@ -36,7 +36,7 @@ If you have problems building for iCEBreaker, your tools are probably too old. Y
 
 ## Vivado Project
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T). Start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
 
 ```tcl
 cd xc7/vivado

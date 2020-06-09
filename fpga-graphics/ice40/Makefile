@@ -11,10 +11,10 @@ ADD_SRC = clock_gen.sv ../display_timings.sv
 # override constraints for VGA targets
 top_square_vga top_beam_vga: PCF = icebreaker_vga.pcf
 
-top_beam: top_beam.rpt top_beam.bin
 top_square: top_square.rpt top_square.bin
-top_beam_vga: top_beam_vga.rpt top_beam_vga.bin
+top_beam: top_beam.rpt top_beam.bin
 top_square_vga: top_square_vga.rpt top_square_vga.bin
+top_beam_vga: top_beam_vga.rpt top_beam_vga.bin
 
 %.json: %.sv
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
