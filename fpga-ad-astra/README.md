@@ -36,7 +36,7 @@ cd xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_greet`, `top_hello` etc. as you would for any Vivado project.
+You can then build `top_greet`, `top_hello_jp` etc. as you would for any Vivado project.
 
 ### Other Xilinx Series 7 Boards
 
