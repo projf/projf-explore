@@ -6,8 +6,9 @@ This repository contains the SystemVerilog designs to accompany the Project F [E
 
 In this series, we'll be exploring FPGA graphics of all kinds, from a static square, through Pong and the Mandelbrot set, to bitmaps, text scrollers, and even 3D modelling.
 
-* **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Post](https://projectf.io/posts/fpga-graphics/)
+0. **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Blog Post](https://projectf.io/posts/fpga-graphics/)
+1. **FPGA Ad Astra**: [Design Sources](fpga-ad-astra) - [Blog Post](https://projectf.io/posts/fpga-ad-astra/)
 
 ## Further Exploring
 
-* **Hello Arty**: [Design Sources](hello-arty) - [Post 1](https://projectf.io/posts/hello-arty-1/) - [Post 2](https://projectf.io/posts/hello-arty-2/)
+* **Hello Arty**: [Design Sources](hello-arty) - [Blog Post 1](https://projectf.io/posts/hello-arty-1/) - [Blog Post 2](https://projectf.io/posts/hello-arty-2/)

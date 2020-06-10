@@ -1,6 +1,6 @@
-// Project F: Top Beam (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, Open Source Hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-graphics/
+// Project F: FPGA Graphics - Top Beam (iCEBreaker with 12-bit DVI Pmod)
+// (C)2020 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io
 
 `default_nettype none
 

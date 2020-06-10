@@ -1,6 +1,6 @@
-## Project F: FPGA Graphics: iCEBreaker Makefile
-## (C)2020 Will Green, Open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/fpga-graphics/
+## Project F: FPGA Graphics - iCEBreaker Makefile
+## (C)2020 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io
 
 # configuration
 SHELL = /bin/sh

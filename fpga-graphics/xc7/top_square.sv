@@ -1,6 +1,6 @@
-// Project F: Top Square (Arty with Pmod VGA)
-// (C)2020 Will Green, Open Source Hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-graphics/
+// Project F: FPGA Graphics - Top Square (Arty with Pmod VGA)
+// (C)2020 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps

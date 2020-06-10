@@ -1,6 +1,6 @@
-## Project F: Hello Arty H - Vivado Board Constraints
-## (C)2020 Will Green, Open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/hello-arty-2/
+## Project F: Hello Arty H - Board Constraints
+## (C)2020 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]

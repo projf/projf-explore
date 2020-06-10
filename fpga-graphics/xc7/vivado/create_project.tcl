@@ -1,6 +1,6 @@
-# Project F: Create FPGA Graphics Vivado Project
-# (C)2020 Will Green, Open source hardware released under the MIT License
-# Learn more at https://projectf.io/posts/fpga-graphics/
+# Project F: FPGA Graphics - Create Vivado Project
+# (C)2020 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io
 
 puts "INFO: Project F - FPGA Graphics Project Creation Script"
 

@@ -1,6 +1,6 @@
-// Project F: iCE40 Clock Generation
-// (C)2020 Will Green, Open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-graphics/
+// Project F: FPGA Graphics - Clock Generation (iCE40)
+// (C)2020 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io
 
 `default_nettype none
 

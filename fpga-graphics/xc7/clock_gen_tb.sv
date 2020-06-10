@@ -1,6 +1,6 @@
-// Project F: XC7 Clock Generation Test Bench
-// (C)2020 Will Green, Open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-graphics/
+// Project F: FPGA Graphics - Clock Generation Test Bench (XC7)
+// (C)2020 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
