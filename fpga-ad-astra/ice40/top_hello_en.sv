@@ -1,4 +1,4 @@
-// Project F: Top English Hello (iCEBreaker with 12-bit DVI Pmod)
+// Project F: FPGA Ad Astra - Top Hello EN (iCEBreaker with 12-bit DVI Pmod)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
