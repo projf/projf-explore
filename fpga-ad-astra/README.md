@@ -6,7 +6,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
+You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git). You can find instructions for building Yosys, nextpnr, and IceStorm Tools from source at [FPGA Tooling on Ubuntu 20.04](https://projectf.io/posts/fpga-dev-ubuntu-20.04/).
 
 For example, to build `top_greet`:
 
@@ -25,7 +25,7 @@ Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB 
 
 ### Problems Building
 
-If you have problems building for iCEBreaker, your tools are probably too old. You can find the latest versions in their respective GitHub repos: [Yosys](https://github.com/YosysHQ/yosys), [NextPNR](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git).
+If you have problems building for iCEBreaker, your tools are probably too old. Try building the latest versions (see above for links).
 
 ## Vivado Project
 
