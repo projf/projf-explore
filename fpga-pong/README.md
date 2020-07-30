@@ -12,7 +12,7 @@ For example, to build `top_pong_v3`:
 
 ```bash
 cd ice40
-make top_pong
+make top_pong_v3
 ```
 
 After the build completes you'll have bin file, such as `top_pong_v3.bin`. Use the bin file to program your board:
@@ -36,7 +36,7 @@ cd xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_pong` or `top_pong_v3` etc. as you would for any Vivado project.
+You can then build `top_pong_v3` etc. as you would for any Vivado project.
 
 ### Other Xilinx Series 7 Boards
 
