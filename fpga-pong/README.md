@@ -29,6 +29,8 @@ If you have problems building for iCEBreaker, your tools are probably too old. T
 
 ## Vivado Project
 
+**NB. The Arty version of Pong is not yet in the repo. It will be added during August 2020.**
+
 To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
 
 ```tcl
