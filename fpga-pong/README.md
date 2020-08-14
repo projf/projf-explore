@@ -8,17 +8,17 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git). You can find instructions for building Yosys, nextpnr, and IceStorm Tools from source at [FPGA Tooling on Ubuntu 20.04](https://projectf.io/posts/fpga-dev-ubuntu-20.04/).
 
-For example, to build `top_pong_v3`:
+For example, to build `top_pong_v4`:
 
 ```bash
 cd ice40
-make top_pong_v3
+make top_pong_v4
 ```
 
-After the build completes you'll have bin file, such as `top_pong_v3.bin`. Use the bin file to program your board:
+After the build completes you'll have bin file, such as `top_pong_v4.bin`. Use the bin file to program your board:
 
 ```bash
-iceprog top_pong_v3.bin
+iceprog top_pong_v4.bin
 ```
 
 Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
@@ -36,7 +36,7 @@ cd xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_pong_v3` etc. as you would for any Vivado project.
+You can then build `top_pong_v4` etc. as you would for any Vivado project.
 
 ### Other Xilinx Series 7 Boards
 
