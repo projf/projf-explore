@@ -47,6 +47,13 @@ module top_pong_v2 (
     logic animate;  // high for one clock tick at start of blanking
     always_comb animate = (sy == 480 && sx == 0);
 
+    // ball
+    localparam B_SIZE = 8;          // size in pixels
+    logic [CORDW-1:0] bx, by;       // position
+    logic dx, dy;                   // direction: 0 is right/down
+    logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
+    logic [CORDW-1:0] spy = 10'd4;  // vertical speed
+
     // paddles
     localparam P_HEIGHT = 40;       // height in pixels
     localparam P_WIDTH  = 10;       // width in pixels
@@ -54,6 +61,7 @@ module top_pong_v2 (
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
 
+    // paddle animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             // "AI" paddle 1
@@ -74,8 +82,9 @@ module top_pong_v2 (
         end
     end
 
+    // draw paddles - are paddles at current screen position?
     logic p1_draw, p2_draw;
-    always_comb begin  // are paddles at current screen position?
+    always_comb begin
         p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
                && (sy >= p1y) && (sy < p1y + P_HEIGHT);
         p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
@@ -94,13 +103,7 @@ module top_pong_v2 (
         end
     end
 
-    // ball
-    localparam B_SIZE = 8;      // size in pixels
-    logic [CORDW-1:0] bx, by;   // position
-    logic dx, dy;               // direction: 0 is right/down
-    logic [3:0] spx = 4'd6;     // horizontal speed
-    logic [3:0] spy = 4'd4;     // vertical speed
-
+    // ball animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             if (p1_col) begin  // left paddle collision
@@ -127,7 +130,8 @@ module top_pong_v2 (
         end
     end
 
-    logic b_draw;  // is ball at current screen position?
+    // draw ball - is ball at current screen position?
+    logic b_draw;
     always_comb begin
         b_draw = (sx >= bx) && (sx < bx + B_SIZE)
               && (sy >= by) && (sy < by + B_SIZE);
