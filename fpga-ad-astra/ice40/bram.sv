@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module rom_sync #(
+module bram #(
     parameter WIDTH=8, 
     parameter DEPTH=512, 
     parameter INIT_F="",
@@ -22,7 +22,7 @@ module rom_sync #(
 
     initial begin
         if (INIT_F != 0) begin
-            $display("Creating rom_sync from init file '%s'.", INIT_F);
+            $display("Creating bram from init file '%s'.", INIT_F);
             $readmemh(INIT_F, memory);
         end
     end
