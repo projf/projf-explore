@@ -63,7 +63,7 @@ module top_greet (
     logic [GREET_ADDRW-1:0] greet_addr;
     logic [GREET_WIDTH-1:0] greet_cp;  // char code point
 
-    rom_sync #(  // greetings ROM
+    bram #(  // greetings ROM
         .INIT_F(GREET_INIT_F),
         .WIDTH(GREET_WIDTH),
         .DEPTH(GREET_DEPTH)
@@ -85,7 +85,7 @@ module top_greet (
     logic [FONT_ADDRW-1:0] font_addr;
     logic [FONT_WIDTH-1:0] font_data;
 
-    rom_sync #(
+    bram #(
         .INIT_F(FONT_INIT_F),
         .WIDTH(FONT_WIDTH),
         .DEPTH(FONT_DEPTH)
