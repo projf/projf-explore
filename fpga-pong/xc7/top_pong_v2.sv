@@ -1,27 +1,26 @@
-// Project F: FPGA Pong - Top v1 (iCEBreaker with 12-bit DVI Pmod)
+// Project F: FPGA Pong - Top v2 (Arty with Pmod VGA)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
+`timescale 1ns / 1ps
 
-module top_pong_v1 (
-    input  wire logic clk_12m,      // 12 MHz clock
-    input  wire logic btn_rst,      // reset button (active high)
-    output      logic dvi_clk,      // DVI pixel clock
-    output      logic dvi_hsync,    // DVI horizontal sync
-    output      logic dvi_vsync,    // DVI vertical sync
-    output      logic dvi_de,       // DVI data enable
-    output      logic [3:0] dvi_r,  // 4-bit DVI red
-    output      logic [3:0] dvi_g,  // 4-bit DVI green
-    output      logic [3:0] dvi_b   // 4-bit DVI blue
+module top_pong_v2 (
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen clock_640x480 (
-       .clk(clk_12m),
-       .rst(btn_rst),
+       .clk(clk_100m),
+       .rst(!btn_rst),  // reset button is active low
        .clk_pix,
        .clk_locked
     );
@@ -35,8 +34,8 @@ module top_pong_v1 (
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(dvi_hsync),
-        .vsync(dvi_vsync),
+        .hsync(vga_hsync),
+        .vsync(vga_vsync),
         .de
     );
 
@@ -51,17 +50,18 @@ module top_pong_v1 (
     localparam B_SIZE = 8;          // size in pixels
     logic [CORDW-1:0] bx, by;       // position
     logic dx, dy;                   // direction: 0 is right/down
-    logic [CORDW-1:0] spx = 10'd1;  // horizontal speed
-    logic [CORDW-1:0] spy = 10'd1;  // vertical speed
+    logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
+    logic [CORDW-1:0] spy = 10'd4;  // vertical speed
     logic b_draw;                   // draw ball?
 
     // paddles
     localparam P_HEIGHT = 40;       // height in pixels
     localparam P_WIDTH  = 10;       // width in pixels
-    localparam P_SPEED  = 1;        // speed
+    localparam P_SPEED  = 4;        // speed
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
     logic p1_draw, p2_draw;         // draw paddles?
+    logic p1_col, p2_col;           // paddle collision
 
     // paddle animation
     always_ff @(posedge clk_pix) begin
@@ -92,10 +92,27 @@ module top_pong_v1 (
                && (sy >= p2y) && (sy < p2y + P_HEIGHT);
     end
 
+    // paddle collision detection
+    always_ff @(posedge clk_pix) begin
+        if (animate) begin
+            p1_col <= 0;
+            p2_col <= 0;
+        end else if (b_draw) begin
+            if (p1_draw) p1_col <= 1;
+            if (p2_draw) p2_col <= 1;
+        end
+    end
+
     // ball animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
+            if (p1_col) begin  // left paddle collision
+                dx <= 0;
+                bx <= bx + spx;
+            end else if (p2_col) begin  // right paddle collision
+                dx <= 1;
+                bx <= bx - spx;
+            end else if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
                 dx <= 1;
                 bx <= bx - spx;
             end else if (bx < spx) begin  // left edge
@@ -119,12 +136,10 @@ module top_pong_v1 (
               && (sy >= by) && (sy < by + B_SIZE);
     end
 
-    // DVI output
+    // VGA output
     always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
     end
 endmodule

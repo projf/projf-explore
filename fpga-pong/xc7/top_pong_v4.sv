@@ -1,30 +1,29 @@
-// Project F: FPGA Pong - Top v4 (iCEBreaker with 12-bit DVI Pmod)
+// Project F: FPGA Pong - Top v4 (Arty with Pmod VGA)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 module top_pong_v4 (
-    input  wire logic clk_12m,      // 12 MHz clock
-    input  wire logic btn_rst,      // reset button (active high)
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
     input  wire logic btn_up,       // up button
     input  wire logic btn_ctrl,     // control button
     input  wire logic btn_dn,       // down button
-    output      logic dvi_clk,      // DVI pixel clock
-    output      logic dvi_hsync,    // DVI horizontal sync
-    output      logic dvi_vsync,    // DVI vertical sync
-    output      logic dvi_de,       // DVI data enable
-    output      logic [3:0] dvi_r,  // 4-bit DVI red
-    output      logic [3:0] dvi_g,  // 4-bit DVI green
-    output      logic [3:0] dvi_b   // 4-bit DVI blue
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen clock_640x480 (
-       .clk(clk_12m),
-       .rst(btn_rst),
+       .clk(clk_100m),
+       .rst(!btn_rst),  // reset button is active low
        .clk_pix,
        .clk_locked
     );
@@ -38,8 +37,8 @@ module top_pong_v4 (
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(dvi_hsync),
-        .vsync(dvi_vsync),
+        .hsync(vga_hsync),
+        .vsync(vga_vsync),
         .de
     );
 
@@ -124,8 +123,8 @@ module top_pong_v4 (
         end
     end
 
-    // draw paddles
-    always_comb begin  // are paddles at current screen position?
+    // draw paddles - are paddles at current screen position?
+    always_comb begin
         p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
                && (sy >= p1y) && (sy < p1y + P_HEIGHT);
         p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
@@ -221,18 +220,16 @@ module top_pong_v4 (
         end
     end
 
-    // draw ball
+    // draw ball - is ball at current screen position?
     always_comb begin
         b_draw = (sx >= bx) && (sx < bx + B_SIZE)
               && (sy >= by) && (sy < by + B_SIZE);
     end
 
-    // DVI output
+    // VGA output
     always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        vga_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
     end
 endmodule

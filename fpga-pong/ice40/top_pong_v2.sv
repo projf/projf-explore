@@ -53,6 +53,7 @@ module top_pong_v2 (
     logic dx, dy;                   // direction: 0 is right/down
     logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
     logic [CORDW-1:0] spy = 10'd4;  // vertical speed
+    logic b_draw;                   // draw ball?
 
     // paddles
     localparam P_HEIGHT = 40;       // height in pixels
@@ -60,6 +61,8 @@ module top_pong_v2 (
     localparam P_SPEED  = 4;        // speed
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
+    logic p1_draw, p2_draw;         // draw paddles?
+    logic p1_col, p2_col;           // paddle collision
 
     // paddle animation
     always_ff @(posedge clk_pix) begin
@@ -83,7 +86,6 @@ module top_pong_v2 (
     end
 
     // draw paddles - are paddles at current screen position?
-    logic p1_draw, p2_draw;
     always_comb begin
         p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
                && (sy >= p1y) && (sy < p1y + P_HEIGHT);
@@ -92,7 +94,6 @@ module top_pong_v2 (
     end
 
     // paddle collision detection
-    logic p1_col, p2_col;
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             p1_col <= 0;
@@ -131,7 +132,6 @@ module top_pong_v2 (
     end
 
     // draw ball - is ball at current screen position?
-    logic b_draw;
     always_comb begin
         b_draw = (sx >= bx) && (sx < bx + B_SIZE)
               && (sy >= by) && (sy < by + B_SIZE);
