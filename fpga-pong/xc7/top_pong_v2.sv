@@ -61,7 +61,7 @@ module top_pong_v2 (
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
     logic p1_draw, p2_draw;         // draw paddles?
-    logic p1_col, p2_col;           // paddle collision
+    logic p1_col, p2_col;           // paddle collision?
 
     // paddle animation
     always_ff @(posedge clk_pix) begin

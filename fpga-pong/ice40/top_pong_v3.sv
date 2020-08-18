@@ -71,7 +71,7 @@ module top_pong_v3 (
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
     logic p1_draw, p2_draw;         // draw paddles?
-    logic p1_col, p2_col;           // paddle collision
+    logic p1_col, p2_col;           // paddle collision?
 
     // game state
     enum {IDLE, PLAY} state, state_next;

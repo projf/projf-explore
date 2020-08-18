@@ -73,7 +73,7 @@ module top_pong_v4 (
     localparam P_OFFSET = 32;           // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;         // vertical position of paddles 1 and 2
     logic p1_draw, p2_draw;             // draw paddles?
-    logic p1_col, p2_col;               // paddle collision
+    logic p1_col, p2_col;               // paddle collision?
 
     // game state
     enum {INIT, IDLE, START, PLAY, POINT_END} state, state_next;
@@ -124,8 +124,8 @@ module top_pong_v4 (
         end
     end
 
-    // draw paddles
-    always_comb begin  // are paddles at current screen position?
+    // draw paddles - are paddles at current screen position?
+    always_comb begin
         p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
                && (sy >= p1y) && (sy < p1y + P_HEIGHT);
         p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
@@ -221,7 +221,7 @@ module top_pong_v4 (
         end
     end
 
-    // draw ball
+    // draw ball - is ball at current screen position?
     always_comb begin
         b_draw = (sx >= bx) && (sx < bx + B_SIZE)
               && (sy >= by) && (sy < by + B_SIZE);
