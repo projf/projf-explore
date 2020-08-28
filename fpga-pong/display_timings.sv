@@ -24,7 +24,7 @@ module display_timings (
     // vertical timings
     parameter VA_END = 479;             // end of active pixels
     parameter VS_STA = VA_END + 10;     // sync starts after front porch
-    parameter VS_END = HS_STA + 2;      // sync ends
+    parameter VS_END = VS_STA + 2;      // sync ends
     parameter SCREEN = 524;             // last line on screen (after back porch)
 
     always_comb begin
