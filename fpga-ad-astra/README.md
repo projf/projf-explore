@@ -54,3 +54,20 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## lichee Tang Build
+
+You can build projects for lichee Tang with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [Tang dinasty](https://dl.sipeed.com/TANG/Primer/IDE), and [openFPGALoader](https://github.com/trabucayre/openFPGALoader.git).
+
+For example, to build `top_greet`:
+
+```bash
+cd anlogic
+make top_greet
+```
+
+After the build completes you'll have bit file, such as `top_greet.bit`. Use the bit file to program your board:
+
+```bash
+openFPGALoader -canlogicCable top_greet.bit
+```
