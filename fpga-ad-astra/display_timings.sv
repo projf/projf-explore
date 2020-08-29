@@ -5,7 +5,17 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module display_timings (
+module display_timings #(
+	// default 640x480
+	parameter HACTIVE = 640,
+	parameter HFP     = 16,
+	parameter HSYNC   = 96,
+	parameter HBP     = 48,
+	parameter VACTIVE = 480,
+	parameter VFP     = 10,
+	parameter VSYNC   = 2,
+	parameter VBP     = 33
+	) (
     input  wire logic clk_pix,          // pixel clock
     input  wire logic rst,              // reset
     output      logic [9:0] sx,         // horizontal screen position
@@ -16,16 +26,16 @@ module display_timings (
     );
 
     // horizontal timings
-    parameter HA_END = 639;             // end of active pixels
-    parameter HS_STA = HA_END + 16;     // sync starts after front porch
-    parameter HS_END = HS_STA + 96;     // sync ends
-    parameter LINE   = 799;             // last pixel on line (after back porch)
+    localparam HA_END = HACTIVE;         // end of active pixels
+    localparam HS_STA = HA_END + HFP;    // sync starts after front porch
+    localparam HS_END = HS_STA + HSYNC;  // sync ends
+    localparam LINE   = HS_END + HBP - 1; // last pixel on line (after back porch)
 
     // vertical timings
-    parameter VA_END = 479;             // end of active pixels
-    parameter VS_STA = VA_END + 10;     // sync starts after front porch
-    parameter VS_END = VS_STA + 2;      // sync ends
-    parameter SCREEN = 524;             // last line on screen (after back porch)
+    localparam VA_END = VACTIVE;         // end of active pixels
+    localparam VS_STA = VA_END + VFP;    // sync starts after front porch
+    localparam VS_END = VS_STA + VSYNC;  // sync ends
+    localparam SCREEN = VS_END + VBP -1; // last line on screen (after back porch)
 
     always_comb begin
         hsync = ~(sx >= HS_STA && sx < HS_END);  // invert: hsync polarity is negative
