@@ -1,0 +1,39 @@
+## Project F: FPGA Pong - Sipeed lichee Tang Board Constraints
+## (C)2020 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io
+
+set_pin_assignment {clk_24m} { LOCATION = K14; }     ##24MHZ
+set_pin_assignment {btn_rst} { LOCATION = K16; }     ##USER_KEY
+
+set_pin_assignment {lcd_r[0]} { LOCATION = B2; }
+set_pin_assignment {lcd_r[1]} { LOCATION = A2; }
+set_pin_assignment {lcd_r[2]} { LOCATION = C3; }
+set_pin_assignment {lcd_r[3]} { LOCATION = C2; }
+set_pin_assignment {lcd_r[4]} { LOCATION = C1; }
+set_pin_assignment {lcd_r[5]} { LOCATION = E2; }
+set_pin_assignment {lcd_r[6]} { LOCATION = D1; }
+set_pin_assignment {lcd_r[7]} { LOCATION = E1; }
+
+set_pin_assignment {lcd_g[0]} { LOCATION = E3; }
+set_pin_assignment {lcd_g[1]} { LOCATION = E4; }
+set_pin_assignment {lcd_g[2]} { LOCATION = F1; }
+set_pin_assignment {lcd_g[3]} { LOCATION = F2; }
+set_pin_assignment {lcd_g[4]} { LOCATION = G1; }
+set_pin_assignment {lcd_g[5]} { LOCATION = G3; }
+set_pin_assignment {lcd_g[6]} { LOCATION = J4; }
+set_pin_assignment {lcd_g[7]} { LOCATION = J3; }
+
+set_pin_assignment {lcd_b[0]} { LOCATION = J1; }
+set_pin_assignment {lcd_b[1]} { LOCATION = K1; }
+set_pin_assignment {lcd_b[2]} { LOCATION = K2; }
+set_pin_assignment {lcd_b[3]} { LOCATION = K3; }
+set_pin_assignment {lcd_b[4]} { LOCATION = L3; }
+set_pin_assignment {lcd_b[5]} { LOCATION = M2; }
+set_pin_assignment {lcd_b[6]} { LOCATION = M1; }
+set_pin_assignment {lcd_b[7]} { LOCATION = N1; }
+
+set_pin_assignment {lcd_clk} { LOCATION = L1};
+set_pin_assignment {lcd_hsync} { LOCATION = P1; }
+set_pin_assignment {lcd_vsync} { LOCATION = R1; }
+set_pin_assignment {lcd_den} { LOCATION = L4; }
+set_pin_assignment {lcd_pwm} { LOCATION = J16; }
