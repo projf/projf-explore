@@ -9,13 +9,13 @@ In this series we explore graphics at the hardware level and get a feel for the 
 * **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Blog Post](https://projectf.io/posts/fpga-graphics/)
 * **FPGA Pong**: [Design Sources](fpga-pong) - [Blog Post](https://projectf.io/posts/fpga-pong/)
 * **FPGA Ad Astra**: [Design Sources](fpga-ad-astra) - [Blog Post](https://projectf.io/posts/fpga-ad-astra/)
-* **Life on Screen** - being written
+* **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
 
 ## Hello - Learning FPGA Development
 
-This three-part tutorial provides a quick introduction to FPGA development with **Verilog** and the **Digilent Arty A7** board.
+A three-part introduction to FPGA development and Verilog with the Digilent Arty board:
 
 * **Hello Arty**: [Design Sources](hello-arty)
     * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
     * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
-    * Blog Post 3 - being written
+    * Blog Post 3 (coming later in 2020)

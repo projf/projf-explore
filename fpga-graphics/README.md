@@ -45,6 +45,24 @@ source ./create_project.tcl
 
 You can then build `top_square`, `top_beam`, or `top_bounce` as you would for any Vivado project.
 
+### Simulation
+
+This design includes test benches for the `clock_gen` and `display_timings` modules. You can run the test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
+
+```tcl
+launch_simulation
+run all
+```
+
+By default the `display_timings` test bench is simulated, but you can switch to the `clock_gen` test bench with:
+
+```tcl
+set fs_sim_obj [get_filesets sim_1]
+set_property -name "top" -value "clock_gen_tb" -objects $fs_sim_obj
+relaunch_sim
+run all
+```
+
 ### Other Xilinx Series 7 Boards
 
 It's straightforward to adapt the project for other Xilinx Series 7 boards:
