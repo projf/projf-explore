@@ -12,14 +12,19 @@ module sprite_tb();
     logic rst;
     logic clk_25m;
 
-    // display timings (32x24 pixels)
-    localparam CORDW = 5;
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 40;
+    localparam V_RES_FULL = 27;
+    localparam H_RES = 32;
+    localparam V_RES = 24;
+
+    localparam CORDW = 6;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic de;
     always_ff @(posedge clk_25m) begin
-        if (sx == 31) begin  // last pixel on line?
+        if (sx == H_RES_FULL - 1) begin  // last pixel on line?
             sx <= 0;
-            sy <= (sy == 23) ? 0 : sy + 1;  // last line on screen?
+            sy <= (sy == V_RES_FULL - 1) ? 0 : sy + 1;  // last line on screen?
         end else begin
             sx <= sx + 1;
         end
@@ -28,7 +33,7 @@ module sprite_tb();
             sy <= 0;
         end
     end
-    always_comb de = (sx <= 23 && sy <= 23);
+    always_comb de = (sx < H_RES && sy < V_RES);
 
     // font ROM
     localparam FONT_WIDTH  = 8;  // width in pixels
@@ -53,38 +58,43 @@ module sprite_tb();
     // sprite
     logic spr_start;
     logic [FONT_ADDRW-1:0] spr0_gfx_addr, spr1_gfx_addr;
-    logic spr0_dma, spr0_pix, spr0_done;
-    logic spr1_dma, spr1_pix, spr1_done;
+    logic spr0_dma, spr0_pix, spr0_drawing, spr0_done;
+    logic spr1_dma, spr1_pix, spr1_drawing, spr1_done;
+
+    // horizontal position of letters
+    localparam SPR0_X = 0;
+    localparam SPR1_X = 10;
+
+    localparam SPR0_CP = FONT_HEIGHT * ('h4C - 'h20); // L
+    localparam SPR1_CP = FONT_HEIGHT * ('h45 - 'h20); // E
 
     always_comb begin
         spr_start = (sy == 4 && sx == 0);
         spr0_dma = (sx >= 25 && sx < 27);  // 2 cycles
         spr1_dma = (sx >= 27 && sx < 29);
         font_addr = 0;
-        if (spr0_dma) font_addr = spr0_gfx_addr;
-        if (spr1_dma) font_addr = spr1_gfx_addr;
+        if (spr0_dma) font_addr = SPR0_CP + spr0_gfx_addr;
+        if (spr1_dma) font_addr = SPR1_CP + spr1_gfx_addr;
     end
 
-    localparam SPR0_CP = FONT_HEIGHT * ('h4C - 'h20); // L
-    localparam SPR1_CP = FONT_HEIGHT * ('h45 - 'h20); // E
-
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW(FONT_ADDRW)
         ) spr0 (
         .clk(clk_25m),
         .rst,
         .start(spr_start),
         .dma_avail(spr0_dma),
         .sx,
-        .sprx(5'd0),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR0_CP),
-        .gfx_addr(spr0_gfx_addr),
+        .sprx(SPR0_X),
+        .data_in(font_data),
+        .pos(spr0_gfx_addr),
         .pix(spr0_pix),
+        .drawing(spr0_drawing),
         .done(spr0_done)
     );
 
@@ -100,11 +110,11 @@ module sprite_tb();
         .start(spr_start),
         .dma_avail(spr1_dma),
         .sx,
-        .sprx(5'd10),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR1_CP),
-        .gfx_addr(spr1_gfx_addr),
+        .sprx(SPR1_X),
+        .data_in(font_data),
+        .pos(spr1_gfx_addr),
         .pix(spr1_pix),
+        .drawing(spr1_drawing),
         .done(spr1_done)
     );
 

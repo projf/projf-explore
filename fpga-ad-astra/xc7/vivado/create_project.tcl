@@ -36,17 +36,19 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_greet.sv"] \
+  [file normalize "${origin_dir}/xc7/top_greet_v1.sv"] \
   [file normalize "${origin_dir}/xc7/top_hello_en.sv"] \
   [file normalize "${origin_dir}/xc7/top_hello_jp.sv"] \
   [file normalize "${origin_dir}/xc7/top_lfsr.sv"] \
   [file normalize "${origin_dir}/xc7/top_starfields.sv"] \
+  [file normalize "${origin_dir}/xc7/top_space_f.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_lfsr" -objects $fs_design_obj
+set_property -name "top" -value "top_greet" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
@@ -62,9 +64,9 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/font_unscii_8x8_latin_uc.mem"] \
-  [file normalize "${origin_dir}/font_unscii_16x16_hiragana.mem"] \
-  [file normalize "${origin_dir}/greets.mem"] \
+  [file normalize "${origin_dir}/res/font_unscii_8x8_latin_uc.mem"] \
+  [file normalize "${origin_dir}/res/font_unscii_16x16_hiragana.mem"] \
+  [file normalize "${origin_dir}/res/greet.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]

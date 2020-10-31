@@ -12,11 +12,11 @@ module starfield #(
     parameter SEED=21'h1FFFFF,
     parameter MASK=21'hFFF
     ) (
-    input  wire logic clk,              // clock
-    input  wire logic en,               // enable
-    input  wire logic rst,              // reset
-    output      logic sf_on,            // star on
-    output      logic [7:0] sf_star     // star brightness
+    input  wire logic clk,           // clock
+    input  wire logic en,            // enable
+    input  wire logic rst,           // reset
+    output      logic sf_on,         // star on
+    output      logic [7:0] sf_star  // star brightness
     );
 
     localparam RST_CNT = H * V + INC - 1;  // counter starts at zero, so subtract 1
@@ -25,7 +25,9 @@ module starfield #(
     always_ff @(posedge clk) begin
         if (en) begin
             sf_cnt <= sf_cnt + 1;
+            /* verilator lint_off WIDTH */
             if (sf_cnt == RST_CNT) sf_cnt <= 0;
+            /* verilator lint_on WIDTH */
         end
         if (rst) sf_cnt <= 0;
     end

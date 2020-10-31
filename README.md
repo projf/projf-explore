@@ -1,15 +1,19 @@
 # Project F: Exploring FPGAs
 
-This repository contains the Verilog designs to accompany the Project F [Exploring FPGAs](https://projectf.io/tags/explore/) series. All the designs are under the permissive [MIT licence](LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+This repository contains the SystemVerilog designs to accompany the Project F [Exploring FPGAs](https://projectf.io/tags/explore/) series. The designs are open source hardware under the permissive [MIT licence](LICENSE), but the blog is subject to normal copyright restrictions.
 
 ## FPGA Graphics
 
-In this series we explore graphics at the hardware level and get a feel for the power of FPGAs. We start by learning how displays work, before racing the beam with Pong, drawing starfields and sprites, simulating life with bitmaps, drawing lines and triangles, and finally creating simple 3D models.
+In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We start by learning how displays work, before racing the beam with Pong, starfields and sprites, simulating life with bitmaps, drawing lines and triangles, and finally creating simple 3D models. I'll be writing and revising this series throughout 2020.
 
 * **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Blog Post](https://projectf.io/posts/fpga-graphics/)
 * **FPGA Pong**: [Design Sources](fpga-pong) - [Blog Post](https://projectf.io/posts/fpga-pong/)
+* **Hardware Sprites**: [Design Sources](hardware-sprites) - [Blog Post](https://projectf.io/posts/hardware-sprites/)
 * **FPGA Ad Astra**: [Design Sources](fpga-ad-astra) - [Blog Post](https://projectf.io/posts/fpga-ad-astra/)
+* **Framebuffers**: [Design Sources](framebuffers) - [Blog Post](https://projectf.io/posts/framebuffers/)
 * **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
+
+_More parts to follow._
 
 ## Hello - Learning FPGA Development
 

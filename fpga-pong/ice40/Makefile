@@ -8,6 +8,7 @@ FPGA_PKG = sg48
 PCF = icebreaker.pcf
 ADD_SRC = clock_gen.sv ../debounce.sv ../display_timings.sv
 
+top_pong: top_pong.rpt top_pong.bin
 top_pong_v1: top_pong_v1.rpt top_pong_v1.bin
 top_pong_v2: top_pong_v2.rpt top_pong_v2.bin
 top_pong_v3: top_pong_v3.rpt top_pong_v3.bin
@@ -28,6 +29,6 @@ top_pong_v4: top_pong_v4.rpt top_pong_v4.bin
 clean:
 	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
 
-all: top_pong_v1 top_pong_v2 top_pong_v3 top_pong_v4
+all: top_pong top_pong_v1 top_pong_v2 top_pong_v3 top_pong_v4
 
 .PHONY: all clean

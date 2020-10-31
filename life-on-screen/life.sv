@@ -24,7 +24,7 @@ module life #(
     localparam CELL_COUNT = WORLD_WIDTH * WORLD_HEIGHT;  // total number of cells
     localparam NEIGHBOURS_COUNT = 8;  // number of neighbours each cell has
 
-    // number of alive neighbours (could be 8!)
+    // number of alive neighbours (could be eight!)
     logic [$clog2(NEIGHBOURS_COUNT+1)-1:0] neighbours_alive;
 
     // internal cell and neighbour IDs
@@ -32,7 +32,7 @@ module life #(
     logic [ADDRW-1:0] nid;  // adding nid_next would improve timing slack
     logic [$clog2(NEIGHBOURS_COUNT)-1:0] npos, npos_next;
 
-    // simulation state
+    // simulation state (once started, only stops after updating a cell)
     enum {IDLE, NEXT_CELL, NEIGHBOURS, CURRENT_CELL, UPDATE_CELL} state, state_next;
     always_comb begin
         case(state)
@@ -46,7 +46,9 @@ module life #(
                     state_next = NEXT_CELL;
                 end
             end
+            /* verilator lint_off WIDTH */
             NEIGHBOURS: state_next = (npos == NEIGHBOURS_COUNT-1) ? CURRENT_CELL : NEIGHBOURS;
+            /* verilator lint_on WIDTH */
             CURRENT_CELL: state_next = UPDATE_CELL;
             UPDATE_CELL: state_next = NEXT_CELL;
             default: state_next = IDLE;
@@ -74,7 +76,7 @@ module life #(
                 npos_next = 0;
             end
             NEIGHBOURS: begin
-                // map neigbour index onto ID
+                // map neighbour index onto ID
                 case (npos)
                     3'd0: nid = cid - (WORLD_WIDTH + 1);
                     3'd1: nid = cid - WORLD_WIDTH;
@@ -108,6 +110,7 @@ module life #(
                 // ready for next cell
                 cid_next = (cid < CELL_COUNT-1) ? cid + 1 : 0;
             end
+            // consider adding a default case
         endcase
     end
 

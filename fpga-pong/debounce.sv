@@ -6,11 +6,11 @@
 `timescale 1ns / 1ps
 
 module debounce (
-    input  wire logic clk,  // clock
-    input  wire logic in,   // signal input
-    output      logic out,  // signal output (debounced)
-    output      logic ondn, // on down (one tick)
-    output      logic onup  // on up (one tick)
+    input  wire logic clk,   // clock
+    input  wire logic in,    // signal input
+    output      logic out,   // signal output (debounced)
+    output      logic ondn,  // on down (one tick)
+    output      logic onup   // on up (one tick)
     );
 
     // sync with clock and combat metastability

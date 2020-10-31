@@ -40,176 +40,223 @@ module top_hello_en (
         .de
     );
 
-    // font ROM
-    localparam FONT_WIDTH  = 8;  // width in pixels
-    localparam FONT_HEIGHT = 8;  // number of lines
-    localparam FONT_DEPTH  = 64 * FONT_HEIGHT;    // 64 chars
-    localparam FONT_ADDRW  = $clog2(FONT_DEPTH);  // font ROM address width
-    localparam FONT_INIT_F = "../font_unscii_8x8_latin_uc.mem";
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
-    logic [FONT_ADDRW-1:0] font_addr;
-    logic [FONT_WIDTH-1:0] font_data;
+    // font glyph ROM
+    localparam FONT_WIDTH  = 8;   // width in pixels (also ROM width)
+    localparam FONT_HEIGHT = 8;   // height in pixels
+    localparam FONT_GLYPHS = 64;  // number of glyphs
+    localparam F_ROM_DEPTH = FONT_GLYPHS * FONT_HEIGHT;
+    localparam FONT_FILE   = "../res/font_unscii_8x8_latin_uc.mem";
+
+    logic [$clog2(F_ROM_DEPTH)-1:0] font_rom_addr;
+    logic [FONT_WIDTH-1:0] font_rom_data;  // line of glyph pixels
 
     bram #(
-        .INIT_F(FONT_INIT_F),
+        .INIT_F(FONT_FILE),
         .WIDTH(FONT_WIDTH),
-        .DEPTH(FONT_DEPTH)
+        .DEPTH(F_ROM_DEPTH)
     ) font_rom (
         .clk(clk_pix),
-        .addr(font_addr),
+        .addr(font_rom_addr),
         .we(1'b0),
+        /* verilator lint_off PINCONNECTEMPTY */
         .data_in(),
-        .data(font_data)
+        /* verilator lint_on PINCONNECTEMPTY */
+        .data(font_rom_data)
     );
 
-    // sprites - drawn position is one pixel left and down from sprite coordinate
+    // sprites
+    localparam SPR_CNT = 5;      // number of sprites
     localparam SPR_SCALE_X = 8;  // enlarge sprite width by this factor
     localparam SPR_SCALE_Y = 8;  // enlarge sprite height by this factor
 
+    // horizontal and vertical screen position of letters
+    logic [CORDW-1:0] spr_x [SPR_CNT];
+    logic [CORDW-1:0] spr_y;
+    initial begin
+        spr_x[0] = 158;
+        spr_x[1] = 222;
+        spr_x[2] = 286;
+        spr_x[3] = 350;
+        spr_x[4] = 414;
+        spr_y    = 208;
+    end
+
+    // start sprite in blanking of line before first line drawn
+    logic [CORDW-1:0] spr_y_cor;  // corrected for wrapping
     logic spr_start;
-    logic [FONT_ADDRW-1:0] spr0_gfx_addr, spr1_gfx_addr, spr2_gfx_addr, spr3_gfx_addr, spr4_gfx_addr;
-    logic spr0_dma, spr0_pix, spr0_done;
-    logic spr1_dma, spr1_pix, spr1_done;
-    logic spr2_dma, spr2_pix, spr2_done;
-    logic spr3_dma, spr3_pix, spr3_done;
-    logic spr4_dma, spr4_pix, spr4_done;
-
     always_comb begin
-        spr_start = (sy == 208 && sx == 0);
-        spr0_dma = (sx >= 640 && sx < 642);  // 2 clock cycles
-        spr1_dma = (sx >= 642 && sx < 644);
-        spr2_dma = (sx >= 644 && sx < 646);
-        spr3_dma = (sx >= 646 && sx < 648);
-        spr4_dma = (sx >= 648 && sx < 650);
-
-        font_addr = 0;
-        if (spr0_dma) font_addr = spr0_gfx_addr;
-        if (spr1_dma) font_addr = spr1_gfx_addr;
-        if (spr2_dma) font_addr = spr2_gfx_addr;
-        if (spr3_dma) font_addr = spr3_gfx_addr;
-        if (spr4_dma) font_addr = spr4_gfx_addr;
+        spr_y_cor = (spr_y == 0) ? V_RES_FULL - 1 : spr_y - 1;
+        spr_start = (sy == spr_y_cor && sx == 0);
     end
 
     // subtract 0x20 from code points as font starts at U+0020
-    localparam SPR0_CP = FONT_HEIGHT * 'h28; // H U+0048
-    localparam SPR1_CP = FONT_HEIGHT * 'h25; // E U+0045
-    localparam SPR2_CP = FONT_HEIGHT * 'h2C; // L U+004C
-    localparam SPR3_CP = FONT_HEIGHT * 'h2C; // L U+004C
-    localparam SPR4_CP = FONT_HEIGHT * 'h2F; // O U+004F
+    logic [$clog2(F_ROM_DEPTH)-1:0] spr_cp_norm [SPR_CNT];
+    initial begin
+        spr_cp_norm[0] = 'h28;  // H U+0048
+        spr_cp_norm[1] = 'h25;  // E U+0045
+        spr_cp_norm[2] = 'h2C;  // L U+004C
+        spr_cp_norm[3] = 'h2C;  // L U+004C
+        spr_cp_norm[4] = 'h2F;  // O U+004F
+    end
+
+    integer i;  // for looping over sprite signals
+
+    // font ROM address
+    logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_0;
+    logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_1;
+    logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_2;
+    logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_3;
+    logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_4;
+    logic spr_fdma [SPR_CNT];  // font ROM DMA slots
+    always_comb begin
+        font_rom_addr = 0;
+        /* verilator lint_off WIDTH */
+        for (i = 0; i < SPR_CNT; i = i + 1) begin
+            spr_fdma[i] = (sx == H_RES+i);
+        end
+        if (spr_fdma[0]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[0] + spr_glyph_line_0;
+        if (spr_fdma[1]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[1] + spr_glyph_line_1;
+        if (spr_fdma[2]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[2] + spr_glyph_line_2;
+        if (spr_fdma[3]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[3] + spr_glyph_line_3;
+        if (spr_fdma[4]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[4] + spr_glyph_line_4;
+        /* verilator lint_on WIDTH */
+    end
+
+    // sprite instances
+    logic [SPR_CNT-1:0] spr_pix;  // sprite pixels
 
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW($clog2(FONT_HEIGHT))
         ) spr0 (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(spr_start),
-        .dma_avail(spr0_dma),
+        .dma_avail(spr_fdma[0]),
         .sx,
-        .sprx(158),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR0_CP),
-        .gfx_addr(spr0_gfx_addr),
-        .pix(spr0_pix),
-        .done(spr0_done)
+        .sprx(spr_x[0]),
+        .data_in(font_rom_data),
+        .pos(spr_glyph_line_0),
+        .pix(spr_pix[0]),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .draw(),
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW($clog2(FONT_HEIGHT))
         ) spr1 (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(spr_start),
-        .dma_avail(spr1_dma),
+        .dma_avail(spr_fdma[1]),
         .sx,
-        .sprx(222),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR1_CP),
-        .gfx_addr(spr1_gfx_addr),
-        .pix(spr1_pix),
-        .done(spr1_done)
+        .sprx(spr_x[1]),
+        .data_in(font_rom_data),
+        .pos(spr_glyph_line_1),
+        .pix(spr_pix[1]),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .draw(),
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW($clog2(FONT_HEIGHT))
         ) spr2 (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(spr_start),
-        .dma_avail(spr2_dma),
+        .dma_avail(spr_fdma[2]),
         .sx,
-        .sprx(286),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR2_CP),
-        .gfx_addr(spr2_gfx_addr),
-        .pix(spr2_pix),
-        .done(spr2_done)
+        .sprx(spr_x[2]),
+        .data_in(font_rom_data),
+        .pos(spr_glyph_line_2),
+        .pix(spr_pix[2]),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .draw(),
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW($clog2(FONT_HEIGHT))
         ) spr3 (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(spr_start),
-        .dma_avail(spr3_dma),
+        .dma_avail(spr_fdma[3]),
         .sx,
-        .sprx(350),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR3_CP),
-        .gfx_addr(spr3_gfx_addr),
-        .pix(spr3_pix),
-        .done(spr3_done)
+        .sprx(spr_x[3]),
+        .data_in(font_rom_data),
+        .pos(spr_glyph_line_3),
+        .pix(spr_pix[3]),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .draw(),
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
     sprite #(
-        .LSB(0),
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .ADDRW(FONT_ADDRW),
-        .CORDW(CORDW)
+        .LSB(0),
+        .CORDW(CORDW),
+        .H_RES_FULL(H_RES_FULL),
+        .ADDRW($clog2(FONT_HEIGHT))
         ) spr4 (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(spr_start),
-        .dma_avail(spr4_dma),
+        .dma_avail(spr_fdma[4]),
         .sx,
-        .sprx(414),
-        .gfx_data(font_data),
-        .gfx_addr_base(SPR4_CP),
-        .gfx_addr(spr4_gfx_addr),
-        .pix(spr4_pix),
-        .done(spr4_done)
+        .sprx(spr_x[4]),
+        .data_in(font_rom_data),
+        .pos(spr_glyph_line_4),
+        .pix(spr_pix[4]),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .draw(),
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
 
     // starfields
     logic sf1_on, sf2_on, sf3_on;
+    /* verilator lint_off UNUSED */
     logic [7:0] sf1_star, sf2_star, sf3_star;
+    /* verilator lint_on UNUSED */
 
     starfield #(.INC(-1), .SEED(21'h9A9A9)) sf1 (
         .clk(clk_pix),
@@ -235,27 +282,21 @@ module top_hello_en (
         .sf_star(sf3_star)
     );
 
-    logic spr_on;
-    logic [3:0] red_spr, green_spr, blue_spr, red_star, green_star, blue_star;
+    // sprite colour & star brightness
+    logic [3:0] red_spr, green_spr, blue_spr, starlight;
     always_comb begin
-        spr_on = spr0_pix | spr1_pix | spr2_pix | spr3_pix | spr4_pix;
-        red_spr    = (spr_on) ? 4'hF : 4'h0;
-        green_spr  = (spr_on) ? 4'hC : 4'h0;
-        blue_spr   = (spr_on) ? 4'h0 : 4'h0;
-        red_star   = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                      sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
-        green_star = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                      sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
-        blue_star  = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                      sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
+        {red_spr, green_spr, blue_spr} = (spr_pix != 0) ? 12'hFC0 : 12'h000;
+        starlight = (sf1_on) ? sf1_star[7:4] :
+                    (sf2_on) ? sf2_star[7:4] :
+                    (sf3_on) ? sf3_star[7:4] : 4'h0;
     end
 
     // DVI output
     always_comb begin
         dvi_clk = clk_pix;
         dvi_de  = de;
-        dvi_r = (de) ? (spr_on) ? red_spr   : red_star   : 4'h0;
-        dvi_g = (de) ? (spr_on) ? green_spr : green_star : 4'h0;
-        dvi_b = (de) ? (spr_on) ? blue_spr  : blue_star  : 4'h0;
+        dvi_r = (de) ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
+        dvi_g = (de) ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
+        dvi_b = (de) ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;
     end
 endmodule

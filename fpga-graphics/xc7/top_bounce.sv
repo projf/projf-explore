@@ -53,9 +53,9 @@ module top_bounce (
     logic q1dx, q1dy;           // square 1 direction: 0 is right/down
     logic q2dx, q2dy;           // square 2 direction: 0 is right/down
     logic q3dx, q3dy;           // square 3 direction: 0 is right/down
-    logic [7:0] q1s = 3;        // square 1 speed
-    logic [7:0] q2s = 2;        // square 2 speed
-    logic [7:0] q3s = 2;        // square 3 speed
+    logic [CORDW-1:0] q1s = 3;  // square 1 speed
+    logic [CORDW-1:0] q2s = 2;  // square 2 speed
+    logic [CORDW-1:0] q3s = 2;  // square 3 speed
 
     logic animate;  // high for one clock tick at start of blanking
     always_comb animate = (sy == 480 && sx == 0);

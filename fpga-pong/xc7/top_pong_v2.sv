@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Top v2 (Arty with Pmod VGA)
+// Project F: FPGA Pong - Top Pong v2 (Arty with Pmod VGA)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -44,24 +44,23 @@ module top_pong_v2 (
     localparam V_RES = 480;
 
     logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
+    always_comb animate = (sy == V_RES && sx == 0);
 
     // ball
     localparam B_SIZE = 8;          // size in pixels
     logic [CORDW-1:0] bx, by;       // position
     logic dx, dy;                   // direction: 0 is right/down
-    logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
-    logic [CORDW-1:0] spy = 10'd4;  // vertical speed
+    logic [CORDW-1:0] spx = 10'd1;  // horizontal speed
+    logic [CORDW-1:0] spy = 10'd1;  // vertical speed
     logic b_draw;                   // draw ball?
 
     // paddles
     localparam P_HEIGHT = 40;       // height in pixels
     localparam P_WIDTH  = 10;       // width in pixels
-    localparam P_SPEED  = 4;        // speed
+    localparam P_SPEED  = 1;        // speed
     localparam P_OFFSET = 32;       // offset from screen edge
     logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
     logic p1_draw, p2_draw;         // draw paddles?
-    logic p1_col, p2_col;           // paddle collision?
 
     // paddle animation
     always_ff @(posedge clk_pix) begin
@@ -92,27 +91,10 @@ module top_pong_v2 (
                && (sy >= p2y) && (sy < p2y + P_HEIGHT);
     end
 
-    // paddle collision detection
-    always_ff @(posedge clk_pix) begin
-        if (animate) begin
-            p1_col <= 0;
-            p2_col <= 0;
-        end else if (b_draw) begin
-            if (p1_draw) p1_col <= 1;
-            if (p2_draw) p2_col <= 1;
-        end
-    end
-
     // ball animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            if (p1_col) begin  // left paddle collision
-                dx <= 0;
-                bx <= bx + spx;
-            end else if (p2_col) begin  // right paddle collision
-                dx <= 1;
-                bx <= bx - spx;
-            end else if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
+            if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
                 dx <= 1;
                 bx <= bx - spx;
             end else if (bx < spx) begin  // left edge

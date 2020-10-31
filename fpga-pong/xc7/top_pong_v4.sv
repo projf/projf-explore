@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Top v4 (Arty with Pmod VGA)
+// Project F: FPGA Pong - Top Pong v4 (Arty with Pmod VGA)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -47,56 +47,50 @@ module top_pong_v4 (
     localparam V_RES = 480;
 
     logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
+    always_comb animate = (sy == V_RES && sx == 0);
 
     // debounce buttons
     logic sig_ctrl, move_up, move_dn;
+    /* verilator lint_off PINCONNECTEMPTY */
     debounce deb_btn_ctrl (.clk(clk_pix), .in(btn_ctrl), .out(), .ondn(), .onup(sig_ctrl));
     debounce deb_btn_up (.clk(clk_pix), .in(btn_up), .out(move_up), .ondn(), .onup());
     debounce deb_btn_dn (.clk(clk_pix), .in(btn_dn), .out(move_dn), .ondn(), .onup());
+    /* verilator lint_on PINCONNECTEMPTY */
 
     // ball
-    localparam B_SIZE = 8;              // size in pixels
-    logic [CORDW-1:0] bx, by;           // position
-    logic dx, dy;                       // direction: 0 is right/down
-    logic [CORDW-1:0] spx;              // horizontal speed
-    logic [CORDW-1:0] spy;              // vertical speed
-    logic lft_col, rgt_col;             // flag collision with left or right of screen
-    logic b_draw;                       // draw ball?
+    localparam B_SIZE = 8;          // size in pixels
+    logic [CORDW-1:0] bx, by;       // position
+    logic dx, dy;                   // direction: 0 is right/down
+    logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
+    logic [CORDW-1:0] spy = 10'd4;  // vertical speed
+    logic b_draw;                   // draw ball?
 
     // paddles
-    localparam P_HEIGHT = 40;           // height in pixels
-    localparam P_SEC = P_HEIGHT / 8;    // paddle sections
-    localparam P_WIDTH  = 10;           // width in pixels
-    localparam P_SPEED  = 4;            // speed
-    localparam P_OFFSET = 32;           // offset from screen edge
-    logic [CORDW-1:0] p1y, p2y;         // vertical position of paddles 1 and 2
-    logic p1_draw, p2_draw;             // draw paddles?
-    logic p1_col, p2_col;               // paddle collision?
+    localparam P_HEIGHT = 40;       // height in pixels
+    localparam P_WIDTH  = 10;       // width in pixels
+    localparam P_SPEED  = 4;        // speed
+    localparam P_OFFSET = 32;       // offset from screen edge
+    logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
+    logic p1_draw, p2_draw;         // draw paddles?
+    logic p1_col, p2_col;           // paddle collision?
 
     // game state
-    enum {INIT, IDLE, START, PLAY, POINT_END} state, state_next;
+    enum {IDLE, PLAY} state, state_next;
     always_comb begin
-        state_next = INIT;
         case(state)
-            INIT: state_next = IDLE;
-            IDLE: state_next = (sig_ctrl) ? START : IDLE;
-            START: state_next = (sig_ctrl) ? PLAY : START;
-            PLAY: state_next = (lft_col || rgt_col) ? POINT_END : PLAY;
-            POINT_END: state_next = (sig_ctrl) ? START : POINT_END;
+            IDLE: state_next = (sig_ctrl) ? PLAY : IDLE;
+            PLAY: state_next = (sig_ctrl) ? IDLE : PLAY;
+            default: state_next = IDLE;
         endcase
     end
 
     always_ff @(posedge clk_pix) begin
         state <= state_next;
     end
-    
+
     // paddle animation
     always_ff @(posedge clk_pix) begin
-        if (state == INIT || state == START) begin  // reset paddle positions
-            p1y <= (V_RES - P_HEIGHT) >> 1;
-            p2y <= (V_RES - P_HEIGHT) >> 1;
-        end else if (animate && state != POINT_END) begin
+        if (animate) begin
             if (state == PLAY) begin  // human paddle 1
                 if (move_up) begin
                     if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // at top?
@@ -144,70 +138,19 @@ module top_pong_v4 (
 
     // ball animation
     always_ff @(posedge clk_pix) begin
-        if (state == INIT || state == START) begin  // reset ball position
-            bx <= (H_RES - B_SIZE) >> 1;
-            by <= (V_RES - B_SIZE) >> 1;
-            dx <= 0;  // serve towards player 2 (AI)
-            dy <= ~dy;
-            spx <= 10'd5;
-            spy <= 10'd2;
-            lft_col <= 0;
-            rgt_col <= 0;
-        end else if (animate && state != POINT_END) begin
+        if (animate) begin
             if (p1_col) begin  // left paddle collision
                 dx <= 0;
                 bx <= bx + spx;
-                if (by < p1y - B_SIZE/2 + P_SEC) begin
-                    dy <= 1;
-                    spy <= 10'd5;
-                end else if (by < p1y - B_SIZE/2 + 2*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd4;
-                end else if (by < p1y - B_SIZE/2 + 3*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd2;
-                end else if (by < p1y - B_SIZE/2 + 5*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 0;
-                end else if (by < p1y - B_SIZE/2 + 6*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd2;
-                end else if (by < p1y - B_SIZE/2 + 7*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd4;
-                end else begin
-                    dy <= 0;
-                    spy <= 10'd5;
-                end
             end else if (p2_col) begin  // right paddle collision
                 dx <= 1;
                 bx <= bx - spx;
-                if (by < p2y - B_SIZE/2 + P_SEC) begin
-                    dy <= 1;
-                    spy <= 10'd5;
-                end else if (by < p2y - B_SIZE/2 + 2*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd4;
-                end else if (by < p2y - B_SIZE/2 + 3*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd2;
-                end else if (by < p2y - B_SIZE/2 + 5*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 0;
-                end else if (by < p2y - B_SIZE/2 + 6*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd2;
-                end else if (by < p2y - B_SIZE/2 + 7*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd4;
-                end else begin
-                    dy <= 0;
-                    spy <= 10'd5;
-                end
             end else if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
-                rgt_col <= 1;
+                dx <= 1;
+                bx <= bx - spx;
             end else if (bx < spx) begin  // left edge
-                lft_col <= 1;
+                dx <= 0;
+                bx <= bx + spx;
             end else bx <= (dx) ? bx - spx : bx + spx;
 
             if (by >= V_RES - (spy + B_SIZE)) begin  // bottom edge

@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Top v1 (iCEBreaker with 12-bit DVI Pmod)
+// Project F: FPGA Pong - Top Pong v1 (iCEBreaker with 12-bit DVI Pmod)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -55,43 +55,6 @@ module top_pong_v1 (
     logic [CORDW-1:0] spy = 10'd1;  // vertical speed
     logic b_draw;                   // draw ball?
 
-    // paddles
-    localparam P_HEIGHT = 40;       // height in pixels
-    localparam P_WIDTH  = 10;       // width in pixels
-    localparam P_SPEED  = 1;        // speed
-    localparam P_OFFSET = 32;       // offset from screen edge
-    logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
-    logic p1_draw, p2_draw;         // draw paddles?
-
-    // paddle animation
-    always_ff @(posedge clk_pix) begin
-        if (animate) begin
-            // "AI" paddle 1
-            if ((p1y + P_HEIGHT/2) < by) begin  // top of ball is below
-                if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // screen bottom?
-            end
-            if ((p1y + P_HEIGHT/2) > (by + B_SIZE)) begin  // bottom of ball is above
-                if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // screen top?
-            end
-
-            // "AI" paddle 2
-            if ((p2y + P_HEIGHT/2) < by) begin
-                if (p2y < V_RES - (P_HEIGHT + P_SPEED)) p2y <= p2y + P_SPEED;
-            end
-            if ((p2y + P_HEIGHT/2) > (by + B_SIZE)) begin
-                if (p2y > P_SPEED) p2y <= p2y - P_SPEED;
-            end
-        end
-    end
-
-    // draw paddles - are paddles at current screen position?
-    always_comb begin
-        p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
-               && (sy >= p1y) && (sy < p1y + P_HEIGHT);
-        p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
-               && (sy >= p2y) && (sy < p2y + P_HEIGHT);
-    end
-
     // ball animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
@@ -123,8 +86,8 @@ module top_pong_v1 (
     always_comb begin
         dvi_clk = clk_pix;
         dvi_de  = de;
-        dvi_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+        dvi_r = !de ? 4'h0 : (b_draw ? 4'hF : 4'h0);
+        dvi_g = !de ? 4'h0 : (b_draw ? 4'hF : 4'h0);
+        dvi_b = !de ? 4'h0 : (b_draw ? 4'hF : 4'h0);
     end
 endmodule

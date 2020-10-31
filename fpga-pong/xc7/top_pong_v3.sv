@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Top v3 (Arty with Pmod VGA)
+// Project F: FPGA Pong - Top Pong v3 (Arty with Pmod VGA)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -8,9 +8,6 @@
 module top_pong_v3 (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
-    input  wire logic btn_up,       // up button
-    input  wire logic btn_ctrl,     // control button
-    input  wire logic btn_dn,       // down button
     output      logic vga_hsync,    // horizontal sync
     output      logic vga_vsync,    // vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
@@ -47,13 +44,7 @@ module top_pong_v3 (
     localparam V_RES = 480;
 
     logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
-
-    // debounce buttons
-    logic sig_ctrl, move_up, move_dn;
-    debounce deb_btn_ctrl (.clk(clk_pix), .in(btn_ctrl), .out(), .ondn(), .onup(sig_ctrl));
-    debounce deb_btn_up (.clk(clk_pix), .in(btn_up), .out(move_up), .ondn(), .onup());
-    debounce deb_btn_dn (.clk(clk_pix), .in(btn_dn), .out(move_dn), .ondn(), .onup());
+    always_comb animate = (sy == V_RES && sx == 0);
 
     // ball
     localparam B_SIZE = 8;          // size in pixels
@@ -72,37 +63,15 @@ module top_pong_v3 (
     logic p1_draw, p2_draw;         // draw paddles?
     logic p1_col, p2_col;           // paddle collision?
 
-    // game state
-    enum {IDLE, PLAY} state, state_next;
-    always_comb begin
-        state_next = IDLE;
-        case(state)
-            IDLE: state_next = (sig_ctrl) ? PLAY : IDLE;
-            PLAY: state_next = (sig_ctrl) ? IDLE : PLAY;
-        endcase
-    end
-
-    always_ff @(posedge clk_pix) begin
-        state <= state_next;
-    end
-
     // paddle animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            if (state == PLAY) begin  // human paddle 1
-                if (move_up) begin
-                    if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // at top?
-                end
-                if (move_dn) begin
-                    if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // at bottom?
-                end
-            end else begin  // "AI" paddle 1
-                if ((p1y + P_HEIGHT/2) < by) begin  // top of ball is below
-                    if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // screen bottom?
-                end
-                if ((p1y + P_HEIGHT/2) > (by + B_SIZE)) begin  // bottom of ball is above
-                    if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // screen top?
-                end
+            // "AI" paddle 1
+            if ((p1y + P_HEIGHT/2) < by) begin  // top of ball is below
+                if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // screen bottom?
+            end
+            if ((p1y + P_HEIGHT/2) > (by + B_SIZE)) begin  // bottom of ball is above
+                if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // screen top?
             end
 
             // "AI" paddle 2

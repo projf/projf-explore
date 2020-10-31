@@ -44,7 +44,9 @@ module top_lfsr (
     always_comb sf_area = (sx < 512 && sy < 256);
 
     // 17-bit LFSR
+    /* verilator lint_off UNUSED */
     logic [16:0] sf_reg;
+    /* verilator lint_on UNUSED */
     lfsr #(
         .LEN(17),
         .TAPS(17'b10010000000000000)

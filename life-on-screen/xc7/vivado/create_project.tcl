@@ -13,7 +13,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "life-on-scren"
+set _xil_proj_name_ "life-on-screen"
 
 # Set the reference directory for source file relative paths
 set origin_dir "./../.."
@@ -35,7 +35,6 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_earth.sv"] \
   [file normalize "${origin_dir}/xc7/top_life.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
@@ -52,17 +51,13 @@ set design_sources [list \
   [file normalize "${origin_dir}/life.sv"] \
   [file normalize "${origin_dir}/linebuffer.sv"] \
   [file normalize "${origin_dir}/xc7/bram_sdp.sv"] \
-  [file normalize "${origin_dir}/xc7/bram_sdpr.sv"] \
   [file normalize "${origin_dir}/xc7/clock_gen.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/earthrise/earthrise_320x240.mem"] \
-  [file normalize "${origin_dir}/res/earthrise/earthrise_320x240_palette.mem"] \
   [file normalize "${origin_dir}/res/life/gosper_glider.mem"] \
-  [file normalize "${origin_dir}/res/life/simple_bitmap.mem"] \
   [file normalize "${origin_dir}/res/life/simple_life.mem"] \
   [file normalize "${origin_dir}/res/life/test_beacon.mem"] \
   [file normalize "${origin_dir}/res/life/test_beehive.mem"] \

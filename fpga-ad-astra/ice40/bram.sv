@@ -29,7 +29,8 @@ module bram #(
 
     always_ff @(posedge clk) begin
         if (we) memory[addr] <= data_in;
+        /* verilator lint_off BLKSEQ */
         data = memory[addr];
+        /* verilator lint_on BLKSEQ */
     end
-
 endmodule

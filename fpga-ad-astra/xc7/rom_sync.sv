@@ -28,5 +28,4 @@ module rom_sync #(
     always_ff @(posedge clk) begin
         data <= memory[addr];
     end
-
 endmodule

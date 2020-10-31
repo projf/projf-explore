@@ -25,7 +25,7 @@ Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB 
 
 ### Problems Building
 
-If you have problems building for iCEBreaker, your tools are probably too old. Try building the latest versions (see above for links).
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Vivado Project
 

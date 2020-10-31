@@ -8,31 +8,31 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 You can build projects for iCEBreaker with the included makefile. You need [Yosys](https://github.com/YosysHQ/yosys), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/cliffordwolf/icestorm.git). You can find instructions for building Yosys, nextpnr, and IceStorm Tools from source at [FPGA Tooling on Ubuntu 20.04](https://projectf.io/posts/fpga-dev-ubuntu-20.04/).
 
-For example, to build the DVI version of `top_beam`:
+For example, to build the DVI version of `top_bounce`:
 
 ```bash
 cd ice40
-make top_beam
+make top_bounce
 ```
 
 The VGA version works the same way, but you append `_vga` to the target. For example:
 
 ```bash
 cd ice40
-make top_beam_vga
+make top_bounce_vga
 ```
 
-After the build completes you'll have bin file, such as `top_beam.bin`. Use the bin file to program your board:
+After the build completes you'll have bin file, such as `top_bounce.bin`. Use the bin file to program your board:
 
 ```bash
-iceprog top_beam.bin
+iceprog top_bouncebin
 ```
 
 Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
 
 ### Problems Building
 
-If you have problems building for iCEBreaker, your tools are probably too old. Try building the latest versions (see above for links).
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Vivado Project
 
@@ -43,7 +43,7 @@ cd xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_square`, `top_beam`, or `top_bounce` as you would for any Vivado project.
+You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project.
 
 ### Simulation
 
@@ -79,3 +79,22 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Linting
+
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs:
+
+```bash
+$ ./fpga-graphics/lint.sh
+## Linting top modules in ./fpga-graphics/xc7
+##   Checking ./fpga-graphics/xc7/top_beam.sv
+##   Checking ./fpga-graphics/xc7/top_bounce.sv
+##   Checking ./fpga-graphics/xc7/top_square.sv
+## Linting top modules in ./fpga-graphics/ice40
+##   Checking ./fpga-graphics/ice40/top_beam.sv
+##   Checking ./fpga-graphics/ice40/top_beam_vga.sv
+##   Checking ./fpga-graphics/ice40/top_bounce.sv
+##   Checking ./fpga-graphics/ice40/top_bounce_vga.sv
+##   Checking ./fpga-graphics/ice40/top_square.sv
+##   Checking ./fpga-graphics/ice40/top_square_vga.sv
+```

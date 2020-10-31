@@ -6,13 +6,13 @@
 `timescale 1ns / 1ps
 
 module top_lfsr (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst,          // reset button (active low)
-    output      logic vga_hsync,        // horizontal sync
-    output      logic vga_vsync,        // vertical sync
-    output      logic [3:0] vga_r,      // 4-bit VGA red
-    output      logic [3:0] vga_g,      // 4-bit VGA green
-    output      logic [3:0] vga_b       // 4-bit VGA blue
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
     // generate pixel clock
@@ -43,7 +43,9 @@ module top_lfsr (
     always_comb sf_area = (sx < 512 && sy < 256);
 
     // 17-bit LFSR
+    /* verilator lint_off UNUSED */
     logic [16:0] sf_reg;
+    /* verilator lint_on UNUSED */
     lfsr #(
         .LEN(17),
         .TAPS(17'b10010000000000000)

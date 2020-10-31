@@ -28,7 +28,9 @@ module top_starfields (
 
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
+    /* verilator lint_off UNUSED */
     logic [CORDW-1:0] sx, sy;
+    /* verilator lint_on UNUSED */
     logic de;
     display_timings timings_640x480 (
         .clk_pix,
@@ -42,7 +44,9 @@ module top_starfields (
 
     // starfields
     logic sf1_on, sf2_on, sf3_on;
+    /* verilator lint_off UNUSED */
     logic [7:0] sf1_star, sf2_star, sf3_star;
+    /* verilator lint_on UNUSED */
 
     starfield #(.INC(-1), .SEED(21'h9A9A9)) sf1 (
         .clk(clk_pix),
@@ -68,23 +72,20 @@ module top_starfields (
         .sf_star(sf3_star)
     );
 
-    // colour channels
-    logic [3:0] red, green, blue;
+    // star brightness
+    logic [3:0] starlight;
     always_comb begin
-        red   = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
-        green = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
-        blue  = (sf1_on) ? sf1_star[7:4] : (sf2_on) ?
-                sf2_star[7:4] : (sf3_on) ? sf3_star[7:4] : 4'h0;
+        starlight = (sf1_on) ? sf1_star[7:4] :
+                    (sf2_on) ? sf2_star[7:4] :
+                    (sf3_on) ? sf3_star[7:4] : 4'h0;
     end
 
     // DVI output
     always_comb begin
         dvi_clk = clk_pix;
         dvi_de  = de;
-        dvi_r = (de) ? red   : 4'h0;
-        dvi_g = (de) ? green : 4'h0;
-        dvi_b = (de) ? blue  : 4'h0;
+        dvi_r = (de) ? starlight : 4'h0;
+        dvi_g = (de) ? starlight : 4'h0;
+        dvi_b = (de) ? starlight : 4'h0;
     end
 endmodule

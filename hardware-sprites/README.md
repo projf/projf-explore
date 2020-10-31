@@ -1,0 +1,50 @@
+# Hardware Sprites
+
+This folder contains the SystemVerilog designs to accompany Project F **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**.
+
+All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+
+## iCEBreaker Build
+
+Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
+
+## Vivado Project
+
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
+
+```tcl
+cd xc7/vivado
+source ./create_project.tcl
+```
+
+You can then build `top_hedgehog`, `top_sprite_v3` etc. as you would for any Vivado project.
+
+### Simulation
+
+This design includes test benches for the sprite modules. You can run the current top test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
+
+```tcl
+launch_simulation
+run all
+```
+
+### Other Xilinx Series 7 Boards
+
+It's straightforward to adapt the project for other Xilinx Series 7 boards:
+
+1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
+2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
+3. Set the board and part names in tcl, then source the create project script:
+
+```tcl
+set board_name <board>
+set fpga_part <fpga-part>
+cd xc7/vivado
+source ./create_project.tcl
+```
+
+Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Linting
+
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs.

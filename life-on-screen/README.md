@@ -6,7 +6,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README) in this series?
+Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
 
 ## Vivado Project
 
@@ -17,7 +17,7 @@ cd xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_life` or `top_earth`. as you would for any Vivado project.
+You can then build `top_life` as you would for any Vivado project.
 
 ### Simulation
 

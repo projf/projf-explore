@@ -1,11 +1,6 @@
-// Project F: Simple Dual-Port Block RAM
+// Project F: Life on Screen - Simple Dual-Port Block RAM
 // (C)2020 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
-
-// BRAM Type: Simple Dual Port
-// Byte Write: No
-// Async Clocks: Yes
-// Output Registers: No
 
 `default_nettype none
 `timescale 1ns / 1ps

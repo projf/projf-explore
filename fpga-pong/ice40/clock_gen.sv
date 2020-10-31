@@ -14,10 +14,10 @@ module clock_gen #(
     parameter DIVQ=3'b101,
     parameter FILTER_RANGE=3'b001
     ) (
-    input  wire logic clk,          // board oscillator
-    input  wire logic rst,          // reset
-    output      logic clk_pix,      // pixel clock
-    output      logic clk_locked    // generated clock locked?
+    input  wire logic clk,        // board oscillator
+    input  wire logic rst,        // reset
+    output      logic clk_pix,    // pixel clock
+    output      logic clk_locked  // generated clock locked?
     );
 
     SB_PLL40_PAD #(

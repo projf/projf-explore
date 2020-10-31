@@ -8,14 +8,14 @@
 // NB. Ensure seed is non-zero and reset is asserted for one or more cycles
 
 module lfsr #(
-    parameter LEN=8,                    // shift register length
-    parameter TAPS=8'b10111000,         // XOR taps
-    parameter SEED={LEN{1'b1}}          // initial seed value
+    parameter LEN=8,                  // shift register length
+    parameter TAPS=8'b10111000,       // XOR taps
+    parameter SEED={LEN{1'b1}}        // initial seed value
     ) (
-    input  wire logic clk,              // clock
-    input  wire logic rst,              // reset
-    input  wire logic en,               // enable
-    output      logic [LEN-1:0] sreg    // lfsr output
+    input  wire logic clk,            // clock
+    input  wire logic rst,            // reset
+    input  wire logic en,             // enable
+    output      logic [LEN-1:0] sreg  // lfsr output
     );
 
     always_ff @(posedge clk) begin

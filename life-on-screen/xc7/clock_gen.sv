@@ -9,19 +9,19 @@
 // MMCME2_BASE and BUFG are documented in Xilinx UG472
 
 module clock_gen #(
-    parameter MULT_MASTER=31.5,     // master clock multiplier (2.000-64.000)
-    parameter DIV_MASTER=5,         // master clock divider (1-106)
-    parameter DIV_PIX=25,           // pixel clock divider (1-128)
-    parameter IN_PERIOD=10.0        // period of master clock in ns
+    parameter MULT_MASTER=31.5,   // master clock multiplier (2.000-64.000)
+    parameter DIV_MASTER=5,       // master clock divider (1-106)
+    parameter DIV_PIX=25,         // pixel clock divider (1-128)
+    parameter IN_PERIOD=10.0      // period of master clock in ns
     ) (
-    input  wire logic clk,          // board oscillator
-    input  wire logic rst,          // reset
-    output      logic clk_pix,      // pixel clock
-    output      logic clk_locked    // generated clocks locked?
+    input  wire logic clk,        // board oscillator
+    input  wire logic rst,        // reset
+    output      logic clk_pix,    // pixel clock
+    output      logic clk_locked  // generated clocks locked?
     );
 
-    logic clk_fb;           // internal clock feedback
-    logic clk_pix_unbuf;    // unbuffered pixel clock
+    logic clk_fb;         // internal clock feedback
+    logic clk_pix_unbuf;  // unbuffered pixel clock
 
     MMCME2_BASE #(
         .CLKFBOUT_MULT_F(MULT_MASTER),
