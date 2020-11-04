@@ -17,9 +17,14 @@ _More parts to follow._
 
 ## Hello - Learning FPGA Development
 
-A three-part introduction to FPGA development and Verilog with the Digilent Arty board:
+A three-part introduction to FPGA development and Verilog with the Digilent Arty or Nexys Video boards:
 
 * **Hello Arty**: [Design Sources](hello-arty)
     * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
     * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
-    * Blog Post 3 (coming later in 2020)
+    * Blog Post 3 (coming soon)
+
+* **Hello Nexys**: [Design Sources](hello-nexys)
+    * [Blog Post 1](https://projectf.io/posts/hello-nexys-1/)
+    * Blog Post 2 (coming soon)
+    * Blog Post 3 (coming soon)
