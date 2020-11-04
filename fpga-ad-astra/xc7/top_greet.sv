@@ -141,7 +141,7 @@ module top_greet (
         msg_start = greeting * GREET_LENGTH;  // calculate start of message
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             /* verilator lint_off WIDTH */
-            if (sx == H_RES+i) greet_rom_addr = (sy < LINE2) ? (msg_start+i) : (msg_start+i+8);
+            if (sx == H_RES+i) greet_rom_addr = (sy < LINE2) ? (msg_start+i) : (msg_start+i+GREET_LENGTH/2);
             /* verilator lint_on WIDTH */
         end
     end

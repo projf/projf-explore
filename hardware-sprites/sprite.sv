@@ -11,7 +11,7 @@ module sprite #(
     parameter SCALE_X=1,       // sprite width scale-factor
     parameter SCALE_Y=1,       // sprite height scale-factor
     parameter COLR_BITS=4,     // bits per pixel (2^4=16 colours)
-    parameter CORDW=10,        // width of screen coordinates
+    parameter CORDW=10,        // screen coordinate width in bits
     parameter H_RES_FULL=800,  // horizontal screen resolution inc. blanking
     parameter ADDRW=6          // width of graphic memory address bus
     ) (

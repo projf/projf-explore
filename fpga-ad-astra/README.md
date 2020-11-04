@@ -54,3 +54,7 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Linting
+
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs.

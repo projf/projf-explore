@@ -11,7 +11,7 @@ module sprite_v3 #(
     parameter SCALE_X=1,          // sprite width scale-factor
     parameter SCALE_Y=1,          // sprite height scale-factor
     parameter SPR_FILE="",        // file to load sprite graphic from
-    parameter CORDW=10,           // width of screen coordinates
+    parameter CORDW=10,           // screen coordinate width in bits
     parameter H_RES_FULL=800,     // horizontal screen resolution inc. blanking
     parameter DEPTH=WIDTH*HEIGHT  // depth of memory array holding graphic
     ) (
@@ -23,12 +23,13 @@ module sprite_v3 #(
     output      logic pix                // pixel colour to draw
     );
 
-    logic memory [DEPTH];  // 1-bit per pixel
+    logic memory [DEPTH];  // 1 bit per pixel
 
+    // load sprite graphic into memory (binary text format)
     initial begin
         if (SPR_FILE != 0) begin
             $display("Creating sprite from file '%s'.", SPR_FILE);
-            $readmemb(SPR_FILE, memory);  // binary text format
+            $readmemb(SPR_FILE, memory);
         end
     end
 

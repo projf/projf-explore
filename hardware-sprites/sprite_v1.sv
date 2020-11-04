@@ -9,7 +9,7 @@ module sprite_v1 #(
     parameter WIDTH=8,            // graphic width in pixels
     parameter HEIGHT=8,           // graphic height in pixels
     parameter SPR_FILE="",        // file to load sprite graphic from
-    parameter CORDW=10,           // width of screen coordinates (bits)
+    parameter CORDW=10,           // screen coordinate width in bits
     parameter DEPTH=WIDTH*HEIGHT  // depth of memory array holding graphic
     ) (
     input  wire logic clk,               // clock
@@ -20,7 +20,7 @@ module sprite_v1 #(
     output      logic pix                // pixel colour to draw
     );
 
-    logic memory [DEPTH];  // 1-bit per pixel
+    logic memory [DEPTH];  // 1 bit per pixel
 
     // load sprite graphic into memory (binary text format)
     initial begin
