@@ -5,6 +5,7 @@
 # configuration
 SHELL = /bin/sh
 FPGA_PKG = sg48
+FPGA_TYPE = up5k
 PCF = icebreaker.pcf
 ADD_SRC = clock_gen.sv ../debounce.sv ../display_timings.sv
 
@@ -18,10 +19,10 @@ top_pong_v4: top_pong_v4.rpt top_pong_v4.bin
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
-	nextpnr-ice40 --up5k --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
+	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
 
 %.rpt: %.asc
-	icetime -d up5k -mtr $@ $<
+	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
 	icepack $< $@

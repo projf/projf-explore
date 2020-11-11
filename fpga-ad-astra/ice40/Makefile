@@ -5,6 +5,7 @@
 # configuration
 SHELL = /bin/sh
 FPGA_PKG = sg48
+FPGA_TYPE = up5k
 PCF = icebreaker.pcf
 ADD_SRC = bram.sv clock_gen.sv 
 ADD_SRC += ../display_timings.sv ../lfsr.sv ../sprite.sv ../starfield.sv
@@ -21,10 +22,10 @@ top_hello_jp: top_hello_jp.rpt top_hello_jp.bin
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
-	nextpnr-ice40 --up5k --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
+	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
 
 %.rpt: %.asc
-	icetime -d up5k -mtr $@ $<
+	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
 	icepack $< $@
