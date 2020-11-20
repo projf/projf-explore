@@ -1,4 +1,4 @@
-// Project F: Framebuffers - Linebuffer (New!) Test Bench
+// Project F: Framebuffers - Linebuffer Test Bench
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -15,26 +15,26 @@ module linebuffer_tb();
 
     parameter LB_WIDTH = 4;
     parameter LB_LEN = 8;
-    parameter SCALEW = 3;  // Scale by up to 2^3=8
+    parameter SCALEW = 3;  // scale by up to 2^3=8
 
     logic en_in, en_out;
     logic rst_in, rst_out;
-    logic [SCALEW-1:0] scale_out;
+    logic [SCALEW-1:0] scale;  // horizontal scale
     logic [LB_WIDTH-1:0] data_in_0, data_in_1, data_in_2;
     logic [LB_WIDTH-1:0] data_out_0, data_out_1, data_out_2;
 
-    linebuffer_new #(
+    linebuffer #(
         .WIDTH(LB_WIDTH),
         .LEN(LB_LEN),
         .SCALEW(SCALEW)
-        ) lb (
+        ) lb_inst (
         .clk_in(clk_100m),
         .clk_out(clk_25m),
         .en_in,
         .en_out,
         .rst_in,
         .rst_out,
-        .scale_out,
+        .scale,
         .data_in_0,
         .data_in_1,
         .data_in_2,
@@ -94,7 +94,7 @@ module linebuffer_tb();
         clk_25m  = 1;
         rst_out = 1;
         en_out = 0;
-        scale_out = 0;
+        scale = 0;
         
         #120 rst_out = 0;
         en_out = 1;
@@ -104,19 +104,19 @@ module linebuffer_tb();
         #280 en_out = 0;
 
         #80 rst_out = 1;
-        scale_out = 1;
+        scale = 1;
         #40 rst_out = 0;
         #40 en_out = 1;
         #320 en_out = 0;
 
         #80 rst_out = 1;
-        scale_out = 2;
+        scale = 2;
         #40 rst_out = 0;
         #40 en_out = 1;
         #640 en_out = 0;
         
         #80 rst_out = 1;
-        scale_out = 5;
+        scale = 5;
         #40 rst_out = 0;
         #40 en_out = 1;
         #1600 en_out = 0;
