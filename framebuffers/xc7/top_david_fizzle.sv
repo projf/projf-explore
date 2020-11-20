@@ -106,7 +106,7 @@ module top_david_fizzle (
     );
 
     localparam FADE_WAIT = 240;   // wait for 240 frames before fading
-    localparam FADE_RATE = 3000;  // every 3000th pixel clock update LFSR
+    localparam FADE_RATE = 3200;  // every 3200 pixel clocks update LFSR
     logic [$clog2(FADE_WAIT)-1:0] cnt_fade_wait;
     logic [$clog2(FADE_RATE)-1:0] cnt_fade_rate;
     always_ff @(posedge clk_pix) begin
@@ -138,14 +138,14 @@ module top_david_fizzle (
     localparam LB_WIDTH = 4;                  // bits per colour channel
 
     // LB data in from FB
-    logic en_in, en_in_l1;  // allow for BRAM latency correction
+    logic lb_en_in, lb_en_in_1;  // allow for BRAM latency correction
     logic [LB_WIDTH-1:0] lb_in_0, lb_in_1, lb_in_2;
 
     // correct vertical scale: if scale is 0, set to 1
     logic [$clog2(LB_SCALE_V+1):0] scale_v_cor;
     always_comb scale_v_cor = (LB_SCALE_V == 0) ? 1 : LB_SCALE_V;
 
-    // count screen lines for vertical scaling
+    // count screen lines for vertical scaling - read when cnt_scale_v==0
     logic [$clog2(LB_SCALE_V):0] cnt_scale_v;
     always_ff @(posedge clk_pix) begin
         /* verilator lint_off WIDTH */
@@ -156,7 +156,7 @@ module top_david_fizzle (
 
     logic [$clog2(FB_WIDTH)-1:0] fb_h_cnt;  // counter for FB pixels on line
     always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1) fb_addr_read <= 0;  // reset FB address at end of frame
+        if (sy == V_RES_FULL-1 && sx == H_RES-1) fb_addr_read <= 0;  // reset on last frame line
 
         // reset the horizontal counter at the start of blanking on reading lines
         if (cnt_scale_v == 0 && sx == H_RES) begin
@@ -165,15 +165,15 @@ module top_david_fizzle (
 
         // read each pixel on FB line and write to LB
         if (fb_h_cnt < FB_WIDTH) begin
-            en_in <= 1;
+            lb_en_in <= 1;
             fb_h_cnt <= fb_h_cnt + 1;
             fb_addr_read <= fb_addr_read + 1;
         end else begin
-            en_in <= 0;
+            lb_en_in <= 0;
         end
 
         // enable LB data in with latency correction
-        en_in_l1 <= en_in;
+        lb_en_in_1 <= lb_en_in;
     end
 
     // LB data out to display
@@ -185,7 +185,7 @@ module top_david_fizzle (
         ) lb_inst (
         .clk_in(clk_pix),
         .clk_out(clk_pix),
-        .en_in(en_in_l1),  // correct for BRAM latency
+        .en_in(lb_en_in_1),  // correct for BRAM latency
         .en_out(sy < V_RES && sx < H_RES),
         .rst_in(sx == H_RES),  // reset at start of horizontal blanking
         .rst_out(sx == H_RES),
@@ -207,7 +207,7 @@ module top_david_fizzle (
 
     // map colour index to palette using CLUT and read into LB
     always_ff @(posedge clk_pix) begin
-        {lb_in_2, lb_in_1, lb_in_0} <= fz_en_out ? clut[colr_idx] : 12'h0;
+        {lb_in_2, lb_in_1, lb_in_0} <= !fz_en_out ? clut[colr_idx] : 12'hA00;
     end
 
     // VGA output
