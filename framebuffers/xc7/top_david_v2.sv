@@ -46,11 +46,6 @@ module top_david_v2 (
     localparam H_RES = 640;
     localparam V_RES = 480;
 
-    logic frame_end;   // high for one cycle at the end of a frame
-    always_comb begin
-        frame_end = (sy == V_RES_FULL-1 && sx == H_RES_FULL-1);
-    end
-
     // framebuffer
     localparam FB_WIDTH   = 160;
     localparam FB_HEIGHT  = 120;
@@ -82,12 +77,12 @@ module top_david_v2 (
     // flag when framebuffer is active
     logic fb_active;
     always_comb begin
-        fb_active = (sy < 120 && sx < 160);
+        fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
     end
 
     always_ff @(posedge clk_pix) begin
-        if (frame_end) begin
-            fb_addr_read <= 0;
+        if (sy == V_RES_FULL-1 && sx == H_RES_FULL-1) begin
+            fb_addr_read <= 0;  // reset address at end of frame
         end else if (fb_active) begin
             fb_addr_read <= fb_addr_read + 1;
         end
