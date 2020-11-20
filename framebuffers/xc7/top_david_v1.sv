@@ -75,9 +75,7 @@ module top_david_v1 (
 
     // flag when framebuffer is active
     logic fb_active;
-    always_comb begin
-        fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
-    end
+    always_comb fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
 
     always_ff @(posedge clk_pix) begin
         if (sy == V_RES_FULL-1 && sx == H_RES_FULL-1) begin
