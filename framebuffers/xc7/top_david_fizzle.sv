@@ -106,7 +106,7 @@ module top_david_fizzle (
     );
 
     localparam FADE_WAIT = 240;   // wait for 240 frames before fading
-    localparam FADE_RATE = 4000;  // every 4000th pixel clock update LFSR
+    localparam FADE_RATE = 3200;  // every 3200 pixel clocks update LFSR
     logic [$clog2(FADE_WAIT)-1:0] cnt_fade_wait;
     logic [$clog2(FADE_RATE)-1:0] cnt_fade_rate;
     always_ff @(posedge clk_pix) begin
