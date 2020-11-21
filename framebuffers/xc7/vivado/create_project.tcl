@@ -67,6 +67,7 @@ set mem_design_sources [list \
   [file normalize "${origin_dir}/res/david/david_palette_warm.mem"] \
   [file normalize "${origin_dir}/res/david/david_palette_invert.mem"] \
   [file normalize "${origin_dir}/res/david/david_1bit.mem"] \
+  [file normalize "${origin_dir}/res/david/test_box.mem"] \
   [file normalize "${origin_dir}/res/earth/earth.mem"] \
   [file normalize "${origin_dir}/res/earth/earth_palette.mem"] \
 ]
