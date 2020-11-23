@@ -21,14 +21,12 @@ You can then build `top_david` or `top_earth`. as you would for any Vivado proje
 
 ### Simulation
 
-This design includes a test bench for the life module. You can run the test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
+This design includes a test bench for the linebuffer module. You can run the test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
 
 ```tcl
 launch_simulation
 run all
 ```
-
-You should add the `memory[0:71]` object from the `bmp_life` instance, so you can see the simulation update.
 
 ### Other Xilinx Series 7 Boards
 
