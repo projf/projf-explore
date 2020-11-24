@@ -56,9 +56,9 @@ module top_space_f (
     logic [FONT_WIDTH-1:0] font_rom_data;  // line of glyph pixels
 
     rom_sync #(
-        .INIT_F(FONT_FILE),
         .WIDTH(FONT_WIDTH),
-        .DEPTH(F_ROM_DEPTH)
+        .DEPTH(F_ROM_DEPTH),
+        .INIT_F(FONT_FILE)
     ) font_rom (
         .clk(clk_pix),
         .addr(font_rom_addr),

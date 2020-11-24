@@ -56,9 +56,9 @@ set design_sources [list \
   [file normalize "${origin_dir}/display_timings.sv"] \
   [file normalize "${origin_dir}/lfsr.sv"] \
   [file normalize "${origin_dir}/sprite.sv"] \
+  [file normalize "${origin_dir}/rom_sync.sv"] \
   [file normalize "${origin_dir}/starfield.sv"] \
   [file normalize "${origin_dir}/xc7/clock_gen.sv"] \
-  [file normalize "${origin_dir}/xc7/rom_sync.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

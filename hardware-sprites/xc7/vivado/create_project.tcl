@@ -53,12 +53,12 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${origin_dir}/display_timings.sv"] \
+  [file normalize "${origin_dir}/rom_sync.sv"] \
   [file normalize "${origin_dir}/sprite.sv"] \
   [file normalize "${origin_dir}/sprite_v1.sv"] \
   [file normalize "${origin_dir}/sprite_v2.sv"] \
   [file normalize "${origin_dir}/sprite_v3.sv"] \
   [file normalize "${origin_dir}/xc7/clock_gen.sv"] \
-  [file normalize "${origin_dir}/xc7/rom_sync.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

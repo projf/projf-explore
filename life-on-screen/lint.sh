@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Project F: Lint Script
-# (C)2020 Will Green, open source hardware released under the MIT License
+# (C)2020 Will Green, open source software released under the MIT License
 # Learn more at https://projectf.io
 
 DIR=`dirname $0`

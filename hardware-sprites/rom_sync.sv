@@ -1,4 +1,4 @@
-// Project F: Hardware Sprites - Synchronous ROM (XC7)
+// Project F: Hardware Sprites - Synchronous ROM
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

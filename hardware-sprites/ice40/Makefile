@@ -1,4 +1,4 @@
-## Project F: FPGA Ad Astra - iCEBreaker Makefile
+## Project F: Hardware Sprites - iCEBreaker Makefile
 ## (C)2020 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
@@ -8,15 +8,15 @@ FPGA_PKG = sg48
 FPGA_TYPE = up5k
 PCF = icebreaker.pcf
 ADD_SRC = clock_gen.sv
-ADD_SRC += ../display_timings.sv ../lfsr.sv ../rom_sync.sv ../sprite.sv ../starfield.sv
+ADD_SRC += ../display_timings.sv ../rom_sync.sv
+ADD_SRC += ../sprite_v1.sv ../sprite_v2.sv ../sprite_v3.sv ../sprite.sv
 
-top_greet: top_greet.rpt top_greet.bin
-top_greet_v1: top_greet_v1.rpt top_greet_v1.bin
-top_lfsr: top_lfsr.rpt top_lfsr.bin
-top_starfields: top_starfields.rpt top_starfields.bin
-top_space_f: top_space_f.rpt top_space_f.bin
-top_hello_en: top_hello_en.rpt top_hello_en.bin
-top_hello_jp: top_hello_jp.rpt top_hello_jp.bin
+top_hedgehog: top_hedgehog.rpt top_hedgehog.bin
+top_sprite_v1: top_sprite_v1.rpt top_sprite_v1.bin
+top_sprite_v2: top_sprite_v2.rpt top_sprite_v2.bin
+top_sprite_v3: top_sprite_v3.rpt top_sprite_v3.bin
+top_sprite_v3a: top_sprite_v3a.rpt top_sprite_v3a.bin
+top_hedgehog_v1: top_hedgehog_v1.rpt top_hedgehog_v1.bin
 
 %.json: %.sv
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
@@ -33,6 +33,6 @@ top_hello_jp: top_hello_jp.rpt top_hello_jp.bin
 clean:
 	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
 
-all: top_lfsr top_starfields top_space_f top_hello_en top_hello_jp top_greet_v1 top_greet
+all: top_sprite_v1 top_sprite_v2 top_sprite_v3 top_sprite_v3a top_hedgehog_v1 top_hedgehog
 
 .PHONY: all clean

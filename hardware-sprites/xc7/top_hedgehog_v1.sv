@@ -70,9 +70,9 @@ module top_hedgehog_v1 (
     logic [COLR_BITS-1:0] spr_rom_data;
     logic [SPR_ADDRW-1:0] spr_rom_addr;
     rom_sync #(
-        .INIT_F(SPR_FILE),
         .WIDTH(COLR_BITS),
-        .DEPTH(SPR_PIXELS)
+        .DEPTH(SPR_PIXELS),
+        .INIT_F(SPR_FILE)
     ) spr_rom (
         .clk(clk_pix),
         .addr(spr_rom_addr),

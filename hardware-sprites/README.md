@@ -6,7 +6,26 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
+You can build projects for iCEBreaker with the included makefile. You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details.
+
+For example, to build `top_hedgehog`:
+
+```bash
+cd ice40
+make top_hedgehog
+```
+
+After the build completes you'll have bin file, such as `top_hedgehog.bin`. Use the bin file to program your board:
+
+```bash
+iceprog top_hedgehog.bin
+```
+
+Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
+
+### Problems Building
+
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Vivado Project
 

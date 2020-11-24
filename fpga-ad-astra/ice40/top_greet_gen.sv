@@ -56,17 +56,13 @@ module top_greet_gen (
     logic [$clog2(G_ROM_DEPTH)-1:0] greet_rom_addr;
     logic [G_ROM_WIDTH-1:0] greet_rom_data;  // code point
 
-    bram #(
-        .INIT_F(GREET_FILE),
+    rom_sync #(
         .WIDTH(G_ROM_WIDTH),
-        .DEPTH(G_ROM_DEPTH)
+        .DEPTH(G_ROM_DEPTH),
+        .INIT_F(GREET_FILE)
     ) greet_rom (
         .clk(clk_pix),
         .addr(greet_rom_addr),
-        .we(1'b0),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
         .data(greet_rom_data)
     );
 
@@ -95,17 +91,13 @@ module top_greet_gen (
     logic [$clog2(F_ROM_DEPTH)-1:0] font_rom_addr;
     logic [FONT_WIDTH-1:0] font_rom_data;  // line of glyph pixels
 
-    bram #(
-        .INIT_F(FONT_FILE),
+    rom_sync #(
         .WIDTH(FONT_WIDTH),
-        .DEPTH(F_ROM_DEPTH)
+        .DEPTH(F_ROM_DEPTH),
+        .INIT_F(FONT_FILE)
     ) font_rom (
         .clk(clk_pix),
         .addr(font_rom_addr),
-        .we(1'b0),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
         .data(font_rom_data)
     );
 

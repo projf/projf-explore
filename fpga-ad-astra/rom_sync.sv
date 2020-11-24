@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - Synchronous ROM (XC7)
+// Project F: FPGA Ad Astra - Synchronous ROM
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -6,8 +6,8 @@
 `timescale 1ns / 1ps
 
 module rom_sync #(
-    parameter WIDTH=8, 
-    parameter DEPTH=256, 
+    parameter WIDTH=8,
+    parameter DEPTH=256,
     parameter INIT_F="",
     localparam ADDRW=$clog2(DEPTH)
     ) (

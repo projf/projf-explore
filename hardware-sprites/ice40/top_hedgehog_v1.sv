@@ -1,26 +1,28 @@
-// Project F: Hardware Sprites - Top Hedgehog (Arty with Pmod VGA)
+// Project F: Hardware Sprites - Top Hedgehog v1 (iCEBreaker with 12-bit DVI Pmod)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hedgehog (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+module top_hedgehog_v1 (
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button (active high)
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen clock_640x480 (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+       .clk(clk_12m),
+       .rst(btn_rst),
        .clk_pix,
        .clk_locked
     );
@@ -34,8 +36,8 @@ module top_hedgehog (
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync(dvi_hsync),
+        .vsync(dvi_vsync),
         .de
     );
 
@@ -55,9 +57,9 @@ module top_hedgehog (
     localparam SPR_SCALE_Y  = 4;    // height scale-factor
     localparam COLR_BITS    = 4;    // bits per pixel (2^4=16 colours)
     localparam SPR_TRANS    = 9;    // transparent palette entry
-    localparam SPR_FRAMES   = 3;    // number of frames in graphic
-    localparam SPR_FILE     = "hedgehog_walk.mem";
-    localparam SPR_PALETTE  = "hedgehog_palette.mem";
+    localparam SPR_FRAMES   = 1;    // number of frames in graphic
+    localparam SPR_FILE     = "../res/hedgehog/hedgehog.mem";
+    localparam SPR_PALETTE  = "../res/hedgehog/hedgehog_palette.mem";
 
     localparam SPR_PIXELS = SPR_WIDTH * SPR_HEIGHT;
     localparam SPR_DEPTH  = SPR_PIXELS * SPR_FRAMES;
@@ -68,14 +70,14 @@ module top_hedgehog (
 
     // sprite ROM
     logic [COLR_BITS-1:0] spr_rom_data;
-    logic [SPR_ADDRW-1:0] spr_rom_addr, spr_base_addr;
+    logic [SPR_ADDRW-1:0] spr_rom_addr;
     rom_sync #(
         .WIDTH(COLR_BITS),
         .DEPTH(SPR_DEPTH),
         .INIT_F(SPR_FILE)
     ) spr_rom (
         .clk(clk_pix),
-        .addr(spr_base_addr + spr_rom_addr),
+        .addr(spr_rom_addr),
         .data(spr_rom_data)
     );
 
@@ -84,22 +86,10 @@ module top_hedgehog (
     localparam SPR_SPEED_Y = 0;
     logic [CORDW-1:0] sprx, spry;
 
-    // sprite frame selector
-    logic [5:0] cnt_anim;  // count from 0-63
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            // select sprite frame
-            cnt_anim <= cnt_anim + 1;
-            case (cnt_anim)
-                0: spr_base_addr <= 0;
-                15: spr_base_addr <= SPR_PIXELS;
-                31: spr_base_addr <= 0;
-                47: spr_base_addr <= 2 * SPR_PIXELS;
-                default: spr_base_addr <= spr_base_addr;
-            endcase
-
             // walk right-to-left (correct position for screen width)
-            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X :
+            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X : 
                                            H_RES_FULL - (SPR_SPEED_X - sprx);
         end
         if (!clk_locked) begin
@@ -152,10 +142,12 @@ module top_hedgehog (
         {red, green, blue} = clut[spr_pix];
     end
 
-    // VGA output
+    // DVI output
     always_comb begin
-        vga_r = (de && spr_draw && !pix_trans) ? red   : 4'h0;
-        vga_g = (de && spr_draw && !pix_trans) ? green : 4'h0;
-        vga_b = (de && spr_draw && !pix_trans) ? blue  : 4'h0;
+        dvi_clk = clk_pix;
+        dvi_de  = de;
+        dvi_r = (de && spr_draw && !pix_trans) ? red   : 4'h0;
+        dvi_g = (de && spr_draw && !pix_trans) ? green : 4'h0;
+        dvi_b = (de && spr_draw && !pix_trans) ? blue  : 4'h0;
     end
 endmodule

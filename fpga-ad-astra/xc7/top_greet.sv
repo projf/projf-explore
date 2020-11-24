@@ -56,9 +56,9 @@ module top_greet (
     logic [G_ROM_WIDTH-1:0] greet_rom_data;  // code point
 
     rom_sync #(
-        .INIT_F(GREET_FILE),
         .WIDTH(G_ROM_WIDTH),
-        .DEPTH(G_ROM_DEPTH)
+        .DEPTH(G_ROM_DEPTH),
+        .INIT_F(GREET_FILE)
     ) greet_rom (
         .clk(clk_pix),
         .addr(greet_rom_addr),
@@ -91,9 +91,9 @@ module top_greet (
     logic [FONT_WIDTH-1:0] font_rom_data;  // line of glyph pixels
 
     rom_sync #(
-        .INIT_F(FONT_FILE),
         .WIDTH(FONT_WIDTH),
-        .DEPTH(F_ROM_DEPTH)
+        .DEPTH(F_ROM_DEPTH),
+        .INIT_F(FONT_FILE)
     ) font_rom (
         .clk(clk_pix),
         .addr(font_rom_addr),

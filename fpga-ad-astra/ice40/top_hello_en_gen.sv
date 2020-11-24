@@ -56,17 +56,13 @@ module top_hello_en_gen (
     logic [$clog2(F_ROM_DEPTH)-1:0] font_rom_addr;
     logic [FONT_WIDTH-1:0] font_rom_data;  // line of glyph pixels
 
-    bram #(
-        .INIT_F(FONT_FILE),
+    rom_sync #(
         .WIDTH(FONT_WIDTH),
-        .DEPTH(F_ROM_DEPTH)
+        .DEPTH(F_ROM_DEPTH),
+        .INIT_F(FONT_FILE)
     ) font_rom (
         .clk(clk_pix),
         .addr(font_rom_addr),
-        .we(1'b0),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
         .data(font_rom_data)
     );
 
