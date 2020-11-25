@@ -1,6 +1,6 @@
 # Common Designs for Exploring FPGA Graphics
 
-This folder contains common SystemVerilog designs used by Project F, such as those in the **[Exploring FPGA Graphics](https://projectf.io/posts/fpga-graphic/)** series. All the designs are under the permissive [MIT licence](../LICENSE).
+This folder contains common SystemVerilog designs used by Project F, such as those in the **[Exploring FPGA Graphics](https://projectf.io/posts/fpga-graphics/)** series. All the designs are under the permissive [MIT licence](../LICENSE).
 
 The main modules are as follows:
 
