@@ -229,9 +229,9 @@ module top_pong (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        vga_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
+        vga_g <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
+        vga_b <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
     end
 endmodule

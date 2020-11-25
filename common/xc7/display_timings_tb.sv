@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - 640x480 Display Timings Test Bench
+// Project F: 640x480 Display Timings Test Bench
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

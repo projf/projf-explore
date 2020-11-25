@@ -1,4 +1,4 @@
-// Project F: FPGA Ad Astra - Galois Linear-Feedback Shift Register
+// Project F: Galois Linear-Feedback Shift Register
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

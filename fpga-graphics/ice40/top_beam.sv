@@ -40,24 +40,26 @@ module top_beam (
         .de
     );
 
-    // size of screen (including blanking)
-    localparam H_RES = 800;
-    localparam V_RES = 525;
-
-    // square 'Q' - origin at top-left
-    localparam Q_SIZE = 32; // square size in pixels
-    localparam Q_SPEED = 4; // pixels moved per frame
-    logic [CORDW-1:0] qx, qy;     // square position
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
     logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
+    always_comb animate = (sy == V_RES && sx == 0);
+
+    // square 'Q' - origin at top-left
+    localparam Q_SIZE = 32;     // square size in pixels
+    localparam Q_SPEED = 4;     // pixels moved per frame
+    logic [CORDW-1:0] qx, qy;   // square position
 
     // update square position once per frame
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            if (qx >= H_RES - Q_SIZE) begin
+            if (qx >= H_RES_FULL - Q_SIZE) begin
                 qx <= 0;
-                qy <= (qy >= V_RES - Q_SIZE) ? 0 : qy + Q_SIZE;
+                qy <= (qy >= V_RES_FULL - Q_SIZE) ? 0 : qy + Q_SIZE;
             end else begin
                 qx <= qx + Q_SPEED;
             end
@@ -71,12 +73,22 @@ module top_beam (
               && (sy >= qy) && (sy < qy + Q_SIZE);
     end
 
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
     // DVI output
-    always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        dvi_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        dvi_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        dvi_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule

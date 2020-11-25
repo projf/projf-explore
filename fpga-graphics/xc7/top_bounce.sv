@@ -39,9 +39,14 @@ module top_bounce (
         .de
     );
 
-    // size of screen (excluding blanking)
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
     localparam H_RES = 640;
     localparam V_RES = 480;
+
+    logic animate;  // high for one clock tick at start of blanking
+    always_comb animate = (sy == 480 && sx == 0);
 
     // squares - origin at top-left
     localparam Q1_SIZE = 100;   // square 1 size in pixels
@@ -56,9 +61,6 @@ module top_bounce (
     logic [CORDW-1:0] q1s = 3;  // square 1 speed
     logic [CORDW-1:0] q2s = 2;  // square 2 speed
     logic [CORDW-1:0] q3s = 2;  // square 3 speed
-
-    logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
 
     // update square position once per frame
     always_ff @(posedge clk_pix) begin
@@ -79,7 +81,7 @@ module top_bounce (
                 q1y <= q1y + q1s;
             end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
 
-            if (q2x >= H_RES - (Q2_SIZE + q2s)) begin 
+            if (q2x >= H_RES - (Q2_SIZE + q2s)) begin
                 q2dx <= 1;
                 q2x <= q2x - q2s;
             end else if (q2x < q2s) begin
@@ -95,7 +97,7 @@ module top_bounce (
                 q2y <= q2y + q2s;
             end else q2y <= (q2dy) ? q2y - q2s : q2y + q2s;
 
-            if (q3x >= H_RES - (Q3_SIZE + q3s)) begin 
+            if (q3x >= H_RES - (Q3_SIZE + q3s)) begin
                 q3dx <= 1;
                 q3x <= q3x - q3s;
             end else if (q3x < q3s) begin
@@ -125,9 +127,9 @@ module top_bounce (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : (q1_draw ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : (q2_draw ? 4'hF : 4'h0);
-        vga_b = !de ? 4'h0 : (q3_draw ? 4'hF : 4'h0);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && q1_draw) ? 4'hF : 4'h0;
+        vga_g <= (de && q2_draw) ? 4'hF : 4'h0;
+        vga_b <= (de && q3_draw) ? 4'hF : 4'h0;
     end
 endmodule

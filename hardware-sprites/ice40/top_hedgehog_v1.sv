@@ -142,12 +142,22 @@ module top_hedgehog_v1 (
         {red, green, blue} = clut[spr_pix];
     end
 
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
     // DVI output
-    always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = (de && spr_draw && !pix_trans) ? red   : 4'h0;
-        dvi_g = (de && spr_draw && !pix_trans) ? green : 4'h0;
-        dvi_b = (de && spr_draw && !pix_trans) ? blue  : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= (de && spr_draw && !pix_trans) ? red   : 4'h0;
+        dvi_g <= (de && spr_draw && !pix_trans) ? green : 4'h0;
+        dvi_b <= (de && spr_draw && !pix_trans) ? blue  : 4'h0;
     end
 endmodule

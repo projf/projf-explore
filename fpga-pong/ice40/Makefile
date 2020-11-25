@@ -7,7 +7,11 @@ SHELL = /bin/sh
 FPGA_PKG = sg48
 FPGA_TYPE = up5k
 PCF = icebreaker.pcf
-ADD_SRC = clock_gen.sv ../debounce.sv ../display_timings.sv
+
+# included modules
+PATH_CM  = ../../common
+ADD_SRC  = ${PATH_CM}/debounce.sv ${PATH_CM}/display_timings.sv 
+ADD_SRC += ${PATH_CM}/ice40/clock_gen.sv
 
 top_pong: top_pong.rpt top_pong.bin
 top_pong_v1: top_pong_v1.rpt top_pong_v1.bin

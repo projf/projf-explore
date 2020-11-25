@@ -48,7 +48,7 @@ module top_pong_v4 (
     localparam V_RES = 480;
 
     logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
+    always_comb animate = (sy == V_RES && sx == 0);
 
     // debounce buttons
     logic sig_ctrl, move_up, move_dn;
@@ -170,12 +170,22 @@ module top_pong_v4 (
               && (sy >= by) && (sy < by + B_SIZE);
     end
 
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
     // DVI output
-    always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
-        dvi_b = !de ? 4'h0 : ((b_draw | p1_draw | p2_draw) ? 4'hF : 4'h0);
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
+        dvi_g <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
+        dvi_b <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
     end
 endmodule

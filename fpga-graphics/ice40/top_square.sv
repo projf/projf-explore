@@ -44,12 +44,22 @@ module top_square (
     logic q_draw;
     always_comb q_draw = (sx < 32 && sy < 32) ? 1 : 0;
 
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
     // DVI output
-    always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        dvi_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        dvi_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        dvi_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        dvi_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule

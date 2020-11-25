@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - Galois Linear-Feedback Shift Register Test Bench
+// Project F: Galois Linear-Feedback Shift Register Test Bench
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

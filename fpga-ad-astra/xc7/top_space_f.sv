@@ -161,9 +161,9 @@ module top_space_f (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = (de) ? (spr_pix) ? red_spr   : starlight : 4'h0;
-        vga_g = (de) ? (spr_pix) ? green_spr : starlight : 4'h0;
-        vga_b = (de) ? (spr_pix) ? blue_spr  : starlight : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= de ? spr_pix ? red_spr   : starlight : 4'h0;
+        vga_g <= de ? spr_pix ? green_spr : starlight : 4'h0;
+        vga_b <= de ? spr_pix ? blue_spr  : starlight : 4'h0;
     end
 endmodule

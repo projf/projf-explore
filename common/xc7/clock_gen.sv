@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - Clock Generation (XC7)
+// Project F: Clock Generation (XC7)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

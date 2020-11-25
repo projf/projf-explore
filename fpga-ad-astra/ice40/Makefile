@@ -7,8 +7,12 @@ SHELL = /bin/sh
 FPGA_PKG = sg48
 FPGA_TYPE = up5k
 PCF = icebreaker.pcf
-ADD_SRC = clock_gen.sv
-ADD_SRC += ../display_timings.sv ../lfsr.sv ../rom_sync.sv ../sprite.sv ../starfield.sv
+
+# included modules
+PATH_CM  = ../../common
+ADD_SRC  = ${PATH_CM}/display_timings.sv ${PATH_CM}/lfsr.sv ${PATH_CM}/rom_sync.sv
+ADD_SRC += ${PATH_CM}/ice40/clock_gen.sv
+ADD_SRC += ../sprite.sv ../starfield.sv
 
 top_greet: top_greet.rpt top_greet.bin
 top_greet_v1: top_greet_v1.rpt top_greet_v1.bin

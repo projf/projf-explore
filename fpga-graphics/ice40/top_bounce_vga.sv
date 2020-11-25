@@ -124,9 +124,9 @@ module top_bounce_vga (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : (q1_draw ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : (q2_draw ? 4'hF : 4'h0);
-        vga_b = !de ? 4'h0 : (q3_draw ? 4'hF : 4'h0);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && q1_draw) ? 4'hF : 4'h0;
+        vga_g <= (de && q2_draw) ? 4'hF : 4'h0;
+        vga_b <= (de && q3_draw) ? 4'hF : 4'h0;
     end
 endmodule

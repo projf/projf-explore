@@ -56,12 +56,14 @@ module top_lfsr (
         .sreg(sf_reg)
     );
 
+    // adjust star density (~512 stars for AND 8 bits with 512x256)
+    logic star;
+    always_comb star = &{sf_reg[16:9]};
+
     // VGA output
-    always_comb begin
-        logic star;
-        star = &{sf_reg[16:9]};  // (~512 stars for 8 bits with 512x256)
-        vga_r = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
-        vga_g = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
-        vga_b = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+        vga_g <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+        vga_b <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
     end
 endmodule

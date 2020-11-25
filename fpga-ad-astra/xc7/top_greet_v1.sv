@@ -242,9 +242,9 @@ module top_greet_v1 (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = (de) ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
-        vga_g = (de) ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
-        vga_b = (de) ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= de ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
+        vga_g <= de ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
+        vga_b <= de ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;
     end
 endmodule

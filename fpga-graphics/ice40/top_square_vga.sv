@@ -43,9 +43,9 @@ module top_square_vga (
     always_comb q_draw = (sx < 32 && sy < 32) ? 1 : 0;
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        vga_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        vga_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        vga_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule

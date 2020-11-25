@@ -87,7 +87,7 @@ module top_hedgehog_v1 (
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             // walk right-to-left (correct position for screen width)
-            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X : 
+            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X :
                                            H_RES_FULL - (SPR_SPEED_X - sprx);
         end
         if (!clk_locked) begin
@@ -141,9 +141,9 @@ module top_hedgehog_v1 (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = (de && spr_draw && !pix_trans) ? red   : 4'h0;
-        vga_g = (de && spr_draw && !pix_trans) ? green : 4'h0;
-        vga_b = (de && spr_draw && !pix_trans) ? blue  : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && spr_draw && !pix_trans) ? red   : 4'h0;
+        vga_g <= (de && spr_draw && !pix_trans) ? green : 4'h0;
+        vga_b <= (de && spr_draw && !pix_trans) ? blue  : 4'h0;
     end
 endmodule

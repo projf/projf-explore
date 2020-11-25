@@ -39,24 +39,26 @@ module top_beam (
         .de
     );
 
-    // size of screen (including blanking)
-    localparam H_RES = 800;
-    localparam V_RES = 525;
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+
+    logic animate;  // high for one clock tick at start of blanking
+    always_comb animate = (sy == V_RES && sx == 0);
 
     // square 'Q' - origin at top-left
     localparam Q_SIZE = 32;    // square size in pixels
     localparam Q_SPEED = 4;    // pixels moved per frame
     logic [CORDW-1:0] qx, qy;  // square position
 
-    logic animate;  // high for one clock tick at start of blanking
-    always_comb animate = (sy == 480 && sx == 0);
-
     // update square position once per frame
     always_ff @(posedge clk_pix) begin
         if (animate) begin
-            if (qx >= H_RES - Q_SIZE) begin
+            if (qx >= H_RES_FULL - Q_SIZE) begin
                 qx <= 0;
-                qy <= (qy >= V_RES - Q_SIZE) ? 0 : qy + Q_SIZE;
+                qy <= (qy >= V_RES_FULL - Q_SIZE) ? 0 : qy + Q_SIZE;
             end else begin
                 qx <= qx + Q_SPEED;
             end
@@ -71,9 +73,9 @@ module top_beam (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        vga_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        vga_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        vga_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule

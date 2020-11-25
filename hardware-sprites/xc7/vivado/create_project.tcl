@@ -16,7 +16,8 @@ if {! [info exists board_name]} {
 set _xil_proj_name_ "hardware-sprites"
 
 # Set the reference directories for source file relative paths
-set origin_dir "./../.."
+set origin_dir [file normalize "./../../"]
+set common_dir [file normalize "./../../../common"]
 
 # Set the directory path for the project
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
@@ -52,13 +53,13 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${origin_dir}/display_timings.sv"] \
-  [file normalize "${origin_dir}/rom_sync.sv"] \
   [file normalize "${origin_dir}/sprite.sv"] \
   [file normalize "${origin_dir}/sprite_v1.sv"] \
   [file normalize "${origin_dir}/sprite_v2.sv"] \
   [file normalize "${origin_dir}/sprite_v3.sv"] \
-  [file normalize "${origin_dir}/xc7/clock_gen.sv"] \
+  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${common_dir}/rom_sync.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

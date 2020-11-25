@@ -1,8 +1,8 @@
 # FPGA Ad Astra
 
-This folder contains the SystemVerilog designs to accompany Project F **[FPGA Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**.
+This folder contains the SystemVerilog designs to accompany Project F **[FPGA Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions. The fonts included in this project are under different licences: see the individual font*.mem files for details.
 
-All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions. The fonts included in this project are under different licences: see the individual font*.mem files for details.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
 
 ## iCEBreaker Build
 

@@ -1,4 +1,4 @@
-// Project F: FPGA Ad Astra - 640x480 Display Timings
+// Project F: 640x480 Display Timings
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

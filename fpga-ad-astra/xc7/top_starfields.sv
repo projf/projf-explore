@@ -80,9 +80,9 @@ module top_starfields (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = (de) ? starlight : 4'h0;
-        vga_g = (de) ? starlight : 4'h0;
-        vga_b = (de) ? starlight : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= de ? starlight : 4'h0;
+        vga_g <= de ? starlight : 4'h0;
+        vga_b <= de ? starlight : 4'h0;
     end
 endmodule

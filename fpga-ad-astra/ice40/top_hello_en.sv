@@ -287,12 +287,22 @@ module top_hello_en (
                     (sf3_on) ? sf3_star[7:4] : 4'h0;
     end
 
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
     // DVI output
-    always_comb begin
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = (de) ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
-        dvi_g = (de) ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
-        dvi_b = (de) ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= de ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
+        dvi_g <= de ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
+        dvi_b <= de ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;
     end
 endmodule

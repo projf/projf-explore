@@ -43,9 +43,9 @@ module top_beam_vga (
     localparam V_RES = 525;
 
     // square 'Q' - origin at top-left
-    localparam Q_SIZE = 32; // square size in pixels
-    localparam Q_SPEED = 4; // pixels moved per frame
-    logic [CORDW-1:0] qx, qy;     // square position
+    localparam Q_SIZE = 32;     // square size in pixels
+    localparam Q_SPEED = 4;     // pixels moved per frame
+    logic [CORDW-1:0] qx, qy;   // square position
 
     logic animate;  // high for one clock tick at start of blanking
     always_comb animate = (sy == 480 && sx == 0);
@@ -70,9 +70,9 @@ module top_beam_vga (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        vga_g = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        vga_b = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    always_ff @(posedge clk_pix) begin
+        vga_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        vga_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        vga_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
     end
 endmodule

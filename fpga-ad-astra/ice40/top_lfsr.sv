@@ -57,14 +57,26 @@ module top_lfsr (
         .sreg(sf_reg)
     );
 
-    // DVI output
+    // adjust star density (~512 stars for AND 8 bits with 512x256)
     logic star;
-    always_comb begin
-        star = &{sf_reg[16:9]};  // (~512 stars for 8 bits with 512x256)
-        dvi_clk = clk_pix;
-        dvi_de  = de;
-        dvi_r = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
-        dvi_g = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
-        dvi_b = (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+    always_comb star = &{sf_reg[16:9]};
+
+    // DVI clock output
+    SB_IO #(
+        .PIN_TYPE(6'b010000)
+    ) dvi_clk_buf (
+        .PACKAGE_PIN(dvi_clk),
+        .CLOCK_ENABLE(1'b1),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
+    // DVI output
+    always_ff @(posedge clk_pix) begin
+        dvi_de <= de;
+        dvi_r <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+        dvi_g <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
+        dvi_b <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
     end
 endmodule

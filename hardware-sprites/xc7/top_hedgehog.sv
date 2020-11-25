@@ -153,9 +153,9 @@ module top_hedgehog (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = (de && spr_draw && !pix_trans) ? red   : 4'h0;
-        vga_g = (de && spr_draw && !pix_trans) ? green : 4'h0;
-        vga_b = (de && spr_draw && !pix_trans) ? blue  : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= (de && spr_draw && !pix_trans) ? red   : 4'h0;
+        vga_g <= (de && spr_draw && !pix_trans) ? green : 4'h0;
+        vga_b <= (de && spr_draw && !pix_trans) ? blue  : 4'h0;
     end
 endmodule

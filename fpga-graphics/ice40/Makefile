@@ -7,7 +7,10 @@ SHELL = /bin/sh
 FPGA_PKG = sg48
 FPGA_TYPE = up5k
 PCF = icebreaker.pcf
-ADD_SRC = clock_gen.sv ../display_timings.sv
+
+# included modules
+PATH_CM = ../../common
+ADD_SRC = ${PATH_CM}/display_timings.sv ${PATH_CM}/ice40/clock_gen.sv
 
 # override constraints for VGA targets
 top_bounce_vga top_beam_vga top_square_vga: PCF = icebreaker_vga.pcf
