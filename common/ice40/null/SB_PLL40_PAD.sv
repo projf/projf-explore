@@ -5,6 +5,7 @@
 // NB. For Verilator linting - don't include in synthesis
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 module SB_PLL40_PAD #(
     parameter FEEDBACK_PATH,

@@ -8,24 +8,17 @@ These designs make use of Project F [common modules](../common/), such as clock 
 
 You can build projects for iCEBreaker with the included makefile. You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details.
 
-For example, to build the DVI version of `top_bounce`:
+For example, to build `top_bounce`:
 
 ```bash
 cd ice40
 make top_bounce
 ```
 
-The VGA version works the same way, but you append `_vga` to the target. For example:
-
-```bash
-cd ice40
-make top_bounce_vga
-```
-
 After the build completes you'll have bin file, such as `top_bounce.bin`. Use the bin file to program your board:
 
 ```bash
-iceprog top_bouncebin
+iceprog top_bounce.bin
 ```
 
 Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
@@ -92,9 +85,6 @@ $ ./fpga-graphics/lint.sh
 ##   Checking ./fpga-graphics/xc7/top_square.sv
 ## Linting top modules in ./fpga-graphics/ice40
 ##   Checking ./fpga-graphics/ice40/top_beam.sv
-##   Checking ./fpga-graphics/ice40/top_beam_vga.sv
 ##   Checking ./fpga-graphics/ice40/top_bounce.sv
-##   Checking ./fpga-graphics/ice40/top_bounce_vga.sv
 ##   Checking ./fpga-graphics/ice40/top_square.sv
-##   Checking ./fpga-graphics/ice40/top_square_vga.sv
 ```
