@@ -12,15 +12,9 @@ PCF = icebreaker.pcf
 PATH_CM = ../../common
 ADD_SRC = ${PATH_CM}/display_timings.sv ${PATH_CM}/ice40/clock_gen.sv
 
-# override constraints for VGA targets
-top_bounce_vga top_beam_vga top_square_vga: PCF = icebreaker_vga.pcf
-
 top_bounce: top_bounce.rpt top_bounce.bin
 top_beam: top_beam.rpt top_beam.bin
 top_square: top_square.rpt top_square.bin
-top_bounce_vga: top_bounce_vga.rpt top_bounce_vga.bin
-top_beam_vga: top_beam_vga.rpt top_beam_vga.bin
-top_square_vga: top_square_vga.rpt top_square_vga.bin
 
 %.json: %.sv
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
@@ -37,8 +31,6 @@ top_square_vga: top_square_vga.rpt top_square_vga.bin
 clean:
 	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
 
-dvi: top_bounce top_beam top_square
-vga: top_bounce_vga top_beam_vga top_square_vga
-all: dvi vga
+all: top_bounce top_beam top_square
 
-.PHONY: dvi vga all clean
+.PHONY: all clean

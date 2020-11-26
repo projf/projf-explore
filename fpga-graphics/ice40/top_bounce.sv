@@ -3,6 +3,7 @@
 // Learn more at https://projectf.io
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 module top_bounce (
     input  wire logic clk_12m,      // 12 MHz clock
@@ -29,14 +30,15 @@ module top_bounce (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
     logic de;
     display_timings timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(dvi_hsync),
-        .vsync(dvi_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -127,22 +129,33 @@ module top_bounce (
               && (sy >= q3y) && (sy < q3y + Q3_SIZE);
     end
 
-    // DVI clock output
+    // colours
+    logic [3:0] red, green, blue;
+    always_comb begin
+        red   = (de && q1_draw) ? 4'hF : 4'h0;
+        green = (de && q2_draw) ? 4'hF : 4'h0;
+        blue  = (de && q3_draw) ? 4'hF : 4'h0;
+    end
+
+    // Output DVI clock: 180° out of phase with other DVI signals
     SB_IO #(
-        .PIN_TYPE(6'b010000)
-    ) dvi_clk_buf (
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
         .PACKAGE_PIN(dvi_clk),
-        .CLOCK_ENABLE(1'b1),
         .OUTPUT_CLK(clk_pix),
         .D_OUT_0(1'b0),
         .D_OUT_1(1'b1)
     );
 
-    // DVI output
-    always_ff @(posedge clk_pix) begin
-        dvi_de <= de;
-        dvi_r <= (de && q1_draw) ? 4'hF : 4'h0;
-        dvi_g <= (de && q2_draw) ? 4'hF : 4'h0;
-        dvi_b <= (de && q3_draw) ? 4'hF : 4'h0;
-    end
+    // Output DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync, vsync, de, red, green, blue}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 endmodule

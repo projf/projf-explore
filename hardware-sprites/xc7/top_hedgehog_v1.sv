@@ -133,17 +133,17 @@ module top_hedgehog_v1 (
     end
 
     // map colour index to palette using CLUT
-    logic pix_trans;                // pixel transparent?
-    logic [3:0] red, green, blue;   // pixel colour components
+    logic pix_trans;  // pixel transparent?
+    logic [3:0] red_spr, green_spr, blue_spr;  // pixel colour components
     always_comb begin
         pix_trans = (spr_pix == SPR_TRANS);
-        {red, green, blue} = clut[spr_pix];
+        {red_spr, green_spr, blue_spr} = clut[spr_pix];
     end
 
     // VGA output
     always_ff @(posedge clk_pix) begin
-        vga_r <= (de && spr_draw && !pix_trans) ? red   : 4'h0;
-        vga_g <= (de && spr_draw && !pix_trans) ? green : 4'h0;
-        vga_b <= (de && spr_draw && !pix_trans) ? blue  : 4'h0;
+        vga_r <= (de && spr_draw && !pix_trans) ? red_spr   : 4'h0;
+        vga_g <= (de && spr_draw && !pix_trans) ? green_spr : 4'h0;
+        vga_b <= (de && spr_draw && !pix_trans) ? blue_spr  : 4'h0;
     end
 endmodule

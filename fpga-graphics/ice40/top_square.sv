@@ -3,6 +3,7 @@
 // Learn more at https://projectf.io
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 module top_square (
     input  wire logic clk_12m,      // 12 MHz clock
@@ -29,14 +30,15 @@ module top_square (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
     logic de;
     display_timings timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(dvi_hsync),
-        .vsync(dvi_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -44,22 +46,33 @@ module top_square (
     logic q_draw;
     always_comb q_draw = (sx < 32 && sy < 32) ? 1 : 0;
 
-    // DVI clock output
+    // colours
+    logic [3:0] red, green, blue;
+    always_comb begin
+        red   = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
+        green = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
+        blue  = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+    end
+
+    // Output DVI clock: 180° out of phase with other DVI signals
     SB_IO #(
-        .PIN_TYPE(6'b010000)
-    ) dvi_clk_buf (
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
         .PACKAGE_PIN(dvi_clk),
-        .CLOCK_ENABLE(1'b1),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0(1'b0),
-        .D_OUT_1(1'b1)
+        .D_OUT_0(1'b0),  // output not DDR because we disable rising edge out
+        .D_OUT_1(1'b1)   // output 180° out of phase because we enable falling edge out
     );
 
-    // DVI output
-    always_ff @(posedge clk_pix) begin
-        dvi_de <= de;
-        dvi_r <= !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        dvi_g <= !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        dvi_b <= !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
-    end
+    // Output DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync, vsync, de, red, green, blue}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 endmodule

@@ -5,6 +5,7 @@
 // NB. For Verilator linting - don't include in synthesis
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 module SB_IO #(
     parameter PIN_TYPE
@@ -12,7 +13,6 @@ module SB_IO #(
     /* verilator lint_off UNUSED */
     /* verilator lint_off UNDRIVEN */
     output      logic PACKAGE_PIN,
-    input  wire logic CLOCK_ENABLE,
     input  wire logic OUTPUT_CLK,
     input  wire logic D_OUT_0,
     input  wire logic D_OUT_1

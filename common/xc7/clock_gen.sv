@@ -22,6 +22,7 @@ module clock_gen #(
 
     logic clk_fb;         // internal clock feedback
     logic clk_pix_unbuf;  // unbuffered pixel clock
+    logic locked;         // unsynced lock signal
 
     MMCME2_BASE #(
         .CLKFBOUT_MULT_F(MULT_MASTER),
@@ -32,7 +33,7 @@ module clock_gen #(
         .CLKIN1(clk),
         .RST(rst),
         .CLKOUT0(clk_pix_unbuf),
-        .LOCKED(clk_locked),
+        .LOCKED(locked),
         .CLKFBOUT(clk_fb),
         .CLKFBIN(clk_fb),
         /* verilator lint_off PINCONNECTEMPTY */
@@ -54,4 +55,10 @@ module clock_gen #(
     // explicitly buffer output clock
     BUFG bufg_clk(.I(clk_pix_unbuf), .O(clk_pix));
 
+    // ensure clock lock is synced with pixel clock
+    logic locked_sync_0;
+    always_ff @(posedge clk_pix) begin
+        locked_sync_0 <= locked;
+        clk_locked <= locked_sync_0;
+    end
 endmodule

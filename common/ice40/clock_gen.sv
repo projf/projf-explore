@@ -3,9 +3,10 @@
 // Learn more at https://projectf.io
 
 `default_nettype none
+`timescale 1ns / 1ps
 
 // Default to 25.125 MHz (640x480 59.8 Hz) with 12 MHz XO
-// iCE40 PLLs are documented in Lattice TN1251
+// iCE40 PLLs are documented in Lattice TN1251 and ICE Technology Library
 
 module clock_gen #(
     parameter FEEDBACK_PATH="SIMPLE",
@@ -20,6 +21,7 @@ module clock_gen #(
     output      logic clk_locked  // generated clock locked?
     );
 
+    logic locked;
     SB_PLL40_PAD #(
         .FEEDBACK_PATH(FEEDBACK_PATH),
         .DIVR(DIVR),
@@ -31,6 +33,13 @@ module clock_gen #(
         .PLLOUTCORE(clk_pix),
         .RESETB(rst),
         .BYPASS(1'b0),
-        .LOCK(clk_locked)
+        .LOCK(locked)
     );
+
+    // ensure clock lock is synced with pixel clock
+    logic locked_sync_0;
+    always_ff @(posedge clk_pix) begin
+        locked_sync_0 <= locked;
+        clk_locked <= locked_sync_0;
+    end
 endmodule
