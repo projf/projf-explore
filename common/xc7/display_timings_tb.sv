@@ -1,4 +1,4 @@
-// Project F: 640x480 Display Timings Test Bench
+// Project F: 640x480 Display Timings Test Bench (XC7)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

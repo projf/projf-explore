@@ -1,8 +1,8 @@
 # Framebuffers
 
-This folder contains the SystemVerilog designs to accompany Project F **[Framebuffers](https://projectf.io/posts/framebuffers/)**.
+This folder contains the SystemVerilog designs to accompany Project F **[Framebuffers](https://projectf.io/posts/framebuffers/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
 
-All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
 
 ## iCEBreaker Build
 

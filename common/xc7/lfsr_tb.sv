@@ -1,4 +1,4 @@
-// Project F: Galois Linear-Feedback Shift Register Test Bench
+// Project F: Galois Linear-Feedback Shift Register Test Bench (XC7)
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
