@@ -100,9 +100,9 @@ module top_david_v2 (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = fb_active ? red   : 4'h0;
-        vga_g = fb_active ? green : 4'h0;
-        vga_b = fb_active ? blue  : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= fb_active ? red   : 4'h0;
+        vga_g <= fb_active ? green : 4'h0;
+        vga_b <= fb_active ? blue  : 4'h0;
     end
 endmodule

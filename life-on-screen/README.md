@@ -1,8 +1,8 @@
 # Life on Screen
 
-This folder contains the SystemVerilog designs to accompany Project F **[Life on Screen](https://projectf.io/posts/life-on-screen/)**.
+This folder contains the SystemVerilog designs to accompany Project F **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
 
-All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
 
 ## iCEBreaker Build
 

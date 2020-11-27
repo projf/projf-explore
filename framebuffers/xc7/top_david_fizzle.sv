@@ -211,9 +211,9 @@ module top_david_fizzle (
     end
 
     // VGA output
-    always_comb begin
-        vga_r = de ? lb_out_2 : 4'h0;
-        vga_g = de ? lb_out_1 : 4'h0;
-        vga_b = de ? lb_out_0 : 4'h0;
+    always_ff @(posedge clk_pix) begin
+        vga_r <= de ? lb_out_2 : 4'h0;
+        vga_g <= de ? lb_out_1 : 4'h0;
+        vga_b <= de ? lb_out_0 : 4'h0;
     end
 endmodule

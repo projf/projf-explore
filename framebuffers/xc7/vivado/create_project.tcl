@@ -15,8 +15,9 @@ if {! [info exists board_name]} {
 # Set the project name
 set _xil_proj_name_ "framebuffers"
 
-# Set the reference directory for source file relative paths
-set origin_dir "./../.."
+# Set the reference directories for source file relative paths
+set origin_dir [file normalize "./../../"]
+set common_dir [file normalize "./../../../common"]
 
 # Set the directory path for the project
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
@@ -51,11 +52,11 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${origin_dir}/display_timings.sv"] \
-  [file normalize "${origin_dir}/lfsr.sv"] \
-  [file normalize "${origin_dir}/linebuffer.sv"] \
-  [file normalize "${origin_dir}/xc7/bram_sdp.sv"] \
-  [file normalize "${origin_dir}/xc7/clock_gen.sv"] \
+  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${common_dir}/lfsr.sv"] \
+  [file normalize "${common_dir}/linebuffer.sv"] \
+  [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -87,7 +88,7 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${origin_dir}/xc7/linebuffer_tb.sv"] \
+  [file normalize "${common_dir}/xc7/linebuffer_tb.sv"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

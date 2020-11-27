@@ -1,4 +1,4 @@
-// Project F: Life on Screen - Simple Dual-Port Block RAM
+// Project F: Simple Dual-Port Block RAM (XC7)
 // (C)2020 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

@@ -1,4 +1,4 @@
-// Project F: Framebuffers - Linebuffer
+// Project F: Linebuffer
 // (C)2020 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 
