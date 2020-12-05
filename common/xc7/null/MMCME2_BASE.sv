@@ -11,6 +11,7 @@ module MMCME2_BASE #(
     parameter CLKFBOUT_MULT_F,
     parameter CLKIN1_PERIOD,
     parameter CLKOUT0_DIVIDE_F,
+    parameter CLKOUT1_DIVIDE,
     parameter DIVCLK_DIVIDE
     ) (
     /* verilator lint_off UNUSED */
@@ -33,9 +34,9 @@ module MMCME2_BASE #(
     output      logic CLKFBOUT,
     output      logic CLKFBOUTB,
     output      logic LOCKED
-    );
     /* verilator lint_on UNDRIVEN */
     /* verilator lint_on UNUSED */
+    );
 
     // NULL MODULE
 

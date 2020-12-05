@@ -28,6 +28,7 @@ module clock_gen #(
         .CLKFBOUT_MULT_F(MULT_MASTER),
         .CLKIN1_PERIOD(IN_PERIOD),
         .CLKOUT0_DIVIDE_F(DIV_PIX),
+        .CLKOUT1_DIVIDE(1),  // included for Veriltator (TMDS clock)
         .DIVCLK_DIVIDE(DIV_MASTER)
     ) MMCME2_BASE_inst (
         .CLKIN1(clk),
