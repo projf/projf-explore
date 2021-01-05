@@ -54,7 +54,7 @@ module top_pong_v1 (
     logic [CORDW-1:0] spy = 10'd1;  // vertical speed
     logic b_draw;                   // draw ball?
 
-     // ball animation
+    // ball animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
