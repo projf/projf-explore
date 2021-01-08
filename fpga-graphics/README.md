@@ -88,3 +88,5 @@ $ ./fpga-graphics/lint.sh
 ##   Checking ./fpga-graphics/ice40/top_bounce.sv
 ##   Checking ./fpga-graphics/ice40/top_square.sv
 ```
+
+You can learn more about linting from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).

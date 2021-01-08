@@ -7,9 +7,9 @@ set_io -nowarn clk_12m      35
 
 ## Buttons
 set_io -nowarn btn_rst      10
-set_io -noward btn_up       18
-set_io -noward btn_ctrl     19
-set_io -noward btn_dn       20
+set_io -nowarn btn_up       18
+set_io -nowarn btn_ctrl     19
+set_io -nowarn btn_dn       20
 
 ## 12-bit DVI Pmod on Pmod 1A/1B
 set_io -nowarn dvi_clk      38

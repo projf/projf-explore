@@ -10,8 +10,8 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_CM  = ../../common
-ADD_SRC  = ${PATH_CM}/display_timings.sv ${PATH_CM}/rom_sync.sv
-ADD_SRC += ${PATH_CM}/ice40/clock_gen.sv
+ADD_SRC  = ${PATH_CM}/display_timings_480p.sv ${PATH_CM}/rom_sync.sv
+ADD_SRC += ${PATH_CM}/rom_async.sv ${PATH_CM}/ice40/clock_gen.sv
 ADD_SRC += ../sprite_v1.sv ../sprite_v2.sv ../sprite_v3.sv ../sprite.sv
 
 top_hedgehog: top_hedgehog.rpt top_hedgehog.bin

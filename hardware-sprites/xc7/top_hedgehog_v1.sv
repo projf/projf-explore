@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Top Hedgehog v1 (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -28,14 +28,14 @@ module top_hedgehog_v1 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -125,25 +125,39 @@ module top_hedgehog_v1 (
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // Colour Lookup Table
-    logic [11:0] clut [11];  // 11 x 12-bit colour palette entries
-    initial begin
-        $display("Loading palette '%s' into CLUT.", SPR_PALETTE);
-        $readmemh(SPR_PALETTE, clut);  // load palette into CLUT
-    end
+    // colour lookup table (ROM)
+    localparam CLUT_ENTRIES = 11;
+    localparam BPP = 12;  // bits per pixel
+    logic [BPP-1:0] clut_colr;
+    rom_async #(
+        .WIDTH(BPP),
+        .DEPTH(CLUT_ENTRIES),
+        .INIT_F(SPR_PALETTE)
+    ) clut (
+        .addr(spr_pix),
+        .data(clut_colr)
+    );
 
-    // map colour index to palette using CLUT
-    logic pix_trans;  // pixel transparent?
-    logic [3:0] red_spr, green_spr, blue_spr;  // pixel colour components
+    // map sprite colour index to palette using CLUT and incorporate background
+    logic spr_trans;  // sprite pixel transparent?
+    logic [3:0] red_spr, green_spr, blue_spr;  // sprite colour components
+    logic [3:0] red_bg,  green_bg,  blue_bg;   // background colour components
+    logic [3:0] red, green, blue;              // final colour
     always_comb begin
-        pix_trans = (spr_pix == SPR_TRANS);
-        {red_spr, green_spr, blue_spr} = clut[spr_pix];
+        spr_trans = (spr_pix == SPR_TRANS);
+        {red_spr, green_spr, blue_spr} = clut_colr;
+        {red_bg,  green_bg,  blue_bg}  = 12'h260;
+        red   = (spr_draw && !spr_trans) ? red_spr   : red_bg;
+        green = (spr_draw && !spr_trans) ? green_spr : green_bg;
+        blue  = (spr_draw && !spr_trans) ? blue_spr  : blue_bg;
     end
 
     // VGA output
     always_ff @(posedge clk_pix) begin
-        vga_r <= (de && spr_draw && !pix_trans) ? red_spr   : 4'h0;
-        vga_g <= (de && spr_draw && !pix_trans) ? green_spr : 4'h0;
-        vga_b <= (de && spr_draw && !pix_trans) ? blue_spr  : 4'h0;
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
+        vga_r <= de ? red   : 4'h0;
+        vga_g <= de ? green : 4'h0;
+        vga_b <= de ? blue  : 4'h0;
     end
 endmodule

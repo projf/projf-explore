@@ -57,7 +57,8 @@ set design_sources [list \
   [file normalize "${origin_dir}/sprite_v1.sv"] \
   [file normalize "${origin_dir}/sprite_v2.sv"] \
   [file normalize "${origin_dir}/sprite_v3.sv"] \
-  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${common_dir}/display_timings_480p.sv"] \
+  [file normalize "${common_dir}/rom_async.sv"] \
   [file normalize "${common_dir}/rom_sync.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \
 ]

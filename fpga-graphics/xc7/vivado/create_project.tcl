@@ -50,7 +50,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
@@ -67,13 +67,13 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${common_dir}/xc7/display_timings_tb.sv"] \
+  [file normalize "${common_dir}/xc7/display_timings_480p_tb.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen_tb.sv"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "display_timings_tb" -objects $fs_sim_obj
+set_property -name "top" -value "display_timings_480p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

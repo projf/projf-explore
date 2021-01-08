@@ -1,5 +1,5 @@
 // Project F: FPGA Pong - Top Pong (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -31,18 +31,20 @@ module top_pong (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
-    // size of screen (excluding blanking)
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
     localparam H_RES = 640;
     localparam V_RES = 480;
 
@@ -52,29 +54,31 @@ module top_pong (
     // debounce buttons
     logic sig_ctrl, move_up, move_dn;
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_btn_ctrl (.clk(clk_pix), .in(btn_ctrl), .out(), .ondn(), .onup(sig_ctrl));
-    debounce deb_btn_up (.clk(clk_pix), .in(btn_up), .out(move_up), .ondn(), .onup());
-    debounce deb_btn_dn (.clk(clk_pix), .in(btn_dn), .out(move_dn), .ondn(), .onup());
+    debounce deb_ctrl
+        (.clk(clk_pix), .in(btn_ctrl), .out(), .ondn(), .onup(sig_ctrl));
+    debounce deb_up
+        (.clk(clk_pix), .in(btn_up), .out(move_up), .ondn(), .onup());
+    debounce deb_dn
+        (.clk(clk_pix), .in(btn_dn), .out(move_dn), .ondn(), .onup());
     /* verilator lint_on PINCONNECTEMPTY */
 
     // ball
-    localparam B_SIZE = 8;              // size in pixels
-    logic [CORDW-1:0] bx, by;           // position
-    logic dx, dy;                       // direction: 0 is right/down
-    logic [CORDW-1:0] spx;              // horizontal speed
-    logic [CORDW-1:0] spy;              // vertical speed
-    logic lft_col, rgt_col;             // flag collision with left or right of screen
-    logic b_draw;                       // draw ball?
+    localparam B_SIZE = 8;      // size in pixels
+    logic [CORDW-1:0] bx, by;   // position
+    logic dx, dy;               // direction: 0 is right/down
+    logic [CORDW-1:0] spx;      // horizontal speed
+    logic [CORDW-1:0] spy;      // vertical speed
+    logic lft_col, rgt_col;     // flag collision with left or right of screen
+    logic b_draw;               // draw ball?
 
     // paddles
-    localparam P_HEIGHT = 40;           // height in pixels
-    localparam P_SEC = P_HEIGHT / 8;    // paddle sections
-    localparam P_WIDTH  = 10;           // width in pixels
-    localparam P_SPEED  = 4;            // speed
-    localparam P_OFFSET = 32;           // offset from screen edge
-    logic [CORDW-1:0] p1y, p2y;         // vertical position of paddles 1 and 2
-    logic p1_draw, p2_draw;             // draw paddles?
-    logic p1_col, p2_col;               // paddle collision?
+    localparam P_H = 40;         // height in pixels
+    localparam P_W = 10;         // width in pixels
+    localparam P_SP = 4;         // speed
+    localparam P_OFFS = 32;      // offset from screen edge
+    logic [CORDW-1:0] p1y, p2y;  // vertical position of paddles 1 and 2
+    logic p1_draw, p2_draw;      // draw paddles?
+    logic p1_col, p2_col;        // paddle collision?
 
     // game state
     enum {INIT, IDLE, START, PLAY, POINT_END} state, state_next;
@@ -92,45 +96,47 @@ module top_pong (
     always_ff @(posedge clk_pix) begin
         state <= state_next;
     end
-    
+
     // paddle animation
     always_ff @(posedge clk_pix) begin
         if (state == INIT || state == START) begin  // reset paddle positions
-            p1y <= (V_RES - P_HEIGHT) >> 1;
-            p2y <= (V_RES - P_HEIGHT) >> 1;
+            p1y <= (V_RES - P_H) >> 1;
+            p2y <= (V_RES - P_H) >> 1;
         end else if (animate && state != POINT_END) begin
             if (state == PLAY) begin  // human paddle 1
                 if (move_up) begin
-                    if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // at top?
+                    if (p1y > P_SP) p1y <= p1y - P_SP;
                 end
                 if (move_dn) begin
-                    if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // at bottom?
+                    if (p1y < V_RES - (P_H + P_SP)) p1y <= p1y + P_SP;
                 end
             end else begin  // "AI" paddle 1
-                if ((p1y + P_HEIGHT/2) < by) begin  // top of ball is below
-                    if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // screen bottom?
-                end
-                if ((p1y + P_HEIGHT/2) > (by + B_SIZE)) begin  // bottom of ball is above
-                    if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // screen top?
+                if ((p1y + P_H/2) + P_SP/2 < (by + B_SIZE/2)) begin
+                    if (p1y < V_RES - (P_H + P_SP/2))
+                        p1y <= p1y + P_SP;
+                end else if ((p1y + P_H/2) > (by + B_SIZE/2) + P_SP/2) begin
+                    if (p1y > P_SP)
+                        p1y <= p1y - P_SP;
                 end
             end
 
             // "AI" paddle 2
-            if ((p2y + P_HEIGHT/2) < by) begin
-                if (p2y < V_RES - (P_HEIGHT + P_SPEED)) p2y <= p2y + P_SPEED;
-            end
-            if ((p2y + P_HEIGHT/2) > (by + B_SIZE)) begin
-                if (p2y > P_SPEED) p2y <= p2y - P_SPEED;
+            if ((p2y + P_H/2) + P_SP/2 < (by + B_SIZE/2)) begin
+                if (p2y < V_RES - (P_H + P_SP/2))
+                    p2y <= p2y + P_SP;
+            end else if ((p2y + P_H/2) > (by + B_SIZE/2) + P_SP/2) begin
+                if (p2y > P_SP)
+                    p2y <= p2y - P_SP;
             end
         end
     end
 
     // draw paddles - are paddles at current screen position?
     always_comb begin
-        p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
-               && (sy >= p1y) && (sy < p1y + P_HEIGHT);
-        p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
-               && (sy >= p2y) && (sy < p2y + P_HEIGHT);
+        p1_draw = (sx >= P_OFFS) && (sx < P_OFFS + P_W)
+               && (sy >= p1y) && (sy < p1y + P_H);
+        p2_draw = (sx >= H_RES - P_OFFS - P_W) && (sx < H_RES - P_OFFS)
+               && (sy >= p2y) && (sy < p2y + P_H);
     end
 
     // paddle collision detection
@@ -144,6 +150,27 @@ module top_pong (
         end
     end
 
+    // ball speed control
+    localparam SPEED_STEP = 5;  // speed up after this many collisions
+    logic [$clog2(SPEED_STEP)-1:0] cnt_sp;  // speed counter
+    always_ff @(posedge clk_pix) begin
+        if (state == INIT) begin  // demo speed
+            spx <= 6;
+            spy <= 4;
+        end else if (state == START) begin  // initial game speed
+            spx <= 4;
+            spy <= 2;
+        end else if (state == PLAY && animate && (p1_col || p2_col)) begin
+            if (cnt_sp == SPEED_STEP-1) begin
+                spx <= spx + 1;
+                spy <= spy + 1;
+                cnt_sp <= 0;
+            end else begin
+                cnt_sp <= cnt_sp + 1;
+            end
+        end
+    end
+
     // ball animation
     always_ff @(posedge clk_pix) begin
         if (state == INIT || state == START) begin  // reset ball position
@@ -151,61 +178,17 @@ module top_pong (
             by <= (V_RES - B_SIZE) >> 1;
             dx <= 0;  // serve towards player 2 (AI)
             dy <= ~dy;
-            spx <= 10'd5;
-            spy <= 10'd2;
             lft_col <= 0;
             rgt_col <= 0;
         end else if (animate && state != POINT_END) begin
             if (p1_col) begin  // left paddle collision
                 dx <= 0;
                 bx <= bx + spx;
-                if (by < p1y - B_SIZE/2 + P_SEC) begin
-                    dy <= 1;
-                    spy <= 10'd5;
-                end else if (by < p1y - B_SIZE/2 + 2*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd4;
-                end else if (by < p1y - B_SIZE/2 + 3*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd2;
-                end else if (by < p1y - B_SIZE/2 + 5*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 0;
-                end else if (by < p1y - B_SIZE/2 + 6*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd2;
-                end else if (by < p1y - B_SIZE/2 + 7*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd4;
-                end else begin
-                    dy <= 0;
-                    spy <= 10'd5;
-                end
+                dy <= (by + B_SIZE/2 < p1y + P_H/2) ? 1 : 0;
             end else if (p2_col) begin  // right paddle collision
                 dx <= 1;
                 bx <= bx - spx;
-                if (by < p2y - B_SIZE/2 + P_SEC) begin
-                    dy <= 1;
-                    spy <= 10'd5;
-                end else if (by < p2y - B_SIZE/2 + 2*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd4;
-                end else if (by < p2y - B_SIZE/2 + 3*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 10'd2;
-                end else if (by < p2y - B_SIZE/2 + 5*P_SEC) begin 
-                    dy <= 1;
-                    spy <= 0;
-                end else if (by < p2y - B_SIZE/2 + 6*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd2;
-                end else if (by < p2y - B_SIZE/2 + 7*P_SEC) begin 
-                    dy <= 0;
-                    spy <= 10'd4;
-                end else begin
-                    dy <= 0;
-                    spy <= 10'd5;
-                end
+                dy <= (by + B_SIZE/2 < p1y + P_H/2) ? 1 : 0;
             end else if (bx >= H_RES - (spx + B_SIZE)) begin  // right edge
                 rgt_col <= 1;
             end else if (bx < spx) begin  // left edge
@@ -230,6 +213,8 @@ module top_pong (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
         vga_g <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
         vga_b <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;

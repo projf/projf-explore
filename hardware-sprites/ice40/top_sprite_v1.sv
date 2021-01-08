@@ -30,9 +30,8 @@ module top_sprite_v1 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -41,6 +40,12 @@ module top_sprite_v1 (
         .vsync,
         .de
     );
+
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
     // sprite
     localparam SPR_WIDTH  = 8;  // width in pixels

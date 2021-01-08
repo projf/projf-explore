@@ -30,9 +30,8 @@ module top_square (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -61,7 +60,7 @@ module top_square (
         .PACKAGE_PIN(dvi_clk),
         .OUTPUT_CLK(clk_pix),
         .D_OUT_0(1'b0),  // output not DDR because we disable rising edge out
-        .D_OUT_1(1'b1)   // output 180° out of phase because we enable falling edge out
+        .D_OUT_1(1'b1)   // output 180° out of phase using falling edge out
     );
 
     // Output DVI signals

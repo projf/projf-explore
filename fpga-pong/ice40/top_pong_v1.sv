@@ -1,5 +1,5 @@
 // Project F: FPGA Pong - Top Pong v1 (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -30,9 +30,8 @@ module top_pong_v1 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -42,7 +41,9 @@ module top_pong_v1 (
         .de
     );
 
-    // size of screen (excluding blanking)
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
     localparam H_RES = 640;
     localparam V_RES = 480;
 
@@ -50,12 +51,12 @@ module top_pong_v1 (
     always_comb animate = (sy == V_RES && sx == 0);
 
     // ball
-    localparam B_SIZE = 8;          // size in pixels
-    logic [CORDW-1:0] bx, by;       // position
-    logic dx, dy;                   // direction: 0 is right/down
-    logic [CORDW-1:0] spx = 10'd1;  // horizontal speed
-    logic [CORDW-1:0] spy = 10'd1;  // vertical speed
-    logic b_draw;                   // draw ball?
+    localparam B_SIZE = 8;      // size in pixels
+    logic [CORDW-1:0] bx, by;   // position
+    logic dx, dy;               // direction: 0 is right/down
+    logic [CORDW-1:0] spx = 1;  // horizontal speed
+    logic [CORDW-1:0] spy = 1;  // vertical speed
+    logic b_draw;               // draw ball?
 
     // ball animation
     always_ff @(posedge clk_pix) begin

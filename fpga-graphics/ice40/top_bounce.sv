@@ -30,9 +30,8 @@ module top_bounce (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -61,9 +60,9 @@ module top_bounce (
     logic q1dx, q1dy;           // square 1 direction: 0 is right/down
     logic q2dx, q2dy;           // square 2 direction: 0 is right/down
     logic q3dx, q3dy;           // square 3 direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 3;  // square 1 speed
-    logic [CORDW-1:0] q2s = 2;  // square 2 speed
-    logic [CORDW-1:0] q3s = 2;  // square 3 speed
+    logic [CORDW-1:0] q1s = 2;  // square 1 speed
+    logic [CORDW-1:0] q2s = 1;  // square 2 speed
+    logic [CORDW-1:0] q3s = 1;  // square 3 speed
 
     // update square position once per frame
     always_ff @(posedge clk_pix) begin

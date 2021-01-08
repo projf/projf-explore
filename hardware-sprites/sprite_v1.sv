@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Sprite v1
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -20,18 +20,14 @@ module sprite_v1 #(
     output      logic pix                // pixel colour to draw
     );
 
-    logic memory [DEPTH];  // 1 bit per pixel
-
-    // load sprite graphic into memory (binary text format)
-    initial begin
-        if (SPR_FILE != 0) begin
-            $display("Creating sprite from file '%s'.", SPR_FILE);
-            $readmemb(SPR_FILE, memory);
-        end
-    end
-
-    // position within memory array
-    logic [$clog2(DEPTH)-1:0] pos;
+    localparam BPP = 1;  // bits per pixel
+    logic [$clog2(DEPTH)-1:0] addr;  // ROM address (pixel position)
+    logic data;  // ROM data (pixel colour)
+    rom_async #(
+        .WIDTH(BPP),
+        .DEPTH(DEPTH),
+        .INIT_F(SPR_FILE)
+    ) spr_rom ( .* );
 
     // position within sprite
     logic [$clog2(WIDTH)-1:0]  ox;
@@ -48,35 +44,30 @@ module sprite_v1 #(
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state
 
-        if (state == START) begin
-            oy <= 0;
-            pos <= 0;
-        end
-
-        if (state == AWAIT_POS) begin
-            ox <= 0;
-        end
-
-        if (state == DRAW) begin
-            ox <= ox + 1;
-            pos <= pos + 1;
-        end
-
-        if (state == NEXT_LINE) begin
-            oy <= oy + 1;
-        end
+        case (state)
+            START: begin
+                oy <= 0;
+                addr <= 0;
+            end
+            AWAIT_POS: ox <= 0;
+            DRAW: begin
+                ox <= ox + 1;
+                addr <= addr + 1;
+            end
+            NEXT_LINE: oy <= oy + 1;
+        endcase
 
         if (rst) begin
             state <= IDLE;
             ox <= 0;
             oy <= 0;
-            pos <= 0;
+            addr <= 0;
         end
     end
 
     // output current pixel colour when drawing
     always_comb begin
-        pix = (state == DRAW) ? memory[pos] : 0;
+        pix = (state == DRAW) ? data : 0;
     end
 
     // create status signals

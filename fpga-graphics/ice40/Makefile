@@ -10,7 +10,7 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_CM = ../../common
-ADD_SRC = ${PATH_CM}/display_timings.sv ${PATH_CM}/ice40/clock_gen.sv
+ADD_SRC = ${PATH_CM}/display_timings_480p.sv ${PATH_CM}/ice40/clock_gen.sv
 
 top_bounce: top_bounce.rpt top_bounce.bin
 top_beam: top_beam.rpt top_beam.bin

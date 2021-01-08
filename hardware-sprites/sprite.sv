@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Sprite
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -47,45 +47,41 @@ module sprite #(
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state
 
-        if (state == START) begin
-            done <= 0;
-            oy <= 0;
-            cnt_y <= 0;
-            pos <= 0;
-        end
-
-        if (state == AWAIT_POS) begin
-            ox <= 0;
-            cnt_x <= 0;
-        end
-
-        if (state == DRAW) begin
-            /* verilator lint_off WIDTH */
-            if (SCALE_X <= 1 || cnt_x == SCALE_X-1) begin
-            /* verilator lint_on WIDTH */
-                ox <= ox + 1;
-                cnt_x <= 0;
-                pos <= pos + 1;
-            end else begin
-                cnt_x <= cnt_x + 1;
-            end
-        end
-
-        if (state == NEXT_LINE) begin
-            /* verilator lint_off WIDTH */
-            if (SCALE_Y <= 1 || cnt_y == SCALE_Y-1) begin
-            /* verilator lint_on WIDTH */
-                oy <= oy + 1;
+        case (state)
+            START: begin
+                done <= 0;
+                oy <= 0;
                 cnt_y <= 0;
-            end else begin
-                cnt_y <= cnt_y + 1;
-                pos <= pos - WIDTH;  // go back to start of line
+                pos <= 0;
             end
-        end
-
-        if (state == DONE) begin
-            done <= 1;
-        end
+            AWAIT_POS: begin
+                ox <= 0;
+                cnt_x <= 0;
+            end
+            DRAW: begin
+                /* verilator lint_off WIDTH */
+                if (SCALE_X <= 1 || cnt_x == SCALE_X-1) begin
+                /* verilator lint_on WIDTH */
+                    ox <= ox + 1;
+                    cnt_x <= 0;
+                    pos <= pos + 1;
+                end else begin
+                    cnt_x <= cnt_x + 1;
+                end
+            end
+            NEXT_LINE: begin
+                /* verilator lint_off WIDTH */
+                if (SCALE_Y <= 1 || cnt_y == SCALE_Y-1) begin
+                /* verilator lint_on WIDTH */
+                    oy <= oy + 1;
+                    cnt_y <= 0;
+                end else begin
+                    cnt_y <= cnt_y + 1;
+                    pos <= pos - WIDTH;  // go back to start of line
+                end
+            end
+            DONE: done <= 1;
+        endcase
 
         if (rst) begin
             state <= IDLE;
@@ -108,7 +104,7 @@ module sprite #(
     logic [CORDW-1:0] sprx_cor;
     always_comb begin
         /* verilator lint_off WIDTH */
-        last_pixel = (ox == WIDTH-1 && cnt_x == SCALE_X-1);
+        last_pixel = (ox == WIDTH-1  && cnt_x == SCALE_X-1);
         last_line  = (oy == HEIGHT-1 && cnt_y == SCALE_Y-1);
         /* verilator lint_on WIDTH */
         draw = (state == DRAW);

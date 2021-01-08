@@ -6,7 +6,7 @@ The main modules are as follows:
 
 * Clock Generation: [XC7](xc7/clock_gen.sv) and [iCE40](ice40/clock_gen.sv)
 * [Debounce](debounce.sv) - debounce buttons
-* [Display Timings](display_timings.sv) - 640x480 VGA display timings
+* Display Timings: [640x480p60](display_timings_480p.sv) and [1280x720p60](display_timings_720p.sv)
 * [Linear-Feedback Shift Register](lfsr.sv) - Galois LFSR
 * [Linebuffer](linebuffer.sv) - graphic scaling and CDC
 * [Synchronous ROM](rom_sync.sv)

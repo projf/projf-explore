@@ -1,5 +1,5 @@
 // Project F: FPGA Pong - Top Pong v3 (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -28,18 +28,20 @@ module top_pong_v3 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
-    // size of screen (excluding blanking)
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
     localparam H_RES = 640;
     localparam V_RES = 480;
 
@@ -47,49 +49,51 @@ module top_pong_v3 (
     always_comb animate = (sy == V_RES && sx == 0);
 
     // ball
-    localparam B_SIZE = 8;          // size in pixels
-    logic [CORDW-1:0] bx, by;       // position
-    logic dx, dy;                   // direction: 0 is right/down
-    logic [CORDW-1:0] spx = 10'd6;  // horizontal speed
-    logic [CORDW-1:0] spy = 10'd4;  // vertical speed
-    logic b_draw;                   // draw ball?
+    localparam B_SIZE = 8;      // size in pixels
+    logic [CORDW-1:0] bx, by;   // position
+    logic dx, dy;               // direction: 0 is right/down
+    logic [CORDW-1:0] spx = 6;  // horizontal speed
+    logic [CORDW-1:0] spy = 4;  // vertical speed
+    logic b_draw;               // draw ball?
 
     // paddles
-    localparam P_HEIGHT = 40;       // height in pixels
-    localparam P_WIDTH  = 10;       // width in pixels
-    localparam P_SPEED  = 4;        // speed
-    localparam P_OFFSET = 32;       // offset from screen edge
-    logic [CORDW-1:0] p1y, p2y;     // vertical position of paddles 1 and 2
-    logic p1_draw, p2_draw;         // draw paddles?
-    logic p1_col, p2_col;           // paddle collision?
+    localparam P_H = 40;         // height in pixels
+    localparam P_W = 10;         // width in pixels
+    localparam P_SP = 4;         // speed
+    localparam P_OFFS = 32;      // offset from screen edge
+    logic [CORDW-1:0] p1y, p2y;  // vertical position of paddles 1 and 2
+    logic p1_draw, p2_draw;      // draw paddles?
+    logic p1_col, p2_col;        // paddle collision?
 
     // paddle animation
     always_ff @(posedge clk_pix) begin
         if (animate) begin
             // "AI" paddle 1
-            if ((p1y + P_HEIGHT/2) < by) begin  // top of ball is below
-                if (p1y < V_RES - (P_HEIGHT + P_SPEED)) p1y <= p1y + P_SPEED;  // screen bottom?
-            end
-            if ((p1y + P_HEIGHT/2) > (by + B_SIZE)) begin  // bottom of ball is above
-                if (p1y > P_SPEED) p1y <= p1y - P_SPEED;  // screen top?
+            if ((p1y + P_H/2) + P_SP/2 < (by + B_SIZE/2)) begin
+                if (p1y < V_RES - (P_H + P_SP/2))  // screen bottom?
+                    p1y <= p1y + P_SP;  // move down
+            end else if ((p1y + P_H/2) > (by + B_SIZE/2) + P_SP/2) begin
+                if (p1y > P_SP)  // screen top?
+                    p1y <= p1y - P_SP;  // move up
             end
 
             // "AI" paddle 2
-            if ((p2y + P_HEIGHT/2) < by) begin
-                if (p2y < V_RES - (P_HEIGHT + P_SPEED)) p2y <= p2y + P_SPEED;
-            end
-            if ((p2y + P_HEIGHT/2) > (by + B_SIZE)) begin
-                if (p2y > P_SPEED) p2y <= p2y - P_SPEED;
+            if ((p2y + P_H/2) + P_SP/2 < (by + B_SIZE/2)) begin
+                if (p2y < V_RES - (P_H + P_SP/2))
+                    p2y <= p2y + P_SP;
+            end else if ((p2y + P_H/2) > (by + B_SIZE/2) + P_SP/2) begin
+                if (p2y > P_SP)
+                    p2y <= p2y - P_SP;
             end
         end
     end
 
     // draw paddles - are paddles at current screen position?
     always_comb begin
-        p1_draw = (sx >= P_OFFSET) && (sx < P_OFFSET + P_WIDTH)
-               && (sy >= p1y) && (sy < p1y + P_HEIGHT);
-        p2_draw = (sx >= H_RES - P_OFFSET - P_WIDTH) && (sx < H_RES - P_OFFSET)
-               && (sy >= p2y) && (sy < p2y + P_HEIGHT);
+        p1_draw = (sx >= P_OFFS) && (sx < P_OFFS + P_W)
+               && (sy >= p1y) && (sy < p1y + P_H);
+        p2_draw = (sx >= H_RES - P_OFFS - P_W) && (sx < H_RES - P_OFFS)
+               && (sy >= p2y) && (sy < p2y + P_H);
     end
 
     // paddle collision detection
@@ -138,6 +142,8 @@ module top_pong_v3 (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
         vga_g <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;
         vga_b <= (de && (b_draw | p1_draw | p2_draw)) ? 4'hF : 4'h0;

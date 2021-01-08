@@ -39,7 +39,8 @@ module linebuffer #(
         if (en_out) begin
             cnt_scale <= (cnt_scale == scale_cor-1) ? 0 : cnt_scale + 1;
             /* verilator lint_off WIDTH */
-            if (cnt_scale == scale_cor-1) addr_out <= (addr_out == LEN-1) ? 0 : addr_out + 1;
+            if (cnt_scale == scale_cor-1)
+                addr_out <= (addr_out == LEN-1) ? 0 : addr_out + 1;
             /* verilator lint_on WIDTH */
         end
         if (rst_out) begin  // reset takes precedence

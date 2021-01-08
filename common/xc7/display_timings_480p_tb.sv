@@ -1,11 +1,11 @@
-// Project F: 640x480 Display Timings Test Bench (XC7)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// Project F: 640x480p60 Display Timings Test Bench (XC7)
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module display_timings_tb();
+module display_timings_480p_tb();
 
     parameter CLK_PERIOD = 10;  // 10 ns == 100 MHz
 
@@ -24,9 +24,8 @@ module display_timings_tb();
 
     // display timings
     logic [9:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),
         .sx,
