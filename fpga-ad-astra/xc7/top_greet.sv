@@ -28,14 +28,14 @@ module top_greet (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -129,7 +129,8 @@ module top_greet (
     always_comb begin
         spr_y_cor[0] = (spr_y[0] == 0) ? V_RES_FULL - 1 : spr_y[0] - 1;
         spr_y_cor[1] = (spr_y[1] == 0) ? V_RES_FULL - 1 : spr_y[1] - 1;
-        spr_start = (sy < LINE2) ? (sy == spr_y_cor[0] && sx == 0) : (sy == spr_y_cor[1] && sx == 0);
+        spr_start = (sy < LINE2) ? (sy == spr_y_cor[0] && sx == 0) :
+                                   (sy == spr_y_cor[1] && sx == 0);
     end
 
     integer i;  // for looping over sprite signals
@@ -141,7 +142,9 @@ module top_greet (
         msg_start = greeting * GREET_LENGTH;  // calculate start of message
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             /* verilator lint_off WIDTH */
-            if (sx == H_RES+i) greet_rom_addr = (sy < LINE2) ? (msg_start+i) : (msg_start+i+GREET_LENGTH/2);
+            if (sx == H_RES+i)
+                greet_rom_addr = (sy < LINE2) ? (msg_start+i) :
+                                                (msg_start+i+GREET_LENGTH/2);
             /* verilator lint_on WIDTH */
         end
     end
@@ -166,7 +169,8 @@ module top_greet (
             /* verilator lint_off WIDTH */
             spr_fdma[i] = (sx == H_RES+i+2);  // wait two cycles
             spr_glyph_addr[i] = (spr_cp[i] - CP_START) * FONT_HEIGHT;
-            if (spr_fdma[i]) font_rom_addr = spr_glyph_addr[i] + spr_glyph_line[i];
+            if (spr_fdma[i])
+                font_rom_addr = spr_glyph_addr[i] + spr_glyph_line[i];
             /* verilator lint_on WIDTH */
         end
     end
@@ -196,7 +200,7 @@ module top_greet (
             .pos(spr_glyph_line[m]),
             .pix(spr_pix[m]),
             /* verilator lint_off PINCONNECTEMPTY */
-            .draw(),
+            .drawing(),
             .done()
             /* verilator lint_on PINCONNECTEMPTY */
         );
@@ -270,6 +274,8 @@ module top_greet (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= de ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
         vga_g <= de ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
         vga_b <= de ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;

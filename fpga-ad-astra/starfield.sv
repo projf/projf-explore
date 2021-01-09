@@ -1,5 +1,5 @@
 // Project F: FPGA Ad Astra - Starfield
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -19,7 +19,7 @@ module starfield #(
     output      logic [7:0] sf_star  // star brightness
     );
 
-    localparam RST_CNT = H * V + INC - 1;  // counter starts at zero, so subtract 1
+    localparam RST_CNT = H * V + INC - 1;  // counter starts at zero, so sub 1
     logic [20:0] sf_reg, sf_cnt;
 
     always_ff @(posedge clk) begin

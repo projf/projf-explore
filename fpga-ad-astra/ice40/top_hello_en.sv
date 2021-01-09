@@ -30,9 +30,8 @@ module top_hello_en (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -118,11 +117,16 @@ module top_hello_en (
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             spr_fdma[i] = (sx == H_RES+i);
         end
-        if (spr_fdma[0]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[0] + spr_glyph_line_0;
-        if (spr_fdma[1]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[1] + spr_glyph_line_1;
-        if (spr_fdma[2]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[2] + spr_glyph_line_2;
-        if (spr_fdma[3]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[3] + spr_glyph_line_3;
-        if (spr_fdma[4]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[4] + spr_glyph_line_4;
+        if (spr_fdma[0])
+            font_rom_addr = FONT_HEIGHT * spr_cp_norm[0] + spr_glyph_line_0;
+        if (spr_fdma[1])
+            font_rom_addr = FONT_HEIGHT * spr_cp_norm[1] + spr_glyph_line_1;
+        if (spr_fdma[2])
+            font_rom_addr = FONT_HEIGHT * spr_cp_norm[2] + spr_glyph_line_2;
+        if (spr_fdma[3])
+            font_rom_addr = FONT_HEIGHT * spr_cp_norm[3] + spr_glyph_line_3;
+        if (spr_fdma[4])
+            font_rom_addr = FONT_HEIGHT * spr_cp_norm[4] + spr_glyph_line_4;
         /* verilator lint_on WIDTH */
     end
 
@@ -149,7 +153,7 @@ module top_hello_en (
         .pos(spr_glyph_line_0),
         .pix(spr_pix[0]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -173,7 +177,7 @@ module top_hello_en (
         .pos(spr_glyph_line_1),
         .pix(spr_pix[1]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -197,7 +201,7 @@ module top_hello_en (
         .pos(spr_glyph_line_2),
         .pix(spr_pix[2]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -221,7 +225,7 @@ module top_hello_en (
         .pos(spr_glyph_line_3),
         .pix(spr_pix[3]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -245,7 +249,7 @@ module top_hello_en (
         .pos(spr_glyph_line_4),
         .pix(spr_pix[4]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );

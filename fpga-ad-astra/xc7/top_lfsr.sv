@@ -28,16 +28,22 @@ module top_lfsr (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
+
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
     logic sf_area;
     always_comb sf_area = (sx < 512 && sy < 256);
@@ -62,6 +68,8 @@ module top_lfsr (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
         vga_g <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;
         vga_b <= (de && sf_area && star) ? sf_reg[3:0] : 4'h0;

@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Top David v2 (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -28,13 +28,14 @@ module top_david_v2 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    display_timings timings_640x480 (
+    logic hsync, vsync;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         /* verilator lint_off PINCONNECTEMPTY */
         .de()
         /* verilator lint_on PINCONNECTEMPTY */
@@ -86,21 +87,27 @@ module top_david_v2 (
         end
     end
 
-    // Colour Lookup Table
-    logic [11:0] clut [16];  // 16 x 12-bit colour palette entries
-    initial begin
-        $display("Loading palette '%s' into CLUT.", FB_PALETTE);
-        $readmemh(FB_PALETTE, clut);  // load palette into CLUT
-    end
+    // colour lookup table (ROM) 16x12-bit entries
+    logic [11:0] clut_colr;
+    rom_async #(
+        .WIDTH(12),
+        .DEPTH(16),
+        .INIT_F(FB_PALETTE)
+    ) clut (
+        .addr(colr_idx),
+        .data(clut_colr)
+    );
 
     // map colour index to palette using CLUT
     logic [3:0] red, green, blue;   // pixel colour components
     always_comb begin
-        {red, green, blue} = clut[colr_idx];
+        {red, green, blue} = clut_colr;
     end
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= fb_active ? red   : 4'h0;
         vga_g <= fb_active ? green : 4'h0;
         vga_b <= fb_active ? blue  : 4'h0;

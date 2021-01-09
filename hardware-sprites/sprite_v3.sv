@@ -23,14 +23,17 @@ module sprite_v3 #(
     output      logic pix                // pixel colour to draw
     );
 
-    localparam BPP = 1;  // bits per pixel
-    logic [$clog2(DEPTH)-1:0] addr;  // ROM address (pixel position)
-    logic data;  // ROM data (pixel colour)
+    // sprite graphic ROM
+    logic [$clog2(DEPTH)-1:0] spr_rom_addr;  // pixel position
+    logic spr_rom_data;  // pixel colour
     rom_async #(
-        .WIDTH(BPP),
+        .WIDTH(1),  // 1 bit per pixel
         .DEPTH(DEPTH),
         .INIT_F(SPR_FILE)
-    ) spr_rom ( .* );
+    ) spr_rom (
+        .addr(spr_rom_addr),
+        .data(spr_rom_data)
+    );
 
     // position within sprite
     logic [$clog2(WIDTH)-1:0]  ox;
@@ -55,7 +58,7 @@ module sprite_v3 #(
             START: begin
                 oy <= 0;
                 cnt_y <= 0;
-                addr <= 0;
+                spr_rom_addr <= 0;
             end
             AWAIT_POS: begin
                 ox <= 0;
@@ -65,7 +68,7 @@ module sprite_v3 #(
                 if (SCALE_X <= 1 || cnt_x == SCALE_X-1) begin
                     ox <= ox + 1;
                     cnt_x <= 0;
-                    addr <= addr + 1;
+                    spr_rom_addr <= spr_rom_addr + 1;
                 end else begin
                     cnt_x <= cnt_x + 1;
                 end
@@ -76,7 +79,7 @@ module sprite_v3 #(
                     cnt_y <= 0;
                 end else begin
                     cnt_y <= cnt_y + 1;
-                    addr <= addr - WIDTH;  // go back to start of line
+                    spr_rom_addr <= spr_rom_addr - WIDTH;  // restart line
                 end
             end
         endcase
@@ -87,13 +90,13 @@ module sprite_v3 #(
             oy <= 0;
             cnt_x <= 0;
             cnt_y <= 0;
-            addr <= 0;
+            spr_rom_addr <= 0;
         end
     end
 
     // output current pixel colour when drawing
     always_comb begin
-        pix = (state == DRAW) ? data : 0;
+        pix = (state == DRAW) ? spr_rom_data : 0;
     end
 
     // create status signals and correct horizontal position
@@ -113,7 +116,8 @@ module sprite_v3 #(
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
             AWAIT_POS:  state_next = (sx == sprx_cor) ? DRAW : AWAIT_POS;
-            DRAW:       state_next = !last_pixel ? DRAW : (!last_line ? NEXT_LINE : IDLE);
+            DRAW:       state_next = !last_pixel ? DRAW :
+                                    (!last_line ? NEXT_LINE : IDLE);
             NEXT_LINE:  state_next = AWAIT_POS;
             default:    state_next = IDLE;
         endcase

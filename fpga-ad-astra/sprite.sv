@@ -24,8 +24,8 @@ module sprite #(
     input  wire logic [WIDTH-1:0] data_in,  // data from external memory
     output      logic [ADDRW-1:0] pos,      // sprite line position
     output      logic pix,                  // pixel colour to draw (0 or 1)
-    output      logic draw,                 // signal sprite is drawing
-    output      logic done                  // signal sprite drawing is complete
+    output      logic drawing,              // sprite is drawing
+    output      logic done                  // sprite drawing is complete
     );
 
     logic [WIDTH-1:0] spr_line;  // local copy of sprite line
@@ -54,52 +54,48 @@ module sprite #(
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state
 
-        if (state == START) begin
-            done <= 0;
-            oy <= 0;
-            cnt_y <= 0;
-            pos <= 0;
-        end
-
-        if (state == READ_MEM) begin
-            if (LSB) begin
-                spr_line <= data_in;  // NB. Assumes read takes one clock cycle
-            end else begin  // reverse if MSB is left-most pixel
-                for (i=0; i<WIDTH; i=i+1) spr_line[i] <= data_in[(WIDTH-1)-i];
-            end
-         end
-
-        if (state == AWAIT_POS) begin
-            ox <= 0;
-            cnt_x <= 0;
-        end
-
-        if (state == DRAW) begin
-            /* verilator lint_off WIDTH */
-            if (SCALE_X <= 1 || cnt_x == SCALE_X-1) begin
-            /* verilator lint_on WIDTH */
-                ox <= ox + 1;
-                cnt_x <= 0;
-            end else begin
-                cnt_x <= cnt_x + 1;
-            end
-        end
-
-        if (state == NEXT_LINE) begin
-            /* verilator lint_off WIDTH */
-            if (SCALE_Y <= 1 || cnt_y == SCALE_Y-1) begin
-            /* verilator lint_on WIDTH */
-                oy <= oy + 1;
+        case (state)
+            START: begin
+                done <= 0;
+                oy <= 0;
                 cnt_y <= 0;
-                pos <= pos + 1;
-            end else begin
-                cnt_y <= cnt_y + 1;
+                pos <= 0;
             end
-        end
-
-        if (state == DONE) begin
-            done <= 1;
-        end
+            READ_MEM: begin
+                if (LSB) begin
+                    spr_line <= data_in;  // Assumes read takes one clock cycle
+                end else begin  // reverse if MSB is left-most pixel
+                    for (i=0; i<WIDTH; i=i+1)
+                        spr_line[i] <= data_in[(WIDTH-1)-i];
+                end
+            end
+            AWAIT_POS: begin
+                ox <= 0;
+                cnt_x <= 0;
+            end
+            DRAW: begin
+                /* verilator lint_off WIDTH */
+                if (SCALE_X <= 1 || cnt_x == SCALE_X-1) begin
+                /* verilator lint_on WIDTH */
+                    ox <= ox + 1;
+                    cnt_x <= 0;
+                end else begin
+                    cnt_x <= cnt_x + 1;
+                end
+            end
+            NEXT_LINE: begin
+                /* verilator lint_off WIDTH */
+                if (SCALE_Y <= 1 || cnt_y == SCALE_Y-1) begin
+                /* verilator lint_on WIDTH */
+                    oy <= oy + 1;
+                    cnt_y <= 0;
+                    pos <= pos + 1;
+                end else begin
+                    cnt_y <= cnt_y + 1;
+                end
+            end
+            DONE: done <= 1;
+        endcase
 
         if (rst) begin
             state <= IDLE;
@@ -127,7 +123,7 @@ module sprite #(
         load_line  = (cnt_y == SCALE_Y-1);
         last_line  = (oy == HEIGHT-1 && cnt_y == SCALE_Y-1);
         /* verilator lint_on WIDTH */
-        draw = (state == DRAW);
+        drawing = (state == DRAW);
 
         // BRAM adds an extra cycle of latency
         case (sprx)
@@ -139,13 +135,14 @@ module sprite #(
 
     // determine next state
     always_comb begin
-        case(state)
+        case (state)
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_DMA;
             AWAIT_DMA:  state_next = dma_avail ? READ_MEM : AWAIT_DMA;
             READ_MEM:   state_next = AWAIT_POS;
             AWAIT_POS:  state_next = (sx == sprx_cor) ? DRAW : AWAIT_POS;
-            DRAW:       state_next = !last_pixel ? DRAW : (!last_line ? NEXT_LINE : DONE);
+            DRAW:       state_next = !last_pixel ? DRAW :
+                                    (!last_line ? NEXT_LINE : DONE);
             NEXT_LINE:  state_next = load_line ? AWAIT_DMA : AWAIT_POS;
             DONE:       state_next = IDLE;
             default:    state_next = IDLE;

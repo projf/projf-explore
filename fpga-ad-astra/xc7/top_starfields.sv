@@ -29,17 +29,22 @@ module top_starfields (
     localparam CORDW = 10;  // screen coordinate width in bits
     /* verilator lint_off UNUSED */
     logic [CORDW-1:0] sx, sy;
-    /* verilator lint_on UNUSED */
-    logic de;
-    display_timings timings_640x480 (
+    /* verilator lint_on UNUSED */    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
+
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
     // starfields
     logic sf1_on, sf2_on, sf3_on;
@@ -81,6 +86,8 @@ module top_starfields (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= de ? starlight : 4'h0;
         vga_g <= de ? starlight : 4'h0;
         vga_b <= de ? starlight : 4'h0;

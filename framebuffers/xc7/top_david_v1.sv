@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Top David v1 (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -28,13 +28,14 @@ module top_david_v1 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    display_timings timings_640x480 (
+    logic hsync, vsync;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         /* verilator lint_off PINCONNECTEMPTY */
         .de()
         /* verilator lint_on PINCONNECTEMPTY */
@@ -87,6 +88,8 @@ module top_david_v1 (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= (fb_active && colr) ? 4'hF : 4'h0;
         vga_g <= (fb_active && colr) ? 4'hF : 4'h0;
         vga_b <= (fb_active && colr) ? 4'hF : 4'h0;

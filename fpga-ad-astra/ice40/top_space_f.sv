@@ -30,9 +30,8 @@ module top_space_f (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -119,7 +118,7 @@ module top_space_f (
         .pos(spr_glyph_line),
         .pix(spr_pix),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );

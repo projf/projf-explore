@@ -30,9 +30,8 @@ module top_greet_v1 (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -132,7 +131,8 @@ module top_greet_v1 (
     always_comb begin
         spr_y_cor[0] = (spr_y[0] == 0) ? V_RES_FULL - 1 : spr_y[0] - 1;
         spr_y_cor[1] = (spr_y[1] == 0) ? V_RES_FULL - 1 : spr_y[1] - 1;
-        spr_start = (sy < LINE2) ? (sy == spr_y_cor[0] && sx == 0) : (sy == spr_y_cor[1] && sx == 0);
+        spr_start = (sy < LINE2) ? (sy == spr_y_cor[0] && sx == 0) :
+                                   (sy == spr_y_cor[1] && sx == 0);
     end
 
     integer i;  // for looping over sprite signals
@@ -144,7 +144,9 @@ module top_greet_v1 (
         msg_start = greeting * GREET_LENGTH;  // calculate start of message
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             /* verilator lint_off WIDTH */
-            if (sx == H_RES+i) greet_rom_addr = (sy < LINE2) ? (msg_start+i) : (msg_start+i+GREET_LENGTH/2);
+            if (sx == H_RES+i)
+                greet_rom_addr = (sy < LINE2) ? (msg_start+i) :
+                                                (msg_start+i+GREET_LENGTH/2);
             /* verilator lint_on WIDTH */
         end
     end
@@ -211,7 +213,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_0),
         .pix(spr_pix[0]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -235,7 +237,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_1),
         .pix(spr_pix[1]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -259,7 +261,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_2),
         .pix(spr_pix[2]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -283,7 +285,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_3),
         .pix(spr_pix[3]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -307,7 +309,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_4),
         .pix(spr_pix[4]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -331,7 +333,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_5),
         .pix(spr_pix[5]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -355,7 +357,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_6),
         .pix(spr_pix[6]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -379,7 +381,7 @@ module top_greet_v1 (
         .pos(spr_glyph_line_7),
         .pix(spr_pix[7]),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );

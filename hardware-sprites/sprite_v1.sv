@@ -20,14 +20,17 @@ module sprite_v1 #(
     output      logic pix                // pixel colour to draw
     );
 
-    localparam BPP = 1;  // bits per pixel
-    logic [$clog2(DEPTH)-1:0] addr;  // ROM address (pixel position)
-    logic data;  // ROM data (pixel colour)
+    // sprite graphic ROM
+    logic [$clog2(DEPTH)-1:0] spr_rom_addr;  // pixel position
+    logic spr_rom_data;  // pixel colour
     rom_async #(
-        .WIDTH(BPP),
+        .WIDTH(1),  // 1 bit per pixel
         .DEPTH(DEPTH),
         .INIT_F(SPR_FILE)
-    ) spr_rom ( .* );
+    ) spr_rom (
+        .addr(spr_rom_addr),
+        .data(spr_rom_data)
+    );
 
     // position within sprite
     logic [$clog2(WIDTH)-1:0]  ox;
@@ -47,12 +50,12 @@ module sprite_v1 #(
         case (state)
             START: begin
                 oy <= 0;
-                addr <= 0;
+                spr_rom_addr <= 0;
             end
             AWAIT_POS: ox <= 0;
             DRAW: begin
                 ox <= ox + 1;
-                addr <= addr + 1;
+                spr_rom_addr <= spr_rom_addr + 1;
             end
             NEXT_LINE: oy <= oy + 1;
         endcase
@@ -61,13 +64,13 @@ module sprite_v1 #(
             state <= IDLE;
             ox <= 0;
             oy <= 0;
-            addr <= 0;
+            spr_rom_addr <= 0;
         end
     end
 
     // output current pixel colour when drawing
     always_comb begin
-        pix = (state == DRAW) ? data : 0;
+        pix = (state == DRAW) ? spr_rom_data : 0;
     end
 
     // create status signals
@@ -85,7 +88,8 @@ module sprite_v1 #(
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
             AWAIT_POS:  state_next = (sx == sprx) ? DRAW : AWAIT_POS;
-            DRAW:       state_next = !last_pixel ? DRAW : (!last_line ? NEXT_LINE : IDLE);
+            DRAW:       state_next = !last_pixel ? DRAW :
+                                     (!last_line ? NEXT_LINE : IDLE);
             NEXT_LINE:  state_next = AWAIT_POS;
             default:    state_next = IDLE;
         endcase

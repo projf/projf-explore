@@ -32,9 +32,8 @@ module top_starfields (
     /* verilator lint_off UNUSED */
     logic [CORDW-1:0] sx, sy;
     /* verilator lint_on UNUSED */
-    logic hsync, vsync;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -43,6 +42,12 @@ module top_starfields (
         .vsync,
         .de
     );
+
+    // size of screen with and without blanking
+    localparam H_RES_FULL = 800;
+    localparam V_RES_FULL = 525;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
 
     // starfields
     logic sf1_on, sf2_on, sf3_on;

@@ -28,14 +28,14 @@ module top_hello_jp (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -110,7 +110,8 @@ module top_hello_jp (
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             /* verilator lint_off WIDTH */
             spr_fdma[i] = (sx == H_RES+i);
-            if (spr_fdma[i]) font_rom_addr = FONT_HEIGHT * spr_cp_norm[i] + spr_glyph_line[i];
+            if (spr_fdma[i])
+                font_rom_addr = FONT_HEIGHT*spr_cp_norm[i] + spr_glyph_line[i];
             /* verilator lint_on WIDTH */
         end
     end
@@ -140,7 +141,7 @@ module top_hello_jp (
             .pos(spr_glyph_line[m]),
             .pix(spr_pix[m]),
             /* verilator lint_off PINCONNECTEMPTY */
-            .draw(),
+            .drawing(),
             .done()
             /* verilator lint_on PINCONNECTEMPTY */
         );
@@ -187,6 +188,8 @@ module top_hello_jp (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= de ? (spr_pix != 0) ? red_spr   : starlight : 4'h0;
         vga_g <= de ? (spr_pix != 0) ? green_spr : starlight : 4'h0;
         vga_b <= de ? (spr_pix != 0) ? blue_spr  : starlight : 4'h0;

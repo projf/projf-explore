@@ -23,8 +23,8 @@ module sprite #(
     input  wire logic [COLR_BITS-1:0] data_in,  // data from external memory
     output      logic [ADDRW-1:0] pos,          // sprite pixel position
     output      logic [COLR_BITS-1:0] pix,      // pixel colour to draw
-    output      logic draw,                     // signal sprite is drawing
-    output      logic done                      // signal sprite drawing is complete
+    output      logic drawing,                  // sprite is drawing
+    output      logic done                      // sprite drawing is complete
     );
 
     // position within sprite
@@ -107,7 +107,7 @@ module sprite #(
         last_pixel = (ox == WIDTH-1  && cnt_x == SCALE_X-1);
         last_line  = (oy == HEIGHT-1 && cnt_y == SCALE_Y-1);
         /* verilator lint_on WIDTH */
-        draw = (state == DRAW);
+        drawing = (state == DRAW);
 
         // BRAM adds an extra cycle of latency
         case (sprx)
@@ -123,7 +123,8 @@ module sprite #(
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
             AWAIT_POS:  state_next = (sx == sprx_cor) ? DRAW : AWAIT_POS;
-            DRAW:       state_next = !last_pixel ? DRAW : (!last_line ? NEXT_LINE : DONE);
+            DRAW:       state_next = !last_pixel ? DRAW :
+                                    (!last_line ? NEXT_LINE : DONE);
             NEXT_LINE:  state_next = AWAIT_POS;
             DONE:       state_next = IDLE;
             default:    state_next = IDLE;

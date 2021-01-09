@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Top Earth (Arty with Pmod VGA)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -28,14 +28,14 @@ module top_earth (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -74,10 +74,10 @@ module top_earth (
     );
 
     // linebuffer (LB)
-    localparam LB_SCALE_V = 2;                // factor to scale vertical drawing
-    localparam LB_SCALE_H = 2;                // factor to scale horizontal drawing
-    localparam LB_LEN  = 640 / LB_SCALE_H;    // line length
-    localparam LB_WIDTH = 4;                  // bits per colour channel
+    localparam LB_SCALE_V = 2;               // scale vertical drawing
+    localparam LB_SCALE_H = 2;               // scale horizontal drawing
+    localparam LB_LEN = H_RES / LB_SCALE_H;  // line length
+    localparam LB_WIDTH = 4;                 // bits per colour channel
 
     // LB data in from FB
     logic lb_en_in, lb_en_in_1;  // allow for BRAM latency correction
@@ -91,18 +91,19 @@ module top_earth (
     logic [$clog2(LB_SCALE_V):0] cnt_scale_v;
     always_ff @(posedge clk_pix) begin
         /* verilator lint_off WIDTH */
-        if (sx == 0) cnt_scale_v <= (cnt_scale_v == scale_v_cor-1) ? 0 : cnt_scale_v + 1;
+        if (sx == 0)
+            cnt_scale_v <= (cnt_scale_v == scale_v_cor-1) ? 0 : cnt_scale_v + 1;
         /* verilator lint_on WIDTH */
-        if (sy == V_RES_FULL-1) cnt_scale_v <= 0;  // reset count in final blanking line
+        if (sy == V_RES_FULL-1) cnt_scale_v <= 0;
     end
 
     logic [$clog2(FB_WIDTH)-1:0] fb_h_cnt;  // counter for FB pixels on line
     always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1 && sx == H_RES-1) fb_addr_read <= 0;  // reset on last frame line
+        if (sy == V_RES_FULL-1 && sx == H_RES-1) fb_addr_read <= 0;
 
-        // reset the horizontal counter at the start of blanking on reading lines
+        // reset horizontal counter at the start of blanking on reading lines
         if (cnt_scale_v == 0 && sx == H_RES) begin
-            if (fb_addr_read < FB_PIXELS-1) fb_h_cnt <= 0;  // if we've not read all pixels
+            if (fb_addr_read < FB_PIXELS-1) fb_h_cnt <= 0;  // read all pixels?
         end
 
         // read each pixel on FB line and write to LB
@@ -140,20 +141,26 @@ module top_earth (
         .data_out_2(lb_out_2)
     );
 
-    // colour lookup table (CLUT)
-    logic [11:0] clut [64];  // 64 x 12-bit colour palette entries
-    initial begin
-        $display("Loading palette '%s' into CLUT.", FB_PALETTE);
-        $readmemh(FB_PALETTE, clut);  // load palette into CLUT
-    end
+    // colour lookup table (ROM) 64x12-bit entries
+    logic [11:0] clut_colr;
+    rom_async #(
+        .WIDTH(12),
+        .DEPTH(64),
+        .INIT_F(FB_PALETTE)
+    ) clut (
+        .addr(colr_idx),
+        .data(clut_colr)
+    );
 
-    // map colour index to palette using CLUT and read into linebuffer
+    // map colour index to palette using CLUT and read into LB
     always_ff @(posedge clk_pix) begin
-        {lb_in_2, lb_in_1, lb_in_0} <= clut[colr_idx];
+        {lb_in_2, lb_in_1, lb_in_0} <= clut_colr;
     end
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= de ? lb_out_2 : 4'h0;
         vga_g <= de ? lb_out_1 : 4'h0;
         vga_b <= de ? lb_out_0 : 4'h0;

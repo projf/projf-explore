@@ -1,5 +1,5 @@
 # Project F: FPGA Ad Astra - Create Vivado Project
-# (C)2020 Will Green, open source hardware released under the MIT License
+# (C)2021 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - FPGA Ad Astra Project Creation Script"
@@ -56,7 +56,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${origin_dir}/sprite.sv"] \
   [file normalize "${origin_dir}/starfield.sv"] \
-  [file normalize "${common_dir}/display_timings.sv"] \
+  [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/lfsr.sv"] \
   [file normalize "${common_dir}/rom_sync.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \

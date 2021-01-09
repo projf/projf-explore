@@ -65,10 +65,10 @@ module top_hedgehog (
     localparam SPR_DEPTH  = SPR_PIXELS * SPR_FRAMES;
     localparam SPR_ADDRW  = $clog2(SPR_DEPTH);
 
-    logic spr_start, spr_draw;
+    logic spr_start, spr_drawing;
     logic [COLR_BITS-1:0] spr_pix;
 
-    // sprite ROM
+    // sprite graphic ROM
     logic [COLR_BITS-1:0] spr_rom_data;
     logic [SPR_ADDRW-1:0] spr_rom_addr, spr_base_addr;
     rom_sync #(
@@ -133,7 +133,7 @@ module top_hedgehog (
         .data_in(spr_rom_data),
         .pos(spr_rom_addr),
         .pix(spr_pix),
-        .draw(spr_draw),
+        .drawing(spr_drawing),
         /* verilator lint_off PINCONNECTEMPTY */
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
@@ -152,13 +152,11 @@ module top_hedgehog (
         else if (sy < 320) bg_colr = 12'h2BF;
     end
 
-    // colour lookup table (ROM)
-    localparam CLUT_ENTRIES = 11;
-    localparam BPP = 12;  // bits per pixel
-    logic [BPP-1:0] clut_colr;
+    // colour lookup table (ROM) 11x12-bit entries
+    logic [11:0] clut_colr;
     rom_async #(
-        .WIDTH(BPP),
-        .DEPTH(CLUT_ENTRIES),
+        .WIDTH(12),
+        .DEPTH(11),
         .INIT_F(SPR_PALETTE)
     ) clut (
         .addr(spr_pix),
@@ -174,9 +172,9 @@ module top_hedgehog (
         spr_trans = (spr_pix == SPR_TRANS);
         {red_spr, green_spr, blue_spr} = clut_colr;
         {red_bg,  green_bg,  blue_bg}  = bg_colr;
-        red   = (spr_draw && !spr_trans) ? red_spr   : red_bg;
-        green = (spr_draw && !spr_trans) ? green_spr : green_bg;
-        blue  = (spr_draw && !spr_trans) ? blue_spr  : blue_bg;
+        red   = (spr_drawing && !spr_trans) ? red_spr   : red_bg;
+        green = (spr_drawing && !spr_trans) ? green_spr : green_bg;
+        blue  = (spr_drawing && !spr_trans) ? blue_spr  : blue_bg;
     end
 
     // Output DVI clock: 180° out of phase with other DVI signals

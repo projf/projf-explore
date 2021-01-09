@@ -28,14 +28,14 @@ module top_space_f (
     // display timings
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    display_timings timings_640x480 (
+    logic hsync, vsync, de;
+    display_timings_480p timings_640x480 (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
-        .hsync(vga_hsync),
-        .vsync(vga_vsync),
+        .hsync,
+        .vsync,
         .de
     );
 
@@ -116,7 +116,7 @@ module top_space_f (
         .pos(spr_glyph_line),
         .pix(spr_pix),
         /* verilator lint_off PINCONNECTEMPTY */
-        .draw(),
+        .drawing(),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -162,6 +162,8 @@ module top_space_f (
 
     // VGA output
     always_ff @(posedge clk_pix) begin
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
         vga_r <= de ? spr_pix ? red_spr   : starlight : 4'h0;
         vga_g <= de ? spr_pix ? green_spr : starlight : 4'h0;
         vga_b <= de ? spr_pix ? blue_spr  : starlight : 4'h0;
