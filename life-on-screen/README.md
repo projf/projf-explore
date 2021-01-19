@@ -1,6 +1,6 @@
 # Life on Screen
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**.
 
 These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
 

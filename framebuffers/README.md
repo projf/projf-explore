@@ -1,6 +1,6 @@
 # Framebuffers
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**. 
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**.
 
 These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
 
