@@ -1,19 +1,21 @@
 # Life on Screen
 
-This folder contains the SystemVerilog designs to accompany Project F **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
+
+All the designs are under the permissive [MIT licence](../LICENSE), but the blog post is subject to normal copyright restrictions. The fonts included in this project are under different licences: see the individual font*.mem files for details.
 
 ## iCEBreaker Build
 
 Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
 
-## Vivado Project
+## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
 
 ```tcl
-cd xc7/vivado
+cd projf-explore/life-on-screen/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -28,7 +30,7 @@ launch_simulation
 run all
 ```
 
-You should add the `memory[0:71]` object from the `bmp_life` instance, so you can see the simulation update.
+In the waveform view, you should add the `memory[0:71]` object from the `bmp_life` instance, so you can see the simulation update.
 
 ### Other Xilinx Series 7 Boards
 
@@ -41,7 +43,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd xc7/vivado
+cd projf-explore/life-on-screen/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -49,4 +51,4 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Linting
 
-If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs.
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs. Learn more from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).

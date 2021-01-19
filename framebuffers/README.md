@@ -1,17 +1,19 @@
 # Framebuffers
 
-This folder contains the SystemVerilog designs to accompany Project F **[Framebuffers](https://projectf.io/posts/framebuffers/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**. 
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
+
+All the designs are under the permissive [MIT licence](../LICENSE), but the blog post is subject to normal copyright restrictions. The fonts included in this project are under different licences: see the individual font*.mem files for details.
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker with the included makefile. You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details.
+You can build projects for iCEBreaker using the included [makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
 
-For example, to build `top_david_fizzle`:
+For example, to build `top_david_fizzle`; clone the projf-explore git repo, then:
 
 ```bash
-cd ice40
+cd projf-explore/framebuffers/ice40
 make top_david_fizzle
 ```
 
@@ -21,22 +23,22 @@ After the build completes you'll have a bin file, such as `top_david_fizzle.bin`
 iceprog top_david_fizzle.bin
 ```
 
-Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
 ### Problems Building
 
 If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
-## Vivado Project
+## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
 
 ```tcl
-cd xc7/vivado
+cd projf-explore/framebuffers/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_david` or `top_earth`. as you would for any Vivado project.
+You can then build `top_david` or `top_line`. as you would for any Vivado project.
 
 ### Simulation
 
@@ -58,7 +60,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd xc7/vivado
+cd projf-explore/framebuffers/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -66,4 +68,4 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Linting
 
-If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs.
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs. Learn more from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
