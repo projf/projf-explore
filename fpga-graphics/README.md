@@ -8,7 +8,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker board with the included [makefile](ice40/Makefile). You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details. You'll also need the [DVI Pmod](https://docs.icebreaker-fpga.org/hardware/pmod/dvi/) to drive your screen.
+You can build projects for iCEBreaker using the included [makefile](ice40/Makefile) with Yosys, nextpnr, and IceStorm Tools. If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
 
 For example, to build `top_bounce`; clone the projf-explore git repo, then:
 
@@ -38,7 +38,7 @@ cd projf-explore/fpga-graphics/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project. You'll also need the [Pmod VGA](https://reference.digilentinc.com/reference/pmod/pmodvga/reference-manual) to drive your screen.
+You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project.
 
 ### Simulation
 
