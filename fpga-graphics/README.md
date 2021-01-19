@@ -1,27 +1,29 @@
 # Exploring FPGA Graphics
 
-This folder contains the SystemVerilog designs to accompany Project F **[Exploring FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**. All the designs are under the permissive [MIT licence](../LICENSE), but the blog posts themselves are subject to normal copyright restrictions.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Exploring FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
+
+All the designs are under the permissive [MIT licence](../LICENSE), but the blog post is subject to normal copyright restrictions.
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker with the included makefile. You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details.
+You can build projects for iCEBreaker board with the included [makefile](ice40/Makefile). You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details. You'll also need the [DVI Pmod](https://docs.icebreaker-fpga.org/hardware/pmod/dvi/) to drive your screen.
 
-For example, to build `top_bounce`:
+For example, to build `top_bounce`; clone the projf-explore git repo, then:
 
 ```bash
-cd ice40
+cd projf-explore/fpga-graphics/ice40
 make top_bounce
 ```
 
-After the build completes you'll have bin file, such as `top_bounce.bin`. Use the bin file to program your board:
+After the build completes you'll have a bin file, such as `top_bounce.bin`. Use the bin file to program your board:
 
 ```bash
 iceprog top_bounce.bin
 ```
 
-Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
 ### Problems Building
 
@@ -29,14 +31,14 @@ If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too o
 
 ## Vivado Project
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
 
 ```tcl
-cd xc7/vivado
+cd projf-explore/fpga-graphics/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project.
+You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project. You'll also need the [Pmod VGA](https://reference.digilentinc.com/reference/pmod/pmodvga/reference-manual) to drive your screen.
 
 ### Simulation
 
@@ -67,7 +69,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd xc7/vivado
+cd projf-explore/fpga-graphics/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -89,4 +91,4 @@ $ ./fpga-graphics/lint.sh
 ##   Checking ./fpga-graphics/ice40/top_square.sv
 ```
 
-You can learn more about linting from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
+You can learn more about this from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
