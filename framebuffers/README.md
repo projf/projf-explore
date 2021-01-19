@@ -6,7 +6,26 @@ These designs make use of Project F [common modules](../common/), such as clock 
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
+You can build projects for iCEBreaker with the included makefile. You need the iCE40 toolchain installed, see [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/) for details.
+
+For example, to build `top_david_fizzle`:
+
+```bash
+cd ice40
+make top_david_fizzle
+```
+
+After the build completes you'll have a bin file, such as `top_david_fizzle.bin`. Use the bin file to program your board:
+
+```bash
+iceprog top_david_fizzle.bin
+```
+
+Try running `iceprog` with `sudo` if you get the error `Can't find iCE FTDI USB device`.
+
+### Problems Building
+
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Vivado Project
 

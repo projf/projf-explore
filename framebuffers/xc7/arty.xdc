@@ -1,5 +1,5 @@
 ## Project F: Framebuffers - Arty A7-35 Vivado Board Constraints
-## (C)2020 Will Green, open source hardware released under the MIT License
+## (C)2021 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
 ## FPGA Configuration I/O Options

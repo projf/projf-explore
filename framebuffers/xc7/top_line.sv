@@ -1,11 +1,11 @@
-// Project F: Framebuffers - Top David v1 (Arty with Pmod VGA)
+// Project F: Framebuffers - Top Line (Arty with Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_david_v1 (
+module top_line (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -53,7 +53,6 @@ module top_david_v1 (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
     localparam FB_DATAW  = 1;  // colour bits per pixel
-    localparam FB_IMAGE  = "david_1bit.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -61,8 +60,7 @@ module top_david_v1 (
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
-        .DEPTH(FB_PIXELS),
-        .INIT_F(FB_IMAGE)
+        .DEPTH(FB_PIXELS)
     ) framebuffer (
         .clk_write(clk_pix),
         .clk_read(clk_pix),

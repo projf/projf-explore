@@ -62,8 +62,8 @@ module top_earth (
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
     ) fb_inst (
-        .clk_read(clk_pix),
         .clk_write(clk_pix),
+        .clk_read(clk_pix),
         .we(0),
         /* verilator lint_off PINCONNECTEMPTY */
         .addr_write(),

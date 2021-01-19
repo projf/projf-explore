@@ -54,24 +54,37 @@ module top_david (
     localparam FB_IMAGE   = "david.mem";
     localparam FB_PALETTE = "david_palette.mem";
 
-    logic [FB_ADDRW-1:0] fb_addr_read;
-    logic [FB_DATAW-1:0] colr_idx;
+    logic fb_we;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
+    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_read;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) fb_inst (
-        .clk_read(clk_pix),
+    ) framebuffer (
         .clk_write(clk_pix),
-        .we(0),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .addr_write(),
+        .clk_read(clk_pix),
+        .we(fb_we),
+        .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
-        .data_out(colr_idx)
+        .data_in(fb_cidx_write),
+        .data_out(fb_cidx_read)
     );
+
+    // draw a horizontal line at the top of the framebuffer
+    always @(posedge clk_pix) begin
+        if (sy >= V_RES) begin  // draw in blanking interval
+            if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
+                fb_cidx_write <= 4'h0;  // first palette entry (white)
+                fb_we <= 1;
+            end else if (fb_addr_write != FB_WIDTH-1) begin
+                fb_addr_write <= fb_addr_write + 1;
+            end else begin
+                fb_we <= 0;
+            end
+        end
+    end
 
     // linebuffer (LB)
     localparam LB_SCALE_V = 4;               // scale vertical drawing
@@ -148,7 +161,7 @@ module top_david (
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
-        .addr(colr_idx),
+        .addr(fb_cidx_read),
         .data(clut_colr)
     );
 
