@@ -50,7 +50,7 @@ module top_beam (
     localparam H_RES = 1280;
     localparam V_RES = 720;
 
-    logic animate;  // high for one clock tick at start of blanking
+    logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == V_RES && sx == 0);
 
     // square 'Q' - origin at top-left

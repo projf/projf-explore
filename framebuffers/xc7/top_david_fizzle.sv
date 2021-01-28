@@ -146,7 +146,7 @@ module top_david_fizzle (
         end
     end
 
-    // linebuffer (LB)
+    // linebuffer (LB) - more logic will be moved into module in later version
     localparam LB_SCALE_V = 4;               // scale vertical drawing
     localparam LB_SCALE_H = 4;               // scale horizontal drawing
     localparam LB_LEN = H_RES / LB_SCALE_H;  // line length

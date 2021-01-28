@@ -47,7 +47,7 @@ module top_bounce (
     localparam H_RES = 640;
     localparam V_RES = 480;
 
-    logic animate;  // high for one clock tick at start of blanking
+    logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == 480 && sx == 0);
 
     // squares - origin at top-left

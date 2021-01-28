@@ -2,7 +2,7 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**.
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script for details of modules used.
+These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script to see which modules are used.
 
 All the designs are under the permissive [MIT licence](../LICENSE), but the blog post is subject to normal copyright restrictions.
 

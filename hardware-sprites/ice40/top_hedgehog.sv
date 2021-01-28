@@ -47,7 +47,7 @@ module top_hedgehog (
     localparam H_RES = 640;
     localparam V_RES = 480;
 
-    logic animate;  // high for one clock tick at start of blanking
+    logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == V_RES && sx == 0);
 
     // sprite

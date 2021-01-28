@@ -73,7 +73,7 @@ module top_earth (
         .data_out(colr_idx)
     );
 
-    // linebuffer (LB)
+    // linebuffer (LB) - more logic will be moved into module in later version
     localparam LB_SCALE_V = 2;               // scale vertical drawing
     localparam LB_SCALE_H = 2;               // scale horizontal drawing
     localparam LB_LEN = H_RES / LB_SCALE_H;  // line length
