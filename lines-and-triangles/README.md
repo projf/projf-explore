@@ -19,7 +19,7 @@ cd projf-explore/lines-and-triangles/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_triangle` or `top_line`. as you would for any Vivado project.
+You can then build `top_triangles` or `top_line` as you would for any Vivado project.
 
 ### Simulation
 
