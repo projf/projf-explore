@@ -61,7 +61,8 @@ module top_line (
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] colr_idx_write, colr_idx_read;
+    logic [FB_DATAW-1:0] fb_cidx_write;
+    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
@@ -73,8 +74,8 @@ module top_line (
         .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
-        .data_in(colr_idx_write),
-        .data_out(colr_idx_read)
+        .data_in(fb_cidx_write),
+        .data_out(fb_cidx_read_1)
     );
 
     // draw line in framebuffer
@@ -83,7 +84,7 @@ module top_line (
     always_ff @(posedge clk_pix) begin
         lx0 <=  40; ly0 <=   0;
         lx1 <= 279; ly1 <= 239;
-        colr_idx_write <= 4'h9;  // orange
+        fb_cidx_write <= 4'h9;  // orange
         draw_start <= (draw_done) ? 0 : 1;
     end
 
@@ -123,8 +124,8 @@ module top_line (
     localparam LB_BPC = 4;         // bits per colour channel
 
     // LB output to display
-    logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
-    always_comb lb_en_out = de;
+    logic lb_en_out;
+    always_comb lb_en_out = de;  // Use 'de' for entire frame
 
     // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
@@ -139,10 +140,11 @@ module top_line (
         end
     end
 
-    // FB BRAM and CLUT each add one cycle of latency
-    logic lb_en_in_1, lb_en_in;
+    // FB BRAM and CLUT pipeline adds three cycles of latency
+    logic lb_en_in_2, lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_pix) begin
-        lb_en_in_1 <= (cnt_h < LB_LEN);
+        lb_en_in_2 <= (cnt_h < LB_LEN);
+        lb_en_in_1 <= lb_en_in_2;
         lb_en_in <= lb_en_in_1;
     end
 
@@ -169,6 +171,11 @@ module top_line (
         .dout_2(lb_out_2)
     );
 
+    // improve timing with register between BRAM and async ROM
+    always @(posedge clk_pix) begin
+        fb_cidx_read <= fb_cidx_read_1;
+    end
+
     // colour lookup table (ROM) 16x12-bit entries
     logic [11:0] clut_colr;
     rom_async #(
@@ -176,7 +183,7 @@ module top_line (
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
-        .addr(colr_idx_read),
+        .addr(fb_cidx_read),
         .data(clut_colr)
     );
 
@@ -185,12 +192,20 @@ module top_line (
         {lb_in_2, lb_in_1, lb_in_0} <= clut_colr;
     end
 
+    // LB output adds one cycle of latency - need to correct display signals
+    logic hsync_1, vsync_1, lb_en_out_1;
+    always_ff @(posedge clk_pix) begin
+        hsync_1 <= hsync;
+        vsync_1 <= vsync;
+        lb_en_out_1 <= lb_en_out;
+    end
+
     // VGA output
     always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync;
-        vga_vsync <= vsync;
-        vga_r <= lb_en_out ? lb_out_2 : 4'h0;
-        vga_g <= lb_en_out ? lb_out_1 : 4'h0;
-        vga_b <= lb_en_out ? lb_out_0 : 4'h0;
+        vga_hsync <= hsync_1;
+        vga_vsync <= vsync_1;
+        vga_r <= lb_en_out_1 ? lb_out_2 : 4'h0;
+        vga_g <= lb_en_out_1 ? lb_out_1 : 4'h0;
+        vga_b <= lb_en_out_1 ? lb_out_0 : 4'h0;
     end
 endmodule

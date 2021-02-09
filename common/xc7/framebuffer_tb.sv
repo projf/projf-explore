@@ -50,7 +50,8 @@ module framebuffer_tb();
     logic fb_we = 0;
     logic [FB_ADDRW-1:0] fb_addr_write = 1;
     logic [FB_ADDRW-1:0] fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_read;
+    logic [FB_DATAW-1:0] fb_cidx_write;
+    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
@@ -63,7 +64,7 @@ module framebuffer_tb();
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_cidx_write),
-        .data_out(fb_cidx_read)
+        .data_out(fb_cidx_read_1)
     );
 
     // draw a horizontal line at the top of the framebuffer
@@ -86,8 +87,8 @@ module framebuffer_tb();
     localparam LB_BPC = 4;         // bits per colour channel
 
     // LB output to display
-    logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
-    always_comb lb_en_out = de;
+    logic lb_en_out;
+    always_comb lb_en_out = de;  // Use 'de' for entire frame.
 
     // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
@@ -102,10 +103,11 @@ module framebuffer_tb();
         end
     end
 
-    // FB BRAM and CLUT each add one cycle of latency
-    logic lb_en_in_1, lb_en_in;
+    // FB BRAM and CLUT pipeline adds three cycles of latency
+    logic lb_en_in_2, lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_25m) begin
-        lb_en_in_1 <= (cnt_h < LB_LEN);
+        lb_en_in_2 <= (cnt_h < LB_LEN);
+        lb_en_in_1 <= lb_en_in_2;
         lb_en_in <= lb_en_in_1;
     end
 
@@ -131,6 +133,11 @@ module framebuffer_tb();
         .dout_2(lb_out_2)
     );
 
+    // improve timing with register between BRAM and async ROM
+    always @(posedge clk_25m) begin
+        fb_cidx_read <= fb_cidx_read_1;
+    end
+
     // colour lookup table (ROM) 16x12-bit entries
     logic [11:0] clut_colr;
     rom_async #(
@@ -146,6 +153,10 @@ module framebuffer_tb();
     always_ff @(posedge clk_25m) begin
         {lb_in_2, lb_in_1, lb_in_0} <= clut_colr;
     end
+
+    // Indicate when drawing should occur to screen
+    logic draw_to_screen;  // LB output adds one cycle of latency
+    always_ff @(posedge clk_25m) draw_to_screen <= lb_en_out;
 
     // generate clocks
     always #(CLK_PERIOD_100M / 2) clk_100m = ~clk_100m;

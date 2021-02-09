@@ -65,7 +65,8 @@ module top_david (
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_read;
+    logic [FB_DATAW-1:0] fb_cidx_write;
+    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
@@ -78,7 +79,7 @@ module top_david (
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_cidx_write),
-        .data_out(fb_cidx_read)
+        .data_out(fb_cidx_read_1)
     );
 
     // draw a horizontal line at the top of the framebuffer
@@ -101,7 +102,7 @@ module top_david (
     localparam LB_BPC = 8;         // bits per colour channel
 
     // LB output to display
-    logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
+    logic lb_en_out;
     always_comb lb_en_out = (de && sx >= 160 && sx < 1120);  // 4:3
 
     // Load data from FB into LB
@@ -117,10 +118,11 @@ module top_david (
         end
     end
 
-    // FB BRAM and CLUT each add one cycle of latency
-    logic lb_en_in_1, lb_en_in;
+    // FB BRAM and CLUT pipeline adds three cycles of latency
+    logic lb_en_in_2, lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_pix) begin
-        lb_en_in_1 <= (cnt_h < LB_LEN);
+        lb_en_in_2 <= (cnt_h < LB_LEN);
+        lb_en_in_1 <= lb_en_in_2;
         lb_en_in <= lb_en_in_1;
     end
 
@@ -147,6 +149,11 @@ module top_david (
         .dout_2(lb_out_2)
     );
 
+    // improve timing with register between BRAM and async ROM
+    always @(posedge clk_pix) begin
+        fb_cidx_read <= fb_cidx_read_1;
+    end
+
     // colour lookup table (ROM) 16x12-bit entries
     logic [11:0] clut_colr;
     rom_async #(
@@ -165,16 +172,25 @@ module top_david (
         lb_in_0 <= {2{clut_colr[3:0]}};
     end
 
+    // LB output adds one cycle of latency - need to correct display signals
+    logic hsync_1, vsync_1, de_1, lb_en_out_1;
+    always_ff @(posedge clk_pix) begin
+        hsync_1 <= hsync;
+        vsync_1 <= vsync;
+        de_1 <= de;
+        lb_en_out_1 <= lb_en_out;
+    end
+
     // DVI signals
     logic [7:0] dvi_red, dvi_green, dvi_blue;
     logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        dvi_hsync <= hsync;
-        dvi_vsync <= vsync;
-        dvi_de    <= de;
-        dvi_red   <= lb_en_out ? lb_out_2 : 8'h00;
-        dvi_green <= lb_en_out ? lb_out_1 : 8'h00;
-        dvi_blue  <= lb_en_out ? lb_out_0 : 8'h00;
+        dvi_hsync <= hsync_1;
+        dvi_vsync <= vsync_1;
+        dvi_de    <= de_1;
+        dvi_red   <= lb_en_out_1 ? lb_out_2 : 8'h00;
+        dvi_green <= lb_en_out_1 ? lb_out_1 : 8'h00;
+        dvi_blue  <= lb_en_out_1 ? lb_out_0 : 8'h00;
     end
 
     // TMDS encoding and serialization
