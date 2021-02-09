@@ -62,7 +62,8 @@ module top_david (
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_read;
+    logic [FB_DATAW-1:0] fb_cidx_write;
+    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
@@ -75,7 +76,7 @@ module top_david (
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_cidx_write),
-        .data_out(fb_cidx_read)
+        .data_out(fb_cidx_read_1)
     );
 
     // draw a horizontal line at the top of the framebuffer
@@ -99,8 +100,8 @@ module top_david (
     localparam LB_BPC = 4;         // bits per colour channel
 
     // LB output to display
-    logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
-    always_comb lb_en_out = de;
+    logic lb_en_out;
+    always_comb lb_en_out = de;  // Use 'de' for entire frame
 
     // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
@@ -115,10 +116,11 @@ module top_david (
         end
     end
 
-    // FB BRAM and CLUT each add one cycle of latency
-    logic lb_en_in_1, lb_en_in;
+    // FB BRAM and CLUT pipeline adds three cycles of latency
+    logic lb_en_in_2, lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_pix) begin
-        lb_en_in_1 <= (cnt_h < LB_LEN);
+        lb_en_in_2 <= (cnt_h < LB_LEN);
+        lb_en_in_1 <= lb_en_in_2;
         lb_en_in <= lb_en_in_1;
     end
 
@@ -145,14 +147,9 @@ module top_david (
         .dout_2(lb_out_2)
     );
 
-    // add register between BRAM and async ROM; delay sync signals to match
-    logic hsync_2, vsync_2, de_2;
-    logic [FB_DATAW-1:0] fb_cidx_read_2;
+    // improve timing with register between BRAM and async ROM
     always @(posedge clk_pix) begin
-        fb_cidx_read_2 <= fb_cidx_read;
-        hsync_2 <= hsync;
-        vsync_2 <= vsync;
-        de_2 <= de;
+        fb_cidx_read <= fb_cidx_read_1;
     end
 
     // colour lookup table (ROM) 16x12-bit entries
@@ -162,7 +159,7 @@ module top_david (
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
-        .addr(fb_cidx_read_2),
+        .addr(fb_cidx_read),
         .data(clut_colr)
     );
 
@@ -171,12 +168,21 @@ module top_david (
         {lb_in_2, lb_in_1, lb_in_0} <= clut_colr;
     end
 
+    // LB output adds one cycle of latency - need to correct display signals
+    logic hsync_1, vsync_1, de_1, lb_en_out_1;
+    always_ff @(posedge clk_pix) begin
+        hsync_1 <= hsync;
+        vsync_1 <= vsync;
+        de_1 <= de;
+        lb_en_out_1 <= lb_en_out;
+    end
+
     // colours
     logic [3:0] red, green, blue;
     always_comb begin
-        red   = lb_en_out ? lb_out_2 : 4'h0;
-        green = lb_en_out ? lb_out_1 : 4'h0;
-        blue  = lb_en_out ? lb_out_0 : 4'h0;
+        red   = lb_en_out_1 ? lb_out_2 : 4'h0;
+        green = lb_en_out_1 ? lb_out_1 : 4'h0;
+        blue  = lb_en_out_1 ? lb_out_0 : 4'h0;
     end
 
     // Output DVI clock: 180° out of phase with other DVI signals
@@ -195,7 +201,7 @@ module top_david (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync_2, vsync_2, de_2, red, green, blue}),
+        .D_OUT_0({hsync_1, vsync_1, de_1, red, green, blue}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */

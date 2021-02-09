@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="100100001fs"></ZoomEndTime>
+      <ZoomStartTime time="28848820fs"></ZoomStartTime>
+      <ZoomEndTime time="31806821fs"></ZoomEndTime>
       <Cursor1Time time="29520000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="135"></NameColumnWidth>
+      <NameColumnWidth column_width="131"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="43" />
+   <WVObjectSize size="44" />
    <wvobject fp_name="/framebuffer_tb/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
@@ -146,6 +146,10 @@
    <wvobject fp_name="/framebuffer_tb/lb_inst/vbi" type="logic">
       <obj_property name="ElementShortName">vbi</obj_property>
       <obj_property name="ObjectShortName">vbi</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/lb_inst/addr_out" type="array">
+      <obj_property name="ElementShortName">addr_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_out[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/lb_inst/cnt_v" type="array">
       <obj_property name="ElementShortName">cnt_v[0:0]</obj_property>
