@@ -47,7 +47,7 @@ module top_david_v2 (
     localparam H_RES = 640;
     localparam V_RES = 480;
 
-    // framebuffer
+    // framebuffer (FB)
     localparam FB_WIDTH   = 160;
     localparam FB_HEIGHT  = 120;
     localparam FB_PIXELS  = FB_WIDTH * FB_HEIGHT;
@@ -64,7 +64,7 @@ module top_david_v2 (
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) framebuffer (
+    ) fb_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fb_we),

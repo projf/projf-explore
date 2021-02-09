@@ -1,4 +1,4 @@
-// Project F: Framebuffers - Top David (iCEBreaker with 12-bit DVI Pmod)
+// Project F: Framebuffers - Top David Fizzle (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -6,34 +6,37 @@
 `timescale 1ns / 1ps
 
 module top_david_fizzle (
-    input  wire logic clk_12m,      // 12 MHz clock
-    input  wire logic btn_rst,      // reset button (active high)
-    output      logic dvi_clk,      // DVI pixel clock
-    output      logic dvi_hsync,    // DVI horizontal sync
-    output      logic dvi_vsync,    // DVI vertical sync
-    output      logic dvi_de,       // DVI data enable
-    output      logic [3:0] dvi_r,  // 4-bit DVI red
-    output      logic [3:0] dvi_g,  // 4-bit DVI green
-    output      logic [3:0] dvi_b   // 4-bit DVI blue
+    input  wire logic clk_100m,         // 100 MHz clock
+    input  wire logic btn_rst,          // reset button (active low)
+    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // generate pixel clock
-    logic clk_pix;
-    logic clk_locked;
-    clock_gen clock_640x480 (
-       .clk(clk_12m),
-       .rst(btn_rst),
-       .clk_pix,
-       .clk_locked
+    // pixel clocks
+    logic clk_pix;                  // pixel clock (74.25 MHz)
+    logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
+    logic clk_pix_locked;           // pixel clocks locked?
+    clock_gen_pix clock_pix_inst (
+        .clk_100m,
+        .rst(!btn_rst),             // reset button is active low
+        .clk_pix,
+        .clk_pix_5x,
+        .clk_pix_locked
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
+    localparam CORDW = 11;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    display_timings_720p timings_720p (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
@@ -42,23 +45,23 @@ module top_david_fizzle (
     );
 
     // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
+    localparam H_RES_FULL = 1650;
+    localparam V_RES_FULL = 750;
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
 
     // vertical blanking interval (will move to display_timings soon)
     logic vbi;
     always_comb vbi = (sy == V_RES && sx == 0);
 
-    // framebuffer
-    localparam FB_WIDTH  = 160;
-    localparam FB_HEIGHT = 120;
-    localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;
-    localparam FB_ADDRW  = $clog2(FB_PIXELS);
-    localparam FB_DATAW  = 4;  // colour bits per pixel
-    localparam FB_IMAGE  = "../res/david/david.mem";
-    localparam FB_PALETTE = "../res/david/david_palette.mem";
+    // framebuffer (FB)
+    localparam FB_WIDTH   = 160;
+    localparam FB_HEIGHT  = 120;
+    localparam FB_PIXELS  = FB_WIDTH * FB_HEIGHT;
+    localparam FB_ADDRW   = $clog2(FB_PIXELS);
+    localparam FB_DATAW   = 4;  // colour bits per pixel
+    localparam FB_IMAGE   = "david.mem";
+    localparam FB_PALETTE = "david_palette.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -68,9 +71,9 @@ module top_david_fizzle (
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) framebuffer (
-        .clk_write(clk_pix),
+    ) fb_inst (
         .clk_read(clk_pix),
+        .clk_write(clk_pix),
         .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
@@ -82,7 +85,6 @@ module top_david_fizzle (
     always @(posedge clk_pix) begin
         if (sy >= V_RES) begin  // draw in blanking interval
             if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
-                fb_addr_write <= 0;
                 fb_cidx_write <= 4'h0;  // first palette entry (white)
                 fb_we <= 1;
             end else if (fb_addr_write != FB_WIDTH-1) begin
@@ -93,40 +95,40 @@ module top_david_fizzle (
         end
     end
 
-    // fizzlebuffer (FZ) - half XC7 resolution to fit into BRAM
-    logic [FB_ADDRW-2:0] fz_addr_write;
+    // fizzlebuffer (FZ)
+    logic [FB_ADDRW-1:0] fz_addr_write;
     logic fz_en_in, fz_en_out;
     logic fz_we;
 
     bram_sdp #(
         .WIDTH(1),
-        .DEPTH(FB_PIXELS >> 1),  // halve resolution to fit into BRAM
+        .DEPTH(FB_PIXELS),
         .INIT_F("")
     ) fz_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fz_we),
         .addr_write(fz_addr_write),
-        .addr_read(fb_addr_read[FB_ADDRW-1:1]),  // share read address with FB
+        .addr_read(fb_addr_read),  // share read address with FB
         .data_in(fz_en_in),
         .data_out(fz_en_out)
     );
 
-    // 14-bit LFSR (80x120 < 2^14)
+    // 15-bit LFSR (160x120 < 2^15)
     logic lfsr_en;
-    logic [13:0] lfsr;
+    logic [14:0] lfsr;
     lfsr #(
-        .LEN(14),
-        .TAPS(14'b11100000000010)
+        .LEN(15),
+        .TAPS(15'b110000000000000)
     ) lsfr_fz (
         .clk(clk_pix),
-        .rst(!clk_locked),
+        .rst(!clk_pix_locked),
         .en(lfsr_en),
         .sreg(lfsr)
     );
 
     localparam FADE_WAIT = 600;   // wait for 600 frames before fading
-    localparam FADE_RATE = 3200;  // every 3200 pixel clocks update LFSR
+    localparam FADE_RATE = 9600;  // every 9600 pixel clocks update LFSR
     logic [$clog2(FADE_WAIT)-1:0] cnt_fade_wait;
     logic [$clog2(FADE_RATE)-1:0] cnt_fade_rate;
     always_ff @(posedge clk_pix) begin
@@ -154,13 +156,13 @@ module top_david_fizzle (
     end
 
     // linebuffer (LB)
-    localparam LB_SCALE = 4;       // scale (horizontal and vertical)
+    localparam LB_SCALE = 6;       // scale (horizontal and vertical)
     localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
-    localparam LB_BPC = 4;         // bits per colour channel
+    localparam LB_BPC = 8;         // bits per colour channel
 
     // LB output to display
     logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
-    always_comb lb_en_out = de;
+    always_comb lb_en_out = (de && sx >= 160 && sx < 1120);  // 4:3
 
     // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
@@ -205,16 +207,6 @@ module top_david_fizzle (
         .dout_2(lb_out_2)
     );
 
-    // add register between BRAM and async ROM and delay sync signals to match
-    logic hsync_2, vsync_2, de_2;
-    logic [FB_DATAW-1:0] fb_cidx_read_2;
-    always @(posedge clk_pix) begin
-        fb_cidx_read_2 <= fb_cidx_read;
-        hsync_2 <= hsync;
-        vsync_2 <= vsync;
-        de_2 <= de;
-    end
-
     // colour lookup table (ROM) 16x12-bit entries
     logic [11:0] clut_colr;
     rom_async #(
@@ -222,42 +214,55 @@ module top_david_fizzle (
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
-        .addr(fb_cidx_read_2),
+        .addr(fb_cidx_read),
         .data(clut_colr)
     );
 
     // map colour index to palette using CLUT and read into LB
     always_ff @(posedge clk_pix) begin
-        {lb_in_2, lb_in_1, lb_in_0} <= fz_en_out ? 12'hA00 : clut_colr;
+        lb_in_2 <= fz_en_out ? 8'hAA : {2{clut_colr[11:8]}};
+        lb_in_1 <= fz_en_out ? 8'h00 : {2{clut_colr[7:4]}};
+        lb_in_0 <= fz_en_out ? 8'h00 : {2{clut_colr[3:0]}};
     end
 
-    // colours
-    logic [3:0] red, green, blue;
-    always_comb begin
-        red   = lb_en_out ? lb_out_2 : 4'h0;
-        green = lb_en_out ? lb_out_1 : 4'h0;
-        blue  = lb_en_out ? lb_out_0 : 4'h0;
+    // DVI signals
+    logic [7:0] dvi_red, dvi_green, dvi_blue;
+    logic dvi_hsync, dvi_vsync, dvi_de;
+    always_ff @(posedge clk_pix) begin
+        dvi_hsync <= hsync;
+        dvi_vsync <= vsync;
+        dvi_de    <= de;
+        dvi_red   <= lb_en_out ? lb_out_2 : 8'h00;
+        dvi_green <= lb_en_out ? lb_out_1 : 8'h00;
+        dvi_blue  <= lb_en_out ? lb_out_0 : 8'h00;
     end
 
-    // Output DVI clock: 180° out of phase with other DVI signals
-    SB_IO #(
-        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
-    ) dvi_clk_io (
-        .PACKAGE_PIN(dvi_clk),
-        .OUTPUT_CLK(clk_pix),
-        .D_OUT_0(1'b0),
-        .D_OUT_1(1'b1)
+    // TMDS encoding and serialization
+    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
+    dvi_generator dvi_out (
+        .clk_pix,
+        .clk_pix_5x,
+        .rst(!clk_pix_locked),
+        .de(dvi_de),
+        .data_in_ch0(dvi_blue),
+        .data_in_ch1(dvi_green),
+        .data_in_ch2(dvi_red),
+        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
+        .ctrl_in_ch1(2'b00),
+        .ctrl_in_ch2(2'b00),
+        .tmds_ch0_serial,
+        .tmds_ch1_serial,
+        .tmds_ch2_serial,
+        .tmds_clk_serial
     );
 
-    // Output DVI signals
-    SB_IO #(
-        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
-    ) dvi_signal_io [14:0] (
-        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
-        .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync_2, vsync_2, de_2, red, green, blue}),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .D_OUT_1()
-        /* verilator lint_on PINCONNECTEMPTY */
-    );
+    // TMDS output pins
+    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
+        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
+    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
+        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
+    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
+        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
+    tmds_out tmds_clk (.tmds(tmds_clk_serial),
+        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 endmodule

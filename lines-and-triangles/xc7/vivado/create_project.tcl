@@ -53,6 +53,7 @@ set design_sources [list \
   [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/linebuffer.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
+  [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \
   [file normalize "${origin_dir}/draw_line.sv"] \
@@ -83,6 +84,8 @@ set fs_sim_obj [get_filesets sim_1]
 set sim_sources [list \
   [file normalize "${origin_dir}/xc7/draw_line_tb.sv"] \
   [file normalize "${origin_dir}/xc7/draw_triangle_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/draw_line_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/draw_triangle_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

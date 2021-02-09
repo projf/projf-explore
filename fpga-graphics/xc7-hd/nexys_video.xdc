@@ -10,11 +10,6 @@ set_property CFGBVS VCCO [current_design]
 set_property -dict {PACKAGE_PIN R4 IOSTANDARD LVCMOS33} [get_ports {clk_100m}];
 create_clock -period 10.000 -name clk_100m [get_ports {clk_100m}];
 
-# ## Pixel clock is async to system clock
-# set_clock_groups -name SysPixel -asynchronous \
-#     -group [get_clocks -of_objects [get_pins clock_sys_inst/MMCME2_BASE_inst/CLKOUT0]] \
-#     -group [get_clocks -of_objects [get_pins clock_pix_inst/MMCME2_BASE_inst/CLKOUT1]];
-
 ## Buttons
 set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst}];
 

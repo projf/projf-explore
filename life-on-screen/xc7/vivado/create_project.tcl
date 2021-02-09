@@ -51,6 +51,7 @@ set design_sources [list \
   [file normalize "${origin_dir}/life.sv"] \
   [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/linebuffer.sv"] \
+  [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \
 ]

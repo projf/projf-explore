@@ -45,8 +45,9 @@ module top_triangles (
     localparam H_RES = 640;
     localparam V_RES = 480;
 
-    logic animate;  // high for one clock tick at start of vertical blanking
-    always_comb animate = (sy == V_RES && sx == 0);
+    // vertical blanking interval (will move to display_timings soon)
+    logic vbi;
+    always_comb vbi = (sy == V_RES && sx == 0);
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
@@ -67,8 +68,8 @@ module top_triangles (
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
     ) fb_inst (
-        .clk_read(clk_pix),
         .clk_write(clk_pix),
+        .clk_read(clk_pix),
         .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
@@ -128,7 +129,7 @@ module top_triangles (
     logic draw_oe;
     always_ff @(posedge clk_pix) begin
         draw_oe <= 0;
-        if (animate) begin
+        if (vbi) begin
             if (cnt_draw_wait != DRAW_WAIT-1) begin
                 cnt_draw_wait <= cnt_draw_wait + 1;
             end else draw_oe <= 1;
@@ -167,72 +168,56 @@ module top_triangles (
         .pix_addr(fb_addr_write)
     );
 
-    // linebuffer (LB) - more logic will be moved into module in later version
-    localparam LB_SCALE_V = 2;               // scale vertical drawing
-    localparam LB_SCALE_H = 2;               // scale horizontal drawing
-    localparam LB_LEN = H_RES / LB_SCALE_H;  // line length
-    localparam LB_WIDTH = 4;                 // bits per colour channel
+    // linebuffer (LB)
+    localparam LB_SCALE = 2;       // scale (horizontal and vertical)
+    localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
+    localparam LB_BPC = 4;         // bits per colour channel
 
-    // LB data in from FB
-    logic lb_en_in, lb_en_in_1;  // allow for BRAM latency correction
-    logic [LB_WIDTH-1:0] lb_in_0, lb_in_1, lb_in_2;
+    // LB output to display
+    logic lb_en_out;  // When does LB output data? Use 'de' for entire frame.
+    always_comb lb_en_out = de;
 
-    // correct vertical scale: if scale is 0, set to 1
-    logic [$clog2(LB_SCALE_V+1):0] scale_v_cor;
-    always_comb scale_v_cor = (LB_SCALE_V == 0) ? 1 : LB_SCALE_V;
-
-    // count screen lines for vertical scaling - read when cnt_scale_v==0
-    logic [$clog2(LB_SCALE_V):0] cnt_scale_v;
+    // Load data from FB into LB
+    logic lb_data_req;  // LB requesting data
+    logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
     always_ff @(posedge clk_pix) begin
-        /* verilator lint_off WIDTH */
-        if (sx == 0)
-            cnt_scale_v <= (cnt_scale_v == scale_v_cor-1) ? 0 : cnt_scale_v + 1;
-        /* verilator lint_on WIDTH */
-        if (sy == V_RES_FULL-1) cnt_scale_v <= 0;
+        if (vbi) fb_addr_read <= 0;   // new frame
+        if (lb_data_req && sy != V_RES-1) begin  // load next line of data...
+            cnt_h <= 0;                          // ...if not on last line
+        end else if (cnt_h < LB_LEN) begin  // advance to start of next line
+            cnt_h <= cnt_h + 1;
+            fb_addr_read <= fb_addr_read == FB_PIXELS-1 ? 0 : fb_addr_read + 1;
+        end
     end
 
-    logic [$clog2(FB_WIDTH)-1:0] fb_h_cnt;  // counter for FB pixels on line
+    // FB BRAM and CLUT each add one cycle of latency
+    logic lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1 && sx == H_RES-1) fb_addr_read <= 0;
-
-        // reset horizontal counter at the start of blanking on reading lines
-        if (cnt_scale_v == 0 && sx == H_RES) begin
-            if (fb_addr_read < FB_PIXELS-1) fb_h_cnt <= 0;  // read all pixels?
-        end
-
-        // read each pixel on FB line and write to LB
-        if (fb_h_cnt < FB_WIDTH) begin
-            lb_en_in <= 1;
-            fb_h_cnt <= fb_h_cnt + 1;
-            fb_addr_read <= fb_addr_read + 1;
-        end else begin
-            lb_en_in <= 0;
-        end
-
-        // enable LB data in with latency correction
-        lb_en_in_1 <= lb_en_in;
+        lb_en_in_1 <= (cnt_h < LB_LEN);
+        lb_en_in <= lb_en_in_1;
     end
 
-    // LB data out to display
-    logic [LB_WIDTH-1:0] lb_out_0, lb_out_1, lb_out_2;
+    // LB colour channels
+    logic [LB_BPC-1:0] lb_in_0, lb_in_1, lb_in_2;
+    logic [LB_BPC-1:0] lb_out_0, lb_out_1, lb_out_2;
 
     linebuffer #(
-        .WIDTH(LB_WIDTH),
-        .LEN(LB_LEN)
+        .WIDTH(LB_BPC),     // data width of each channel
+        .LEN(LB_LEN),       // length of line
+        .SCALE(LB_SCALE)    // scaling factor (>=1)
         ) lb_inst (
-        .clk_in(clk_pix),
-        .clk_out(clk_pix),
-        .en_in(lb_en_in_1),  // correct for BRAM latency
-        .en_out(sy < V_RES && sx < H_RES),
-        .rst_in(sx == H_RES),  // reset at start of horizontal blanking
-        .rst_out(sx == H_RES),
-        .scale(LB_SCALE_H),
-        .data_in_0(lb_in_0),
-        .data_in_1(lb_in_1),
-        .data_in_2(lb_in_2),
-        .data_out_0(lb_out_0),
-        .data_out_1(lb_out_1),
-        .data_out_2(lb_out_2)
+        .clk_in(clk_pix),       // input clock
+        .clk_out(clk_pix),      // output clock
+        .data_req(lb_data_req), // request input data (clk_in)
+        .en_in(lb_en_in),       // enable input (clk_in)
+        .en_out(lb_en_out),     // enable output (clk_out)
+        .vbi,                   // start of vertical blanking interval (clk_out)
+        .din_0(lb_in_0),        // data in (clk_in)
+        .din_1(lb_in_1),
+        .din_2(lb_in_2),
+        .dout_0(lb_out_0),      // data out (clk_out)
+        .dout_1(lb_out_1),
+        .dout_2(lb_out_2)
     );
 
     // colour lookup table (ROM) 16x12-bit entries
@@ -255,8 +240,8 @@ module top_triangles (
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        vga_r <= de ? lb_out_2 : 4'h0;
-        vga_g <= de ? lb_out_1 : 4'h0;
-        vga_b <= de ? lb_out_0 : 4'h0;
+        vga_r <= lb_en_out ? lb_out_2 : 4'h0;
+        vga_g <= lb_en_out ? lb_out_1 : 4'h0;
+        vga_b <= lb_en_out ? lb_out_0 : 4'h0;
     end
 endmodule

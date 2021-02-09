@@ -1,4 +1,4 @@
-## Project F: FPGA Pong - Nexys Video Board Constraints
+## Project F: Framebuffers - Nexys Video Board Constraints
 ## (C)2021 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
@@ -12,9 +12,6 @@ create_clock -period 10.000 -name clk_100m [get_ports {clk_100m}];
 
 ## Buttons
 set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst}];
-set_property -dict {PACKAGE_PIN F15 IOSTANDARD LVCMOS12} [get_ports {btn_up}];
-set_property -dict {PACKAGE_PIN B22 IOSTANDARD LVCMOS12} [get_ports {btn_ctrl}]; # centre
-set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS12} [get_ports {btn_dn}];
 
 ## HDMI Source
 set_property -dict {PACKAGE_PIN T1  IOSTANDARD TMDS_33} [get_ports {hdmi_tx_clk_p}];
