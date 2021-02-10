@@ -67,20 +67,16 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
     logic [CORDW-1:0] lx1, ly1;  // current line end position
 
     always_comb begin
-        case (line)
-            2'd0: begin  // (x0,y0) -> (x1,y1)
-                lx0 = x0; ly0 = y0;
-                lx1 = x1; ly1 = y1;
-            end
-            2'd1: begin  // (x1,y1) -> (x2,y2)
-                lx0 = x1; ly0 = y1;
-                lx1 = x2; ly1 = y2;
-            end
-            default: begin  // (x2,y2) -> (x0,y0)
-                lx0 = x2; ly0 = y2;
-                lx1 = x0; ly1 = y0;
-            end
-        endcase
+        if (line == 2'd0) begin  // (x0,y0) -> (x1,y1)
+            lx0 = x0; ly0 = y0;
+            lx1 = x1; ly1 = y1;
+        end else if (line == 2'd1) begin  // (x1,y1) -> (x2,y2)
+            lx0 = x1; ly0 = y1;
+            lx1 = x2; ly1 = y2;
+        end else begin  // (x2,y2) -> (x0,y0)
+            lx0 = x2; ly0 = y2;
+            lx1 = x0; ly1 = y0;
+        end
     end
 
     draw_line #(.CORDW(CORDW)) draw_line_inst (
