@@ -80,23 +80,23 @@ module top_triangles (
 
     // draw shapes in framebuffer
     localparam SHAPE_CNT=3;
-    logic [2:0] shape_id;  // shape identifier
+    logic [1:0] shape_id;  // shape identifier
     logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // triangle coords
     always_ff @(posedge clk_pix) begin
         case (shape_id)
-            3'd0: begin
+            2'd0: begin
                 tx0 <=  20; ty0 <=  60;
                 tx1 <=  60; ty1 <= 180;
                 tx2 <= 110; ty2 <=  90;
                 fb_cidx_write <= 4'h2;  // dark purple
             end
-            3'd1: begin
+            2'd1: begin
                 tx0 <=  70; ty0 <= 200;
                 tx1 <= 240; ty1 <= 100;
                 tx2 <= 170; ty2 <=  10;
                 fb_cidx_write <= 4'hC;  // blue
             end
-            3'd2: begin
+            2'd2: begin
                 tx0 <=  60; ty0 <=  30;
                 tx1 <= 300; ty1 <=  80;
                 tx2 <= 160; ty2 <= 220;
