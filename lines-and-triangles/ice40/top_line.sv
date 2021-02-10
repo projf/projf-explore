@@ -121,7 +121,7 @@ module top_line (
     );
 
     // linebuffer (LB)
-    localparam LB_SCALE = 2;       // scale (horizontal and vertical)
+    localparam LB_SCALE = 4;       // scale (horizontal and vertical)
     localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
     localparam LB_BPC = 4;         // bits per colour channel
 
