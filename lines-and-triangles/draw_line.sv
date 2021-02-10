@@ -40,8 +40,11 @@ module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
         if (movy) derr = derr + dx;
     end
 
-    logic in_progress;  // drawing in progress
-    always_comb drawing = (in_progress && oe);
+    logic in_progress = 0;  // drawing calculation in progress
+    always_comb begin
+        drawing = 0;
+        if (in_progress && oe) drawing = 1;
+    end
 
     enum {IDLE, INIT, DRAW} state;
     always @(posedge clk) begin
