@@ -74,9 +74,9 @@ set mem_design_sources [list \
   [file normalize "${origin_dir}/res/david/david_palette_warm.mem"] \
   [file normalize "${origin_dir}/res/david/david_palette_invert.mem"] \
   [file normalize "${origin_dir}/res/david/david_1bit.mem"] \
-  [file normalize "${common_dir}/res/test_box/test_box.mem"] \
-  [file normalize "${common_dir}/res/test_box/test_box_12x9.mem"] \
-  [file normalize "${common_dir}/res/test_box/test_box_palette.mem"] \
+  [file normalize "${common_dir}/res/test/test_box_12x9.mem"] \
+  [file normalize "${common_dir}/res/test/test_box_160x120.mem"] \
+  [file normalize "${common_dir}/res/test/test_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
