@@ -45,7 +45,7 @@ module framebuffer_tb();
     localparam FB_ADDRW   = $clog2(FB_PIXELS);
     localparam FB_DATAW   = 4;  // colour bits per pixel
     localparam FB_IMAGE   = "test_box_12x9.mem";
-    localparam FB_PALETTE = "test_box_palette.mem";
+    localparam FB_PALETTE = "test_palette.mem";
 
     logic fb_we = 0;
     logic [FB_ADDRW-1:0] fb_addr_write = 1;
