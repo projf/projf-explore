@@ -65,7 +65,7 @@ module top_life (
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
     logic [FB_DATAW-1:0] pix_in;
-    logic [FB_DATAW-1:0] pix_out, pix_out_1;
+    logic [FB_DATAW-1:0] pix_out;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
@@ -78,7 +78,7 @@ module top_life (
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(pix_in),
-        .data_out(pix_out_1)
+        .data_out(pix_out)
     );
 
     // update frame counter and choose front buffer
@@ -137,11 +137,10 @@ module top_life (
         end
     end
 
-    // FB BRAM and colour pipeline adds three cycles of latency
-    logic lb_en_in_2, lb_en_in_1, lb_en_in;
+    // FB BRAM and colour pipeline adds two cycles of latency
+    logic lb_en_in_1, lb_en_in;
     always_ff @(posedge clk_pix) begin
-        lb_en_in_2 <= (cnt_h < LB_LEN);
-        lb_en_in_1 <= lb_en_in_2;
+        lb_en_in_1 <= (cnt_h < LB_LEN);
         lb_en_in <= lb_en_in_1;
     end
 
@@ -167,11 +166,6 @@ module top_life (
         .dout_1(lb_out_1),
         .dout_2(lb_out_2)
     );
-
-    // improve timing with register between BRAM and LB input
-    always @(posedge clk_pix) begin
-        pix_out <= pix_out_1;
-    end
 
     // sim can run when linebuffer is not using framebuffer
     always_comb life_run = (sy != V_RES && sy[2:0] != 3'b111);
