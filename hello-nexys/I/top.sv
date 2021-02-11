@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top(
+module top (
     input wire logic clk,
     output     logic [3:0] led
     );
