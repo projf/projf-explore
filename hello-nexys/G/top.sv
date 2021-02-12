@@ -1,4 +1,4 @@
-// Project F: Hello Arty G - Top
+// Project F: Hello Nexys G - Top
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -10,7 +10,7 @@ module top (
     output     logic [3:0] led
     );
 
-    localparam DIV_BY = 27'd100_000_000;
+    localparam DIV_BY = 27'd100_000_000;  // 100 million
 
     logic stb;
     logic [26:0] cnt = 0;

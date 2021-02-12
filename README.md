@@ -23,9 +23,9 @@ A three-part introduction to FPGA development and Verilog with the Digilent Arty
 * **Hello Arty**: [Design Sources](hello-arty)
     * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
     * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
-    * Blog Post 3 (coming soon)
+    * Blog Post 3 (coming spring 2021)
 
 * **Hello Nexys**: [Design Sources](hello-nexys)
     * [Blog Post 1](https://projectf.io/posts/hello-nexys-1/)
-    * Blog Post 2 (coming soon)
-    * Blog Post 3 (coming soon)
+    * [Blog Post 2](https://projectf.io/posts/hello-nexys-2/)
+    * Blog Post 3 (coming spring 2021)

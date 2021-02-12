@@ -14,6 +14,6 @@ This folder contains the SystemVerilog designs to accompany the Project F **[Hel
   * [H source](H/)
   * [I source](I/)
   * [J source](J/)
-* Hello Arty - Part 3 (coming soon)
+* Hello Arty - Part 3 (coming spring 2021)
 
 All the designs are under the permissive [MIT licence](../LICENSE), but the posts themselves are subject to normal copyright restrictions.

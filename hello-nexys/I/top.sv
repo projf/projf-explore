@@ -1,5 +1,5 @@
-// Project F: Hello Arty I - Top
-// (C)2020 Will Green, open source hardware released under the MIT License
+// Project F: Hello Nexys I - Top
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
