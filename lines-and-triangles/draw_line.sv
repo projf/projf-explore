@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
+module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing

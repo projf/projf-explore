@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
+module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start triangle drawing
@@ -25,8 +25,8 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
     // we're either idle or drawing
     enum {IDLE, DRAW} state;
 
-    localparam CNT_LINE = 3;  // always three lines
-    logic [1:0] line;  // current line
+    localparam CNT_LINE = 3;  // triangle has three lines
+    logic [$clog2(CNT_LINE)-1:0] line_id;  // current line
     logic line_start;  // start drawing line
     logic line_done;   // finished drawing current line?
 
@@ -35,11 +35,13 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
         case (state)
             DRAW: begin
                 if (line_done) begin
-                    if (line == CNT_LINE-1) begin
+                    /* verilator lint_off WIDTH */
+                    if (line_id == CNT_LINE-1) begin
+                    /* verilator lint_on WIDTH */
                         done <= 1;
                         state <= IDLE;
                     end else begin
-                        line <= line + 1;
+                        line_id <= line_id + 1;
                         line_start <= 1;
                     end
                 end
@@ -47,7 +49,7 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    line <= 0;
+                    line_id <= 0;
                     line_start <= 1;
                     state <= DRAW;
                 end
@@ -55,7 +57,7 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
         endcase
 
         if (rst) begin
-            line <= 0;
+            line_id <= 0;
             line_start <= 0;
             done <= 0;
             state <= IDLE;
@@ -67,10 +69,10 @@ module draw_triangle #(parameter CORDW=10) (  // framebuffer coord width in bits
     logic [CORDW-1:0] lx1, ly1;  // current line end position
 
     always_comb begin
-        if (line == 2'd0) begin  // (x0,y0) -> (x1,y1)
+        if (line_id == 2'd0) begin  // (x0,y0) -> (x1,y1)
             lx0 = x0; ly0 = y0;
             lx1 = x1; ly1 = y1;
-        end else if (line == 2'd1) begin  // (x1,y1) -> (x2,y2)
+        end else if (line_id == 2'd1) begin  // (x1,y1) -> (x2,y2)
             lx0 = x1; ly0 = y1;
             lx1 = x2; ly1 = y2;
         end else begin  // (x2,y2) -> (x0,y0)
