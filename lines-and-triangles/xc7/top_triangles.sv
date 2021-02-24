@@ -82,7 +82,7 @@ module top_triangles (
     localparam SHAPE_CNT=3;
     logic [1:0] shape_id;  // shape identifier
     logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // triangle coords
-    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
+    logic [FB_CORDW-1:0] px, py;  // triangle pixel drawing coordinates
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
