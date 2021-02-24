@@ -62,7 +62,7 @@ module top_line (
     localparam FB_ADDRW   = $clog2(FB_PIXELS);
     localparam FB_DATAW   = 4;  // colour bits per pixel
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -86,7 +86,7 @@ module top_line (
     // draw line in framebuffer
     logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
     logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
-    logic draw_start, drawing, draw_done;
+    logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
@@ -102,9 +102,7 @@ module top_line (
             end
             DRAW: if (draw_done) state <= DONE;
             DONE: state <= DONE;
-            default: begin  // IDLE
-                if (vbi) state <= INIT;
-            end
+            default: if (vbi) state <= INIT;  // IDLE
         endcase
     end
 
@@ -195,10 +193,10 @@ module top_line (
         fb_cidx_read <= fb_cidx_read_1;
     end
 
-    // colour lookup table (ROM) 16x12-bit entries
-    logic [11:0] clut_colr;
+    // colour lookup table (ROM) 16x24-bit entries
+    logic [23:0] clut_colr;
     rom_async #(
-        .WIDTH(12),
+        .WIDTH(24),
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
@@ -208,9 +206,7 @@ module top_line (
 
     // map colour index to palette using CLUT and read into LB
     always_ff @(posedge clk_pix) begin
-        lb_in_2 <= {2{clut_colr[11:8]}};  // double up colour: display is 8 BPC
-        lb_in_1 <= {2{clut_colr[7:4]}};
-        lb_in_0 <= {2{clut_colr[3:0]}};
+        {lb_in_2, lb_in_1, lb_in_0} <= clut_colr;
     end
 
     // LB output adds one cycle of latency - need to correct display signals

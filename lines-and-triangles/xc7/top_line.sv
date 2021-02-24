@@ -81,7 +81,7 @@ module top_line (
     // draw line in framebuffer
     logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
     logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
-    logic draw_start, drawing, draw_done;
+    logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
@@ -97,9 +97,7 @@ module top_line (
             end
             DRAW: if (draw_done) state <= DONE;
             DONE: state <= DONE;
-            default: begin  // IDLE
-                if (vbi) state <= INIT;
-            end
+            default: if (vbi) state <= INIT;  // IDLE
         endcase
     end
 
