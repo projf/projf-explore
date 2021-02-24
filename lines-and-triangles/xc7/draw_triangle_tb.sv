@@ -46,7 +46,17 @@ module draw_triangle_tb ();
         #100    rst = 0;
                 oe = 1;
 
-        #10     $display("case 1: right-angle (10,10) (10,40) (60,40)");
+        #10     $display("case 1: small (2,2) (6,2) (4,6)");
+                x0 = 8'd2;
+                y0 = 8'd2;
+                x1 = 8'd6;
+                y1 = 8'd2;
+                x2 = 8'd4;
+                y2 = 8'd6;
+                start = 1;
+        #10     start = 0;
+
+        #200    $display("case 2: right-angle (10,10) (10,40) (60,40)");
                 x0 = 8'd10;
                 y0 = 8'd10;
                 x1 = 8'd10;
@@ -56,7 +66,7 @@ module draw_triangle_tb ();
                 start = 1;
         #10     start = 0;
 
-        #2000   $display("case 2: obtuse (10,10) (20,40) (60,40)");
+        #2000   $display("case 3: obtuse (10,10) (20,40) (60,40)");
                 x0 = 8'd10;
                 y0 = 8'd10;
                 x1 = 8'd20;
@@ -66,7 +76,7 @@ module draw_triangle_tb ();
                 start = 1;
         #10     start = 0;
 
-        #2000   $display("case 3: acute (30,10) (10,40) (60,40)");
+        #2000   $display("case 4: acute (30,10) (10,40) (60,40)");
                 x0 = 8'd30;
                 y0 = 8'd10;
                 x1 = 8'd10;
