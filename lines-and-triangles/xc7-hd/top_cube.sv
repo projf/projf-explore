@@ -127,7 +127,7 @@ module top_cube (
                     4'd8: begin
                         lx0 <= 190; ly0 <=  50; lx1 <= 230; ly1 <=  90;
                     end
-                    default: begin
+                    default: begin  // should never occur
                         lx0 <=   0; ly0 <=   0; lx1 <=   0; ly1 <=   0;
                     end
                 endcase

@@ -84,36 +84,55 @@ module top_triangles (
     localparam SHAPE_CNT=3;
     logic [1:0] shape_id;  // shape identifier
     logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // triangle coords
-    always_ff @(posedge clk_pix) begin
-        if (shape_id == 2'd0) begin
-            tx0 <=  10; ty0 <=  30;
-            tx1 <=  30; ty1 <=  90;
-            tx2 <=  65; ty2 <=  45;
-            fb_cidx_write <= 2'h1;  // orange
-        end else if (shape_id == 2'd1) begin
-            tx0 <=  35; ty0 <= 100;
-            tx1 <= 120; ty1 <=  50;
-            tx2 <=  85; ty2 <=  5;
-            fb_cidx_write <= 2'h2;  // green
-        end else if (shape_id == 2'd2) begin
-            tx0 <=  30; ty0 <=  15;
-            tx1 <= 150; ty1 <=  40;
-            tx2 <=  80; ty2 <= 110;
-            fb_cidx_write <= 2'h3;  // blue
-        end
-    end
+    logic [FB_CORDW-1:0] px, py;  // triangle pixel drawing coordinates
+    logic draw_start, drawing, draw_done;  // draw_line signals
 
-    // control start of drawing
-    logic draw_flag, draw_start, drawing, draw_done;
+    // draw state machine
+    enum {IDLE, INIT, DRAW, DONE} state;
     always @(posedge clk_pix) begin
         draw_start <= 0;
-        if (draw_flag == 0) begin
-            draw_start <= 1;
-            draw_flag <= 1;
-        end else if (draw_done && shape_id != SHAPE_CNT-1) begin
-            shape_id <= shape_id + 1;
-            draw_flag <= 0;
-        end
+        case (state)
+            INIT: begin  // register coordinates and colour
+                draw_start <= 1;
+                state <= DRAW;
+                case (shape_id)
+                    2'd0: begin
+                        tx0 <=  10; ty0 <=  30;
+                        tx1 <=  30; ty1 <=  90;
+                        tx2 <=  65; ty2 <=  45;
+                        fb_cidx_write <= 2'h1;  // orange
+                    end
+                    2'd1: begin
+                        tx0 <=  35; ty0 <= 100;
+                        tx1 <= 120; ty1 <=  50;
+                        tx2 <=  85; ty2 <=  5;
+                        fb_cidx_write <= 2'h2;  // green
+                    end
+                    2'd2: begin
+                        tx0 <=  30; ty0 <=  15;
+                        tx1 <= 150; ty1 <=  40;
+                        tx2 <=  80; ty2 <= 110;
+                        fb_cidx_write <= 2'h3;  // blue
+                    end
+                    default: begin  // should never occur
+                        tx0 <=   10; ty0 <=   10;
+                        tx1 <=   10; ty1 <=   30;
+                        tx2 <=   20; ty2 <=   20;
+                        fb_cidx_write <= 2'h1;  // orange
+                    end
+                endcase
+            end
+            DRAW: if (draw_done) begin
+                if (shape_id == SHAPE_CNT-1) begin
+                    state <= DONE;
+                end else begin
+                    shape_id <= shape_id + 1;
+                    state <= INIT;
+                end
+            end
+            DONE: state <= DONE;
+            default: if (vbi) state <= INIT;  // IDLE
+        endcase
     end
 
     // control drawing output enable - wait 300 frames, then 1 pixel/frame
@@ -129,7 +148,6 @@ module top_triangles (
         end
     end
 
-    logic [FB_CORDW-1:0] px, py;
     draw_triangle #(.CORDW(FB_CORDW)) draw_triangle_inst (
         .clk(clk_pix),
         .rst(1'b0),

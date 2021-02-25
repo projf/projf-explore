@@ -112,7 +112,7 @@ module top_triangles (
                         tx2 <= 160; ty2 <= 220;
                         fb_cidx_write <= 4'h9;  // orange
                     end
-                    default: begin
+                    default: begin  // should never occur
                         tx0 <=   10; ty0 <=   10;
                         tx1 <=   10; ty1 <=   30;
                         tx2 <=   20; ty2 <=   20;

@@ -9,6 +9,10 @@ set_io -nowarn clk_12m      35
 ## Buttons
 set_io -nowarn btn_rst      10
 
+# LED (debugging)
+# set_io -nowarn LEDR_N     11
+# set_io -nowarn LEDG_N     37
+
 ## 12-bit DVI Pmod on Pmod 1A/1B
 set_io -nowarn dvi_clk      38
 set_io -nowarn dvi_hsync    31

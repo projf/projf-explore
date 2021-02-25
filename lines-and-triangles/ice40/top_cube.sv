@@ -83,64 +83,63 @@ module top_cube (
     // draw cube in framebuffer
     localparam LINE_CNT=9;
     logic [3:0] line_id;  // line identifier
-    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
-    always_ff @(posedge clk_pix) begin
-        fb_cidx_write <= 2'h2;  // green
-        case (line_id)
-            4'd0: begin
-                lx0 <=  65; ly0 <=  45;
-                lx1 <= 115; ly1 <=  45;
-            end
-            4'd1: begin
-                lx0 <= 115; ly0 <=  45;
-                lx1 <= 115; ly1 <=  95;
-            end
-            4'd2: begin
-                lx0 <= 115; ly0 <=  95;
-                lx1 <=  65; ly1 <=  95;
-            end
-            4'd3: begin
-                lx0 <= 115; ly0 <=  95;
-                lx1 <= 115; ly1 <=  45;
-            end
-            4'd4: begin
-                lx0 <=  65; ly0 <=  95;
-                lx1 <=  45; ly1 <=  75;
-            end
-            4'd5: begin
-                lx0 <=  45; ly0 <=  75;
-                lx1 <=  45; ly1 <=  25;
-            end
-            4'd6: begin
-                lx0 <=  45; ly0 <=  25;
-                lx1 <=  65; ly1 <=  45;
-            end
-            4'd7: begin
-                lx0 <=  45; ly0 <=  25;
-                lx1 <=  95; ly1 <=  25;
-            end
-            4'd8: begin
-                lx0 <=  95; ly0 <=  25;
-                lx1 <= 115; ly1 <=  45;
-            end
-            default: begin
-                lx0 <=  0; ly0 <=  0;
-                lx1 <=  0; ly1 <=  0;
-            end
-        endcase
-    end
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
+    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
+    logic draw_start, drawing, draw_done;  // draw_line signals
 
-    // control start of drawing
-    logic draw_flag, draw_start, drawing, draw_done;
+    // draw state machine
+    enum {IDLE, INIT, DRAW, DONE} state;
     always @(posedge clk_pix) begin
         draw_start <= 0;
-        if (draw_flag == 0) begin
-            draw_start <= 1;
-            draw_flag <= 1;
-        end else if (draw_done && line_id != LINE_CNT-1) begin
-            line_id <= line_id + 1;
-            draw_flag <= 0;
-        end
+        case (state)
+            INIT: begin  // register coordinates and colour
+                draw_start <= 1;
+                state <= DRAW;
+                fb_cidx_write <= 2'h2;  // green
+                case (line_id)
+                    4'd0: begin
+                        lx0 <=  65; ly0 <=  45; lx1 <= 115; ly1 <=  45;
+                    end
+                    4'd1: begin
+                        lx0 <= 115; ly0 <=  45; lx1 <= 115; ly1 <=  95;
+                    end
+                    4'd2: begin
+                        lx0 <= 115; ly0 <=  95; lx1 <=  65; ly1 <=  95;
+                    end
+                    4'd3: begin
+                        lx0 <= 115; ly0 <=  95; lx1 <= 115; ly1 <=  45;
+                    end
+                    4'd4: begin
+                        lx0 <=  65; ly0 <=  95; lx1 <=  45; ly1 <=  75;
+                    end
+                    4'd5: begin
+                        lx0 <=  45; ly0 <=  75; lx1 <=  45; ly1 <=  25;
+                    end
+                    4'd6: begin
+                        lx0 <=  45; ly0 <=  25; lx1 <=  65; ly1 <=  45;
+                    end
+                    4'd7: begin
+                        lx0 <=  45; ly0 <=  25; lx1 <=  95; ly1 <=  25;
+                    end
+                    4'd8: begin
+                        lx0 <=  95; ly0 <=  25; lx1 <= 115; ly1 <=  45;
+                    end
+                    default: begin
+                        lx0 <=   0; ly0 <=   0; lx1 <=   0; ly1 <=   0;
+                    end
+                endcase
+            end
+            DRAW: if (draw_done) begin
+                if (line_id == LINE_CNT-1) begin
+                    state <= DONE;
+                end else begin
+                    line_id <= line_id + 1;
+                    state <= INIT;
+                end
+            end
+            DONE: state <= DONE;
+            default: if (vbi) state <= INIT;  // IDLE
+        endcase
     end
 
     // control drawing output enable - wait 300 frames, then 1 pixel/frame
@@ -156,7 +155,6 @@ module top_cube (
         end
     end
 
-    logic [FB_CORDW-1:0] px, py;
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
         .rst(1'b0),

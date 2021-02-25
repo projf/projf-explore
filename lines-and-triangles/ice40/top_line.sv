@@ -12,6 +12,8 @@ module top_line (
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
     output      logic dvi_de,       // DVI data enable
+    // output      logic LEDR_N,
+    // output      logic LEDG_N,
     output      logic [3:0] dvi_r,  // 4-bit DVI red
     output      logic [3:0] dvi_g,  // 4-bit DVI green
     output      logic [3:0] dvi_b   // 4-bit DVI blue
@@ -81,16 +83,28 @@ module top_line (
     );
 
     // draw line in framebuffer
-    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
-    logic draw_start, drawing, draw_done;
-    always_ff @(posedge clk_pix) begin
-        lx0 <=  20; ly0 <=   0;
-        lx1 <= 139; ly1 <= 119;
-        fb_cidx_write <= 2'h1;  // orange
-        draw_start <= (draw_done) ? 0 : 1;
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
+    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
+    logic draw_start, drawing, draw_done;  // draw_line signals
+
+    // draw state machine
+    enum {IDLE, INIT, DRAW, DONE} state;
+    always @(posedge clk_pix) begin
+        draw_start <= 0;
+        case (state)
+            INIT: begin  // register coordinates and colour
+                lx0 <=  20; ly0 <=   0;
+                lx1 <= 139; ly1 <= 119;
+                fb_cidx_write <= 2'h1;  // orange
+                draw_start <= 1;
+                state <= DRAW;
+            end
+            DRAW: if (draw_done) state <= DONE;
+            DONE: state <= DONE;
+            default: if (vbi) state <= INIT;  // IDLE
+        endcase
     end
 
-    logic [FB_CORDW-1:0] px, py;
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
         .rst(1'b0),
