@@ -12,8 +12,8 @@ module top_line (
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
     output      logic dvi_de,       // DVI data enable
-    // output      logic LEDR_N,
-    // output      logic LEDG_N,
+    output      logic LEDR_N,       // debugging LED
+    output      logic LEDG_N,       // debugging LED
     output      logic [3:0] dvi_r,  // 4-bit DVI red
     output      logic [3:0] dvi_g,  // 4-bit DVI green
     output      logic [3:0] dvi_b   // 4-bit DVI blue
@@ -87,22 +87,54 @@ module top_line (
     logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
     logic draw_start, drawing, draw_done;  // draw_line signals
 
-    // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
+    // // WORKS: Simple horizontal line drawing taken fron framebuffers project
+    // // draw a horizontal line at the top of the framebuffer
+    // always @(posedge clk_pix) begin
+    //     if (sy >= V_RES) begin  // draw in blanking interval
+    //         if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
+    //             fb_cidx_write <= 1;
+    //             fb_we <= 1;
+    //         end else if (fb_addr_write != FB_WIDTH-1) begin
+    //             fb_addr_write <= fb_addr_write + 1;
+    //         end else begin
+    //             fb_cidx_write <= 0;
+    //             fb_we <= 0;
+    //         end
+    //     end
+    // end
+
+    // DOESN'T WORK: Line drawing using draw_line module
+
+    // // draw state machine - disable until we get basic drawing working
+    // enum {IDLE, INIT, DRAW, DONE} state;
+    // always @(posedge clk_pix) begin
+    //     draw_start <= 0;
+    //     case (state)
+    //         INIT: begin  // register coordinates and colour
+    //             lx0 <=  20; ly0 <=   0;
+    //             lx1 <= 139; ly1 <= 119;
+    //             fb_cidx_write <= 2'h1;  // orange
+    //             draw_start <= 1;
+    //             state <= DRAW;
+    //         end
+    //         DRAW: if (draw_done) state <= DONE;
+    //         DONE: state <= DONE;
+    //         default: if (vbi) state <= INIT;  // IDLE
+    //     endcase
+    // end
+
+    // DEBUGGING - LEDs are active LOW
     always @(posedge clk_pix) begin
-        draw_start <= 0;
-        case (state)
-            INIT: begin  // register coordinates and colour
-                lx0 <=  20; ly0 <=   0;
-                lx1 <= 139; ly1 <= 119;
-                fb_cidx_write <= 2'h1;  // orange
-                draw_start <= 1;
-                state <= DRAW;
-            end
-            DRAW: if (draw_done) state <= DONE;
-            DONE: state <= DONE;
-            default: if (vbi) state <= INIT;  // IDLE
-        endcase
+        LEDG_N <= ~(draw_done);  // green lit when line_draw is done
+        LEDR_N <= ~(drawing);    // red list when line_draw is drawing
+    end
+
+    // DEBUGGING - hard-code line coords and use vbi as start signal
+    always @(posedge clk_pix) begin
+        draw_start <= vbi;
+        lx0 <=  20; ly0 <=   0;
+        lx1 <= 139; ly1 <= 119;
+        fb_cidx_write <= 2'h1;  // orange
     end
 
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
