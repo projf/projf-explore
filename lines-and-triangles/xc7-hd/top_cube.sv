@@ -160,7 +160,7 @@ module top_cube (
 
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
-        .rst(1'b0),
+        .rst(!clk_locked),
         .start(draw_start),
         .oe(draw_oe),
         .x0(lx0),

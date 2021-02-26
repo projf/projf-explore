@@ -87,6 +87,7 @@ module top_cube (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk_pix) begin
         draw_start <= 0;
         case (state)
@@ -155,7 +156,7 @@ module top_cube (
 
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
-        .rst(1'b0),
+        .rst(!clk_locked),
         .start(draw_start),
         .oe(draw_oe),
         .x0(lx0),

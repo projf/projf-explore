@@ -108,7 +108,7 @@ module top_line (
 
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
-        .rst(1'b0),
+        .rst(!clk_locked),
         .start(draw_start),
         .oe(1'b1),
         .x0(lx0),

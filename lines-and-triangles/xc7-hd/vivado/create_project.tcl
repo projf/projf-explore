@@ -49,9 +49,6 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${origin_dir}/draw_line.sv"] \
-  [file normalize "${origin_dir}/draw_triangle.sv"] \
-  [file normalize "${origin_dir}/pix_addr.sv"] \
   [file normalize "${common_dir}/display_timings_720p.sv"] \
   [file normalize "${common_dir}/linebuffer.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
@@ -63,14 +60,17 @@ set design_sources [list \
   [file normalize "${common_dir}/xc7-hd/dvi_generator.sv"] \
   [file normalize "${common_dir}/xc7-hd/oserdes_10b.sv"] \
   [file normalize "${common_dir}/xc7-hd/tmds_out.sv"] \
+  [file normalize "${origin_dir}/draw_line.sv"] \
+  [file normalize "${origin_dir}/draw_triangle.sv"] \
+  [file normalize "${origin_dir}/pix_addr.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/palette/16_colr_8bit_palette.mem"] \
   [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
   [file normalize "${common_dir}/res/test/test_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/16_colr_8bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
