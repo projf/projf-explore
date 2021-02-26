@@ -13,6 +13,7 @@ In this series, we explore graphics at the hardware level and get a feel for the
 * **Framebuffers**: [Design Sources](framebuffers) - [Blog Post](https://projectf.io/posts/framebuffers/)
 * **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles** - [Design Sources](lines-and-triangles) - [Blog Post](https://projectf.io/posts/lines-and-triangles/)
+* **FPGA Shapes** - coming soon
 
 _More parts to follow._
 
@@ -21,11 +22,11 @@ _More parts to follow._
 A three-part introduction to FPGA development and Verilog with the Digilent Arty or Nexys Video boards:
 
 * **Hello Arty**: [Design Sources](hello-arty)
-    * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
-    * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
-    * Blog Post 3 (coming spring 2021)
+  * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
+  * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
+  * Blog Post 3 (coming spring 2021)
 
 * **Hello Nexys**: [Design Sources](hello-nexys)
-    * [Blog Post 1](https://projectf.io/posts/hello-nexys-1/)
-    * [Blog Post 2](https://projectf.io/posts/hello-nexys-2/)
-    * Blog Post 3 (coming spring 2021)
+  * [Blog Post 1](https://projectf.io/posts/hello-nexys-1/)
+  * [Blog Post 2](https://projectf.io/posts/hello-nexys-2/)
+  * Blog Post 3 (coming spring 2021)
