@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
+module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
@@ -20,14 +20,14 @@ module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
     output      logic done             // line complete (high for one tick)
     );
 
-    // "constant" signals
-    logic signed [CORDW:0] dx, dy;  // a bit wider as signed
-    logic right, down;  // drawing direction
+    // "constant" signals (we register these during the INIT state)
+    logic signed [CORDW:0] dx, dx_c, dy, dy_c;  // a bit wider as signed
+    logic right, right_c, down, down_c;  // drawing direction
     always_comb begin
-        right = (x0 < x1);
-        down  = (y0 < y1);
-        dx = right ? x1 - x0 : x0 - x1;  // dx =  abs(x1 - x0)
-        dy = down  ? y0 - y1 : y1 - y0;  // dy = -abs(y1 - y0)
+        right_c = (x0 < x1);
+        down_c  = (y0 < y1);
+        dx_c = right_c ? x1 - x0 : x0 - x1;  // dx_c =  abs(x1 - x0)
+        dy_c = down_c  ? y0 - y1 : y1 - y0;  // dy_y = -abs(y1 - y0)
     end
 
     // error values
@@ -40,11 +40,13 @@ module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
         if (movy) derr = derr + dx;
     end
 
-    // drawing high when in_progress and output is enabled
-    logic in_progress;  // drawing in progress
-    always_comb drawing = (in_progress && oe);
+    logic in_progress = 0;  // drawing calculation in progress
+    always_comb begin
+        drawing = 0;
+        if (in_progress && oe) drawing = 1;
+    end
 
-    enum {IDLE, DRAW} state;  // we're either idle or drawing
+    enum {IDLE, INIT, DRAW} state;
     always @(posedge clk) begin
         case (state)
             DRAW: begin
@@ -58,14 +60,21 @@ module draw_line #(parameter CORDW=10) (  // framebuffer coord width in bits
                     err <= err + derr;
                 end
             end
+            INIT: begin
+                err <= dx + dy;
+                x <= x0;
+                y <= y0;
+                in_progress <= 1;
+                state <= DRAW;
+            end
             default: begin  // IDLE
                 done <= 0;
-                if (start) begin
-                    err <= dx + dy;
-                    x <= x0;
-                    y <= y0;
-                    in_progress <= 1;
-                    state <= DRAW;
+                if (start) begin  // register "constant" signals
+                    right <= right_c;
+                    down  <= down_c;
+                    dx <= dx_c;
+                    dy <= dy_c;
+                    state <= INIT;
                 end
             end
         endcase

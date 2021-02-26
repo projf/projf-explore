@@ -8,7 +8,7 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
+Designs for iCEBreaker are not available at this time. Have you tried the [other designs](../README.md) in this series?
 
 ## Xilinx Vivado Build
 

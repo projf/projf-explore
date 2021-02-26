@@ -64,6 +64,8 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
+  [file normalize "${common_dir}/res/test/test_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
@@ -82,8 +84,11 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${common_dir}/display_timings_24x18.sv"] \
+  [file normalize "${origin_dir}/xc7/draw_framebuffer_tb.sv"] \
   [file normalize "${origin_dir}/xc7/draw_line_tb.sv"] \
   [file normalize "${origin_dir}/xc7/draw_triangle_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/draw_framebuffer_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/draw_line_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/draw_triangle_tb_behav.wcfg"] \
 ]

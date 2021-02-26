@@ -1,37 +1,42 @@
-// Project F: Lines and Triangles - Top Triangles (Arty with Pmod VGA)
+// Project F: Lines and Triangles - Top Line (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_triangles (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+module top_line (
+    input  wire logic clk_100m,         // 100 MHz clock
+    input  wire logic btn_rst,          // reset button (active low)
+    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // generate pixel clock
-    logic clk_pix;
-    logic clk_locked;
-    clock_gen clock_640x480 (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
-       .clk_pix,
-       .clk_locked
+    // pixel clocks
+    logic clk_pix;                  // pixel clock (74.25 MHz)
+    logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
+    logic clk_pix_locked;           // pixel clocks locked?
+    clock_gen_pix clock_pix_inst (
+        .clk_100m,
+        .rst(!btn_rst),             // reset button is active low
+        .clk_pix,
+        .clk_pix_5x,
+        .clk_pix_locked
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
+    localparam CORDW = 11;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    display_timings_720p timings_720p (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
@@ -40,10 +45,10 @@ module top_triangles (
     );
 
     // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
+    localparam H_RES_FULL = 1650;
+    localparam V_RES_FULL = 750;
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
 
     // vertical blanking interval (will move to display_timings soon)
     logic vbi;
@@ -57,7 +62,7 @@ module top_triangles (
     localparam FB_ADDRW   = $clog2(FB_PIXELS);
     localparam FB_DATAW   = 4;  // colour bits per pixel
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -68,7 +73,7 @@ module top_triangles (
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) fb_inst (
+        ) fb_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fb_we),
@@ -78,11 +83,9 @@ module top_triangles (
         .data_out(fb_cidx_read_1)
     );
 
-    // draw shapes in framebuffer
-    localparam SHAPE_CNT=3;
-    logic [1:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // triangle coords
-    logic [FB_CORDW-1:0] px, py;  // triangle pixel drawing coordinates
+    // draw line in framebuffer
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
+    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
@@ -92,72 +95,27 @@ module top_triangles (
         draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
+                lx0 <=  40; ly0 <=   0;
+                lx1 <= 279; ly1 <= 239;
+                fb_cidx_write <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
-                case (shape_id)
-                    2'd0: begin
-                        tx0 <=  20; ty0 <=  60;
-                        tx1 <=  60; ty1 <= 180;
-                        tx2 <= 110; ty2 <=  90;
-                        fb_cidx_write <= 4'h2;  // dark purple
-                    end
-                    2'd1: begin
-                        tx0 <=  70; ty0 <= 200;
-                        tx1 <= 240; ty1 <= 100;
-                        tx2 <= 170; ty2 <=  10;
-                        fb_cidx_write <= 4'hC;  // blue
-                    end
-                    2'd2: begin
-                        tx0 <=  60; ty0 <=  30;
-                        tx1 <= 300; ty1 <=  80;
-                        tx2 <= 160; ty2 <= 220;
-                        fb_cidx_write <= 4'h9;  // orange
-                    end
-                    default: begin  // should never occur
-                        tx0 <=   10; ty0 <=   10;
-                        tx1 <=   10; ty1 <=   30;
-                        tx2 <=   20; ty2 <=   20;
-                        fb_cidx_write <= 4'h7;  // white
-                    end
-                endcase
             end
-            DRAW: if (draw_done) begin
-                if (shape_id == SHAPE_CNT-1) begin
-                    state <= DONE;
-                end else begin
-                    shape_id <= shape_id + 1;
-                    state <= INIT;
-                end
-            end
+            DRAW: if (draw_done) state <= DONE;
             DONE: state <= DONE;
             default: if (vbi) state <= INIT;  // IDLE
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_pix) begin
-        draw_oe <= 0;
-        if (vbi) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
-    end
-
-    draw_triangle #(.CORDW(FB_CORDW)) draw_triangle_inst (
+    draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
-        .rst(!clk_locked),
+        .rst(!clk_pix_locked),
         .start(draw_start),
-        .oe(draw_oe),
-        .x0(tx0),
-        .y0(ty0),
-        .x1(tx1),
-        .y1(ty1),
-        .x2(tx2),
-        .y2(ty2),
+        .oe(1'b1),
+        .x0(lx0),
+        .y0(ly0),
+        .x1(lx1),
+        .y1(ly1),
         .x(px),
         .y(py),
         .drawing,
@@ -179,13 +137,13 @@ module top_triangles (
     );
 
     // linebuffer (LB)
-    localparam LB_SCALE = 2;       // scale (horizontal and vertical)
+    localparam LB_SCALE = 3;       // scale (horizontal and vertical)
     localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
-    localparam LB_BPC = 4;         // bits per colour channel
+    localparam LB_BPC = 8;         // bits per colour channel
 
     // LB output to display
     logic lb_en_out;
-    always_comb lb_en_out = de;  // Use 'de' for entire frame
+    always_comb lb_en_out = (de && sx >= 160 && sx < 1120);  // 4:3
 
     // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
@@ -236,10 +194,10 @@ module top_triangles (
         fb_cidx_read <= fb_cidx_read_1;
     end
 
-    // colour lookup table (ROM) 16x12-bit entries
-    logic [11:0] clut_colr;
+    // colour lookup table (ROM) 16x24-bit entries
+    logic [23:0] clut_colr;
     rom_async #(
-        .WIDTH(12),
+        .WIDTH(24),
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
@@ -253,19 +211,52 @@ module top_triangles (
     end
 
     // LB output adds one cycle of latency - need to correct display signals
-    logic hsync_1, vsync_1, lb_en_out_1;
+    logic hsync_1, vsync_1, de_1, lb_en_out_1;
     always_ff @(posedge clk_pix) begin
         hsync_1 <= hsync;
         vsync_1 <= vsync;
+        de_1 <= de;
         lb_en_out_1 <= lb_en_out;
     end
 
-    // VGA output
+    // DVI signals
+    logic [7:0] dvi_red, dvi_green, dvi_blue;
+    logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync_1;
-        vga_vsync <= vsync_1;
-        vga_r <= lb_en_out_1 ? lb_out_2 : 4'h0;
-        vga_g <= lb_en_out_1 ? lb_out_1 : 4'h0;
-        vga_b <= lb_en_out_1 ? lb_out_0 : 4'h0;
+        dvi_hsync <= hsync_1;
+        dvi_vsync <= vsync_1;
+        dvi_de    <= de_1;
+        dvi_red   <= lb_en_out_1 ? lb_out_2 : 8'h00;
+        dvi_green <= lb_en_out_1 ? lb_out_1 : 8'h00;
+        dvi_blue  <= lb_en_out_1 ? lb_out_0 : 8'h00;
     end
+
+    // TMDS encoding and serialization
+    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
+    dvi_generator dvi_out (
+        .clk_pix,
+        .clk_pix_5x,
+        .rst(!clk_pix_locked),
+        .de(dvi_de),
+        .data_in_ch0(dvi_blue),
+        .data_in_ch1(dvi_green),
+        .data_in_ch2(dvi_red),
+        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
+        .ctrl_in_ch1(2'b00),
+        .ctrl_in_ch2(2'b00),
+        .tmds_ch0_serial,
+        .tmds_ch1_serial,
+        .tmds_ch2_serial,
+        .tmds_clk_serial
+    );
+
+    // TMDS output pins
+    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
+        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
+    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
+        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
+    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
+        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
+    tmds_out tmds_clk (.tmds(tmds_clk_serial),
+        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 endmodule

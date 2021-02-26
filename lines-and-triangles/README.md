@@ -8,7 +8,26 @@ All the designs are under the permissive [MIT licence](../LICENSE), but the blog
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are being tested and will be available soon. Until then, have you tried [other designs](../README.md) in this series?
+You can build projects for iCEBreaker using the included [makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
+
+For example, to build `top_triangles`; clone the projf-explore git repo, then:
+
+```bash
+cd projf-explore/lines-and-triangles/ice40
+make top_triangles
+```
+
+After the build completes you'll have a bin file, such as `top_triangles.bin`. Use the bin file to program your board:
+
+```bash
+iceprog top_triangles.bin
+```
+
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
+
+### Problems Building
+
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Xilinx Vivado Build
 

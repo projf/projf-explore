@@ -1,11 +1,11 @@
-// Project F: Framebuffer Test Bench (XC7)
+// Project F: Draw in Framebuffer Test Bench (XC7)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module framebuffer_tb();
+module draw_framebuffer_tb();
 
     parameter CLK_PERIOD_100M = 10;  // 10 ns == 100 MHz
     parameter CLK_PERIOD_25M  = 40;  // 40 ns == 25 MHz
@@ -41,10 +41,11 @@ module framebuffer_tb();
     // framebuffer (FB)
     localparam FB_WIDTH   = 12;
     localparam FB_HEIGHT  = 9;
+    localparam FB_CORDW   = $clog2(FB_WIDTH);  // assumes WIDTH>=HEIGHT
     localparam FB_PIXELS  = FB_WIDTH * FB_HEIGHT;
     localparam FB_ADDRW   = $clog2(FB_PIXELS);
     localparam FB_DATAW   = 4;  // colour bits per pixel
-    localparam FB_IMAGE   = "test_box_12x9.mem";
+    localparam FB_IMAGE   = "test_clear_12x9.mem";
     localparam FB_PALETTE = "test_palette.mem";
 
     logic fb_we = 0;
@@ -67,19 +68,45 @@ module framebuffer_tb();
         .data_out(fb_cidx_read_1)
     );
 
-    // draw a horizontal line at the top of the framebuffer
-    always @(posedge clk_25m) begin
-        if (sy >= V_RES) begin  // draw in blanking interval
-            if (fb_we == 0 && fb_addr_write != FB_WIDTH-2) begin
-                fb_cidx_write <= 4'hF;  // last palette entry (0xFCA)
-                fb_we <= 1;
-            end else if (fb_addr_write != FB_WIDTH-2) begin
-                fb_addr_write <= fb_addr_write + 1;
-            end else begin
-                fb_we <= 0;
-            end
-        end
+    // draw line in framebuffer
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
+    logic draw_start, drawing, draw_done;
+    always_ff @(posedge clk_25m) begin
+        lx0 <=  0; ly0 <=  0;
+        lx1 <= 11; ly1 <=  9;
+        fb_cidx_write <= 4'h9;  // orange
+        draw_start <= (vbi) ? 1 : 0;
     end
+
+    logic [FB_CORDW-1:0] px, py;
+    draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
+        .clk(clk_25m),
+        .rst(1'b0),
+        .start(draw_start),
+        .oe(1'b1),
+        .x0(lx0),
+        .y0(ly0),
+        .x1(lx1),
+        .y1(ly1),
+        .x(px),
+        .y(py),
+        .drawing,
+        .done(draw_done)
+    );
+
+    // pixel coordinate to memory address calculation takes one cycle
+    always_ff @(posedge clk_25m) fb_we <= drawing;
+
+    pix_addr #(
+        .CORDW(FB_CORDW),
+        .ADDRW(FB_ADDRW)
+    ) pix_addr_inst (
+        .clk(clk_25m),
+        .hres(FB_WIDTH),
+        .px,
+        .py,
+        .pix_addr(fb_addr_write)
+    );
 
     // linebuffer (LB)
     localparam LB_SCALE = 2;       // scale (horizontal and vertical)

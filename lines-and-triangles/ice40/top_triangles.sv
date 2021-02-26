@@ -1,4 +1,4 @@
-// Project F: Lines and Triangles - Top Triangles (Arty with Pmod VGA)
+// Project F: Lines and Triangles - Top Triangles (iCEBreaker with 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -6,21 +6,23 @@
 `timescale 1ns / 1ps
 
 module top_triangles (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button (active high)
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen clock_640x480 (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+       .clk(clk_12m),
+       .rst(btn_rst),
        .clk_pix,
        .clk_locked
     );
@@ -50,14 +52,14 @@ module top_triangles (
     always_comb vbi = (sy == V_RES && sx == 0);
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_WIDTH   = 160;
+    localparam FB_HEIGHT  = 120;
     localparam FB_CORDW   = $clog2(FB_WIDTH);  // assumes WIDTH>=HEIGHT
     localparam FB_PIXELS  = FB_WIDTH * FB_HEIGHT;
     localparam FB_ADDRW   = $clog2(FB_PIXELS);
-    localparam FB_DATAW   = 4;  // colour bits per pixel
+    localparam FB_DATAW   = 2;  // colour bits per pixel
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "../res/palette/4_colr_4bit_palette.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -96,28 +98,28 @@ module top_triangles (
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        tx0 <=  20; ty0 <=  60;
-                        tx1 <=  60; ty1 <= 180;
-                        tx2 <= 110; ty2 <=  90;
-                        fb_cidx_write <= 4'h2;  // dark purple
+                        tx0 <=  10; ty0 <=  30;
+                        tx1 <=  30; ty1 <=  90;
+                        tx2 <=  65; ty2 <=  45;
+                        fb_cidx_write <= 2'h1;  // orange
                     end
                     2'd1: begin
-                        tx0 <=  70; ty0 <= 200;
-                        tx1 <= 240; ty1 <= 100;
-                        tx2 <= 170; ty2 <=  10;
-                        fb_cidx_write <= 4'hC;  // blue
+                        tx0 <=  35; ty0 <= 100;
+                        tx1 <= 120; ty1 <=  50;
+                        tx2 <=  85; ty2 <=  5;
+                        fb_cidx_write <= 2'h2;  // green
                     end
                     2'd2: begin
-                        tx0 <=  60; ty0 <=  30;
-                        tx1 <= 300; ty1 <=  80;
-                        tx2 <= 160; ty2 <= 220;
-                        fb_cidx_write <= 4'h9;  // orange
+                        tx0 <=  30; ty0 <=  15;
+                        tx1 <= 150; ty1 <=  40;
+                        tx2 <=  80; ty2 <= 110;
+                        fb_cidx_write <= 2'h3;  // blue
                     end
                     default: begin  // should never occur
                         tx0 <=   10; ty0 <=   10;
                         tx1 <=   10; ty1 <=   30;
                         tx2 <=   20; ty2 <=   20;
-                        fb_cidx_write <= 4'h7;  // white
+                        fb_cidx_write <= 2'h1;  // orange
                     end
                 endcase
             end
@@ -179,7 +181,7 @@ module top_triangles (
     );
 
     // linebuffer (LB)
-    localparam LB_SCALE = 2;       // scale (horizontal and vertical)
+    localparam LB_SCALE = 4;       // scale (horizontal and vertical)
     localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
     localparam LB_BPC = 4;         // bits per colour channel
 
@@ -236,11 +238,11 @@ module top_triangles (
         fb_cidx_read <= fb_cidx_read_1;
     end
 
-    // colour lookup table (ROM) 16x12-bit entries
+    // colour lookup table (ROM) 4x12-bit entries
     logic [11:0] clut_colr;
     rom_async #(
         .WIDTH(12),
-        .DEPTH(16),
+        .DEPTH(4),
         .INIT_F(FB_PALETTE)
     ) clut (
         .addr(fb_cidx_read),
@@ -253,19 +255,41 @@ module top_triangles (
     end
 
     // LB output adds one cycle of latency - need to correct display signals
-    logic hsync_1, vsync_1, lb_en_out_1;
+    logic hsync_1, vsync_1, de_1, lb_en_out_1;
     always_ff @(posedge clk_pix) begin
         hsync_1 <= hsync;
         vsync_1 <= vsync;
+        de_1 <= de;
         lb_en_out_1 <= lb_en_out;
     end
 
-    // VGA output
-    always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync_1;
-        vga_vsync <= vsync_1;
-        vga_r <= lb_en_out_1 ? lb_out_2 : 4'h0;
-        vga_g <= lb_en_out_1 ? lb_out_1 : 4'h0;
-        vga_b <= lb_en_out_1 ? lb_out_0 : 4'h0;
+    // colours
+    logic [3:0] red, green, blue;
+    always_comb begin
+        red   = lb_en_out_1 ? lb_out_2 : 4'h0;
+        green = lb_en_out_1 ? lb_out_1 : 4'h0;
+        blue  = lb_en_out_1 ? lb_out_0 : 4'h0;
     end
+
+    // Output DVI clock: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
+    // Output DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync_1, vsync_1, de_1, red, green, blue}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 endmodule

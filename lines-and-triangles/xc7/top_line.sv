@@ -79,19 +79,32 @@ module top_line (
     );
 
     // draw line in framebuffer
-    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
-    logic draw_start, drawing, draw_done;
-    always_ff @(posedge clk_pix) begin
-        lx0 <=  40; ly0 <=   0;
-        lx1 <= 279; ly1 <= 239;
-        fb_cidx_write <= 4'h9;  // orange
-        draw_start <= (draw_done) ? 0 : 1;
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
+    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
+    logic draw_start, drawing, draw_done;  // draw_line signals
+
+    // draw state machine
+    enum {IDLE, INIT, DRAW, DONE} state;
+    initial state = IDLE;  // needed for Yosys
+    always @(posedge clk_pix) begin
+        draw_start <= 0;
+        case (state)
+            INIT: begin  // register coordinates and colour
+                lx0 <=  40; ly0 <=   0;
+                lx1 <= 279; ly1 <= 239;
+                fb_cidx_write <= 4'h9;  // orange
+                draw_start <= 1;
+                state <= DRAW;
+            end
+            DRAW: if (draw_done) state <= DONE;
+            DONE: state <= DONE;
+            default: if (vbi) state <= INIT;  // IDLE
+        endcase
     end
 
-    logic [FB_CORDW-1:0] px, py;
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
-        .rst(1'b0),
+        .rst(!clk_locked),
         .start(draw_start),
         .oe(1'b1),
         .x0(lx0),
