@@ -153,7 +153,7 @@ module top_triangles (
 
     draw_triangle #(.CORDW(FB_CORDW)) draw_triangle_inst (
         .clk(clk_pix),
-        .rst(!clk_locked),
+        .rst(!clk_pix_locked),
         .start(draw_start),
         .oe(draw_oe),
         .x0(tx0),
