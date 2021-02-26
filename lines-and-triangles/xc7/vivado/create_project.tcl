@@ -64,9 +64,9 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
   [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
   [file normalize "${common_dir}/res/test/test_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
