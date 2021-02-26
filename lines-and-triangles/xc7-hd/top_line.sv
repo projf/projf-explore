@@ -90,6 +90,7 @@ module top_line (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk_pix) begin
         draw_start <= 0;
         case (state)
