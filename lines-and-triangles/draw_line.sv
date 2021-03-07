@@ -25,7 +25,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     logic [CORDW-1:0] xb, yb;   // ending vertex
     logic right, swap;  // drawing direction
     always_comb begin
-        swap = (y0 > y1);
+        swap = (y0 > y1);  // swap vertices if y0 is below y1
         xa = swap ? x1 : x0;
         xb = swap ? x0 : x1;
         ya = swap ? y1 : y0;
@@ -74,7 +74,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    dx <= right ? xb - xa : xa - xb;  // dx =  abs(xb - xa)
+                    dx <= right ? xb - xa : xa - xb;  // dx = abs(xb - xa)
                     dy <= ya - yb;  // dy = -abs(yb - ya)
                     state <= INIT;
                 end
