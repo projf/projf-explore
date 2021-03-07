@@ -21,13 +21,11 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     );
 
     // line properies
-    logic signed [CORDW:0] dx, dx_c, dy, dy_c;  // a bit wider as signed
+    logic signed [CORDW:0] dx, dy;  // a bit wider as signed
     logic right, down;  // drawing direction
     always_comb begin
         right = (x0 < x1);
         down  = (y0 < y1);
-        dx_c = right ? x1 - x0 : x0 - x1;  // dx_c =  abs(x1 - x0)
-        dy_c = down  ? y0 - y1 : y1 - y0;  // dy_y = -abs(y1 - y0)
     end
 
     // error values
@@ -70,8 +68,8 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin  // register "constant" signals
-                    dx <= dx_c;
-                    dy <= dy_c;
+                    dx <= right ? x1 - x0 : x0 - x1;  // dx =  abs(x1 - x0)
+                    dy <= down  ? y0 - y1 : y1 - y0;  // dy = -abs(y1 - y0)
                     state <= INIT;
                 end
             end
