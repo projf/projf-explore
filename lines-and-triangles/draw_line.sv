@@ -20,16 +20,22 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     output      logic done             // line complete (high for one tick)
     );
 
-    // line properies
-    logic signed [CORDW:0] dx, dy;  // a bit wider as signed
-    logic right, down;  // drawing direction
+    // line properties
+    logic [CORDW-1:0] xa, ya;   // starting vertex
+    logic [CORDW-1:0] xb, yb;   // ending vertex
+    logic right, swap;  // drawing direction
     always_comb begin
-        right = (x0 < x1);
-        down  = (y0 < y1);
+        swap = (y0 > y1);
+        xa = swap ? x1 : x0;
+        xb = swap ? x0 : x1;
+        ya = swap ? y1 : y0;
+        yb = swap ? y0 : y1;
+        right = (xa < xb);  // draw right to left?
     end
 
     // error values
     logic signed [CORDW:0] err, derr;
+    logic signed [CORDW:0] dx, dy;  // a bit wider as signed
     logic movx, movy;  // move in x and/or y required
     always_comb begin
         movx = (2*err >= dy);
@@ -48,28 +54,28 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     always @(posedge clk) begin
         case (state)
             DRAW: begin
-                if (x == x1 && y == y1) begin
+                if (x == xb && y == yb) begin
                     in_progress <= 0;
                     done <= 1;
                     state <= IDLE;
                 end else if (oe) begin
                     if (movx) x <= right ? x + 1 : x - 1;
-                    if (movy) y <= down  ? y + 1 : y - 1;
+                    if (movy) y <= y + 1;
                     err <= err + derr;
                 end
             end
             INIT: begin
                 err <= dx + dy;
-                x <= x0;
-                y <= y0;
+                x <= xa;
+                y <= ya;
                 in_progress <= 1;
                 state <= DRAW;
             end
             default: begin  // IDLE
                 done <= 0;
-                if (start) begin  // register "constant" signals
-                    dx <= right ? x1 - x0 : x0 - x1;  // dx =  abs(x1 - x0)
-                    dy <= down  ? y0 - y1 : y1 - y0;  // dy = -abs(y1 - y0)
+                if (start) begin
+                    dx <= right ? xb - xa : xa - xb;  // dx =  abs(xb - xa)
+                    dy <= ya - yb;  // dy = -abs(yb - ya)
                     state <= INIT;
                 end
             end
