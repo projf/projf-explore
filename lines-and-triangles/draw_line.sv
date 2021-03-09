@@ -54,14 +54,16 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     always @(posedge clk) begin
         case (state)
             DRAW: begin
-                if (x == xb && y == yb) begin
-                    in_progress <= 0;
-                    done <= 1;
-                    state <= IDLE;
-                end else if (oe) begin
-                    if (movx) x <= right ? x + 1 : x - 1;
-                    if (movy) y <= y + 1;
-                    err <= err + derr;
+                if (oe) begin
+                    if (x == xb && y == yb) begin
+                        in_progress <= 0;
+                        done <= 1;
+                        state <= IDLE;
+                    end else begin
+                        if (movx) x <= right ? x + 1 : x - 1;
+                        if (movy) y <= y + 1;
+                        err <= err + derr;
+                    end
                 end
             end
             INIT: begin

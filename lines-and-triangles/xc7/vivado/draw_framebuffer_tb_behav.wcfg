@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="7310000fs"></ZoomStartTime>
-      <ZoomEndTime time="76660001fs"></ZoomEndTime>
+      <ZoomStartTime time="23162000fs"></ZoomStartTime>
+      <ZoomEndTime time="23556501fs"></ZoomEndTime>
       <Cursor1Time time="23760000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="146"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <NameColumnWidth column_width="162"></NameColumnWidth>
+      <ValueColumnWidth column_width="77"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="87" />
+   <WVObjectSize size="49" />
    <wvobject fp_name="/draw_framebuffer_tb/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
@@ -63,11 +63,11 @@
    <wvobject fp_name="/draw_framebuffer_tb/fb_addr_write" type="array">
       <obj_property name="ElementShortName">fb_addr_write[6:0]</obj_property>
       <obj_property name="ObjectShortName">fb_addr_write[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_framebuffer_tb/fb_addr_read" type="array">
       <obj_property name="ElementShortName">fb_addr_read[6:0]</obj_property>
       <obj_property name="ObjectShortName">fb_addr_read[6:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_framebuffer_tb/fb_cidx_write" type="array">
       <obj_property name="ElementShortName">fb_cidx_write[3:0]</obj_property>
@@ -97,6 +97,16 @@
       <obj_property name="ElementShortName">ly1[3:0]</obj_property>
       <obj_property name="ObjectShortName">ly1[3:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/draw_framebuffer_tb/px" type="array">
+      <obj_property name="ElementShortName">px[3:0]</obj_property>
+      <obj_property name="ObjectShortName">px[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_framebuffer_tb/py" type="array">
+      <obj_property name="ElementShortName">py[3:0]</obj_property>
+      <obj_property name="ObjectShortName">py[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
    <wvobject fp_name="/draw_framebuffer_tb/draw_start" type="logic">
       <obj_property name="ElementShortName">draw_start</obj_property>
       <obj_property name="ObjectShortName">draw_start</obj_property>
@@ -109,13 +119,9 @@
       <obj_property name="ElementShortName">draw_done</obj_property>
       <obj_property name="ObjectShortName">draw_done</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/px" type="array">
-      <obj_property name="ElementShortName">px[3:0]</obj_property>
-      <obj_property name="ObjectShortName">px[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/py" type="array">
-      <obj_property name="ElementShortName">py[3:0]</obj_property>
-      <obj_property name="ObjectShortName">py[3:0]</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_framebuffer_tb/lb_en_out" type="logic">
       <obj_property name="ElementShortName">lb_en_out</obj_property>
@@ -173,214 +179,48 @@
       <obj_property name="ElementShortName">draw_to_screen</obj_property>
       <obj_property name="ObjectShortName">draw_to_screen</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider95">
-      <obj_property name="label">draw_line</obj_property>
+   <wvobject type="divider" fp_name="divider572">
+      <obj_property name="label">Pixel Address</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/clk" type="logic">
+   <wvobject fp_name="/draw_framebuffer_tb/pix_addr_inst/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/pix_addr_inst/hres" type="array">
+      <obj_property name="ElementShortName">hres[3:0]</obj_property>
+      <obj_property name="ObjectShortName">hres[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/oe" type="logic">
-      <obj_property name="ElementShortName">oe</obj_property>
-      <obj_property name="ObjectShortName">oe</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/x0" type="array">
-      <obj_property name="ElementShortName">x0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">x0[3:0]</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/pix_addr_inst/px" type="array">
+      <obj_property name="ElementShortName">px[3:0]</obj_property>
+      <obj_property name="ObjectShortName">px[3:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/y0" type="array">
-      <obj_property name="ElementShortName">y0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">y0[3:0]</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/pix_addr_inst/py" type="array">
+      <obj_property name="ElementShortName">py[3:0]</obj_property>
+      <obj_property name="ObjectShortName">py[3:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/x1" type="array">
-      <obj_property name="ElementShortName">x1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">x1[3:0]</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/pix_addr_inst/pix_addr" type="array">
+      <obj_property name="ElementShortName">pix_addr[6:0]</obj_property>
+      <obj_property name="ObjectShortName">pix_addr[6:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/y1" type="array">
-      <obj_property name="ElementShortName">y1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">y1[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/x" type="array">
-      <obj_property name="ElementShortName">x[3:0]</obj_property>
-      <obj_property name="ObjectShortName">x[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/y" type="array">
-      <obj_property name="ElementShortName">y[3:0]</obj_property>
-      <obj_property name="ObjectShortName">y[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/drawing" type="logic">
-      <obj_property name="ElementShortName">drawing</obj_property>
-      <obj_property name="ObjectShortName">drawing</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/done" type="logic">
-      <obj_property name="ElementShortName">done</obj_property>
-      <obj_property name="ObjectShortName">done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/dx" type="array">
-      <obj_property name="ElementShortName">dx[4:0]</obj_property>
-      <obj_property name="ObjectShortName">dx[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/dx_c" type="array">
-      <obj_property name="ElementShortName">dx_c[4:0]</obj_property>
-      <obj_property name="ObjectShortName">dx_c[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/dy" type="array">
-      <obj_property name="ElementShortName">dy[4:0]</obj_property>
-      <obj_property name="ObjectShortName">dy[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/dy_c" type="array">
-      <obj_property name="ElementShortName">dy_c[4:0]</obj_property>
-      <obj_property name="ObjectShortName">dy_c[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/right" type="logic">
-      <obj_property name="ElementShortName">right</obj_property>
-      <obj_property name="ObjectShortName">right</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/right_c" type="logic">
-      <obj_property name="ElementShortName">right_c</obj_property>
-      <obj_property name="ObjectShortName">right_c</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/down" type="logic">
-      <obj_property name="ElementShortName">down</obj_property>
-      <obj_property name="ObjectShortName">down</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/down_c" type="logic">
-      <obj_property name="ElementShortName">down_c</obj_property>
-      <obj_property name="ObjectShortName">down_c</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/err" type="array">
-      <obj_property name="ElementShortName">err[4:0]</obj_property>
-      <obj_property name="ObjectShortName">err[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/derr" type="array">
-      <obj_property name="ElementShortName">derr[4:0]</obj_property>
-      <obj_property name="ObjectShortName">derr[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/movx" type="logic">
-      <obj_property name="ElementShortName">movx</obj_property>
-      <obj_property name="ObjectShortName">movx</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/movy" type="logic">
-      <obj_property name="ElementShortName">movy</obj_property>
-      <obj_property name="ObjectShortName">movy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/draw_line_inst/state" type="array">
-      <obj_property name="ElementShortName">state[31:0]</obj_property>
-      <obj_property name="ObjectShortName">state[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="divider" fp_name="divider226">
-      <obj_property name="label">Linebuffer</obj_property>
+   <wvobject type="divider" fp_name="divider580">
+      <obj_property name="label">Framebuffer</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/clk_in" type="logic">
-      <obj_property name="ElementShortName">clk_in</obj_property>
-      <obj_property name="ObjectShortName">clk_in</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/fb_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/clk_out" type="logic">
-      <obj_property name="ElementShortName">clk_out</obj_property>
-      <obj_property name="ObjectShortName">clk_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/data_req" type="logic">
-      <obj_property name="ElementShortName">data_req</obj_property>
-      <obj_property name="ObjectShortName">data_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/en_in" type="logic">
-      <obj_property name="ElementShortName">en_in</obj_property>
-      <obj_property name="ObjectShortName">en_in</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/en_out" type="logic">
-      <obj_property name="ElementShortName">en_out</obj_property>
-      <obj_property name="ObjectShortName">en_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/vbi" type="logic">
-      <obj_property name="ElementShortName">vbi</obj_property>
-      <obj_property name="ObjectShortName">vbi</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/din_0" type="array">
-      <obj_property name="ElementShortName">din_0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_0[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/din_1" type="array">
-      <obj_property name="ElementShortName">din_1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_1[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/din_2" type="array">
-      <obj_property name="ElementShortName">din_2[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_2[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/dout_0" type="array">
-      <obj_property name="ElementShortName">dout_0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_0[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/dout_1" type="array">
-      <obj_property name="ElementShortName">dout_1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_1[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/dout_2" type="array">
-      <obj_property name="ElementShortName">dout_2[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_2[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/addr_out" type="array">
-      <obj_property name="ElementShortName">addr_out[3:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_out[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/cnt_v" type="array">
-      <obj_property name="ElementShortName">cnt_v[0:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_v[0:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/cnt_h" type="array">
-      <obj_property name="ElementShortName">cnt_h[0:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_h[0:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/get_data" type="logic">
-      <obj_property name="ElementShortName">get_data</obj_property>
-      <obj_property name="ObjectShortName">get_data</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/addr_in" type="array">
-      <obj_property name="ElementShortName">addr_in[3:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_in[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/ch0/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="label">ch0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/ch1/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="label">ch1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_framebuffer_tb/lb_inst/ch2/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
-      <obj_property name="label">ch2</obj_property>
+   <wvobject fp_name="/draw_framebuffer_tb/fb_inst/addr_write" type="array">
+      <obj_property name="ElementShortName">addr_write[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_framebuffer_tb/fb_inst/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">memory[0:107][3:0]</obj_property>
       <obj_property name="ObjectShortName">memory[0:107][3:0]</obj_property>
-      <obj_property name="label">fb</obj_property>
    </wvobject>
 </wave_config>
