@@ -10,10 +10,10 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
     input  wire logic oe,              // output enable
-    input  wire logic [CORDW-1:0] x0,  // horizontal start position
-    input  wire logic [CORDW-1:0] y0,  // vertical start position
-    input  wire logic [CORDW-1:0] x1,  // horizontal end position
-    input  wire logic [CORDW-1:0] y1,  // vertical end position
+    input  wire logic [CORDW-1:0] x0,  // point 0 - horizontal position
+    input  wire logic [CORDW-1:0] y0,  // point 0 - vertical position
+    input  wire logic [CORDW-1:0] x1,  // point 1 - horizontal position
+    input  wire logic [CORDW-1:0] y1,  // point 1 - vertical position
     output      logic [CORDW-1:0] x,   // horizontal drawing position
     output      logic [CORDW-1:0] y,   // vertical drawing position
     output      logic drawing,         // line is drawing
@@ -21,11 +21,11 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     );
 
     // line properties
-    logic [CORDW-1:0] xa, ya;   // starting vertex
-    logic [CORDW-1:0] xb, yb;   // ending vertex
     logic right, swap;  // drawing direction
+    logic [CORDW-1:0] xa, ya;  // starting point
+    logic [CORDW-1:0] xb, yb;  // ending point
     always_comb begin
-        swap = (y0 > y1);  // swap vertices if y0 is below y1
+        swap = (y0 > y1);  // swap points if y0 is below y1
         xa = swap ? x1 : x0;
         xb = swap ? x0 : x1;
         ya = swap ? y1 : y0;
@@ -34,9 +34,9 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     end
 
     // error values
-    logic signed [CORDW:0] err, derr;
-    logic signed [CORDW:0] dx, dy;  // a bit wider as signed
-    logic movx, movy;  // move in x and/or y required
+    logic signed [CORDW:0] err, derr;  // a bit wider as signed
+    logic signed [CORDW:0] dx, dy;
+    logic movx, movy;  // horizontal or vertical move required
     always_comb begin
         movx = (2*err >= dy);
         movy = (2*err <= dx);
@@ -44,7 +44,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
         if (movy) derr = derr + dx;
     end
 
-    logic in_progress = 0;  // drawing calculation in progress
+    logic in_progress = 0;  // calculation in progress (but only output if oe)
     always_comb begin
         drawing = 0;
         if (in_progress && oe) drawing = 1;
@@ -61,7 +61,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
                         state <= IDLE;
                     end else begin
                         if (movx) x <= right ? x + 1 : x - 1;
-                        if (movy) y <= y + 1;
+                        if (movy) y <= y + 1;  // always down
                         err <= err + derr;
                     end
                 end
