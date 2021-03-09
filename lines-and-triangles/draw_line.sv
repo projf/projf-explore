@@ -10,29 +10,33 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
     input  wire logic oe,              // output enable
-    input  wire logic [CORDW-1:0] x0,  // horizontal start position
-    input  wire logic [CORDW-1:0] y0,  // vertical start position
-    input  wire logic [CORDW-1:0] x1,  // horizontal end position
-    input  wire logic [CORDW-1:0] y1,  // vertical end position
+    input  wire logic [CORDW-1:0] x0,  // point 0 - horizontal position
+    input  wire logic [CORDW-1:0] y0,  // point 0 - vertical position
+    input  wire logic [CORDW-1:0] x1,  // point 1 - horizontal position
+    input  wire logic [CORDW-1:0] y1,  // point 1 - vertical position
     output      logic [CORDW-1:0] x,   // horizontal drawing position
     output      logic [CORDW-1:0] y,   // vertical drawing position
     output      logic drawing,         // line is drawing
     output      logic done             // line complete (high for one tick)
     );
 
-    // "constant" signals (we register these during the INIT state)
-    logic signed [CORDW:0] dx, dx_c, dy, dy_c;  // a bit wider as signed
-    logic right, right_c, down, down_c;  // drawing direction
+    // line properties
+    logic right, swap;  // drawing direction
+    logic [CORDW-1:0] xa, ya;  // starting point
+    logic [CORDW-1:0] xb, yb;  // ending point
     always_comb begin
-        right_c = (x0 < x1);
-        down_c  = (y0 < y1);
-        dx_c = right_c ? x1 - x0 : x0 - x1;  // dx_c =  abs(x1 - x0)
-        dy_c = down_c  ? y0 - y1 : y1 - y0;  // dy_y = -abs(y1 - y0)
+        swap = (y0 > y1);  // swap points if y0 is below y1
+        xa = swap ? x1 : x0;
+        xb = swap ? x0 : x1;
+        ya = swap ? y1 : y0;
+        yb = swap ? y0 : y1;
+        right = (xa < xb);  // draw right to left?
     end
 
     // error values
-    logic signed [CORDW:0] err, derr;
-    logic movx, movy;  // move in x and/or y required
+    logic signed [CORDW:0] err, derr;  // a bit wider as signed
+    logic signed [CORDW:0] dx, dy;
+    logic movx, movy;  // horizontal or vertical move required
     always_comb begin
         movx = (2*err >= dy);
         movy = (2*err <= dx);
@@ -40,7 +44,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
         if (movy) derr = derr + dx;
     end
 
-    logic in_progress = 0;  // drawing calculation in progress
+    logic in_progress = 0;  // calculation in progress (but only output if oe)
     always_comb begin
         drawing = 0;
         if (in_progress && oe) drawing = 1;
@@ -50,30 +54,30 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     always @(posedge clk) begin
         case (state)
             DRAW: begin
-                if (x == x1 && y == y1) begin
-                    in_progress <= 0;
-                    done <= 1;
-                    state <= IDLE;
-                end else if (oe) begin
-                    if (movx) x <= right ? x + 1 : x - 1;
-                    if (movy) y <= down  ? y + 1 : y - 1;
-                    err <= err + derr;
+                if (oe) begin
+                    if (x == xb && y == yb) begin
+                        in_progress <= 0;
+                        done <= 1;
+                        state <= IDLE;
+                    end else begin
+                        if (movx) x <= right ? x + 1 : x - 1;
+                        if (movy) y <= y + 1;  // always down
+                        err <= err + derr;
+                    end
                 end
             end
             INIT: begin
                 err <= dx + dy;
-                x <= x0;
-                y <= y0;
+                x <= xa;
+                y <= ya;
                 in_progress <= 1;
                 state <= DRAW;
             end
             default: begin  // IDLE
                 done <= 0;
-                if (start) begin  // register "constant" signals
-                    right <= right_c;
-                    down  <= down_c;
-                    dx <= dx_c;
-                    dy <= dy_c;
+                if (start) begin
+                    dx <= right ? xb - xa : xa - xb;  // dx = abs(xb - xa)
+                    dy <= ya - yb;  // dy = -abs(yb - ya)
                     state <= INIT;
                 end
             end

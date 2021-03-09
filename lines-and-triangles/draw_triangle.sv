@@ -24,26 +24,25 @@ module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
 
     enum {IDLE, INIT, DRAW} state;
 
-    localparam CNT_LINE = 3;  // triangle has three lines
-    logic [$clog2(CNT_LINE)-1:0] line_id;  // current line
+    logic [1:0] line_id;  // current line (0, 1, or 2)
     logic line_start;  // start drawing line
     logic line_done;   // finished drawing current line?
 
-    // line coordinates
-    logic [CORDW-1:0] lx0, ly0;  // current line start position
-    logic [CORDW-1:0] lx1, ly1;  // current line end position
+    // current line coordinates
+    logic [CORDW-1:0] lx0, ly0;  // point 0 position
+    logic [CORDW-1:0] lx1, ly1;  // point 1 position
 
     always @(posedge clk) begin
         line_start <= 0;
         case (state)
             INIT: begin  // register coordinates
-                if (line_id == 2'd0) begin  // (x0,y0) -> (x1,y1)
+                if (line_id == 2'd0) begin  // (x0,y0) (x1,y1)
                     lx0 <= x0; ly0 <= y0;
                     lx1 <= x1; ly1 <= y1;
-                end else if (line_id == 2'd1) begin  // (x1,y1) -> (x2,y2)
+                end else if (line_id == 2'd1) begin  // (x1,y1) (x2,y2)
                     lx0 <= x1; ly0 <= y1;
                     lx1 <= x2; ly1 <= y2;
-                end else begin  // (x2,y2) -> (x0,y0)
+                end else begin  // (x2,y2) (x0,y0)
                     lx0 <= x2; ly0 <= y2;
                     lx1 <= x0; ly1 <= y0;
                 end
@@ -52,9 +51,7 @@ module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
             end
             DRAW: begin
                 if (line_done) begin
-                    /* verilator lint_off WIDTH */
-                    if (line_id == CNT_LINE-1) begin
-                    /* verilator lint_on WIDTH */
+                    if (line_id == 2) begin  // final line
                         done <= 1;
                         state <= IDLE;
                     end else begin
