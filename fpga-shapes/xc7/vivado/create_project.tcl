@@ -39,6 +39,7 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_anim.sv"] \
   [file normalize "${origin_dir}/xc7/top_anim_db.sv"] \
   [file normalize "${origin_dir}/xc7/top_anim_simple_db.sv"] \
+  [file normalize "${origin_dir}/xc7/top_model.sv"] \
   [file normalize "${origin_dir}/xc7/top_rectangles.sv"] \
   [file normalize "${origin_dir}/xc7/top_rectangles_fill.sv"] \
 ]
@@ -55,6 +56,7 @@ set design_sources [list \
   [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/linebuffer.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
+  [file normalize "${common_dir}/rom_sync.sv"] \
   [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen.sv"] \
@@ -69,6 +71,8 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 set mem_design_sources [list \
   [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
   [file normalize "${common_dir}/res/test/test_palette.mem"] \
+  [file normalize "${origin_dir}/res/models/cube.mem"] \
+  [file normalize "${origin_dir}/res/models/teapot.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/tunnel_16_colr_4bit_palette.mem"] \
 ]
