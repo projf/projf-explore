@@ -78,30 +78,34 @@ module top_model (
         .data_out(fb_cidx_read_1)
     );
 
-    // draw model in framebuffer
-    localparam LINE_CNT=7766;
-    logic [$clog2(LINE_CNT)-1:0] line_id;  // line identifier
-    logic [7:0] lx0, ly0, lx1, ly1;  // line start and end coords - HARDCODED WIDTH
-    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
-
-    // ADD 32-bit ROM (maybe switch to 8-bits)
-    localparam ROM_WIDTH = 32;
+    // model file
     // localparam MODEL_FILE = "cube.mem";
-    localparam MODEL_FILE = "teapot.mem";
+    // localparam LINE_CNT   = 12;
+    // localparam MODEL_FILE = "teapot.mem";
+    // localparam LINE_CNT    = 6572;
+    localparam MODEL_FILE = "monkey.mem";
+    localparam LINE_CNT    = 1005;
 
-    // sprite graphic ROM
+    // model ROM
+    localparam ROM_WIDTH = 48;
+    localparam ROM_CORDW = 8;
+    logic [$clog2(LINE_CNT)-1:0] line_id;  // line identifier
     logic [ROM_WIDTH-1:0] rom_data;
     rom_sync #(
         .WIDTH(ROM_WIDTH),
         .DEPTH(LINE_CNT),
         .INIT_F(MODEL_FILE)
-    ) spr_rom (
+    ) model_rom (
         .clk(clk_pix),
         .addr(line_id),
         .data(rom_data)
     );
-    
+
+    // draw model in framebuffer
+    logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;
+    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
+    logic draw_start, drawing, draw_done;  // draw_line signals
+
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
@@ -109,10 +113,10 @@ module top_model (
         draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
+                fb_cidx_write <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
-                fb_cidx_write <= 4'h8;  // red
-                {lx0,ly0,lx1,ly1} <= rom_data;
+                {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
             end
             DRAW: if (draw_done) begin
                 if (line_id == LINE_CNT-1) begin
@@ -127,28 +131,15 @@ module top_model (
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_pix) begin
-        draw_oe <= 0;
-        if (vbi) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
-    end
-
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(draw_start),
         .oe(1'b1),
-        .x0(lx0),
-        .y0(ly0),
-        .x1(lx1),
-        .y1(ly1),
+        .x0({1'b0,lx0}),
+        .y0({1'b0,ly0}),
+        .x1({1'b0,lx1}),
+        .y1({1'b0,ly1}),
         .x(px),
         .y(py),
         .drawing,
