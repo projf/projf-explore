@@ -13,9 +13,9 @@ In this series, we explore graphics at the hardware level and get a feel for the
 * **Framebuffers**: [Design Sources](framebuffers) - [Blog Post](https://projectf.io/posts/framebuffers/)
 * **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles** - [Design Sources](lines-and-triangles) - [Blog Post](https://projectf.io/posts/lines-and-triangles/)
-* **FPGA Shapes** - coming soon
+* **Shapes & Simple 3D** - [Design Sources](shapes-3d) - [Blog Post](https://projectf.io/posts/shapes-3d/)
 
-_More parts to follow._
+_The graphics series is on a break. Further parts will appear later in 2021._
 
 ## Hello - Learning FPGA Development
 
