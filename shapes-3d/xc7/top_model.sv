@@ -106,7 +106,7 @@ module top_model (
     );
 
     // switch view on button press
-    localparam VIEW_CNT = 3;  // XY, YZ, ZX
+    localparam VIEW_CNT = 3;  // XY, ZY, ZX
     logic btn_view;    // debounced view button
     logic [1:0] view;  // which view to show
 
