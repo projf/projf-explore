@@ -81,14 +81,14 @@ module top_model (
     );
 
     // model file
-    // localparam MODEL_FILE = "cube.mem";
+    // localparam MODEL_FILE = "cube.mem";  // 7.5 total BRAMs
     // localparam LINE_CNT   = 12;  // cube line count
-    // localparam MODEL_FILE = "icosphere.mem";
-    // localparam LINE_CNT    = 120;  // icosphere line count
-    // localparam MODEL_FILE = "monkey.mem";
-    // localparam LINE_CNT    = 1005;  // monkey line count
-    localparam MODEL_FILE = "teapot.mem";
-    localparam LINE_CNT    = 6613;  // teapot line count
+    // localparam MODEL_FILE = "icosphere.mem";  // 8.5 total BRAMs
+    // localparam LINE_CNT   = 120;  // icosphere line count
+    // localparam MODEL_FILE = "monkey.mem";  // 9.0 total BRAMs
+    // localparam LINE_CNT   = 1005;  // monkey line count
+    localparam MODEL_FILE = "teapot.mem";  // 19.5 total BRAMs
+    localparam LINE_CNT   = 6613;  // teapot line count
 
     // model ROM
     localparam ROM_WIDTH = 48;
