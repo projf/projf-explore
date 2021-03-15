@@ -53,6 +53,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
+  [file normalize "${common_dir}/debounce.sv"] \
   [file normalize "${common_dir}/display_timings_480p.sv"] \
   [file normalize "${common_dir}/linebuffer.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
@@ -72,6 +73,7 @@ set mem_design_sources [list \
   [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
   [file normalize "${common_dir}/res/test/test_palette.mem"] \
   [file normalize "${origin_dir}/res/models/cube.mem"] \
+  [file normalize "${origin_dir}/res/models/icosphere.mem"] \
   [file normalize "${origin_dir}/res/models/monkey.mem"] \
   [file normalize "${origin_dir}/res/models/teapot.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \

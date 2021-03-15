@@ -59,7 +59,7 @@ module top_fb_bounce (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    // framebuffer multiplexing signals: drawing
+    // framebuffer multiplexing signals: drawing & clearing
     logic fb_we, fb_we_draw, fb_we_clr;
     /* verilator lint_off UNDRIVEN */
     /* verilator lint_off UNUSED */

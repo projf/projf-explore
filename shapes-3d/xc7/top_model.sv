@@ -8,6 +8,7 @@
 module top_model (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
+    input  wire logic btn0,         // user btn0
     output      logic vga_hsync,    // horizontal sync
     output      logic vga_vsync,    // vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
@@ -59,9 +60,10 @@ module top_model (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write;
+    logic fb_we, fb_we_draw, fb_we_clr;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_draw, fb_addr_clr;
+    logic [FB_ADDRW-1:0] fb_addr_read;
+    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_draw;
     logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
 
     bram_sdp #(
@@ -80,11 +82,13 @@ module top_model (
 
     // model file
     // localparam MODEL_FILE = "cube.mem";
-    // localparam LINE_CNT   = 12;
-    // localparam MODEL_FILE = "teapot.mem";
-    // localparam LINE_CNT    = 6572;
-    localparam MODEL_FILE = "monkey.mem";
-    localparam LINE_CNT    = 1005;
+    // localparam LINE_CNT   = 12;  // cube line count
+    // localparam MODEL_FILE = "icosphere.mem";
+    // localparam LINE_CNT    = 120;  // icosphere line count
+    // localparam MODEL_FILE = "monkey.mem";
+    // localparam LINE_CNT    = 1005;  // monkey line count
+    localparam MODEL_FILE = "teapot.mem";
+    localparam LINE_CNT    = 6613;  // teapot line count
 
     // model ROM
     localparam ROM_WIDTH = 48;
@@ -101,22 +105,64 @@ module top_model (
         .data(rom_data)
     );
 
+    // switch view on button press
+    localparam VIEW_CNT = 3;  // XY, YZ, ZX
+    logic btn_view;    // debounced view button
+    logic [1:0] view;  // which view to show
+
+    /* verilator lint_off PINCONNECTEMPTY */
+    debounce deb_view
+        (.clk(clk_pix), .in(btn0), .out(), .ondn(), .onup(btn_view));
+    /* verilator lint_on PINCONNECTEMPTY */
+
+    always_ff @(posedge clk_pix) begin
+        if (btn_view) view <= (view == VIEW_CNT-1) ? 0 : view + 1;
+    end
+
     // draw model in framebuffer
     logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;
+    logic [FB_CORDW-1:0] x0, y0, x1, y1;  // screen line coords
     logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
+    enum {IDLE, CLEAR, INIT, VIEW, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
     always @(posedge clk_pix) begin
         draw_start <= 0;
         case (state)
+            CLEAR: begin
+                if (fb_addr_clr != FB_PIXELS-1) begin
+                    fb_addr_clr <= fb_addr_clr + 1;
+                end else begin
+                    state <= INIT;
+                    fb_we_clr <= 0;
+                end
+            end
             INIT: begin  // register coordinates and colour
-                fb_cidx_write <= 4'h9;  // orange
+                fb_cidx_draw <= 4'h9;  // orange
+                state <= VIEW;
+                {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
+            end
+            VIEW: begin  // select view - map world coords to screen coords
                 draw_start <= 1;
                 state <= DRAW;
-                {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
+                if (view == 0) begin  // XY
+                    x0 <= {1'b0,lx0};
+                    y0 <= FB_HEIGHT-{1'b0,ly0}; // 3D models draw up the screen
+                    x1 <= {1'b0,lx1};
+                    y1 <= FB_HEIGHT-{1'b0,ly1};
+                end else if (view == 1) begin  // ZY
+                    x0 <= {1'b0,lz0};
+                    y0 <= FB_HEIGHT-{1'b0,ly0};
+                    x1 <= {1'b0,lz1};
+                    y1 <= FB_HEIGHT-{1'b0,ly1};
+                end else begin  // ZX
+                    x0 <= {1'b0,lz0};
+                    y0 <= {1'b0,lx0};
+                    x1 <= {1'b0,lz1};
+                    y1 <= {1'b0,lx1};
+                end
             end
             DRAW: if (draw_done) begin
                 if (line_id == LINE_CNT-1) begin
@@ -126,9 +172,25 @@ module top_model (
                     state <= INIT;
                 end
             end
-            DONE: state <= DONE;
-            default: if (vbi) state <= INIT;  // IDLE
+            DONE: begin
+                if (btn_view) begin  // redraw if we switch view
+                    state <= IDLE;
+                    line_id <= 0;
+                end
+            end
+            default: if (vbi) begin  // IDLE
+                state <= CLEAR;
+                fb_we_clr <= 1;
+                fb_addr_clr <= 0;
+            end
         endcase
+    end
+
+    // switch between clearing and drawing screen
+    always_comb begin
+        fb_we = (state == CLEAR) ? fb_we_clr : fb_we_draw;
+        fb_addr_write = (state == CLEAR) ? fb_addr_clr : fb_addr_draw;
+        fb_cidx_write = (state == CLEAR) ? 0 : fb_cidx_draw;
     end
 
     draw_line #(.CORDW(FB_CORDW)) draw_line_inst (
@@ -136,10 +198,10 @@ module top_model (
         .rst(!clk_locked),
         .start(draw_start),
         .oe(1'b1),
-        .x0({1'b0,lx0}),
-        .y0({1'b0,ly0}),
-        .x1({1'b0,lx1}),
-        .y1({1'b0,ly1}),
+        .x0,
+        .y0,
+        .x1,
+        .y1,
         .x(px),
         .y(py),
         .drawing,
@@ -147,7 +209,7 @@ module top_model (
     );
 
     // pixel coordinate to memory address calculation takes one cycle
-    always_ff @(posedge clk_pix) fb_we <= drawing;
+    always_ff @(posedge clk_pix) fb_we_draw <= drawing;
 
     pix_addr #(
         .CORDW(FB_CORDW),
@@ -157,7 +219,7 @@ module top_model (
         .hres(FB_WIDTH),
         .px,
         .py,
-        .pix_addr(fb_addr_write)
+        .pix_addr(fb_addr_draw)
     );
 
     // linebuffer (LB)
