@@ -1,57 +1,56 @@
-// Project F: Lines and Triangles - Draw Triangle
+// Project F: FPGA Shapes - Draw Filled Rectangle
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
+module draw_rectangle_fill #(parameter CORDW=10) (  // FB coord width in bits
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
-    input  wire logic start,           // start triangle drawing
+    input  wire logic start,           // start rectangle drawing
     input  wire logic oe,              // output enable
     input  wire logic [CORDW-1:0] x0,  // vertex 0 - horizontal position
     input  wire logic [CORDW-1:0] y0,  // vertex 0 - vertical position
-    input  wire logic [CORDW-1:0] x1,  // vertex 1 - horizontal position
-    input  wire logic [CORDW-1:0] y1,  // vertex 1 - vertical position
-    input  wire logic [CORDW-1:0] x2,  // vertex 2 - horizontal position
-    input  wire logic [CORDW-1:0] y2,  // vertex 2 - vertical position
+    input  wire logic [CORDW-1:0] x1,  // vertex 2 - horizontal position
+    input  wire logic [CORDW-1:0] y1,  // vertex 2 - vertical position
     output      logic [CORDW-1:0] x,   // horizontal drawing position
     output      logic [CORDW-1:0] y,   // vertical drawing position
-    output      logic drawing,         // triangle is drawing
-    output      logic done             // triangle complete (high for one tick)
+    output      logic drawing,         // rectangle is drawing
+    output      logic done             // rectangle complete (high for one tick)
     );
 
     enum {IDLE, INIT, DRAW} state;
 
-    logic [1:0] line_id;  // current line (0, 1, or 2)
-    logic line_start;     // start drawing line
-    logic line_done;      // finished drawing current line?
+    // filled rectangle has as many lines as it is tall abs(y1-y0)
+    logic [CORDW-1:0] line_id;  // current line
+    logic line_start;  // start drawing line
+    logic line_done;   // finished drawing current line?
 
-    // current line coordinates
-    logic [CORDW-1:0] lx0, ly0;  // point 0 position
-    logic [CORDW-1:0] lx1, ly1;  // point 1 position
+    // sort input Y coordinates so we always draw top-to-bottom
+    logic [CORDW-1:0] y0s, y1s;  // vertex 0 - ordered
+    always_comb begin
+        y0s = (y0 > y1) ? y1 : y0;
+        y1s = (y0 > y1) ? y0 : y1;  // last line
+    end
+
+    // line coordinates - horizontal lines, so only one y-value
+    logic [CORDW-1:0] lx0, lx1, ly;
 
     always @(posedge clk) begin
         line_start <= 0;
         case (state)
             INIT: begin  // register coordinates
-                if (line_id == 2'd0) begin  // (x0,y0) (x1,y1)
-                    lx0 <= x0; ly0 <= y0;
-                    lx1 <= x1; ly1 <= y1;
-                end else if (line_id == 2'd1) begin  // (x1,y1) (x2,y2)
-                    lx0 <= x1; ly0 <= y1;
-                    lx1 <= x2; ly1 <= y2;
-                end else begin  // (x2,y2) (x0,y0)
-                    lx0 <= x2; ly0 <= y2;
-                    lx1 <= x0; ly1 <= y0;
-                end
+                // x-coordinates don't change for a given filled rectangle
+                lx0 <= (x0 > x1) ? x1 : x0;  // draw left-to-right
+                lx1 <= (x0 > x1) ? x0 : x1;
+                ly <= y0s + line_id;  // vertical position
                 state <= DRAW;
                 line_start <= 1;
             end
             DRAW: begin
                 if (line_done) begin
-                    if (line_id == 2) begin  // final line
+                    if (ly == y1s) begin
                         done <= 1;
                         state <= IDLE;
                     end else begin
@@ -83,9 +82,9 @@ module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
         .start(line_start),
         .oe,
         .x0(lx0),
-        .y0(ly0),
+        .y0(ly),
         .x1(lx1),
-        .y1(ly1),
+        .y1(ly),
         .x,
         .y,
         .drawing,

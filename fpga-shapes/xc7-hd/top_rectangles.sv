@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Triangles (Nexys Video)
+// Project F: FPGA Shapes - Top Rectangles (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_triangles (
+module top_rectangles (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -83,10 +83,10 @@ module top_triangles (
         .data_out(fb_cidx_read_1)
     );
 
-    // draw triangles in framebuffer
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // shape coords
+    // draw rectangles in framebuffer
+    localparam SHAPE_CNT=15;  // number of shapes to draw
+    logic [3:0] shape_id;  // shape identifier
+    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
     logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -99,32 +99,13 @@ module top_triangles (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                case (shape_id)
-                    2'd0: begin
-                        tx0 <=  20; ty0 <=  60;
-                        tx1 <=  60; ty1 <= 180;
-                        tx2 <= 110; ty2 <=  90;
-                        fb_cidx_write <= 4'h2;  // dark purple
-                    end
-                    2'd1: begin
-                        tx0 <=  70; ty0 <= 200;
-                        tx1 <= 240; ty1 <= 100;
-                        tx2 <= 170; ty2 <=  10;
-                        fb_cidx_write <= 4'hC;  // blue
-                    end
-                    2'd2: begin
-                        tx0 <=  60; ty0 <=  30;
-                        tx1 <= 300; ty1 <=  80;
-                        tx2 <= 160; ty2 <= 220;
-                        fb_cidx_write <= 4'h9;  // orange
-                    end
-                    default: begin  // should never occur
-                        tx0 <=   10; ty0 <=   10;
-                        tx1 <=   10; ty1 <=   30;
-                        tx2 <=   20; ty2 <=   20;
-                        fb_cidx_write <= 4'h7;  // white
-                    end
-                endcase
+                /* verilator lint_off WIDTH */
+                rx0 <=  80 + shape_id;
+                ry0 <=  60 + shape_id;
+                rx1 <= 240 - shape_id;
+                ry1 <= 180 - shape_id;
+                /* verilator lint_on WIDTH */
+                fb_cidx_write <= shape_id + 1;  // skip first colour: black
             end
             DRAW: if (draw_done) begin
                 if (shape_id == SHAPE_CNT-1) begin
@@ -152,17 +133,15 @@ module top_triangles (
         end
     end
 
-    draw_triangle #(.CORDW(FB_CORDW)) draw_triangle_inst (
+    draw_rectangle #(.CORDW(FB_CORDW)) draw_rectangle_inst (
         .clk(clk_pix),
         .rst(!clk_pix_locked),
         .start(draw_start),
         .oe(draw_oe),
-        .x0(tx0),
-        .y0(ty0),
-        .x1(tx1),
-        .y1(ty1),
-        .x2(tx2),
-        .y2(ty2),
+        .x0(rx0),
+        .y0(ry0),
+        .x1(rx1),
+        .y1(ry1),
         .x(px),
         .y(py),
         .drawing,

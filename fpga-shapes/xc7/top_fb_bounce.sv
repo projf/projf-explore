@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Triangles (Arty with Pmod VGA)
+// Project F: FPGA Shapes - Top FB Bounce (Arty with Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_triangles (
+module top_fb_bounce (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -49,7 +49,7 @@ module top_triangles (
     logic vbi;
     always_comb vbi = (sy == V_RES && sx == 0);
 
-    // framebuffer (FB)
+    // framebuffers (FB)
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 240;
     localparam FB_CORDW   = $clog2(FB_WIDTH);  // assumes WIDTH>=HEIGHT
@@ -59,105 +59,153 @@ module top_triangles (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write;
-    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
+    // framebuffer multiplexing signals: drawing & clearing
+    logic fb_we, fb_we_draw, fb_we_clr;
+    /* verilator lint_off UNDRIVEN */
+    /* verilator lint_off UNUSED */
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_draw, fb_addr_clr;
+    logic [FB_ADDRW-1:0] fb_addr_read;
+    logic [FB_DATAW-1:0] fb_cidx_write, fb_cidx_draw;
+    logic [FB_DATAW-1:0] fb_cidx_read;
+    /* verilator lint_off UNUSED */
+    /* verilator lint_on UNDRIVEN */
+    // framebuffer multiplexing signals: display
+    logic [FB_ADDRW-1:0] fb_addr_disp;
+    logic [FB_DATAW-1:0] fb_cidx_disp;
+
+    // square coordinates
+    localparam Q1_SIZE = 80;
+    logic [FB_CORDW-1:0] q1x, q1y;  // position (top left)
+    logic q1dx, q1dy;               // direction: 0 is right/down
+    logic [FB_CORDW-1:0] q1s = 1;   // speed in pixels/frame
+    always_ff @(posedge clk_pix) begin
+        if (vbi) begin
+            if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
+                q1dx <= 1;
+                q1x <= q1x - q1s;
+            end else if (q1x < q1s) begin  // left edge
+                q1dx <= 0;
+                q1x <= q1x + q1s;
+            end else q1x <= (q1dx) ? q1x - q1s : q1x + q1s;
+
+            if (q1y >= FB_HEIGHT - (Q1_SIZE + q1s)) begin  // bottom edge
+                q1dy <= 1;
+                q1y <= q1y - q1s;
+            end else if (q1y < q1s) begin  // top edge
+                q1dy <= 0;
+                q1y <= q1y + q1s;
+            end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
+        end
+    end
+
+    // draw square in framebuffer
+    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
+
+    // draw state machine
+    enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
+    initial state = IDLE;  // needed for Yosys
+    always @(posedge clk_pix) begin
+        draw_start <= 0;
+        case (state)
+            CLEAR: begin
+                if (fb_addr_clr != FB_PIXELS-1) begin
+                    fb_addr_clr <= fb_addr_clr + 1;
+                end else begin
+                    state <= INIT;
+                    fb_we_clr <= 0;
+                end
+            end
+            INIT: begin  // register coordinates and colour
+                draw_start <= 1;
+                state <= DRAW;
+                rx0 <= q1x;
+                ry0 <= q1y;
+                rx1 <= q1x + Q1_SIZE;
+                ry1 <= q1y + Q1_SIZE;
+                fb_cidx_draw <= 4'hB;  // green
+            end
+            DRAW: if (draw_done) state <= DONE;
+            DONE: state <= IDLE;
+            default: if (vbi) begin  // IDLE
+                state <= CLEAR;
+                fb_we_clr <= 1;
+                fb_addr_clr <= 0;
+            end
+        endcase
+    end
+
+    // framebuffer 0
+    logic fb0_we;
+    logic [FB_ADDRW-1:0] fb0_addr_read;
+    logic [FB_DATAW-1:0] fb0_cidx_read, fb0_cidx_read_1;
 
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) fb_inst (
+    ) fb0_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
-        .we(fb_we),
+        .we(fb0_we),
         .addr_write(fb_addr_write),
-        .addr_read(fb_addr_read),
+        .addr_read(fb0_addr_read),
         .data_in(fb_cidx_write),
-        .data_out(fb_cidx_read_1)
+        .data_out(fb0_cidx_read_1)
     );
 
-    // draw triangles in framebuffer
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // shape coords
-    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
-    logic draw_start, drawing, draw_done;  // drawing signals
+    // framebuffer 1
+    logic fb1_we;
+    logic [FB_ADDRW-1:0] fb1_addr_read;
+    logic [FB_DATAW-1:0] fb1_cidx_read, fb1_cidx_read_1;
 
-    // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
-    always @(posedge clk_pix) begin
-        draw_start <= 0;
-        case (state)
-            INIT: begin  // register coordinates and colour
-                draw_start <= 1;
-                state <= DRAW;
-                case (shape_id)
-                    2'd0: begin
-                        tx0 <=  20; ty0 <=  60;
-                        tx1 <=  60; ty1 <= 180;
-                        tx2 <= 110; ty2 <=  90;
-                        fb_cidx_write <= 4'h2;  // dark purple
-                    end
-                    2'd1: begin
-                        tx0 <=  70; ty0 <= 200;
-                        tx1 <= 240; ty1 <= 100;
-                        tx2 <= 170; ty2 <=  10;
-                        fb_cidx_write <= 4'hC;  // blue
-                    end
-                    2'd2: begin
-                        tx0 <=  60; ty0 <=  30;
-                        tx1 <= 300; ty1 <=  80;
-                        tx2 <= 160; ty2 <= 220;
-                        fb_cidx_write <= 4'h9;  // orange
-                    end
-                    default: begin  // should never occur
-                        tx0 <=   10; ty0 <=   10;
-                        tx1 <=   10; ty1 <=   30;
-                        tx2 <=   20; ty2 <=   20;
-                        fb_cidx_write <= 4'h7;  // white
-                    end
-                endcase
-            end
-            DRAW: if (draw_done) begin
-                if (shape_id == SHAPE_CNT-1) begin
-                    state <= DONE;
-                end else begin
-                    shape_id <= shape_id + 1;
-                    state <= INIT;
-                end
-            end
-            DONE: state <= DONE;
-            default: if (vbi) state <= INIT;  // IDLE
-        endcase
+    bram_sdp #(
+        .WIDTH(FB_DATAW),
+        .DEPTH(FB_PIXELS),
+        .INIT_F(FB_IMAGE)
+    ) fb1_inst (
+        .clk_write(clk_pix),
+        .clk_read(clk_pix),
+        .we(fb1_we),
+        .addr_write(fb_addr_write),
+        .addr_read(fb1_addr_read),
+        .data_in(fb_cidx_write),
+        .data_out(fb1_cidx_read_1)
+    );
+
+    logic fb_draw;  // which buffer to draw in; swap every frame
+    always @(posedge clk_pix) if (vbi) fb_draw <= ~fb_draw;
+
+    // switch between clearing and drawing screen
+    always_comb begin
+        fb_we = (state == CLEAR) ? fb_we_clr : fb_we_draw;
+        fb_addr_write = (state == CLEAR) ? fb_addr_clr : fb_addr_draw;
+        fb_cidx_write = (state == CLEAR) ? 0 : fb_cidx_draw;
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_pix) begin
-        draw_oe <= 0;
-        if (vbi) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
+    // switch between framebuffers
+    always_comb begin
+        // write enable
+        fb0_we = fb_draw ? 0 : fb_we;
+        fb1_we = fb_draw ? fb_we : 0;
+        // read address
+        fb0_addr_read  = fb_draw ? fb_addr_disp : fb_addr_read;
+        fb1_addr_read  = fb_draw ? fb_addr_read : fb_addr_disp;
+        // pixel colour
+        fb_cidx_read = fb_draw ? fb1_cidx_read : fb0_cidx_read;
+        fb_cidx_disp = fb_draw ? fb0_cidx_read : fb1_cidx_read;
     end
 
-    draw_triangle #(.CORDW(FB_CORDW)) draw_triangle_inst (
+    draw_rectangle_fill #(.CORDW(FB_CORDW)) draw_rectangle_inst (
         .clk(clk_pix),
         .rst(!clk_locked),
         .start(draw_start),
-        .oe(draw_oe),
-        .x0(tx0),
-        .y0(ty0),
-        .x1(tx1),
-        .y1(ty1),
-        .x2(tx2),
-        .y2(ty2),
+        .oe(1'b1),
+        .x0(rx0),
+        .y0(ry0),
+        .x1(rx1),
+        .y1(ry1),
         .x(px),
         .y(py),
         .drawing,
@@ -165,7 +213,7 @@ module top_triangles (
     );
 
     // pixel coordinate to memory address calculation takes one cycle
-    always_ff @(posedge clk_pix) fb_we <= drawing;
+    always_ff @(posedge clk_pix) fb_we_draw <= drawing;
 
     pix_addr #(
         .CORDW(FB_CORDW),
@@ -175,7 +223,7 @@ module top_triangles (
         .hres(FB_WIDTH),
         .px,
         .py,
-        .pix_addr(fb_addr_write)
+        .pix_addr(fb_addr_draw)
     );
 
     // linebuffer (LB)
@@ -191,12 +239,12 @@ module top_triangles (
     logic lb_data_req;  // LB requesting data
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
     always_ff @(posedge clk_pix) begin
-        if (vbi) fb_addr_read <= 0;   // new frame
+        if (vbi) fb_addr_disp <= 0;   // new frame
         if (lb_data_req && sy != V_RES-1) begin  // load next line of data...
             cnt_h <= 0;                          // ...if not on last line
         end else if (cnt_h < LB_LEN) begin  // advance to start of next line
             cnt_h <= cnt_h + 1;
-            fb_addr_read <= fb_addr_read == FB_PIXELS-1 ? 0 : fb_addr_read + 1;
+            fb_addr_disp <= fb_addr_disp == FB_PIXELS-1 ? 0 : fb_addr_disp + 1;
         end
     end
 
@@ -233,7 +281,8 @@ module top_triangles (
 
     // improve timing with register between BRAM and async ROM
     always @(posedge clk_pix) begin
-        fb_cidx_read <= fb_cidx_read_1;
+        fb0_cidx_read <= fb0_cidx_read_1;
+        fb1_cidx_read <= fb1_cidx_read_1;
     end
 
     // colour lookup table (ROM) 16x12-bit entries
@@ -243,7 +292,7 @@ module top_triangles (
         .DEPTH(16),
         .INIT_F(FB_PALETTE)
     ) clut (
-        .addr(fb_cidx_read),
+        .addr(fb_cidx_disp),
         .data(clut_colr)
     );
 

@@ -4,7 +4,7 @@ This repository contains the SystemVerilog designs to accompany the Project F [E
 
 ## FPGA Graphics
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We start by learning how displays work, before racing the beam with Pong, starfields and sprites, simulating life with bitmaps, drawing lines and triangles, and finally creating simple 3D models. I'll be writing and revising this series throughout 2020 and 2021.
+In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how displays work, race the beam with Pong, animate starfields and sprites, paint Michelangelo's David, simulate life with bitmaps, draw lines and shapes, and finally render simple 3D models.
 
 * **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Blog Post](https://projectf.io/posts/fpga-graphics/)
 * **FPGA Pong**: [Design Sources](fpga-pong) - [Blog Post](https://projectf.io/posts/fpga-pong/)
@@ -13,9 +13,8 @@ In this series, we explore graphics at the hardware level and get a feel for the
 * **Framebuffers**: [Design Sources](framebuffers) - [Blog Post](https://projectf.io/posts/framebuffers/)
 * **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles** - [Design Sources](lines-and-triangles) - [Blog Post](https://projectf.io/posts/lines-and-triangles/)
-* **FPGA Shapes** - coming soon
-
-_More parts to follow._
+* **FPGA Shapes** - [Design Sources](fpga-shapes) - [Blog Post](https://projectf.io/posts/fpga-shapes/)
+* **Simple 3D** - _coming soon_
 
 ## Hello - Learning FPGA Development
 
