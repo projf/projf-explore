@@ -83,12 +83,12 @@ module top_triangles (
         .data_out(fb_cidx_read_1)
     );
 
-    // draw shapes in framebuffer
-    localparam SHAPE_CNT=3;
+    // draw triangles in framebuffer
+    localparam SHAPE_CNT=3;  // number of shapes to draw
     logic [1:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // triangle coords
-    logic [FB_CORDW-1:0] px, py;  // triangle pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
+    logic [FB_CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // shape coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;

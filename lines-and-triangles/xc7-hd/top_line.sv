@@ -84,9 +84,9 @@ module top_line (
     );
 
     // draw line in framebuffer
-    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line start and end coords
-    logic [FB_CORDW-1:0] px, py;  // line pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
+    logic [FB_CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
