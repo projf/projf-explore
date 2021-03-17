@@ -81,8 +81,8 @@ module top_tunnel (
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // animation steps
-    localparam ANIM_CNT=5;  // five frames in animation
-    localparam ANIM_SPEED=6;  // 6 display frames per animation step 10fps
+    localparam ANIM_CNT=5;    // five frames in animation
+    localparam ANIM_SPEED=6;  // six display frames per animation step 10fps
     logic [$clog2(ANIM_CNT)-1:0] cnt_anim;
     logic [$clog2(ANIM_SPEED)-1:0] cnt_anim_speed;
     logic [FB_DATAW-1:0] colr_offs;  // colour offset
