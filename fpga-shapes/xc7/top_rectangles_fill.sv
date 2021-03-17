@@ -78,12 +78,12 @@ module top_rectangles_fill (
         .data_out(fb_cidx_read_1)
     );
 
-    // draw shapes in framebuffer
-    localparam SHAPE_CNT=15;
+    // draw filled rectangles in framebuffer
+    localparam SHAPE_CNT=15;  // number of shapes to draw
     logic [3:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // rectangle coords
-    logic [FB_CORDW-1:0] px, py;  // triangle pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
+    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
@@ -95,12 +95,12 @@ module top_rectangles_fill (
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                rx0 <= 80 + 4 * shape_id;
-                ry0 <= 60 + 4 * shape_id;
+                rx0 <=  80 + 4 * shape_id;
+                ry0 <=  60 + 4 * shape_id;
                 rx1 <= 160 + 4 * shape_id;
                 ry1 <= 140 + 4 * shape_id;
                 /* verilator lint_on WIDTH */
-                fb_cidx_write <= shape_id + 1;  // skip 1st colour: black
+                fb_cidx_write <= shape_id + 1;  // skip 1st colour (black)
             end
             DRAW: if (draw_done) begin
                 if (shape_id == SHAPE_CNT-1) begin

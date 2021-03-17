@@ -73,12 +73,12 @@ module top_tunnel (
     logic [FB_ADDRW-1:0] fb_addr_disp;
     logic [FB_DATAW-1:0] fb_cidx_disp;
 
-    // draw shapes in framebuffer
-    localparam SHAPE_CNT=7;
+    // draw squares in framebuffer
+    localparam SHAPE_CNT=7;  // number of shapes to draw
     logic [3:0] shape_id;  // shape identifier
-    logic [FB_CORDW-1:0] dx0, dy0, dx1, dy1;  // draw coords
-    logic [FB_CORDW-1:0] px, py;  // shape pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
+    logic [FB_CORDW-1:0] dx0, dy0, dx1, dy1;  // shape coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
 
     // animation steps
     localparam ANIM_CNT=5;    // five frames in animation
@@ -122,44 +122,44 @@ module top_tunnel (
                         fb_cidx_draw <= colr_offs;
                     end
                     4'd1: begin  // 8 pixels per anim step
-                        dx0 <=  80 - cnt_anim * 8; 
+                        dx0 <=  80 - cnt_anim * 8;
                         dy0 <=  40 - cnt_anim * 8;
-                        dx1 <= 239 + cnt_anim * 8; 
+                        dx1 <= 239 + cnt_anim * 8;
                         dy1 <= 199 + cnt_anim * 8;
                         fb_cidx_draw <= colr_offs + 1;
                     end
                     4'd2: begin  // 5 pixels per anim step
                         dx0 <= 105 - cnt_anim * 5;
                         dy0 <=  65 - cnt_anim * 5;
-                        dx1 <= 214 + cnt_anim * 5; 
+                        dx1 <= 214 + cnt_anim * 5;
                         dy1 <= 174 + cnt_anim * 5;
                         fb_cidx_draw <= colr_offs + 2;
                     end
                     4'd3: begin  // 4 pixels per anim step
-                        dx0 <= 125 - cnt_anim * 4; 
+                        dx0 <= 125 - cnt_anim * 4;
                         dy0 <=  85 - cnt_anim * 4;
-                        dx1 <= 194 + cnt_anim * 4; 
+                        dx1 <= 194 + cnt_anim * 4;
                         dy1 <= 154 + cnt_anim * 4;
                         fb_cidx_draw <= colr_offs + 3;
                     end
                     4'd4: begin  // 3 pixels per anim step
-                        dx0 <= 140 - cnt_anim * 3; 
+                        dx0 <= 140 - cnt_anim * 3;
                         dy0 <= 100 - cnt_anim * 3;
-                        dx1 <= 179 + cnt_anim * 3; 
+                        dx1 <= 179 + cnt_anim * 3;
                         dy1 <= 139 + cnt_anim * 3;
                         fb_cidx_draw <= colr_offs + 4;
                     end
                     4'd5: begin  // 2 pixels per anim step
-                        dx0 <= 150 - cnt_anim * 2; 
+                        dx0 <= 150 - cnt_anim * 2;
                         dy0 <= 110 - cnt_anim * 2;
-                        dx1 <= 169 + cnt_anim * 2; 
+                        dx1 <= 169 + cnt_anim * 2;
                         dy1 <= 129 + cnt_anim * 2;
                         fb_cidx_draw <= colr_offs + 5;
                     end
                     4'd6: begin  // 1 pixel per anim step
-                        dx0 <= 155 - cnt_anim * 1; 
+                        dx0 <= 155 - cnt_anim * 1;
                         dy0 <= 115 - cnt_anim * 1;
-                        dx1 <= 164 + cnt_anim * 1; 
+                        dx1 <= 164 + cnt_anim * 1;
                         dy1 <= 124 + cnt_anim * 1;
                         fb_cidx_draw <= colr_offs + 6;
                     end
@@ -177,7 +177,7 @@ module top_tunnel (
                     shape_id <= shape_id + 1;
                     state <= INIT;
                 end
-            end            
+            end
             DONE: state <= IDLE;
             default: if (vbi) begin  // IDLE
                 state <= CLEAR;

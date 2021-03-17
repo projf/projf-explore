@@ -103,10 +103,10 @@ module top_fb_bounce_v1 (
         end
     end
 
-    // draw shapes in framebuffer
-    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // rectangle coords
-    logic [FB_CORDW-1:0] px, py;  // shape pixel drawing coordinates
-    logic draw_start, drawing, draw_done;  // draw_line signals
+    // draw square in framebuffer
+    logic [FB_CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    logic [FB_CORDW-1:0] px, py;  // drawing coordinates (pixels)
+    logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
