@@ -25,8 +25,8 @@ module draw_triangle #(parameter CORDW=10) (  // FB coord width in bits
     enum {IDLE, INIT, DRAW} state;
 
     logic [1:0] line_id;  // current line (0, 1, or 2)
-    logic line_start;  // start drawing line
-    logic line_done;   // finished drawing current line?
+    logic line_start;     // start drawing line
+    logic line_done;      // finished drawing current line?
 
     // current line coordinates
     logic [CORDW-1:0] lx0, ly0;  // point 0 position
