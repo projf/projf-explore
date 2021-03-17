@@ -19,7 +19,7 @@ cd projf-explore/fpga-shapes/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_tunnel` or `top_rectangles_filled` as you would for any Vivado project.
+You can then build `top_tunnel` or `top_rectangles_fill` as you would for any Vivado project.
 
 ### Simulation
 
@@ -30,11 +30,11 @@ launch_simulation
 run all
 ```
 
-By default the `draw_rectangle` test bench is simulated, but you can switch to another test bench, such as `draw_rectangle_filled` with:
+By default the `draw_rectangle` test bench is simulated, but you can switch to another test bench, such as `draw_rectangle_fill` with:
 
 ```tcl
 set fs_sim_obj [get_filesets sim_1]
-set_property -name "top" -value "draw_rectangle_filled" -objects $fs_sim_obj
+set_property -name "top" -value "draw_rectangle_fill" -objects $fs_sim_obj
 relaunch_sim
 run all
 ```
