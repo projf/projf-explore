@@ -20,7 +20,7 @@ module top_pong_v3 (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -31,7 +31,7 @@ module top_pong_v3 (
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    display_timings_480p display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,

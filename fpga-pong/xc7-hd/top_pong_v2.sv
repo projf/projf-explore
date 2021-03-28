@@ -18,11 +18,11 @@ module top_pong_v2 (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,10 +31,10 @@ module top_pong_v2 (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
+    localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
