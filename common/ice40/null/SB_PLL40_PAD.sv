@@ -19,7 +19,7 @@ module SB_PLL40_PAD #(
     input  wire logic PACKAGEPIN,
     input  wire logic RESETB,
     input  wire logic BYPASS,
-    output      logic PLLOUTCORE,
+    output      logic PLLOUTGLOBAL,
     output      logic LOCK
     );
     /* verilator lint_on UNDRIVEN */

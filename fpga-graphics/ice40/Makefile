@@ -1,5 +1,5 @@
 ## Project F: FPGA Graphics - iCEBreaker Makefile
-## (C)2020 Will Green, open source hardware released under the MIT License
+## (C)2021 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
 # configuration
@@ -10,7 +10,8 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_CM = ../../common
-ADD_SRC = ${PATH_CM}/display_timings_480p.sv ${PATH_CM}/ice40/clock_gen.sv
+ADD_SRC = ${PATH_CM}/ice40/clock_gen_480p.sv
+ADD_SRC += ../display_timings_480p.sv
 
 top_bounce: top_bounce.rpt top_bounce.bin
 top_beam: top_beam.rpt top_beam.bin

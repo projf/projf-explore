@@ -1,4 +1,4 @@
-// Project F: 1280x720p60 Display Timings
+// Project F: FPGA Graphics - 1280x720p60 Display Timings
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -8,8 +8,8 @@
 module display_timings_720p (
     input  wire logic clk_pix,   // pixel clock
     input  wire logic rst,       // reset
-    output      logic [10:0] sx, // horizontal screen position
-    output      logic [10:0] sy, // vertical screen position
+    output      logic [11:0] sx, // horizontal screen position
+    output      logic [11:0] sy, // vertical screen position
     output      logic hsync,     // horizontal sync
     output      logic vsync,     // vertical sync
     output      logic de         // data enable (low in blanking interval)
@@ -34,7 +34,7 @@ module display_timings_720p (
     end
 
     // calculate horizontal and vertical screen position
-    always_ff @ (posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         if (sx == LINE) begin  // last pixel on line?
             sx <= 0;
             sy <= (sy == SCREEN) ? 0 : sy + 1;  // last line on screen?

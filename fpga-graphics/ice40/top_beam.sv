@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Top Beam (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -20,7 +20,7 @@ module top_beam (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -31,7 +31,7 @@ module top_beam (
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    display_timings_480p display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -51,9 +51,9 @@ module top_beam (
     always_comb animate = (sy == V_RES && sx == 0);
 
     // square 'Q' - origin at top-left
-    localparam Q_SIZE = 32;     // square size in pixels
-    localparam Q_SPEED = 4;     // pixels moved per frame
-    logic [CORDW-1:0] qx, qy;   // square position
+    localparam Q_SIZE = 32;    // square size in pixels
+    localparam Q_SPEED = 4;    // pixels moved per frame
+    logic [CORDW-1:0] qx, qy;  // square position
 
     // update square position once per frame
     always_ff @(posedge clk_pix) begin

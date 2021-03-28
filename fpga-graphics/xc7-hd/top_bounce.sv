@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Top Bounce (Nexys Video)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -18,11 +18,11 @@ module top_bounce (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,10 +31,10 @@ module top_bounce (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
+    localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
@@ -44,28 +44,28 @@ module top_bounce (
         .de
     );
 
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
+    // size of screen with and without blanking (1080p values)
+    localparam H_RES_FULL = 1650;  // 2200
+    localparam V_RES_FULL = 750;   // 1125
+    localparam H_RES = 1280;  // 1920
+    localparam V_RES = 720;   // 1080
 
     logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == V_RES && sx == 0);
 
-    // squares - origin at top-left
-    localparam Q1_SIZE = 200;   // square 1 size in pixels
-    localparam Q2_SIZE = 300;   // square 2 size in pixels
-    localparam Q3_SIZE = 400;   // square 3 size in pixels
+    // squares - origin at top-left (1080p values)
+    localparam Q1_SIZE = 200;   // square 1 size in pixels (300)
+    localparam Q2_SIZE = 300;   // square 2 size in pixels (450)
+    localparam Q3_SIZE = 400;   // square 3 size in pixels (600)
     logic [CORDW-1:0] q1x, q1y; // square 1 position
     logic [CORDW-1:0] q2x, q2y; // square 2 position
     logic [CORDW-1:0] q3x, q3y; // square 3 position
     logic q1dx, q1dy;           // square 1 direction: 0 is right/down
     logic q2dx, q2dy;           // square 2 direction: 0 is right/down
     logic q3dx, q3dy;           // square 3 direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 3;  // square 1 speed
-    logic [CORDW-1:0] q2s = 2;  // square 2 speed
-    logic [CORDW-1:0] q3s = 2;  // square 3 speed
+    logic [CORDW-1:0] q1s = 4;  // square 1 speed (6)
+    logic [CORDW-1:0] q2s = 2;  // square 2 speed (3)
+    logic [CORDW-1:0] q3s = 2;  // square 3 speed (3)
 
     // update square position once per frame
     always_ff @(posedge clk_pix) begin

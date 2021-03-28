@@ -1,11 +1,11 @@
-// Project F: XC7 System Clock Generation
+// Project F: System Clock Generation (XC7)
 // (C)2021 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-// Default to 125 MHz
+// Set to 125 MHz
 // MMCME2_BASE and BUFG are documented in Xilinx UG472
 
 module clock_gen_sys #(
