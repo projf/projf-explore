@@ -1,14 +1,14 @@
-// Project F: XC7 Pixel Clock Generation
+// Project F: 1280x720p60 Clock Generation (XC7)
 // (C)2021 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-// Default to 74.25 MHz for 720p60
+// Set to 74.25 MHz for 720p60
 // MMCME2_BASE and BUFG are documented in Xilinx UG472
 
-module clock_gen_pix #(
+module clock_gen_720p #(
     parameter MULT_MASTER=37.125,       // master clock multiplier
     parameter DIV_MASTER=5,             // master clock divider
     parameter DIV_5X=2.0,               // 5x clock divider

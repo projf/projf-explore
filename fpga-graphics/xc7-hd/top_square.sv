@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Top Square (Nexys Video)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -18,11 +18,11 @@ module top_square (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,10 +31,10 @@ module top_square (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
+    localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
@@ -44,7 +44,7 @@ module top_square (
         .de
     );
 
-    // 64 x 64 pixel square
+    // 64 x 64 pixel square (use 96x96 for 1080p)
     logic q_draw;
     always_comb q_draw = (sx < 64 && sy < 64) ? 1 : 0;
 
