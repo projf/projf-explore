@@ -42,18 +42,18 @@ You can then build `top_bounce`, `top_beam`, or `top_square` as you would for an
 
 ### Simulation
 
-This design includes test benches for the `clock_gen` and `display_timings` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the TCL console with:
+This design includes test benches for the `clock_gen_480p` and `display_timings_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the TCL console with:
 
 ```tcl
 launch_simulation
 run all
 ```
 
-By default the `display_timings` test bench is simulated, but you can switch to the `clock_gen` test bench with:
+By default the `display_timings_480p` test bench is simulated, but you can switch to the `clock_gen_480p` test bench with:
 
 ```tcl
 set fs_sim_obj [get_filesets sim_1]
-set_property -name "top" -value "clock_gen_tb" -objects $fs_sim_obj
+set_property -name "top" -value "clock_gen_480p_tb" -objects $fs_sim_obj
 relaunch_sim
 run all
 ```
