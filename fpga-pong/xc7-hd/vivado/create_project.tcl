@@ -38,7 +38,6 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 }
 set fs_design_obj [get_filesets sources_1]
 
-
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_pong.sv"] \
@@ -57,14 +56,15 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${common_dir}/debounce.sv"] \
-  [file normalize "${common_dir}/display_timings_720p.sv"] \
   [file normalize "${common_dir}/tmds_encoder_dvi.sv"] \
   [file normalize "${common_dir}/xc7/async_reset.sv"] \
-  [file normalize "${common_dir}/xc7-hd/clock_gen_pix.sv"] \
-  [file normalize "${common_dir}/xc7-hd/dvi_generator.sv"] \
-  [file normalize "${common_dir}/xc7-hd/oserdes_10b.sv"] \
-  [file normalize "${common_dir}/xc7-hd/tmds_out.sv"] \
-
+  [file normalize "${common_dir}/xc7/clock_gen_720p.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen_1080p.sv"] \
+  [file normalize "${common_dir}/xc7-tmds/dvi_generator.sv"] \
+  [file normalize "${common_dir}/xc7-tmds/oserdes_10b.sv"] \
+  [file normalize "${common_dir}/xc7-tmds/tmds_out.sv"] \
+  [file normalize "${origin_dir}/display_timings_720p.sv"] \
+  [file normalize "${origin_dir}/display_timings_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

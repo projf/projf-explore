@@ -58,7 +58,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${common_dir}/debounce.sv"] \
   [file normalize "${common_dir}/display_timings_480p.sv"] \
-  [file normalize "${common_dir}/xc7/clock_gen.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen_480p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
