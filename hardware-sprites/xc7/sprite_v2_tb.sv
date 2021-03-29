@@ -36,8 +36,10 @@ module sprite_v2_tb();
     always_comb de = (sx < H_RES && sy < V_RES);
 
     // sprite
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // number of lines
+    localparam SPR_WIDTH   = 8;  // width in pixels
+    localparam SPR_HEIGHT  = 8;  // number of lines
+    localparam SPR_SCALE_X = 3;  // width scale-factor
+    localparam SPR_SCALE_Y = 2;  // height scale-factor
     localparam SPR_FILE = "letter_f.mem";
     logic spr_start;
     logic spr_pix;
@@ -56,6 +58,8 @@ module sprite_v2_tb();
     sprite_v2 #(
         .WIDTH(SPR_WIDTH),
         .HEIGHT(SPR_HEIGHT),
+        .SCALE_X(SPR_SCALE_X),
+        .SCALE_Y(SPR_SCALE_Y),
         .CORDW(CORDW),
         .H_RES_FULL(H_RES_FULL),
         .SPR_FILE(SPR_FILE)

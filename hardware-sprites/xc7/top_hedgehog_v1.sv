@@ -18,7 +18,7 @@ module top_hedgehog_v1 (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_100m),
        .rst(!btn_rst),  // reset button is active low
        .clk_pix,
@@ -26,27 +26,26 @@ module top_hedgehog_v1 (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        .line
     );
 
-    // size of screen with and without blanking
+    // temporary parameter
     localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
-
-    logic animate;  // high for one clock tick at start of vertical blanking
-    always_comb animate = (sy == V_RES && sx == 0);
 
     // sprite
     localparam SPR_WIDTH    = 32;   // width in pixels
@@ -85,7 +84,7 @@ module top_hedgehog_v1 (
     logic [CORDW-1:0] sprx, spry;
 
     always_ff @(posedge clk_pix) begin
-        if (animate) begin
+        if (frame) begin
             // walk right-to-left (correct position for screen width)
             sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X :
                                            H_RES_FULL - (SPR_SPEED_X - sprx);
@@ -96,12 +95,8 @@ module top_hedgehog_v1 (
         end
     end
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] spry_cor;  // corrected for wrapping
-    always_comb begin
-        spry_cor = (spry == 0) ? V_RES_FULL - 1 : spry - 1;
-        spr_start = (sy == spry_cor && sx == H_RES);
-    end
+    // signal to start sprite drawing
+    always_comb spr_start = (line && sy == spry);
 
     sprite #(
         .WIDTH(SPR_WIDTH),

@@ -31,7 +31,7 @@ module top_sprite_v1 (
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic de, line;
     display_timings_480p display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
@@ -40,7 +40,9 @@ module top_sprite_v1 (
         .hsync,
         .vsync,
         .de,
-        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .line
     );
 

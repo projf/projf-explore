@@ -44,8 +44,7 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_hedgehog_v1.sv"] \
   [file normalize "${origin_dir}/xc7/top_sprite_v1.sv"] \
   [file normalize "${origin_dir}/xc7/top_sprite_v2.sv"] \
-  [file normalize "${origin_dir}/xc7/top_sprite_v3.sv"] \
-  [file normalize "${origin_dir}/xc7/top_sprite_v3a.sv"] \
+  [file normalize "${origin_dir}/xc7/top_sprite_v2a.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
@@ -64,7 +63,6 @@ set design_sources [list \
   [file normalize "${origin_dir}/sprite.sv"] \
   [file normalize "${origin_dir}/sprite_v1.sv"] \
   [file normalize "${origin_dir}/sprite_v2.sv"] \
-  [file normalize "${origin_dir}/sprite_v3.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -95,7 +93,6 @@ set fs_sim_obj [get_filesets sim_1]
 set sim_sources [list \
   [file normalize "${origin_dir}/xc7/sprite_v1_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_v2_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/sprite_v3_tb.sv"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

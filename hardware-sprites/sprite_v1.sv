@@ -69,9 +69,7 @@ module sprite_v1 #(
     end
 
     // output current pixel colour when drawing
-    always_comb begin
-        pix = (state == DRAW) ? spr_rom_data : 0;
-    end
+    always_comb pix = (state == DRAW) ? spr_rom_data : 0;
 
     // create status signals
     logic last_pixel, last_line;
