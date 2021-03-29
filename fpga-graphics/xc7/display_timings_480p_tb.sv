@@ -18,7 +18,7 @@ module display_timings_480p_tb();
     logic clk_locked;
     clock_gen_480p clock_pix_inst (
        .clk(clk_100m),
-        .rst(rst),
+       .rst(rst),
        .clk_pix,
        .clk_locked
     );
