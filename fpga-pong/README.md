@@ -2,7 +2,12 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[FPGA Pong](https://projectf.io/posts/fpga-pong/)**.
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script to see which modules are used.
+These designs make use of clock generation from Project F [common modules](../common/):
+
+* Arty (XC7): [xc7/clock_gen_480p.sv](../common/xc7/clock_gen_480p.sv)
+* iCEBreaker (iCE40): [ice40/clock_gen_480p.sv](../common/ice40/clock_gen_480p.sv)
+
+Check the included iCE40 [makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see all the files used in these designs.
 
 All the designs are under the permissive [MIT licence](../LICENSE), but the blog post is subject to normal copyright restrictions.
 
@@ -31,7 +36,7 @@ If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too o
 
 ## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl Console:
 
 ```tcl
 cd projf-explore/fpga-pong/xc7/vivado
@@ -40,13 +45,15 @@ source ./create_project.tcl
 
 You can then build `top_pong` etc. as you would for any Vivado project.
 
+NB. You can safely ignore Vivado warnings about unused button constraints when building top_pong_v1 to v3: `No port matched btn_` and `set_property expects at least one object`.
+
 ### Other Xilinx Series 7 Boards
 
 It's straightforward to adapt the project for other Xilinx Series 7 boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
-3. Set the board and part names in tcl, then source the create project script:
+3. Set the board and part names in Tcl, then source the create project script:
 
 ```tcl
 set board_name <board>
