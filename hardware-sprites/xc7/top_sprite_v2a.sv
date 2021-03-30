@@ -56,7 +56,7 @@ module top_sprite_v2a (
     // draw sprite at position
     localparam SPR_SPEED_X = 4;
     localparam SPR_SPEED_Y = 0;
-    logic [CORDW-1:0] sprx, spry;
+    logic signed [CORDW-1:0] sprx, spry;
     logic dx;  // direction: 0 is right/down
 
     always_ff @(posedge clk_pix) begin
