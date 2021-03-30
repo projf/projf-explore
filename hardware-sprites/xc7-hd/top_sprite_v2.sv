@@ -18,11 +18,11 @@ module top_sprite_v2 (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,49 +31,48 @@ module top_sprite_v2 (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, line;
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .line
     );
 
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
-
     // sprite
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // number of lines
+    localparam SPR_WIDTH   =  8;  // width in pixels
+    localparam SPR_HEIGHT  =  8;  // number of lines
+    localparam SPR_SCALE_X = 20;  // width scale-factor
+    localparam SPR_SCALE_Y = 20;  // height scale-factor
     localparam SPR_FILE = "letter_f.mem";
     logic spr_start;
     logic spr_pix;
 
     // draw sprite at position
-    localparam DRAW_X = 0;
-    localparam DRAW_Y = 0;
+    localparam DRAW_X = 560;
+    localparam DRAW_Y = 280;
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] draw_y_cor;  // corrected for wrapping
-    always_comb begin
-        draw_y_cor = (DRAW_Y == 0) ? V_RES_FULL - 1 : DRAW_Y - 1;
-        spr_start = (sy == draw_y_cor && sx == H_RES);
-    end
+    // signal to start sprite drawing
+    always_comb spr_start = (line && sy == DRAW_Y);
 
     sprite_v2 #(
         .WIDTH(SPR_WIDTH),
         .HEIGHT(SPR_HEIGHT),
-        .SPR_FILE(SPR_FILE),
-        .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL)
+        .SCALE_X(SPR_SCALE_X),
+        .SCALE_Y(SPR_SCALE_Y),
+        .SPR_FILE(SPR_FILE)
         ) spr_instance (
         .clk(clk_pix),
         .rst(!clk_pix_locked),
@@ -89,7 +88,7 @@ module top_sprite_v2 (
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
-        dvi_de    <= de;
+        dvi_de <= de;
         dvi_red   <= (de && spr_pix) ? 8'hFF: 8'h00;
         dvi_green <= (de && spr_pix) ? 8'hCC: 8'h00;
         dvi_blue  <= (de && spr_pix) ? 8'h00: 8'h00;

@@ -1,11 +1,11 @@
-// Project F: Hardware Sprites - Top Sprite v3 (Nexys Video)
+// Project F: Hardware Sprites - Top Sprite v2a (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_sprite_v3 (
+module top_sprite_v2a (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -18,11 +18,11 @@ module top_sprite_v3 (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,59 +31,71 @@ module top_sprite_v3 (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        .line
     );
 
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
-
     // sprite
-    localparam SPR_WIDTH   =  8;  // width in pixels
-    localparam SPR_HEIGHT  =  8;  // number of lines
-    localparam SPR_SCALE_X = 20;  // width scale-factor
-    localparam SPR_SCALE_Y = 20;  // height scale-factor
-    localparam SPR_FILE = "letter_f.mem";
+    localparam SPR_WIDTH   = 8;   // width in pixels
+    localparam SPR_HEIGHT  = 8;   // number of lines
+    localparam SPR_SCALE_X = 12;  // width scale-factor
+    localparam SPR_SCALE_Y = 12;  // height scale-factor
+    localparam SPR_FILE = "saucer.mem";
     logic spr_start;
     logic spr_pix;
 
     // draw sprite at position
-    localparam DRAW_X = 560;
-    localparam DRAW_Y = 280;
+    localparam SPR_SPEED_X = 8;
+    localparam SPR_SPEED_Y = 0;
+    logic signed [CORDW-1:0] sprx, spry;
+    logic dx;  // direction: 0 is right/down
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] draw_y_cor;  // corrected for wrapping
-    always_comb begin
-        draw_y_cor = (DRAW_Y == 0) ? V_RES_FULL - 1 : DRAW_Y - 1;
-        spr_start = (sy == draw_y_cor && sx == H_RES);
+    always_ff @(posedge clk_pix) begin
+        if (frame) begin
+            if (sprx >= H_RES - (SPR_SPEED_X + SPR_WIDTH * SPR_SCALE_X)) begin  // right edge
+                dx <= 1;
+                sprx <= sprx - SPR_SPEED_X;
+            end else if (sprx < SPR_SPEED_X) begin  // left edge
+                dx <= 0;
+                sprx <= sprx + SPR_SPEED_X;
+            end else sprx <= (dx) ? sprx - SPR_SPEED_X : sprx + SPR_SPEED_X;
+        end
+        if (!clk_pix_locked) begin
+            sprx <= 592;
+            spry <= 312;
+            dx <= 0;
+        end
     end
 
-    sprite_v3 #(
+    // signal to start sprite drawing
+    always_comb spr_start = (line && sy == spry);
+
+    sprite_v2 #(
         .WIDTH(SPR_WIDTH),
         .HEIGHT(SPR_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .SPR_FILE(SPR_FILE),
-        .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL)
+        .SPR_FILE(SPR_FILE)
         ) spr_instance (
         .clk(clk_pix),
         .rst(!clk_pix_locked),
         .start(spr_start),
         .sx,
-        .sprx(DRAW_X),
+        .sprx,
         .pix(spr_pix)
     );
 
@@ -93,7 +105,7 @@ module top_sprite_v3 (
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
-        dvi_de <= de;
+        dvi_de    <= de;
         dvi_red   <= (de && spr_pix) ? 8'hFF: 8'h00;
         dvi_green <= (de && spr_pix) ? 8'hCC: 8'h00;
         dvi_blue  <= (de && spr_pix) ? 8'h00: 8'h00;
