@@ -44,9 +44,6 @@ module top_hedgehog_v1 (
         .line
     );
 
-    // temporary parameter
-    localparam H_RES_FULL = 800;
-
     // sprite
     localparam SPR_WIDTH    = 32;   // width in pixels
     localparam SPR_HEIGHT   = 20;   // number of lines
@@ -81,16 +78,15 @@ module top_hedgehog_v1 (
     // draw sprite at position
     localparam SPR_SPEED_X = 2;
     localparam SPR_SPEED_Y = 0;
-    logic [CORDW-1:0] sprx, spry;
+    logic signed [CORDW-1:0] sprx, spry;
 
     always_ff @(posedge clk_pix) begin
         if (frame) begin
-            // walk right-to-left (correct position for screen width)
-            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X :
-                                           H_RES_FULL - (SPR_SPEED_X - sprx);
+            // walk right-to-left: -132 covers sprite width and within blanking
+            sprx <= (sprx > -132) ? sprx - SPR_SPEED_X : H_RES;
         end
         if (!clk_locked) begin
-            sprx <= 0;
+            sprx <= H_RES;
             spry <= 200;
         end
     end
