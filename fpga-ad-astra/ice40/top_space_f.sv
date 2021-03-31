@@ -20,7 +20,7 @@ module top_space_f (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -28,24 +28,25 @@ module top_space_f (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, line;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .line
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
 
     // font glyph ROM
     localparam FONT_WIDTH  = 8;   // width in pixels (also ROM width)
@@ -75,13 +76,9 @@ module top_space_f (
     localparam SPR_X = 192;
     localparam SPR_Y = 112;
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] spr_y_cor;  // corrected for wrapping
-    logic spr_start;
-    always_comb begin
-        spr_y_cor = (SPR_Y == 0) ? V_RES_FULL - 1 : SPR_Y - 1;
-        spr_start = (sy == spr_y_cor && sx == 0);
-    end
+    // signal to start sprite drawing
+    logic spr_start; 
+    always_comb spr_start = (line && sy == SPR_Y);
 
     // subtract 0x20 from code points as font starts at U+0020
     localparam SPR_GLYPH_ADDR = FONT_HEIGHT * 'h26;  // F U+0046
@@ -91,7 +88,7 @@ module top_space_f (
     logic spr_fdma;  // font ROM DMA slot
     always_comb begin
         font_rom_addr = 0;
-        spr_fdma = (sx == H_RES);  // load glyph line at start of blanking
+        spr_fdma = line;  // load glyph line at start of horizontal blanking
         /* verilator lint_off WIDTH */
         font_rom_addr = (spr_fdma) ? SPR_GLYPH_ADDR + spr_glyph_line : 0;
         /* verilator lint_on WIDTH */
@@ -105,7 +102,6 @@ module top_space_f (
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr (
         .clk(clk_pix),
