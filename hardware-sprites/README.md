@@ -31,14 +31,14 @@ If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too o
 
 ## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/hardware-sprites/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_hedgehog`, `top_sprite_v3` etc. as you would for any Vivado project.
+You can then build `top_hedgehog`, `top_sprite_v2` etc. as you would for any Vivado project.
 
 ### Simulation
 
@@ -55,7 +55,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
-3. Set the board and part names in tcl, then source the create project script:
+3. Set the board and part names in Tcl, then source the create project script:
 
 ```tcl
 set board_name <board>

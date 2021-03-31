@@ -18,7 +18,7 @@ module top_sprite_v1 (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_100m),
        .rst(!btn_rst),  // reset button is active low
        .clk_pix,
@@ -26,24 +26,25 @@ module top_sprite_v1 (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, line;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .line
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
 
     // sprite
     localparam SPR_WIDTH  = 8;  // width in pixels
@@ -57,9 +58,7 @@ module top_sprite_v1 (
     localparam DRAW_Y = 16;
 
     // signal to start sprite drawing
-    always_comb begin
-        spr_start = (sy == DRAW_Y && sx == 0);
-    end
+    always_comb spr_start = (line && sy == DRAW_Y);
 
     sprite_v1 #(
         .WIDTH(SPR_WIDTH),

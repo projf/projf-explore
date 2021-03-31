@@ -18,11 +18,11 @@ module top_hedgehog (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,27 +31,23 @@ module top_hedgehog (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        .line
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
-
-    logic animate;  // high for one clock tick at start of vertical blanking
-    always_comb animate = (sy == V_RES && sx == 0);
 
     // sprite
     localparam SPR_WIDTH    = 32;   // width in pixels
@@ -87,12 +83,12 @@ module top_hedgehog (
     // draw sprite at position
     localparam SPR_SPEED_X = 4;
     localparam SPR_SPEED_Y = 0;
-    logic [CORDW-1:0] sprx, spry;
+    logic signed [CORDW-1:0] sprx, spry;
 
     // sprite frame selector
     logic [5:0] cnt_anim;  // count from 0-63
     always_ff @(posedge clk_pix) begin
-        if (animate) begin
+        if (frame) begin
             // select sprite frame
             cnt_anim <= cnt_anim + 1;
             case (cnt_anim)
@@ -103,9 +99,8 @@ module top_hedgehog (
                 default: spr_base_addr <= spr_base_addr;
             endcase
 
-            // walk right-to-left (correct position for screen width)
-            sprx <= (sprx > SPR_SPEED_X) ? sprx - SPR_SPEED_X :
-                                           H_RES_FULL - (SPR_SPEED_X - sprx);
+            // walk right-to-left: -260 covers sprite width and within blanking
+            sprx <= (sprx > -260) ? sprx - SPR_SPEED_X : H_RES;
         end
         if (!clk_pix_locked) begin
             sprx <= 0;
@@ -113,12 +108,8 @@ module top_hedgehog (
         end
     end
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] spry_cor;  // corrected for wrapping
-    always_comb begin
-        spry_cor = (spry == 0) ? V_RES_FULL - 1 : spry - 1;
-        spr_start = (sy == spry_cor && sx == H_RES);
-    end
+    // signal to start sprite drawing
+    always_comb spr_start = (line && sy == spry);
 
     sprite #(
         .WIDTH(SPR_WIDTH),
@@ -126,8 +117,6 @@ module top_hedgehog (
         .COLR_BITS(COLR_BITS),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
-        .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW(SPR_ADDRW)
         ) spr_instance (
         .clk(clk_pix),

@@ -1,8 +1,8 @@
-# Project F: FPGA Graphics - Create Vivado Project (Nexys Video)
+# Project F: FPGA Pong - Create Vivado Project (Nexys Video)
 # (C)2021 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
-puts "INFO: Project F - FPGA Graphics Project Creation Script"
+puts "INFO: Project F - FPGA Pong Project Creation Script"
 
 # If the FPGA board/part isn't set use Nexys Video
 if {! [info exists fpga_part]} {
@@ -63,8 +63,8 @@ set design_sources [list \
   [file normalize "${common_dir}/xc7-tmds/dvi_generator.sv"] \
   [file normalize "${common_dir}/xc7-tmds/oserdes_10b.sv"] \
   [file normalize "${common_dir}/xc7-tmds/tmds_out.sv"] \
-  [file normalize "${origin_dir}/display_timings_720p.sv"] \
-  [file normalize "${origin_dir}/display_timings_1080p.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/display_timings_720p.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/display_timings_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

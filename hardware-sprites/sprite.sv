@@ -11,15 +11,14 @@ module sprite #(
     parameter SCALE_X=1,       // sprite width scale-factor
     parameter SCALE_Y=1,       // sprite height scale-factor
     parameter COLR_BITS=4,     // bits per pixel (2^4=16 colours)
-    parameter CORDW=10,        // screen coordinate width in bits
-    parameter H_RES_FULL=800,  // horizontal screen resolution inc. blanking
+    parameter CORDW=16,        // screen coordinate width in bits
     parameter ADDRW=6          // width of graphic memory address bus
     ) (
     input  wire logic clk,                      // clock
     input  wire logic rst,                      // reset
     input  wire logic start,                    // start control
-    input  wire logic [CORDW-1:0] sx,           // horizontal screen position
-    input  wire logic [CORDW-1:0] sprx,         // horizontal sprite position
+    input  wire logic signed [CORDW-1:0] sx,    // horizontal screen position
+    input  wire logic signed [CORDW-1:0] sprx,  // horizontal sprite position
     input  wire logic [COLR_BITS-1:0] data_in,  // data from external memory
     output      logic [ADDRW-1:0] pos,          // sprite pixel position
     output      logic [COLR_BITS-1:0] pix,      // pixel colour to draw
@@ -95,26 +94,16 @@ module sprite #(
     end
 
     // output current pixel colour when drawing
-    always_comb begin
-        pix = (state == DRAW) ? data_in : 0;
-    end
+    always_comb pix = (state == DRAW) ? data_in : 0;
 
-    // create status signals and correct horizontal position
+    // create status signals
     logic last_pixel, last_line;
-    logic [CORDW-1:0] sprx_cor;
     always_comb begin
         /* verilator lint_off WIDTH */
         last_pixel = (ox == WIDTH-1  && cnt_x == SCALE_X-1);
         last_line  = (oy == HEIGHT-1 && cnt_y == SCALE_Y-1);
         /* verilator lint_on WIDTH */
         drawing = (state == DRAW);
-
-        // BRAM adds an extra cycle of latency
-        case (sprx)
-            0: sprx_cor = H_RES_FULL - 2;
-            1: sprx_cor = H_RES_FULL - 1;
-            default: sprx_cor = sprx - 2;
-        endcase
     end
 
     // determine next state
@@ -122,7 +111,7 @@ module sprite #(
         case(state)
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
-            AWAIT_POS:  state_next = (sx == sprx_cor) ? DRAW : AWAIT_POS;
+            AWAIT_POS:  state_next = (sx == sprx-2) ? DRAW : AWAIT_POS;  // BRAM
             DRAW:       state_next = !last_pixel ? DRAW :
                                     (!last_line ? NEXT_LINE : DONE);
             NEXT_LINE:  state_next = AWAIT_POS;

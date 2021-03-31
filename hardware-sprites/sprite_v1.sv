@@ -9,14 +9,14 @@ module sprite_v1 #(
     parameter WIDTH=8,            // graphic width in pixels
     parameter HEIGHT=8,           // graphic height in pixels
     parameter SPR_FILE="",        // file to load sprite graphic from
-    parameter CORDW=10,           // screen coordinate width in bits
+    parameter CORDW=16,           // screen coordinate width in bits
     parameter DEPTH=WIDTH*HEIGHT  // depth of memory array holding graphic
     ) (
     input  wire logic clk,               // clock
     input  wire logic rst,               // reset
     input  wire logic start,             // start control
-    input  wire logic [CORDW-1:0] sx,    // horizontal screen position
-    input  wire logic [CORDW-1:0] sprx,  // horizontal sprite position
+    input  wire logic signed [CORDW-1:0] sx,    // horizontal screen position
+    input  wire logic signed [CORDW-1:0] sprx,  // horizontal sprite position
     output      logic pix                // pixel colour to draw
     );
 
@@ -69,9 +69,7 @@ module sprite_v1 #(
     end
 
     // output current pixel colour when drawing
-    always_comb begin
-        pix = (state == DRAW) ? spr_rom_data : 0;
-    end
+    always_comb pix = (state == DRAW) ? spr_rom_data : 0;
 
     // create status signals
     logic last_pixel, last_line;
@@ -87,7 +85,7 @@ module sprite_v1 #(
         case(state)
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
-            AWAIT_POS:  state_next = (sx == sprx) ? DRAW : AWAIT_POS;
+            AWAIT_POS:  state_next = (sx == sprx-1) ? DRAW : AWAIT_POS;
             DRAW:       state_next = !last_pixel ? DRAW :
                                      (!last_line ? NEXT_LINE : IDLE);
             NEXT_LINE:  state_next = AWAIT_POS;
