@@ -1,5 +1,5 @@
 // Project F: FPGA Ad Astra - Top Greetings v1 (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
