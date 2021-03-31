@@ -75,8 +75,8 @@ module top_hello_en (
     localparam SPR_DMA = 0 - 2*SPR_CNT;  // start sprite DMA in h-blanking
 
     // horizontal and vertical screen position of letters
-    logic [CORDW-1:0] spr_x [SPR_CNT];
-    logic [CORDW-1:0] spr_y;
+    logic signed [CORDW-1:0] spr_x [SPR_CNT];
+    logic signed [CORDW-1:0] spr_y;
     initial begin
         spr_x[0] = 158;
         spr_x[1] = 222;
@@ -111,8 +111,8 @@ module top_hello_en (
     logic spr_fdma [SPR_CNT];  // font ROM DMA slots
     always_comb begin
         font_rom_addr = 0;
+        /* verilator lint_off WIDTH */
         for (i = 0; i < SPR_CNT; i = i + 1) begin
-            /* verilator lint_off WIDTH */
             spr_fdma[i] = (sx == SPR_DMA + i);  // DMA in blanking
         end
         if (spr_fdma[0])
@@ -125,7 +125,7 @@ module top_hello_en (
             font_rom_addr = FONT_HEIGHT * spr_cp_norm[3] + spr_glyph_line_3;
         if (spr_fdma[4])
             font_rom_addr = FONT_HEIGHT * spr_cp_norm[4] + spr_glyph_line_4;
-            /* verilator lint_on WIDTH */
+        /* verilator lint_on WIDTH */
     end
 
     // sprite instances
