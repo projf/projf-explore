@@ -70,6 +70,7 @@ module top_hello_en (
     localparam SPR_CNT = 5;      // number of sprites
     localparam SPR_SCALE_X = 8;  // enlarge sprite width by this factor
     localparam SPR_SCALE_Y = 8;  // enlarge sprite height by this factor
+    localparam SPR_DMA = 0 - 2*SPR_CNT;  // start sprite DMA in h-blanking
 
     // horizontal and vertical screen position of letters
     logic signed [CORDW-1:0] spr_x [SPR_CNT];
@@ -106,7 +107,7 @@ module top_hello_en (
         font_rom_addr = 0;
         for (i = 0; i < SPR_CNT; i = i + 1) begin
             /* verilator lint_off WIDTH */
-            spr_fdma[i] = (sx == i-(2*SPR_CNT));  // DMA in blanking
+            spr_fdma[i] = (sx == SPR_DMA + i);  // DMA in blanking
             if (spr_fdma[i])
                 font_rom_addr = FONT_HEIGHT*spr_cp_norm[i] + spr_glyph_line[i];
             /* verilator lint_on WIDTH */
