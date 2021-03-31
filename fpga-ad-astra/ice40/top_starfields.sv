@@ -1,5 +1,5 @@
 // Project F: FPGA Ad Astra - Top Starfields (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -20,7 +20,7 @@ module top_starfields (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -28,26 +28,24 @@ module top_starfields (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    /* verilator lint_off UNUSED */
-    logic [CORDW-1:0] sx, sy;
-    /* verilator lint_on UNUSED */
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
-        .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
-        .sx,
-        .sy,
-        .hsync,
-        .vsync,
-        .de
-    );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
     localparam H_RES = 640;
     localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic hsync, vsync;
+    logic de;
+    display_timings_480p display_timings_inst (
+        .clk_pix,
+        .rst(!clk_locked),  // wait for pixel clock lock
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        .hsync,
+        .vsync,
+        .de,
+        .frame(),
+        .line()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 
     // starfields
     logic sf1_on, sf2_on, sf3_on;

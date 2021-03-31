@@ -10,9 +10,9 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_CM  = ../../common
-ADD_SRC  = ${PATH_CM}/display_timings_480p.sv ${PATH_CM}/lfsr.sv ${PATH_CM}/rom_sync.sv
-ADD_SRC += ${PATH_CM}/ice40/clock_gen.sv
-ADD_SRC += ../sprite.sv ../starfield.sv
+ADD_SRC  = ${PATH_CM}/lfsr.sv ${PATH_CM}/rom_sync.sv
+ADD_SRC += ${PATH_CM}/ice40/clock_gen_480p.sv
+ADD_SRC += ../display_timings_480p.sv ../sprite.sv ../starfield.sv
 
 top_greet: top_greet.rpt top_greet.bin
 top_greet_v1: top_greet_v1.rpt top_greet_v1.bin
