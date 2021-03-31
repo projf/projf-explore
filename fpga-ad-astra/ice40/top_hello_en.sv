@@ -1,5 +1,5 @@
 // Project F: FPGA Ad Astra - Top Hello EN (iCEBreaker with 12-bit DVI Pmod)
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -20,7 +20,7 @@ module top_hello_en (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -28,24 +28,25 @@ module top_hello_en (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, line;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .line
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
 
     // font glyph ROM
     localparam FONT_WIDTH  = 8;   // width in pixels (also ROM width)
@@ -71,6 +72,7 @@ module top_hello_en (
     localparam SPR_CNT = 5;      // number of sprites
     localparam SPR_SCALE_X = 8;  // enlarge sprite width by this factor
     localparam SPR_SCALE_Y = 8;  // enlarge sprite height by this factor
+    localparam SPR_DMA = 0 - 2*SPR_CNT;  // start sprite DMA in h-blanking
 
     // horizontal and vertical screen position of letters
     logic [CORDW-1:0] spr_x [SPR_CNT];
@@ -84,13 +86,9 @@ module top_hello_en (
         spr_y    = 208;
     end
 
-    // start sprite in blanking of line before first line drawn
-    logic [CORDW-1:0] spr_y_cor;  // corrected for wrapping
-    logic spr_start;
-    always_comb begin
-        spr_y_cor = (spr_y == 0) ? V_RES_FULL - 1 : spr_y - 1;
-        spr_start = (sy == spr_y_cor && sx == 0);
-    end
+    // signal to start sprite drawing
+    logic spr_start; 
+    always_comb spr_start = (line && sy == spr_y);
 
     // subtract 0x20 from code points as font starts at U+0020
     logic [$clog2(F_ROM_DEPTH)-1:0] spr_cp_norm [SPR_CNT];
@@ -113,9 +111,9 @@ module top_hello_en (
     logic spr_fdma [SPR_CNT];  // font ROM DMA slots
     always_comb begin
         font_rom_addr = 0;
-        /* verilator lint_off WIDTH */
         for (i = 0; i < SPR_CNT; i = i + 1) begin
-            spr_fdma[i] = (sx == H_RES+i);
+            /* verilator lint_off WIDTH */
+            spr_fdma[i] = (sx == SPR_DMA + i);  // DMA in blanking
         end
         if (spr_fdma[0])
             font_rom_addr = FONT_HEIGHT * spr_cp_norm[0] + spr_glyph_line_0;
@@ -127,20 +125,19 @@ module top_hello_en (
             font_rom_addr = FONT_HEIGHT * spr_cp_norm[3] + spr_glyph_line_3;
         if (spr_fdma[4])
             font_rom_addr = FONT_HEIGHT * spr_cp_norm[4] + spr_glyph_line_4;
-        /* verilator lint_on WIDTH */
+            /* verilator lint_on WIDTH */
     end
 
     // sprite instances
     logic [SPR_CNT-1:0] spr_pix;  // sprite pixels
 
-    sprite #(
+   sprite #(
         .WIDTH(FONT_WIDTH),
         .HEIGHT(FONT_HEIGHT),
         .SCALE_X(SPR_SCALE_X),
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr0 (
         .clk(clk_pix),
@@ -164,7 +161,6 @@ module top_hello_en (
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr1 (
         .clk(clk_pix),
@@ -188,7 +184,6 @@ module top_hello_en (
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr2 (
         .clk(clk_pix),
@@ -212,7 +207,6 @@ module top_hello_en (
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr3 (
         .clk(clk_pix),
@@ -236,7 +230,6 @@ module top_hello_en (
         .SCALE_Y(SPR_SCALE_Y),
         .LSB(0),
         .CORDW(CORDW),
-        .H_RES_FULL(H_RES_FULL),
         .ADDRW($clog2(FONT_HEIGHT))
         ) spr4 (
         .clk(clk_pix),
