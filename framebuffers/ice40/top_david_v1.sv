@@ -20,7 +20,7 @@ module top_david_v1 (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_12m),
        .rst(btn_rst),
        .clk_pix,
@@ -28,24 +28,25 @@ module top_david_v1 (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
+    logic hsync, vsync;
+    logic de, frame;
+    logic signed [CORDW-1:0] sx, sy;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .line()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;
@@ -54,6 +55,7 @@ module top_david_v1 (
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
     localparam FB_DATAW  = 1;  // colour bits per pixel
     localparam FB_IMAGE  = "../res/david/david_1bit.mem";
+    // localparam FB_IMAGE  = "../res/david/test_box_mono_160x120.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -63,7 +65,7 @@ module top_david_v1 (
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
-    ) fb_inst (
+    ) bram_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fb_we),
@@ -73,39 +75,83 @@ module top_david_v1 (
         .data_out(fb_colr_read)
     );
 
-    // draw a horizontal line at the top of the framebuffer
+    // draw box around framebuffer
+    logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
+    enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
     always @(posedge clk_pix) begin
-        if (sy >= V_RES) begin  // draw in blanking interval
-            if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
-                fb_colr_write <= 1;
-                fb_we <= 1;
-            end else if (fb_addr_write != FB_WIDTH-1) begin
-                fb_addr_write <= fb_addr_write + 1;
-            end else begin
-                fb_colr_write <= 0;
-                fb_we <= 0;
-            end
-        end
+        case (state)
+            TOP:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    cnt_draw <= 0;
+                    state <= RIGHT;
+                end
+            RIGHT:
+                if (cnt_draw < FB_HEIGHT-1) begin
+                    fb_addr_write <= fb_addr_write + FB_WIDTH;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_addr_write <= 0;
+                    cnt_draw <= 0;
+                    state <= LEFT;
+                end
+            LEFT:
+                if (cnt_draw < FB_HEIGHT-1) begin
+                    fb_addr_write <= fb_addr_write + FB_WIDTH;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    cnt_draw <= 0;
+                    state <= BOTTOM;
+                end
+            BOTTOM:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_we <= 0;
+                    state <= DONE;
+                end
+            IDLE:
+                if (frame) begin
+                    fb_colr_write <= 1;
+                    fb_we <= 1;
+                    cnt_draw <= 0;
+                    state <= TOP;
+                end
+            default: state <= DONE;  // done forever!
+        endcase
+
+        if (!clk_locked) state <= IDLE;
     end
 
-    // determine when framebuffer is active for reading
-    logic fb_active;
-    always_comb fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
+    logic paint;  // which area of the framebuffer should we paint?
+    always_comb paint = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
 
-    // calculate framebuffer read address for output to display
+    // calculate framebuffer read address for display output
     always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1 && sx == H_RES_FULL-1) begin
-            fb_addr_read <= 0;  // reset address at end of frame
-        end else if (fb_active) begin
+        if (frame) begin  // reset address at start of frame
+            fb_addr_read <= 0;
+        end else if (paint) begin  // increment address in painting area
             fb_addr_read <= fb_addr_read + 1;
         end
     end
 
+    // reading from BRAM takes one cycle: delay display signals to match
+    logic paint_p1, hsync_p1, vsync_p1, de_p1;
+    always @(posedge clk_pix) begin
+        paint_p1 <= paint;
+        hsync_p1 <= hsync;
+        vsync_p1 <= vsync;
+        de_p1 <= de;
+    end
+
     logic [3:0] red, green, blue;  // output colour
     always_comb begin
-        red   = (fb_active && fb_colr_read) ? 4'hF : 4'h0;
-        green = (fb_active && fb_colr_read) ? 4'hF : 4'h0;
-        blue  = (fb_active && fb_colr_read) ? 4'hF : 4'h0;
+        red   = (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
+        green = (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
+        blue  = (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
     end
 
     // Output DVI clock: 180° out of phase with other DVI signals
@@ -124,7 +170,7 @@ module top_david_v1 (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, red, green, blue}),
+        .D_OUT_0({hsync_p1, vsync_p1, de_p1, red, green, blue}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
