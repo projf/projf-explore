@@ -62,7 +62,7 @@ module sprite #(
             end
             READ_MEM: begin
                 if (LSB) begin
-                    spr_line <= data_in;  // Assumes read takes one clock cycle
+                    spr_line <= data_in;  // assume read takes one clock cycle
                 end else begin  // reverse if MSB is left-most pixel
                     for (i=0; i<WIDTH; i=i+1)
                         spr_line[i] <= data_in[(WIDTH-1)-i];
