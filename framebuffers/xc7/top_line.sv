@@ -18,7 +18,7 @@ module top_line (
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_100m),
        .rst(!btn_rst),  // reset button is active low
        .clk_pix,
@@ -26,26 +26,25 @@ module top_line (
     );
 
     // display timings
-    localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
+    localparam H_RES = 640;
+    localparam V_RES = 480;
+    localparam CORDW = 16;
     logic hsync, vsync;
-    display_timings_480p timings_640x480 (
+    logic frame;
+    logic signed [CORDW-1:0] sx, sy;
+    display_timings_480p display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
         /* verilator lint_off PINCONNECTEMPTY */
-        .de()
+        .de(),
+        .frame,
+        .line()
         /* verilator lint_on PINCONNECTEMPTY */
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 800;
-    localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;
@@ -61,7 +60,7 @@ module top_line (
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS)
-    ) fb_inst (
+    ) bram_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fb_we),
@@ -71,40 +70,60 @@ module top_line (
         .data_out(fb_colr_read)
     );
 
-    // draw a horizontal line at the top of the framebuffer
+    // draw line across middle of framebuffer
+    logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
+    enum {IDLE, DRAW, DONE} state;
     always @(posedge clk_pix) begin
-        if (sy >= V_RES) begin  // draw in blanking interval
-            if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
-                fb_colr_write <= 1;
-                fb_we <= 1;
-            end else if (fb_addr_write != FB_WIDTH-1) begin
-                fb_addr_write <= fb_addr_write + 1;
-            end else begin
-                fb_colr_write <= 0;
-                fb_we <= 0;
-            end
-        end
+        case (state)
+            DRAW:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_we <= 0;
+                    state <= DONE;
+                end
+            IDLE:
+                if (frame) begin
+                    fb_colr_write <= 1;
+                    fb_we <= 1;
+                    fb_addr_write <= (FB_HEIGHT>>1) * FB_WIDTH;
+                    cnt_draw <= 0;
+                    state <= DRAW;
+                end
+            default: state <= DONE;  // done forever!
+        endcase
+
+        if (!clk_locked) state <= IDLE;
     end
 
-    // determine when framebuffer is active for reading
-    logic fb_active;
-    always_comb fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
+    logic paint;  // which area of the framebuffer should we paint?
+    always_comb paint = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
 
-    // calculate framebuffer read address for output to display
+    // calculate framebuffer read address for display output
+    // we start at address zero, so calculation doesn't add latency
     always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1 && sx == H_RES_FULL-1) begin
-            fb_addr_read <= 0;  // reset address at end of frame
-        end else if (fb_active) begin
+        if (frame) begin  // reset address at start of frame
+            fb_addr_read <= 0;
+        end else if (paint) begin  // increment address in painting area
             fb_addr_read <= fb_addr_read + 1;
         end
     end
 
+    // reading from BRAM takes one cycle: delay display signals to match
+    logic paint_p1, hsync_p1, vsync_p1;
+    always @(posedge clk_pix) begin
+        paint_p1 <= paint;
+        hsync_p1 <= hsync;
+        vsync_p1 <= vsync;
+    end
+
     // VGA output
     always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync;
-        vga_vsync <= vsync;
-        vga_r <= (fb_active && fb_colr_read) ? 4'hF : 4'h0;
-        vga_g <= (fb_active && fb_colr_read) ? 4'hF : 4'h0;
-        vga_b <= (fb_active && fb_colr_read) ? 4'hF : 4'h0;
+        vga_hsync <= hsync_p1;
+        vga_vsync <= vsync_p1;
+        vga_r <= (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
+        vga_g <= (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
+        vga_b <= (paint_p1 && fb_colr_read) ? 4'hF : 4'h0;
     end
 endmodule
