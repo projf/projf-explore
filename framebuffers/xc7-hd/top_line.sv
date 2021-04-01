@@ -18,11 +18,11 @@ module top_line (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,24 +31,25 @@ module top_line (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_720p timings_720p (
+    localparam H_RES = 1280;
+    localparam V_RES = 720;
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame;
+    display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .line()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;
@@ -64,7 +65,7 @@ module top_line (
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS)
-    ) fb_inst (
+    ) bram_inst (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(fb_we),
@@ -74,44 +75,65 @@ module top_line (
         .data_out(fb_colr_read)
     );
 
-    // draw a horizontal line at the top of the framebuffer
+    // draw line across middle of framebuffer
+    logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
+    enum {IDLE, DRAW, DONE} state;
     always @(posedge clk_pix) begin
-        if (sy >= V_RES) begin  // draw in blanking interval
-            if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
-                fb_colr_write <= 1;
-                fb_we <= 1;
-            end else if (fb_addr_write != FB_WIDTH-1) begin
-                fb_addr_write <= fb_addr_write + 1;
-            end else begin
-                fb_colr_write <= 0;
-                fb_we <= 0;
-            end
+        case (state)
+            DRAW:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_we <= 0;
+                    state <= DONE;
+                end
+            IDLE:
+                if (frame) begin
+                    fb_colr_write <= 1;
+                    fb_we <= 1;
+                    fb_addr_write <= (FB_HEIGHT>>1) * FB_WIDTH;
+                    cnt_draw <= 0;
+                    state <= DRAW;
+                end
+            default: state <= DONE;  // done forever!
+        endcase
+
+        if (!clk_pix_locked) state <= IDLE;
+    end
+
+    logic paint;  // which area of the framebuffer should we paint?
+    always_comb paint = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
+
+    // calculate framebuffer read address for display output
+    // we start at address zero, so calculation doesn't add latency
+    always_ff @(posedge clk_pix) begin
+        if (frame) begin  // reset address at start of frame
+            fb_addr_read <= 0;
+        end else if (paint) begin  // increment address in painting area
+            fb_addr_read <= fb_addr_read + 1;
         end
     end
 
-    // determine when framebuffer is active for reading
-    logic fb_active;
-    always_comb fb_active = (sy < FB_HEIGHT && sx < FB_WIDTH);
-
-    // calculate framebuffer read address for output to display
-    always_ff @(posedge clk_pix) begin
-        if (sy == V_RES_FULL-1 && sx == H_RES_FULL-1) begin
-            fb_addr_read <= 0;  // reset address at end of frame
-        end else if (fb_active) begin
-            fb_addr_read <= fb_addr_read + 1;
-        end
+    // reading from BRAM takes one cycle: delay display signals to match
+    logic paint_p1, hsync_p1, vsync_p1, de_p1;
+    always @(posedge clk_pix) begin
+        paint_p1 <= paint;
+        hsync_p1 <= hsync;
+        vsync_p1 <= vsync;
+        de_p1 <= de;
     end
 
     // DVI signals
     logic [7:0] dvi_red, dvi_green, dvi_blue;
     logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        dvi_hsync <= hsync;
-        dvi_vsync <= vsync;
-        dvi_de    <= de;
-        dvi_red   <= (fb_active && fb_colr_read) ? 8'hFF : 8'h00;
-        dvi_green <= (fb_active && fb_colr_read) ? 8'hFF : 8'h00;
-        dvi_blue  <= (fb_active && fb_colr_read) ? 8'hFF : 8'h00;
+        dvi_hsync <= hsync_p1;
+        dvi_vsync <= vsync_p1;
+        dvi_de    <= de_p1;
+        dvi_red   <= (paint_p1 && fb_colr_read) ? 8'hFF : 8'h00;
+        dvi_green <= (paint_p1 && fb_colr_read) ? 8'hFF : 8'h00;
+        dvi_blue  <= (paint_p1 && fb_colr_read) ? 8'hFF : 8'h00;
     end
 
     // TMDS encoding and serialization
