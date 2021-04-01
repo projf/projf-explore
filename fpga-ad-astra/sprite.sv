@@ -1,5 +1,5 @@
 // Project F: FPGA Ad Astra - Sprite for Fonts
-// (C)2020 Will Green, open source hardware released under the MIT License
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -11,16 +11,15 @@ module sprite #(
     parameter SCALE_X=1,       // sprite width scale-factor
     parameter SCALE_Y=1,       // sprite height scale-factor
     parameter LSB=1,           // first pixel in LSB
-    parameter CORDW=10,        // screen coordinate width in bits
-    parameter H_RES_FULL=800,  // horizontal screen resolution inc. blanking
+    parameter CORDW=16,        // screen coordinate width in bits
     parameter ADDRW=9          // width of graphic memory address bus
     ) (
     input  wire logic clk,                  // clock
     input  wire logic rst,                  // reset
     input  wire logic start,                // start control
     input  wire logic dma_avail,            // memory access control
-    input  wire logic [CORDW-1:0] sx,       // horizontal screen position
-    input  wire logic [CORDW-1:0] sprx,     // horizontal sprite position
+    input  wire logic signed [CORDW-1:0] sx,    // horizontal screen position
+    input  wire logic signed [CORDW-1:0] sprx,  // horizontal sprite position
     input  wire logic [WIDTH-1:0] data_in,  // data from external memory
     output      logic [ADDRW-1:0] pos,      // sprite line position
     output      logic pix,                  // pixel colour to draw (0 or 1)
@@ -63,7 +62,7 @@ module sprite #(
             end
             READ_MEM: begin
                 if (LSB) begin
-                    spr_line <= data_in;  // Assumes read takes one clock cycle
+                    spr_line <= data_in;  // assume read takes one clock cycle
                 end else begin  // reverse if MSB is left-most pixel
                     for (i=0; i<WIDTH; i=i+1)
                         spr_line[i] <= data_in[(WIDTH-1)-i];
@@ -114,9 +113,8 @@ module sprite #(
         pix = (state == DRAW) ? spr_line[ox] : 0;
     end
 
-    // create status signals and correct horizontal position
+    // create status signals
     logic last_pixel, load_line, last_line;
-    logic [CORDW-1:0] sprx_cor;
     always_comb begin
         /* verilator lint_off WIDTH */
         last_pixel = (ox == WIDTH-1 && cnt_x == SCALE_X-1);
@@ -124,13 +122,6 @@ module sprite #(
         last_line  = (oy == HEIGHT-1 && cnt_y == SCALE_Y-1);
         /* verilator lint_on WIDTH */
         drawing = (state == DRAW);
-
-        // BRAM adds an extra cycle of latency
-        case (sprx)
-            0: sprx_cor = H_RES_FULL - 2;
-            1: sprx_cor = H_RES_FULL - 1;
-            default: sprx_cor = sprx - 2;
-        endcase
     end
 
     // determine next state
@@ -140,7 +131,7 @@ module sprite #(
             START:      state_next = AWAIT_DMA;
             AWAIT_DMA:  state_next = dma_avail ? READ_MEM : AWAIT_DMA;
             READ_MEM:   state_next = AWAIT_POS;
-            AWAIT_POS:  state_next = (sx == sprx_cor) ? DRAW : AWAIT_POS;
+            AWAIT_POS:  state_next = (sx == sprx-2) ? DRAW : AWAIT_POS;
             DRAW:       state_next = !last_pixel ? DRAW :
                                     (!last_line ? NEXT_LINE : DONE);
             NEXT_LINE:  state_next = load_line ? AWAIT_DMA : AWAIT_POS;
