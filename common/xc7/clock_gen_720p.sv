@@ -19,7 +19,7 @@ module clock_gen_720p #(
     input  wire logic rst,              // reset
     output      logic clk_pix,          // pixel clock
     output      logic clk_pix_5x,       // 5x clock for 10:1 DDR SerDes
-    output      logic clk_pix_locked    // pixel clocks locked?
+    output      logic clk_pix_locked    // pixel clock locked?
     );
 
     logic clk_pix_fb;       // internal clock feedback
