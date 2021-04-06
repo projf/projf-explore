@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="framebuffer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="framebuffer_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="100100001fs"></ZoomEndTime>
+      <Cursor1Time time="5310000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="168"></NameColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="90" />
+   <wvobject fp_name="/framebuffer_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/clk_25m" type="logic">
+      <obj_property name="ElementShortName">clk_25m</obj_property>
+      <obj_property name="ObjectShortName">clk_25m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/clk_100m" type="logic">
+      <obj_property name="ElementShortName">clk_100m</obj_property>
+      <obj_property name="ObjectShortName">clk_100m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/hsync" type="logic">
+      <obj_property name="ElementShortName">hsync</obj_property>
+      <obj_property name="ObjectShortName">hsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/vsync" type="logic">
+      <obj_property name="ElementShortName">vsync</obj_property>
+      <obj_property name="ObjectShortName">vsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/de" type="logic">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/sx" type="array">
+      <obj_property name="ElementShortName">sx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/sy" type="array">
+      <obj_property name="ElementShortName">sy[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_we" type="logic">
+      <obj_property name="ElementShortName">fb_we</obj_property>
+      <obj_property name="ObjectShortName">fb_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_clip" type="logic">
+      <obj_property name="ElementShortName">fb_clip</obj_property>
+      <obj_property name="ObjectShortName">fb_clip</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider729">
+      <obj_property name="label">Output</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_hsync" type="logic">
+      <obj_property name="ElementShortName">disp_hsync</obj_property>
+      <obj_property name="ObjectShortName">disp_hsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_vsync" type="logic">
+      <obj_property name="ElementShortName">disp_vsync</obj_property>
+      <obj_property name="ObjectShortName">disp_vsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_de" type="logic">
+      <obj_property name="ElementShortName">disp_de</obj_property>
+      <obj_property name="ObjectShortName">disp_de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_r" type="array">
+      <obj_property name="ElementShortName">disp_r[3:0]</obj_property>
+      <obj_property name="ObjectShortName">disp_r[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_g" type="array">
+      <obj_property name="ElementShortName">disp_g[3:0]</obj_property>
+      <obj_property name="ObjectShortName">disp_g[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/disp_b" type="array">
+      <obj_property name="ElementShortName">disp_b[3:0]</obj_property>
+      <obj_property name="ObjectShortName">disp_b[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider111">
+      <obj_property name="label">Framebuffer</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/clk_sys" type="logic">
+      <obj_property name="ElementShortName">clk_sys</obj_property>
+      <obj_property name="ObjectShortName">clk_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/clk_pix" type="logic">
+      <obj_property name="ElementShortName">clk_pix</obj_property>
+      <obj_property name="ObjectShortName">clk_pix</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/de" type="logic">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/x" type="array">
+      <obj_property name="ElementShortName">x[15:0]</obj_property>
+      <obj_property name="ObjectShortName">x[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/y" type="array">
+      <obj_property name="ElementShortName">y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">y[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/cidx" type="array">
+      <obj_property name="ElementShortName">cidx[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cidx[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/clip" type="logic">
+      <obj_property name="ElementShortName">clip</obj_property>
+      <obj_property name="ObjectShortName">clip</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/red" type="array">
+      <obj_property name="ElementShortName">red[3:0]</obj_property>
+      <obj_property name="ObjectShortName">red[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/green" type="array">
+      <obj_property name="ElementShortName">green[3:0]</obj_property>
+      <obj_property name="ObjectShortName">green[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/blue" type="array">
+      <obj_property name="ElementShortName">blue[3:0]</obj_property>
+      <obj_property name="ObjectShortName">blue[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/frame_sys" type="logic">
+      <obj_property name="ElementShortName">frame_sys</obj_property>
+      <obj_property name="ObjectShortName">frame_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_addr_read" type="array">
+      <obj_property name="ElementShortName">fb_addr_read[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_read[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_addr_write" type="array">
+      <obj_property name="ElementShortName">fb_addr_write[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_write[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_cidx_read" type="array">
+      <obj_property name="ElementShortName">fb_cidx_read[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_cidx_read[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_cidx_read_p1" type="array">
+      <obj_property name="ElementShortName">fb_cidx_read_p1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_cidx_read_p1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/x_add" type="array">
+      <obj_property name="ElementShortName">x_add[15:0]</obj_property>
+      <obj_property name="ObjectShortName">x_add[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/pix_addr_line" type="array">
+      <obj_property name="ElementShortName">pix_addr_line[6:0]</obj_property>
+      <obj_property name="ObjectShortName">pix_addr_line[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_we" type="logic">
+      <obj_property name="ElementShortName">fb_we</obj_property>
+      <obj_property name="ObjectShortName">fb_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/we_in_p1" type="logic">
+      <obj_property name="ElementShortName">we_in_p1</obj_property>
+      <obj_property name="ObjectShortName">we_in_p1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/fb_cidx_write" type="array">
+      <obj_property name="ElementShortName">fb_cidx_write[3:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_cidx_write[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/cidx_in_p1" type="array">
+      <obj_property name="ElementShortName">cidx_in_p1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cidx_in_p1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_data_req" type="logic">
+      <obj_property name="ElementShortName">lb_data_req</obj_property>
+      <obj_property name="ObjectShortName">lb_data_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/cnt_h" type="array">
+      <obj_property name="ElementShortName">cnt_h[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_h[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_en_in" type="logic">
+      <obj_property name="ElementShortName">lb_en_in</obj_property>
+      <obj_property name="ObjectShortName">lb_en_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_en_out" type="logic">
+      <obj_property name="ElementShortName">lb_en_out</obj_property>
+      <obj_property name="ObjectShortName">lb_en_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_en_in_sr" type="array">
+      <obj_property name="ElementShortName">lb_en_in_sr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_en_in_sr[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_in_0" type="array">
+      <obj_property name="ElementShortName">lb_in_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_in_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_in_1" type="array">
+      <obj_property name="ElementShortName">lb_in_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_in_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_in_2" type="array">
+      <obj_property name="ElementShortName">lb_in_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_in_2[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_out_0" type="array">
+      <obj_property name="ElementShortName">lb_out_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_out_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_out_1" type="array">
+      <obj_property name="ElementShortName">lb_out_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_out_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_out_2" type="array">
+      <obj_property name="ElementShortName">lb_out_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_out_2[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/clut_colr" type="array">
+      <obj_property name="ElementShortName">clut_colr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">clut_colr[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_en_out_p1" type="logic">
+      <obj_property name="ElementShortName">lb_en_out_p1</obj_property>
+      <obj_property name="ObjectShortName">lb_en_out_p1</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider844">
+      <obj_property name="label">Linebuffer</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/clk_in" type="logic">
+      <obj_property name="ElementShortName">clk_in</obj_property>
+      <obj_property name="ObjectShortName">clk_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/clk_out" type="logic">
+      <obj_property name="ElementShortName">clk_out</obj_property>
+      <obj_property name="ObjectShortName">clk_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/data_req" type="logic">
+      <obj_property name="ElementShortName">data_req</obj_property>
+      <obj_property name="ObjectShortName">data_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/en_in" type="logic">
+      <obj_property name="ElementShortName">en_in</obj_property>
+      <obj_property name="ObjectShortName">en_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/en_out" type="logic">
+      <obj_property name="ElementShortName">en_out</obj_property>
+      <obj_property name="ObjectShortName">en_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/din_0" type="array">
+      <obj_property name="ElementShortName">din_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/din_1" type="array">
+      <obj_property name="ElementShortName">din_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/din_2" type="array">
+      <obj_property name="ElementShortName">din_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_2[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/dout_0" type="array">
+      <obj_property name="ElementShortName">dout_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/dout_1" type="array">
+      <obj_property name="ElementShortName">dout_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/dout_2" type="array">
+      <obj_property name="ElementShortName">dout_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_2[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/addr_out" type="array">
+      <obj_property name="ElementShortName">addr_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/cnt_v" type="array">
+      <obj_property name="ElementShortName">cnt_v[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_v[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/cnt_h" type="array">
+      <obj_property name="ElementShortName">cnt_h[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_h[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/set_end" type="logic">
+      <obj_property name="ElementShortName">set_end</obj_property>
+      <obj_property name="ObjectShortName">set_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/get_data" type="logic">
+      <obj_property name="ElementShortName">get_data</obj_property>
+      <obj_property name="ObjectShortName">get_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/addr_in" type="array">
+      <obj_property name="ElementShortName">addr_in[3:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_in[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider380">
+      <obj_property name="label">LB Memory</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/ch0/memory" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="label">ch0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/ch1/memory" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="label">ch1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/ch2/memory" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:11][3:0]</obj_property>
+      <obj_property name="label">ch2</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider155">
+      <obj_property name="label">FB RAM</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/clk_write" type="logic">
+      <obj_property name="ElementShortName">clk_write</obj_property>
+      <obj_property name="ObjectShortName">clk_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/clk_read" type="logic">
+      <obj_property name="ElementShortName">clk_read</obj_property>
+      <obj_property name="ObjectShortName">clk_read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/addr_write" type="array">
+      <obj_property name="ElementShortName">addr_write[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/addr_read" type="array">
+      <obj_property name="ElementShortName">addr_read[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/bram_inst/memory" type="array">
+      <obj_property name="ElementShortName">memory[0:107][3:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:107][3:0]</obj_property>
+   </wvobject>
+</wave_config>

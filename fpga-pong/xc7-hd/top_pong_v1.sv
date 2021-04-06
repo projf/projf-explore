@@ -21,7 +21,7 @@ module top_pong_v1 (
     // generate pixel clocks
     logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
-    logic clk_pix_locked;           // pixel clocks locked?
+    logic clk_pix_locked;           // pixel clock locked?
     clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
