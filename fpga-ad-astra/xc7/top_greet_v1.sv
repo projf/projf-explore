@@ -159,7 +159,7 @@ module top_greet_v1 (
     // font ROM address
     logic [$clog2(F_ROM_DEPTH)-1:0] spr_glyph_addr [SPR_CNT];
     logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line [SPR_CNT];
-    logic spr_fdma [SPR_CNT];  // font ROM DMA slots
+    logic [SPR_CNT-1:0] spr_fdma;  // font ROM DMA slots
     always_comb begin
         font_rom_addr = 0;
         for (i = 0; i < SPR_CNT; i = i + 1) begin

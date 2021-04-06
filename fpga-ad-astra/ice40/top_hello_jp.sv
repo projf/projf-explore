@@ -108,7 +108,7 @@ module top_hello_jp (
     logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_2;
     logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_3;
     logic [$clog2(FONT_HEIGHT)-1:0] spr_glyph_line_4;
-    logic spr_fdma [SPR_CNT];  // font ROM DMA slots
+    logic [SPR_CNT-1:0] spr_fdma;  // font ROM DMA slots
     always_comb begin
         font_rom_addr = 0;
         /* verilator lint_off WIDTH */
