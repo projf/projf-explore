@@ -128,8 +128,6 @@ module top_david (
                 end
             default: state <= DONE;  // done forever!
         endcase
-
-        if (!clk_locked) state <= IDLE;
     end
 
     // reading from FB takes one cycle: delay display signals to match
