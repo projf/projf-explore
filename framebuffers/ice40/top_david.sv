@@ -135,11 +135,11 @@ module top_david (
     end
 
     // reading from FB takes one cycle: delay display signals to match
-    logic hsync_1, vsync_1, de_1;
+    logic hsync_p1, vsync_p1, de_p1;
     always @(posedge clk_pix) begin
-        hsync_1 <= hsync;
-        vsync_1 <= vsync;
-        de_1 <= de;
+        hsync_p1 <= hsync;
+        vsync_p1 <= vsync;
+        de_p1 <= de;
     end
 
     // Output DVI clock: 180° out of phase with other DVI signals
@@ -158,7 +158,7 @@ module top_david (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync_1, vsync_1, de_1, fb_red, fb_green, fb_blue}),
+        .D_OUT_0({hsync_p1, vsync_p1, de_p1, fb_red, fb_green, fb_blue}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
