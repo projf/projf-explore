@@ -138,7 +138,7 @@ module top_david_v3 (
     // crude scaling adds a cycle of latency
     always_ff @(posedge clk_pix) begin
         /* verilator lint_off WIDTH */
-        if (paint) fb_addr_read <= FB_WIDTH * (sy>>>2) + (sx>>>2);
+        if (paint) fb_addr_read <= FB_WIDTH * (sy/4) + (sx/4);
         /* verilator lint_on WIDTH */
     end
 
