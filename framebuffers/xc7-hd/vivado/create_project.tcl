@@ -38,12 +38,10 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 }
 set fs_design_obj [get_filesets sources_1]
 
-# Top design sources (not used in simulation)
-  # [file normalize "${origin_dir}/xc7-hd/top_david_v3.sv"] \
-
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_david_v1.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_david_v2.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_david_v3.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_david.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_line.sv"] \
 ]
@@ -60,6 +58,7 @@ set design_sources [list \
   [file normalize "${common_dir}/lfsr.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
   [file normalize "${common_dir}/tmds_encoder_dvi.sv"] \
+  [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/async_reset.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
   [file normalize "${common_dir}/xc7/clock_gen_720p.sv"] \

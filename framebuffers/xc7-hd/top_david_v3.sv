@@ -1,11 +1,11 @@
-// Project F: Framebuffers - Top David v2 (Nexys Video)
+// Project F: Framebuffers - Top David v3 (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_david_v2 (
+module top_david_v3 (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -80,52 +80,66 @@ module top_david_v2 (
         .data_out(fb_cidx_read)
     );
 
-    // fizzlefade!
-    logic lfsr_en;
-    logic [14:0] lfsr;
-    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
-        .LEN(15),
-        .TAPS(15'b110000000000000)
-    ) lsfr_fz (
-        .clk(clk_pix),
-        .rst(!clk_pix_locked),
-        .en(lfsr_en),
-        .sreg(lfsr)
-    );
+    // draw box around framebuffer
+    logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
+    enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
+    always @(posedge clk_pix) begin
+        case (state)
+            TOP:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    cnt_draw <= 0;
+                    state <= RIGHT;
+                end
+            RIGHT:
+                if (cnt_draw < FB_HEIGHT-1) begin
+                    fb_addr_write <= fb_addr_write + FB_WIDTH;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_addr_write <= 0;
+                    cnt_draw <= 0;
+                    state <= LEFT;
+                end
+            LEFT:
+                if (cnt_draw < FB_HEIGHT-1) begin
+                    fb_addr_write <= fb_addr_write + FB_WIDTH;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    cnt_draw <= 0;
+                    state <= BOTTOM;
+                end
+            BOTTOM:
+                if (cnt_draw < FB_WIDTH-1) begin
+                    fb_addr_write <= fb_addr_write + 1;
+                    cnt_draw <= cnt_draw + 1;
+                end else begin
+                    fb_we <= 0;
+                    state <= DONE;
+                end
+            IDLE:
+                if (frame) begin
+                    fb_cidx_write <= 4'h0;  // palette index
+                    fb_we <= 1;
+                    cnt_draw <= 0;
+                    state <= TOP;
+                end
+            default: state <= DONE;  // done forever!
+        endcase
 
-    localparam FADE_WAIT = 600;   // wait for 600 frames before fading
-    localparam FADE_RATE = 3200;  // every 3200 pixel clocks update LFSR
-    logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
-    logic [$clog2(FADE_RATE)-1:0] cnt_rate;
-    always_ff @(posedge clk_pix) begin
-        if (frame) begin
-            cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
-        end
-        if (cnt_wait == FADE_WAIT-1) begin
-            if (cnt_rate == FADE_RATE-1) begin
-                lfsr_en <= 1;
-                fb_we <= 1;
-                fb_addr_write <= lfsr;
-                cnt_rate <= 0;
-            end else begin
-                cnt_rate <= cnt_rate + 1;
-                lfsr_en <= 0;
-                fb_we <= 0;
-            end
-        end
-        fb_cidx_write <= 4'hF;  // palette index
+        if (!clk_pix_locked) state <= IDLE;
     end
 
     logic paint;  // which area of the framebuffer should we paint?
-    always_comb paint = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
+    always_comb paint = de;  // fill the screen
 
     // calculate framebuffer read address for display output
+    // crude scaling adds a cycle of latency
     always_ff @(posedge clk_pix) begin
-        if (frame) begin  // reset address at start of frame
-            fb_addr_read <= 0;
-        end else if (paint) begin  // increment address in painting area
-            fb_addr_read <= fb_addr_read + 1;
-        end
+        /* verilator lint_off WIDTH */
+        if (paint) fb_addr_read <= FB_WIDTH * (sy>>>2) + (sx>>>2);
+        /* verilator lint_on WIDTH */
     end
 
     // add register between BRAM and CLUT (async ROM)
@@ -143,8 +157,8 @@ module top_david_v2 (
         .data(clut_colr)
     );
 
-    // BRAM read and CLUT reg add two cycles of latency
-    localparam LAT = 2;  // display latency
+    // address calc, BRAM read, and CLUT reg add three cycles of latency
+    localparam LAT = 3;  // display latency
     logic [LAT-1:0] paint_sr, hsync_sr, vsync_sr, de_sr;
     always @(posedge clk_pix) begin
         paint_sr <= {paint, paint_sr[LAT-1:1]};

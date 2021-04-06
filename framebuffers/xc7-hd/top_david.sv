@@ -18,11 +18,11 @@ module top_david (
     output      logic hdmi_tx_clk_n     // HDMI source clock diff-
     );
 
-    // pixel clocks
-    logic clk_pix;                  // pixel clock (74.25 MHz)
+    // generate pixel clocks
+    logic clk_pix;                  // pixel clock
     logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
-    logic clk_pix_locked;           // pixel clocks locked?
-    clock_gen_pix clock_pix_inst (
+    logic clk_pix_locked;           // pixel clock locked?
+    clock_gen_720p clock_pix_inst (
         .clk_100m,
         .rst(!btn_rst),             // reset button is active low
         .clk_pix,
@@ -31,166 +31,128 @@ module top_david (
     );
 
     // display timings
-    localparam CORDW = 11;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_720p timings_720p (
-        .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
-        .hsync,
-        .vsync,
-        .de
-    );
-
-    // size of screen with and without blanking
-    localparam H_RES_FULL = 1650;
-    localparam V_RES_FULL = 750;
     localparam H_RES = 1280;
     localparam V_RES = 720;
-
-    // vertical blanking interval (will move to display_timings soon)
-    logic vbi;
-    always_comb vbi = (sy == V_RES && sx == 0);
+    localparam CORDW = 16;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_timings_720p display_timings_inst (
+        .clk_pix,
+        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .hsync,
+        .vsync,
+        .de,
+        .frame,
+        .line
+    );
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 160;
     localparam FB_HEIGHT  = 120;
-    localparam FB_PIXELS  = FB_WIDTH * FB_HEIGHT;
-    localparam FB_ADDRW   = $clog2(FB_PIXELS);
-    localparam FB_DATAW   = 4;  // colour bits per pixel
+    localparam FB_CIDXW   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "david.mem";
     localparam FB_PALETTE = "david_palette.mem";
+    // localparam FB_IMAGE   = "test_box_160x120.mem";
+    // localparam FB_PALETTE = "test_palette.mem";
 
-    logic fb_we;
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_cidx_write;
-    logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_1;
+     logic fb_we;
+    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    bram_sdp #(
-        .WIDTH(FB_DATAW),
-        .DEPTH(FB_PIXELS),
-        .INIT_F(FB_IMAGE)
-        ) fb_inst (
-        .clk_write(clk_pix),
-        .clk_read(clk_pix),
+    framebuffer #(
+        .WIDTH(FB_WIDTH),
+        .HEIGHT(FB_HEIGHT),
+        .CIDXW(FB_CIDXW),
+        .CHANW(FB_CHANW),
+        .SCALE(FB_SCALE),
+        .F_IMAGE(FB_IMAGE),
+        .F_PALETTE(FB_PALETTE)
+    ) fb_inst (
+        .clk_sys(clk_100m),
+        .clk_pix(clk_pix),
+        .de,
+        .frame,
+        .line,
         .we(fb_we),
-        .addr_write(fb_addr_write),
-        .addr_read(fb_addr_read),
-        .data_in(fb_cidx_write),
-        .data_out(fb_cidx_read_1)
+        .x(fbx),
+        .y(fby),
+        .cidx(fb_cidx),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .clip(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .red(fb_red),
+        .green(fb_green),
+        .blue(fb_blue)
     );
 
-    // draw a horizontal line at the top of the framebuffer
+    // draw box around framebuffer
+    enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
+    always @(posedge clk_100m) begin
+        case (state)
+            TOP:
+                if (fbx < FB_WIDTH-1) begin
+                    fbx <= fbx + 1;
+                end else begin
+                    state <= RIGHT;
+                end
+            RIGHT:
+                if (fby < FB_HEIGHT-1) begin
+                    fby <= fby + 1;
+                end else begin
+                    fbx <= 0;
+                    fby <= 0;
+                    state <= LEFT;
+                end
+            LEFT:
+                if (fby < FB_HEIGHT-1) begin
+                    fby <= fby + 1;
+                end else begin
+                    state <= BOTTOM;
+                end
+            BOTTOM:
+                if (fbx < FB_WIDTH-1) begin
+                    fbx <= fbx + 1;
+                end else begin
+                    fb_we <= 0;
+                    state <= DONE;
+                end
+            IDLE:
+                if (frame) begin
+                    fbx <= 0;
+                    fby <= 0;
+                    fb_cidx <= 4'h0;  // palette index
+                    fb_we <= 1;
+                    state <= TOP;
+                end
+            default: state <= DONE;  // done forever!
+        endcase
+    end
+
+    // reading from FB takes one cycle: delay display signals to match
+    logic hsync_p1, vsync_p1, de_p1;
     always @(posedge clk_pix) begin
-        if (sy >= V_RES) begin  // draw in blanking interval
-            if (fb_we == 0 && fb_addr_write != FB_WIDTH-1) begin
-                fb_cidx_write <= 4'h0;  // first palette entry (white)
-                fb_we <= 1;
-            end else if (fb_addr_write != FB_WIDTH-1) begin
-                fb_addr_write <= fb_addr_write + 1;
-            end else begin
-                fb_we <= 0;
-            end
-        end
-    end
-
-    // linebuffer (LB)
-    localparam LB_SCALE = 6;       // scale (horizontal and vertical)
-    localparam LB_LEN = FB_WIDTH;  // line length matches framebuffer
-    localparam LB_BPC = 8;         // bits per colour channel
-
-    // LB output to display
-    logic lb_en_out;
-    always_comb lb_en_out = (de && sx >= 160 && sx < 1120);  // 4:3
-
-    // Load data from FB into LB
-    logic lb_data_req;  // LB requesting data
-    logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
-    always_ff @(posedge clk_pix) begin
-        if (vbi) fb_addr_read <= 0;   // new frame
-        if (lb_data_req && sy != V_RES-1) begin  // load next line of data...
-            cnt_h <= 0;                          // ...if not on last line
-        end else if (cnt_h < LB_LEN) begin  // advance to start of next line
-            cnt_h <= cnt_h + 1;
-            fb_addr_read <= fb_addr_read == FB_PIXELS-1 ? 0 : fb_addr_read + 1;
-        end
-    end
-
-    // FB BRAM and CLUT pipeline adds three cycles of latency
-    logic lb_en_in_2, lb_en_in_1, lb_en_in;
-    always_ff @(posedge clk_pix) begin
-        lb_en_in_2 <= (cnt_h < LB_LEN);
-        lb_en_in_1 <= lb_en_in_2;
-        lb_en_in <= lb_en_in_1;
-    end
-
-    // LB colour channels
-    logic [LB_BPC-1:0] lb_in_0, lb_in_1, lb_in_2;
-    logic [LB_BPC-1:0] lb_out_0, lb_out_1, lb_out_2;
-
-    linebuffer #(
-        .WIDTH(LB_BPC),     // data width of each channel
-        .LEN(LB_LEN),       // length of line
-        .SCALE(LB_SCALE)    // scaling factor (>=1)
-        ) lb_inst (
-        .clk_in(clk_pix),       // input clock
-        .clk_out(clk_pix),      // output clock
-        .data_req(lb_data_req), // request input data (clk_in)
-        .en_in(lb_en_in),       // enable input (clk_in)
-        .en_out(lb_en_out),     // enable output (clk_out)
-        .vbi,                   // start of vertical blanking interval (clk_out)
-        .din_0(lb_in_0),        // data in (clk_in)
-        .din_1(lb_in_1),
-        .din_2(lb_in_2),
-        .dout_0(lb_out_0),      // data out (clk_out)
-        .dout_1(lb_out_1),
-        .dout_2(lb_out_2)
-    );
-
-    // improve timing with register between BRAM and async ROM
-    always @(posedge clk_pix) begin
-        fb_cidx_read <= fb_cidx_read_1;
-    end
-
-    // colour lookup table (ROM) 16x12-bit entries
-    logic [11:0] clut_colr;
-    rom_async #(
-        .WIDTH(12),
-        .DEPTH(16),
-        .INIT_F(FB_PALETTE)
-    ) clut (
-        .addr(fb_cidx_read),
-        .data(clut_colr)
-    );
-
-    // map colour index to palette using CLUT and read into LB
-    always_ff @(posedge clk_pix) begin
-        lb_in_2 <= {2{clut_colr[11:8]}};  // double up colour: display is 8 BPC
-        lb_in_1 <= {2{clut_colr[7:4]}};
-        lb_in_0 <= {2{clut_colr[3:0]}};
-    end
-
-    // LB output adds one cycle of latency - need to correct display signals
-    logic hsync_1, vsync_1, de_1, lb_en_out_1;
-    always_ff @(posedge clk_pix) begin
-        hsync_1 <= hsync;
-        vsync_1 <= vsync;
-        de_1 <= de;
-        lb_en_out_1 <= lb_en_out;
+        hsync_p1 <= hsync;
+        vsync_p1 <= vsync;
+        de_p1 <= de;
     end
 
     // DVI signals
     logic [7:0] dvi_red, dvi_green, dvi_blue;
     logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        dvi_hsync <= hsync_1;
-        dvi_vsync <= vsync_1;
-        dvi_de    <= de_1;
-        dvi_red   <= lb_en_out_1 ? lb_out_2 : 8'h00;
-        dvi_green <= lb_en_out_1 ? lb_out_1 : 8'h00;
-        dvi_blue  <= lb_en_out_1 ? lb_out_0 : 8'h00;
+        dvi_hsync <= hsync_p1;
+        dvi_vsync <= vsync_p1;
+        dvi_de    <= de_p1;
+        dvi_red   <= {fb_red,fb_red};
+        dvi_green <= {fb_green,fb_green};
+        dvi_blue  <= {fb_blue,fb_blue};
     end
 
     // TMDS encoding and serialization
