@@ -10,10 +10,10 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_CM  = ../../common
-ADD_SRC  = ${PATH_CM}/display_timings_480p.sv ${PATH_CM}/rom_async.sv
-ADD_SRC += ${PATH_CM}/linebuffer.sv ${PATH_CM}/xd.sv
-ADD_SRC += ${PATH_CM}/ice40/bram_sdp.sv ${PATH_CM}/ice40/clock_gen.sv
-ADD_SRC += ../draw_line.sv ../draw_triangle.sv ../pix_addr.sv
+ADD_SRC  = ${PATH_CM}/rom_async.sv ${PATH_CM}/lfsr.sv ${PATH_CM}/xd.sv
+ADD_SRC += ${PATH_CM}/ice40/bram_sdp.sv ${PATH_CM}/ice40/clock_gen_480p.sv
+ADD_SRC += ../display_timings_480p.sv ../framebuffer.sv ../linebuffer.sv
+ADD_SRC += ../draw_line.sv ../draw_triangle.sv
 
 top_triangles: top_triangles.rpt top_triangles.bin
 top_line: top_line.rpt top_line.bin

@@ -12,9 +12,9 @@ module draw_line_tb ();
     logic rst;
     logic clk;
 
-    localparam CORDW = 8;
-    logic [CORDW-1:0] x, y;
-    logic [CORDW-1:0] x0, y0, x1, y1;
+    localparam CORDW = 9;  // -256 to +255
+    logic signed [CORDW-1:0] x, y;
+    logic signed [CORDW-1:0] x0, y0, x1, y1;
     logic start, oe, drawing, done;
     draw_line #(.CORDW(CORDW)) draw_line_inst (
         .clk,
@@ -45,119 +45,134 @@ module draw_line_tb ();
                 oe = 1;
 
         #10     $display("case 0: points (0,0) (32,17) (255,255)");
-                x0 = 8'd0;  // (0,0)
-                y0 = 8'd0;
-                x1 = 8'd0;
-                y1 = 8'd0;
+                x0 = 9'sd0;  // (0,0)
+                y0 = 9'sd0;
+                x1 = 9'sd0;
+                y1 = 9'sd0;
                 start = 1;
         #10     start = 0;
 
-        #100    x0 = 8'd32;  // (32,17)
-                y0 = 8'd17;
-                x1 = 8'd32;
-                y1 = 8'd17;
+        #100    x0 = 9'sd32;  // (32,17)
+                y0 = 9'sd17;
+                x1 = 9'sd32;
+                y1 = 9'sd17;
                 start = 1;
         #10     start = 0;
 
-        #100    x0 = 8'd255;  // (255,255)
-                y0 = 8'd255;
-                x1 = 8'd255;
-                y1 = 8'd255;
+        #100    x0 = 9'sd255;  // (255,255)
+                y0 = 9'sd255;
+                x1 = 9'sd255;
+                y1 = 9'sd255;
                 start = 1;
         #10     start = 0;
 
         #100    $display("case 1: (0,1) (6,4) - not steep, down");
-                x0 = 8'd0;  // left to right
-                y0 = 8'd1;
-                x1 = 8'd6;
-                y1 = 8'd4;
+                x0 = 9'sd0;  // left to right
+                y0 = 9'sd1;
+                x1 = 9'sd6;
+                y1 = 9'sd4;
                 start = 1;
         #10     start = 0;
 
-        #100    x0 = 8'd6;  // right to left
-                y0 = 8'd4;
-                x1 = 8'd0;
-                y1 = 8'd1;
+        #100    x0 = 9'sd6;  // right to left
+                y0 = 9'sd4;
+                x1 = 9'sd0;
+                y1 = 9'sd1;
                 start = 1;
         #10     start = 0;
 
         #100 $display("case 2: (1,0) (4,6) - steep, down");
-                x0 = 8'd1;  // left to right
-                y0 = 8'd0;
-                x1 = 8'd4;
-                y1 = 8'd6;
+                x0 = 9'sd1;  // left to right
+                y0 = 9'sd0;
+                x1 = 9'sd4;
+                y1 = 9'sd6;
                 start = 1;
         #10     start = 0;
 
 
-        #100    x0 = 8'd4;  // right to left
-                y0 = 8'd6;
-                x1 = 8'd1;
-                y1 = 8'd0;
+        #100    x0 = 9'sd4;  // right to left
+                y0 = 9'sd6;
+                x1 = 9'sd1;
+                y1 = 9'sd0;
                 start = 1;
         #10     start = 0;
 
 
         #100 $display("case 3: (0,4) (6,1) - not steep, up");
-                x0 = 8'd0;  // left to right
-                y0 = 8'd4;
-                x1 = 8'd6;
-                y1 = 8'd1;
+                x0 = 9'sd0;  // left to right
+                y0 = 9'sd4;
+                x1 = 9'sd6;
+                y1 = 9'sd1;
                 start = 1;
         #10     start = 0;
 
-        #100    x0 = 8'd6;  // right to left
-                y0 = 8'd1;
-                x1 = 8'd0;
-                y1 = 8'd4;
+        #100    x0 = 9'sd6;  // right to left
+                y0 = 9'sd1;
+                x1 = 9'sd0;
+                y1 = 9'sd4;
                 start = 1;
         #10     start = 0;
 
 
         #100 $display("case 4: (4,0) (1,6) - steep, up");
-                x0 = 8'd4;  // left to right
-                y0 = 8'd0;
-                x1 = 8'd1;
-                y1 = 8'd6;
+                x0 = 9'sd4;  // left to right
+                y0 = 9'sd0;
+                x1 = 9'sd1;
+                y1 = 9'sd6;
                 start = 1;
         #10     start = 0;
 
-        #100    x0 = 8'd1;  // right to left
-                y0 = 8'd6;
-                x1 = 8'd4;
-                y1 = 8'd0;
+        #100    x0 = 9'sd1;  // right to left
+                y0 = 9'sd6;
+                x1 = 9'sd4;
+                y1 = 9'sd0;
                 start = 1;
         #10     start = 0;
 
-        #100 $display("case 5: (70,180) (180,50) - longer line");
-                x0 = 8'd70;
-                y0 = 8'd180;
-                x1 = 8'd180;
-                y1 = 8'd50;
+        #100 $display("case 5: (-4,0) (-1,-6) - negative coords");
+                x0 = -9'sd4;  // left to right
+                y0 = 9'sd0;
+                x1 = -9'sd1;
+                y1 = -9'sd6;
                 start = 1;
         #10     start = 0;
 
-        #2000 $display("case 6: (0,0) (255,0) - horizontal");
-                x0 = 8'd0;
-                y0 = 8'd0;
-                x1 = 8'd255;
-                y1 = 8'd0;
+        #100    x0 = -9'sd1;  // right to left
+                y0 = -9'sd6;
+                x1 = -9'sd4;
+                y1 = 9'sd0;
                 start = 1;
         #10     start = 0;
 
-        #3000 $display("case 7: (0,0) (0,255) - vertical");
-                x0 = 8'd0;
-                y0 = 8'd0;
-                x1 = 8'd0;
-                y1 = 8'd255;
+        #100 $display("case 6: (70,180) (180,50) - longer line");
+                x0 = 9'sd70;
+                y0 = 9'sd180;
+                x1 = 9'sd180;
+                y1 = 9'sd50;
                 start = 1;
         #10     start = 0;
 
-        #3000 $display("case 8: (255,255) (0,0) - diagonal");
-                x0 = 8'd255;
-                y0 = 8'd255;
-                x1 = 8'd0;
-                y1 = 8'd0;
+        #2000 $display("case 7: (0,0) (255,0) - horizontal");
+                x0 = 9'sd0;
+                y0 = 9'sd0;
+                x1 = 9'sd255;
+                y1 = 9'sd0;
+                start = 1;
+        #10     start = 0;
+
+        #3000 $display("case 8: (0,0) (0,255) - vertical");
+                x0 = 9'sd0;
+                y0 = 9'sd0;
+                x1 = 9'sd0;
+                y1 = 9'sd255;
+                start = 1;
+        #10     start = 0;
+
+        #3000 $display("case 9: (255,255) (0,0) - diagonal");
+                x0 = 9'sd255;
+                y0 = 9'sd255;
+                x1 = 9'sd0;
+                y1 = 9'sd0;
                 start = 1;
         #10     start = 0;
 

@@ -29,6 +29,12 @@ If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` wit
 
 If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
+If you get an error of the form "ERROR: Max frequency for clock 'clk_pix': 24.76 MHz (FAIL at 25.14 MHz)", then the design doesn't meet timing but may still work. To bypass the timing error, comment out the following line in `icebreaker.pcf` and rebuild:
+
+```#set_frequency  clk_12m      12```
+
+Check the [open issues](https://github.com/projf/projf-explore/issues) to see if there's already a timing issue covering the design in question.
+
 ## Xilinx Vivado Build
 
 To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
