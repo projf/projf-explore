@@ -12,9 +12,9 @@ module draw_triangle_tb ();
     logic rst;
     logic clk;
 
-    localparam CORDW = 8;
-    logic [CORDW-1:0] x, y;
-    logic [CORDW-1:0] x0, y0, x1, y1, x2, y2;
+    localparam CORDW = 9;  // -256 to +255
+    logic signed [CORDW-1:0] x, y;
+    logic signed [CORDW-1:0] x0, y0, x1, y1, x2, y2;;
     logic start, oe, drawing, done;
     draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
         .clk,
@@ -47,52 +47,62 @@ module draw_triangle_tb ();
                 oe = 1;
 
         #10     $display("case 1a: small (2,2) (6,2) (4,6)");
-                x0 = 8'd2;
-                y0 = 8'd2;
-                x1 = 8'd6;
-                y1 = 8'd2;
-                x2 = 8'd4;
-                y2 = 8'd6;
+                x0 = 9'sd2;
+                y0 = 9'sd2;
+                x1 = 9'sd6;
+                y1 = 9'sd2;
+                x2 = 9'sd4;
+                y2 = 9'sd6;
                 start = 1;
         #10     start = 0;
 
         #400    $display("case 1b: small (4,6) (6,2) (2,2)");
-                x0 = 8'd4;
-                y0 = 8'd6;
-                x1 = 8'd6;
-                y1 = 8'd2;
-                x2 = 8'd2;
-                y2 = 8'd2;
+                x0 = 9'sd4;
+                y0 = 9'sd6;
+                x1 = 9'sd6;
+                y1 = 9'sd2;
+                x2 = 9'sd2;
+                y2 = 9'sd2;
                 start = 1;
         #10     start = 0;
 
-        #400    $display("case 2: right-angle (10,10) (10,40) (60,40)");
-                x0 = 8'd10;
-                y0 = 8'd10;
-                x1 = 8'd10;
-                y1 = 8'd40;
-                x2 = 8'd60;
-                y2 = 8'd40;
+        #400   $display("case 2: negative (-2,2) (-6,-2) (-4,6)");
+                x0 = -9'sd2;
+                y0 = 9'sd2;
+                x1 = -9'sd6;
+                y1 = -9'sd2;
+                x2 = -9'sd4;
+                y2 = 9'sd6;
                 start = 1;
         #10     start = 0;
 
-        #2000   $display("case 3: obtuse (10,10) (20,40) (60,40)");
-                x0 = 8'd10;
-                y0 = 8'd10;
-                x1 = 8'd20;
-                y1 = 8'd40;
-                x2 = 8'd60;
-                y2 = 8'd40;
+        #400    $display("case 3: right-angle (10,10) (10,40) (60,40)");
+                x0 = 9'sd10;
+                y0 = 9'sd10;
+                x1 = 9'sd10;
+                y1 = 9'sd40;
+                x2 = 9'sd60;
+                y2 = 9'sd40;
                 start = 1;
         #10     start = 0;
 
-        #2000   $display("case 4: acute (30,10) (10,40) (60,40)");
-                x0 = 8'd30;
-                y0 = 8'd10;
-                x1 = 8'd10;
-                y1 = 8'd40;
-                x2 = 8'd60;
-                y2 = 8'd40;
+        #2000  $display("case 4: obtuse (10,10) (20,40) (60,40)");
+                x0 = 9'sd10;
+                y0 = 9'sd10;
+                x1 = 9'sd20;
+                y1 = 9'sd40;
+                x2 = 9'sd60;
+                y2 = 9'sd40;
+                start = 1;
+        #10     start = 0;
+
+        #2000   $display("case 5: acute (30,10) (10,40) (60,40)");
+                x0 = 9'sd30;
+                y0 = 9'sd10;
+                x1 = 9'sd10;
+                y1 = 9'sd40;
+                x2 = 9'sd60;
+                y2 = 9'sd40;
                 start = 1;
         #10     start = 0;
 

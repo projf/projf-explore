@@ -12,7 +12,7 @@ if [ -d "${DIR}/xc7-hd" ]; then
         echo "##   Checking ${f}";
         verilator --lint-only -Wall -I${DIR} -I${DIR}/xc7-hd \
             -I${DIR}/../common -I${DIR}/../common/xc7 -I${DIR}/../common/xc7/null \
-            -I${DIR}/../common/xc7-hd -I${DIR}/../common/xc7-hd/null $f;
+            -I${DIR}/../common/xc7-tmds -I${DIR}/../common/xc7-tmds/null $f;
     done
 fi
 

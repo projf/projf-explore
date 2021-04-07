@@ -29,9 +29,15 @@ If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` wit
 
 If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
+If you get an error of the form "ERROR: Max frequency for clock 'clk_pix': 24.76 MHz (FAIL at 25.14 MHz)", then the design doesn't meet timing but may still work. To bypass the timing error, comment out the following line in `icebreaker.pcf` and rebuild:
+
+```#set_frequency  clk_12m      12```
+
+Check the [open issues](https://github.com/projf/projf-explore/issues) to see if there's already a timing issue covering the design in question.
+
 ## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/lines-and-triangles/xc7/vivado
@@ -42,7 +48,7 @@ You can then build `top_triangles` or `top_line` as you would for any Vivado pro
 
 ### Simulation
 
-This design includes a test bench for the line and triangle drawing modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the TCL console with:
+This design includes a test bench for the line and triangle drawing modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl console with:
 
 ```tcl
 launch_simulation
@@ -64,7 +70,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
-3. Set the board and part names in tcl, then source the create project script:
+3. Set the board and part names in Tcl, then source the create project script:
 
 ```tcl
 set board_name <board>
