@@ -34,15 +34,14 @@ module top_triangles (
     localparam H_RES = 1280;
     localparam V_RES = 720;
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
         .de,
@@ -58,7 +57,7 @@ module top_triangles (
     localparam FB_HEIGHT  = 240;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 3;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
@@ -78,7 +77,7 @@ module top_triangles (
     ) fb_inst (
         .clk_sys(clk_100m),
         .clk_pix(clk_pix),
-        .de,
+        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
         .frame,
         .line,
         .we(fb_we),
