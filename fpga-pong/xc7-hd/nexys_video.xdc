@@ -8,7 +8,7 @@ set_property CFGBVS VCCO [current_design]
 
 ## Board Clock: 100 MHz
 set_property -dict {PACKAGE_PIN R4 IOSTANDARD LVCMOS33} [get_ports {clk_100m}];
-create_clock -period 10.000 -name clk_100m [get_ports {clk_100m}];
+create_clock -name clk_100m -period 10.00 [get_ports {clk_100m}];
 
 ## Buttons
 set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst}];

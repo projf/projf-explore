@@ -34,15 +34,14 @@ module top_david (
     localparam H_RES = 1280;
     localparam V_RES = 720;
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
         .de,
@@ -55,13 +54,13 @@ module top_david (
     localparam FB_HEIGHT  = 120;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 6;
     localparam FB_IMAGE   = "david.mem";
     localparam FB_PALETTE = "david_palette.mem";
     // localparam FB_IMAGE   = "test_box_160x120.mem";
     // localparam FB_PALETTE = "test_palette.mem";
 
-     logic fb_we;
+    logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
@@ -77,7 +76,7 @@ module top_david (
     ) fb_inst (
         .clk_sys(clk_100m),
         .clk_pix(clk_pix),
-        .de,
+        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
         .frame,
         .line,
         .we(fb_we),
