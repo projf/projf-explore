@@ -132,13 +132,13 @@ module top_david_v3 (
     end
 
     logic paint;  // which area of the framebuffer should we paint?
-    always_comb paint = de;  // fill the screen
+    always_comb paint = (sy >= 120 && sy < 600 && sx >= 320 && sx < 960);  //4:3
 
     // calculate framebuffer read address for display output
     // crude scaling adds a cycle of latency
     always_ff @(posedge clk_pix) begin
         /* verilator lint_off WIDTH */
-        if (paint) fb_addr_read <= FB_WIDTH * (sy/4) + (sx/4);
+        if (paint) fb_addr_read <= FB_WIDTH * ((sy-120)/4) + ((sx-320)/4);
         /* verilator lint_on WIDTH */
     end
 
