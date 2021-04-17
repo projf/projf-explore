@@ -1,4 +1,4 @@
-// Project F: Framebuffers - Framebuffer in BRAM (Indexed Colour)
+// Project F: FPGA Shapes - Framebuffer in BRAM (Indexed Colour)
 // (C)2021 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 

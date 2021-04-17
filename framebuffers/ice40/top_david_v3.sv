@@ -28,13 +28,11 @@ module top_david_v3 (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame;
     logic signed [CORDW-1:0] sx, sy;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
@@ -56,8 +54,6 @@ module top_david_v3 (
     localparam FB_DATAW   = 4;  // colour bits per pixel
     localparam FB_IMAGE   = "../res/david/david.mem";
     localparam FB_PALETTE = "../res/david/david_palette.mem";
-    // localparam FB_IMAGE   = "../../common/res/test/test_box_160x120.mem";
-    // localparam FB_PALETTE = "../../common/res/test/test_palette.mem";
 
     logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
@@ -80,6 +76,7 @@ module top_david_v3 (
     // draw box around framebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
     enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk_pix) begin
         case (state)
             TOP:

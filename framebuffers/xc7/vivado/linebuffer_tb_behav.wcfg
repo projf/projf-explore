@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="5720001fs"></ZoomEndTime>
-      <Cursor1Time time="1084651fs"></Cursor1Time>
+      <ZoomEndTime time="6760000fs"></ZoomEndTime>
+      <Cursor1Time time="1840000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="139"></NameColumnWidth>
+      <NameColumnWidth column_width="115"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="25" />
+   <WVObjectSize size="36" />
    <wvobject fp_name="/linebuffer_tb/clk_25m" type="logic">
       <obj_property name="ElementShortName">clk_25m</obj_property>
       <obj_property name="ObjectShortName">clk_25m</obj_property>
@@ -28,61 +28,17 @@
       <obj_property name="ElementShortName">clk_100m</obj_property>
       <obj_property name="ObjectShortName">clk_100m</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/ch0" type="array">
-      <obj_property name="ElementShortName">ch0[0:5][3:0]</obj_property>
-      <obj_property name="ObjectShortName">ch0[0:5][3:0]</obj_property>
+   <wvobject fp_name="/linebuffer_tb/rst_in" type="logic">
+      <obj_property name="ElementShortName">rst_in</obj_property>
+      <obj_property name="ObjectShortName">rst_in</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/ch1" type="array">
-      <obj_property name="ElementShortName">ch1[0:5][3:0]</obj_property>
-      <obj_property name="ObjectShortName">ch1[0:5][3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/ch2" type="array">
-      <obj_property name="ElementShortName">ch2[0:5][3:0]</obj_property>
-      <obj_property name="ObjectShortName">ch2[0:5][3:0]</obj_property>
+   <wvobject fp_name="/linebuffer_tb/rst_out" type="logic">
+      <obj_property name="ElementShortName">rst_out</obj_property>
+      <obj_property name="ObjectShortName">rst_out</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_tb/data_req" type="logic">
       <obj_property name="ElementShortName">data_req</obj_property>
       <obj_property name="ObjectShortName">data_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/frame" type="logic">
-      <obj_property name="ElementShortName">frame</obj_property>
-      <obj_property name="ObjectShortName">frame</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/line" type="logic">
-      <obj_property name="ElementShortName">line</obj_property>
-      <obj_property name="ObjectShortName">line</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/en_in" type="logic">
-      <obj_property name="ElementShortName">en_in</obj_property>
-      <obj_property name="ObjectShortName">en_in</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/din_0" type="array">
-      <obj_property name="ElementShortName">din_0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_0[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/din_1" type="array">
-      <obj_property name="ElementShortName">din_1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_1[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/din_2" type="array">
-      <obj_property name="ElementShortName">din_2[3:0]</obj_property>
-      <obj_property name="ObjectShortName">din_2[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/en_out" type="logic">
-      <obj_property name="ElementShortName">en_out</obj_property>
-      <obj_property name="ObjectShortName">en_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/dout_0" type="array">
-      <obj_property name="ElementShortName">dout_0[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_0[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/dout_1" type="array">
-      <obj_property name="ElementShortName">dout_1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_1[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_tb/dout_2" type="array">
-      <obj_property name="ElementShortName">dout_2[3:0]</obj_property>
-      <obj_property name="ObjectShortName">dout_2[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_tb/read_addr" type="array">
       <obj_property name="ElementShortName">read_addr[2:0]</obj_property>
@@ -92,42 +48,120 @@
       <obj_property name="ElementShortName">cnt_h[1:0]</obj_property>
       <obj_property name="ObjectShortName">cnt_h[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/lb_inst/cnt_v" type="array">
+   <wvobject type="divider" fp_name="divider358">
+      <obj_property name="label">Linebuffer</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">cnt_v[0:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_v[0:0]</obj_property>
-      <obj_property name="label">cnt_v (lb)</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/lb_inst/cnt_h" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">cnt_h[0:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_h[0:0]</obj_property>
-      <obj_property name="label">cnt_h (lb)</obj_property>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/clk_in" type="logic">
+      <obj_property name="ElementShortName">clk_in</obj_property>
+      <obj_property name="ObjectShortName">clk_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/clk_out" type="logic">
+      <obj_property name="ElementShortName">clk_out</obj_property>
+      <obj_property name="ObjectShortName">clk_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/rst_in" type="logic">
+      <obj_property name="ElementShortName">rst_in</obj_property>
+      <obj_property name="ObjectShortName">rst_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/rst_out" type="logic">
+      <obj_property name="ElementShortName">rst_out</obj_property>
+      <obj_property name="ObjectShortName">rst_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/data_req" type="logic">
+      <obj_property name="ElementShortName">data_req</obj_property>
+      <obj_property name="ObjectShortName">data_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/en_in" type="logic">
+      <obj_property name="ElementShortName">en_in</obj_property>
+      <obj_property name="ObjectShortName">en_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/din_0" type="array">
+      <obj_property name="ElementShortName">din_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/din_1" type="array">
+      <obj_property name="ElementShortName">din_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/din_2" type="array">
+      <obj_property name="ElementShortName">din_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">din_2[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/en_out" type="logic">
+      <obj_property name="ElementShortName">en_out</obj_property>
+      <obj_property name="ObjectShortName">en_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/dout_0" type="array">
+      <obj_property name="ElementShortName">dout_0[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_0[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/dout_1" type="array">
+      <obj_property name="ElementShortName">dout_1[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_1[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/dout_2" type="array">
+      <obj_property name="ElementShortName">dout_2[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dout_2[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_tb/lb_inst/addr_out" type="array">
       <obj_property name="ElementShortName">addr_out[1:0]</obj_property>
       <obj_property name="ObjectShortName">addr_out[1:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/cnt_v" type="array">
+      <obj_property name="ElementShortName">cnt_v[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_v[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/cnt_h" type="array">
+      <obj_property name="ElementShortName">cnt_h[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_h[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/set_end" type="logic">
+      <obj_property name="ElementShortName">set_end</obj_property>
+      <obj_property name="ObjectShortName">set_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/get_data" type="logic">
+      <obj_property name="ElementShortName">get_data</obj_property>
+      <obj_property name="ObjectShortName">get_data</obj_property>
+   </wvobject>
    <wvobject fp_name="/linebuffer_tb/lb_inst/addr_in" type="array">
       <obj_property name="ElementShortName">addr_in[1:0]</obj_property>
       <obj_property name="ObjectShortName">addr_in[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/lb_inst/ch0/memory" type="array">
+   <wvobject type="divider" fp_name="divider722">
+      <obj_property name="label">XD (data_req)</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="label">ch0 mem</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/lb_inst/ch1/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="label">ch1 mem</obj_property>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_tb/lb_inst/ch2/memory" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[0:2][3:0]</obj_property>
-      <obj_property name="label">ch2 mem</obj_property>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/clk_o" type="logic">
+      <obj_property name="ElementShortName">clk_o</obj_property>
+      <obj_property name="ObjectShortName">clk_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/i" type="logic">
+      <obj_property name="ElementShortName">i</obj_property>
+      <obj_property name="ObjectShortName">i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/o" type="logic">
+      <obj_property name="ElementShortName">o</obj_property>
+      <obj_property name="ObjectShortName">o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/toggle_i" type="logic">
+      <obj_property name="ElementShortName">toggle_i</obj_property>
+      <obj_property name="ObjectShortName">toggle_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_tb/lb_inst/xd_req/shr_o" type="array">
+      <obj_property name="ElementShortName">shr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">shr_o[3:0]</obj_property>
    </wvobject>
 </wave_config>

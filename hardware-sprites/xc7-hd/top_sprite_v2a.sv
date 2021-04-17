@@ -31,13 +31,11 @@ module top_sprite_v2a (
     );
 
     // display timings
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p display_timings_inst (
+    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
@@ -59,8 +57,8 @@ module top_sprite_v2a (
     logic spr_pix;
 
     // draw sprite at position
+    localparam H_RES = 1280;
     localparam SPR_SPEED_X = 8;
-    localparam SPR_SPEED_Y = 0;
     logic signed [CORDW-1:0] sprx, spry;
     logic dx;  // direction: 0 is right/down
 

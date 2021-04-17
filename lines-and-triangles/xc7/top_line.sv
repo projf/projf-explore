@@ -26,12 +26,10 @@ module top_line (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         /* verilator lint_off PINCONNECTEMPTY */
@@ -46,7 +44,8 @@ module top_line (
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m), .i(frame), .o(frame_sys));
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
+                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
@@ -72,7 +71,9 @@ module top_line (
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
         .clk_sys(clk_100m),
-        .clk_pix(clk_pix),
+        .clk_pix,
+        .rst_sys(1'b0),
+        .rst_pix(1'b0),
         .de,
         .frame,
         .line,

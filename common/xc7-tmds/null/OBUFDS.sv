@@ -7,18 +7,18 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 module OBUFDS #(
     parameter IOSTANDARD
     ) (
-    /* verilator lint_off UNUSED */
-    /* verilator lint_off UNDRIVEN */
     input  wire logic I,
     output      logic O,
     output      logic OB
-    /* verilator lint_on UNDRIVEN */
-    /* verilator lint_on UNUSED */
     );
 
     // NULL MODULE
 
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

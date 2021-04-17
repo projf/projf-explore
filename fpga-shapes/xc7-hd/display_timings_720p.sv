@@ -1,4 +1,4 @@
-// Project F: Lines and Triangles - 1280x720p60 Display Timings
+// Project F: FPGA Shapes - 1280x720p60 Display Timings
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

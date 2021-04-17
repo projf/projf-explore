@@ -31,13 +31,11 @@ module top_line (
     );
 
     // display timings
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p display_timings_inst (
+    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,
@@ -50,7 +48,8 @@ module top_line (
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m), .i(frame), .o(frame_sys));
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
+                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
@@ -76,7 +75,9 @@ module top_line (
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
         .clk_sys(clk_100m),
-        .clk_pix(clk_pix),
+        .clk_pix,
+        .rst_sys(1'b0),
+        .rst_pix(1'b0),
         .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
         .frame,
         .line,

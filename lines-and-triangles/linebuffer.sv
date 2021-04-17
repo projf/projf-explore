@@ -12,6 +12,8 @@ module linebuffer #(
     ) (
     input  wire logic clk_in,    // input clock
     input  wire logic clk_out,   // output clock
+    input  wire logic rst_in,    // reset (clk_in)
+    input  wire logic rst_out,   // reset (clk_out)
     output      logic data_req,  // request input data (clk_in)
     input  wire logic en_in,     // enable input (clk_in)
     input  wire logic en_out,    // enable output (clk_out)
@@ -24,8 +26,8 @@ module linebuffer #(
     // output data to display
     logic [$clog2(LEN)-1:0] addr_out;        // output address (pixel counter)
     logic [$clog2(SCALE)-1:0] cnt_v, cnt_h;  // scale counters
-    logic set_end  = 0;  // line set end
-    logic get_data = 0;  // fresh data needed
+    logic set_end;   // line set end
+    logic get_data;  // fresh data needed
     always_ff @(posedge clk_out) begin
         if (frame) begin  // reset addr and counters at frame start
             addr_out <= 0;
@@ -48,17 +50,25 @@ module linebuffer #(
                 end else addr_out <= addr_out + 1;
             end else cnt_h <= cnt_h + 1;
         end else if (get_data) set_end <= 0;
+        if (rst_out) begin
+            addr_out <= 0;
+            cnt_h <= 0;
+            cnt_v <= 0;
+            set_end <= 0;
+        end
     end
 
     // request new data on at end of line set (needs to be in clk_in domain)
     always_comb get_data = (line && set_end);
-    xd xd_req (.clk_i(clk_out), .clk_o(clk_in), .i(get_data), .o(data_req));
+    xd xd_req (.clk_i(clk_out), .clk_o(clk_in),
+               .rst_i(rst_out), .rst_o(rst_in), .i(get_data), .o(data_req));
 
     // read data in
-    logic [$clog2(LEN)-1:0] addr_in = 0;
+    logic [$clog2(LEN)-1:0] addr_in;
     always_ff @(posedge clk_in) begin
         if (en_in) addr_in <= (addr_in == LEN-1) ? 0 : addr_in + 1;
         if (data_req) addr_in <= 0;  // reset addr_in when we request new data
+        if (rst_in) addr_in <= 0;
     end
 
     // channel 0

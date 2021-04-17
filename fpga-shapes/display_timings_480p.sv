@@ -1,22 +1,22 @@
-// Project F: Lines and Triangles - 1280x720p60 Display Timings
+// Project F: FPGA Shapes - 640x480p60 Display Timings
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module display_timings_720p #(
-    CORDW=16,    // signed coordinate width (bits)
-    H_RES=1280,  // horizontal resolution (pixels)
-    V_RES=720,   // vertical resolution (lines)
-    H_FP=110,    // horizontal front porch
-    H_SYNC=40,   // horizontal sync
-    H_BP=220,    // horizontal back porch
-    V_FP=5,      // vertical front porch
-    V_SYNC=5,    // vertical sync
-    V_BP=20,     // vertical back porch
-    H_POL=1,     // horizontal sync polarity (0:neg, 1:pos)
-    V_POL=1      // vertical sync polarity (0:neg, 1:pos)
+module display_timings_480p #(
+    CORDW=16,   // signed coordinate width (bits)
+    H_RES=640,  // horizontal resolution (pixels)
+    V_RES=480,  // vertical resolution (lines)
+    H_FP=16,    // horizontal front porch
+    H_SYNC=96,  // horizontal sync
+    H_BP=48,    // horizontal back porch
+    V_FP=10,    // vertical front porch
+    V_SYNC=2,   // vertical sync
+    V_BP=33,    // vertical back porch
+    H_POL=0,    // horizontal sync polarity (0:neg, 1:pos)
+    V_POL=0     // vertical sync polarity (0:neg, 1:pos)
     ) (
     input  wire logic clk_pix,  // pixel clock
     input  wire logic rst,      // reset

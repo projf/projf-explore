@@ -22,8 +22,6 @@ module draw_triangle #(parameter CORDW=16) (  // signed coordinate width
     output      logic done             // triangle complete (high for one tick)
     );
 
-    enum {IDLE, INIT, DRAW} state;
-
     logic [1:0] line_id;  // current line (0, 1, or 2)
     logic line_start;     // start drawing line
     logic line_done;      // finished drawing current line?
@@ -32,6 +30,8 @@ module draw_triangle #(parameter CORDW=16) (  // signed coordinate width
     logic signed [CORDW-1:0] lx0, ly0;  // point 0 position
     logic signed [CORDW-1:0] lx1, ly1;  // point 1 position
 
+    enum {IDLE, INIT, DRAW} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
         line_start <= 0;
         case (state)

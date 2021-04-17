@@ -26,12 +26,10 @@ module top_david (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         /* verilator lint_off PINCONNECTEMPTY */
@@ -45,6 +43,10 @@ module top_david (
         .line
     );
 
+    logic frame_sys;  // start of new frame in system clock domain
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
+                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
+
     // framebuffer (FB)
     localparam FB_WIDTH   = 160;
     localparam FB_HEIGHT  = 120;
@@ -53,8 +55,6 @@ module top_david (
     localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "david.mem";
     localparam FB_PALETTE = "david_palette.mem";
-    // localparam FB_IMAGE   = "test_box_160x120.mem";
-    // localparam FB_PALETTE = "test_palette.mem";
 
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -71,7 +71,9 @@ module top_david (
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
         .clk_sys(clk_100m),
-        .clk_pix(clk_pix),
+        .clk_pix,
+        .rst_sys(1'b0),
+        .rst_pix(1'b0),
         .de,
         .frame,
         .line,
@@ -89,6 +91,7 @@ module top_david (
 
     // draw box around framebuffer
     enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk_100m) begin
         case (state)
             TOP:
@@ -119,7 +122,7 @@ module top_david (
                     state <= DONE;
                 end
             IDLE:
-                if (frame) begin
+                if (frame_sys) begin
                     fbx <= 0;
                     fby <= 0;
                     fb_cidx <= 4'h0;  // palette index

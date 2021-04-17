@@ -13,17 +13,13 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="100100001fs"></ZoomEndTime>
-      <Cursor1Time time="5310000fs"></Cursor1Time>
+      <Cursor1Time time="26080000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="168"></NameColumnWidth>
-      <ValueColumnWidth column_width="60"></ValueColumnWidth>
+      <NameColumnWidth column_width="142"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="90" />
-   <wvobject fp_name="/framebuffer_tb/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
+   <WVObjectSize size="104" />
    <wvobject fp_name="/framebuffer_tb/clk_25m" type="logic">
       <obj_property name="ElementShortName">clk_25m</obj_property>
       <obj_property name="ObjectShortName">clk_25m</obj_property>
@@ -31,6 +27,14 @@
    <wvobject fp_name="/framebuffer_tb/clk_100m" type="logic">
       <obj_property name="ElementShortName">clk_100m</obj_property>
       <obj_property name="ObjectShortName">clk_100m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/rst_sys" type="logic">
+      <obj_property name="ElementShortName">rst_sys</obj_property>
+      <obj_property name="ObjectShortName">rst_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/rst_pix" type="logic">
+      <obj_property name="ElementShortName">rst_pix</obj_property>
+      <obj_property name="ObjectShortName">rst_pix</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/hsync" type="logic">
       <obj_property name="ElementShortName">hsync</obj_property>
@@ -110,6 +114,14 @@
       <obj_property name="ElementShortName">clk_pix</obj_property>
       <obj_property name="ObjectShortName">clk_pix</obj_property>
    </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/rst_sys" type="logic">
+      <obj_property name="ElementShortName">rst_sys</obj_property>
+      <obj_property name="ObjectShortName">rst_sys</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/rst_pix" type="logic">
+      <obj_property name="ElementShortName">rst_pix</obj_property>
+      <obj_property name="ObjectShortName">rst_pix</obj_property>
+   </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/de" type="logic">
       <obj_property name="ElementShortName">de</obj_property>
       <obj_property name="ObjectShortName">de</obj_property>
@@ -129,12 +141,10 @@
    <wvobject fp_name="/framebuffer_tb/fb_inst/x" type="array">
       <obj_property name="ElementShortName">x[15:0]</obj_property>
       <obj_property name="ObjectShortName">x[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/y" type="array">
       <obj_property name="ElementShortName">y[15:0]</obj_property>
       <obj_property name="ObjectShortName">y[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/cidx" type="array">
       <obj_property name="ElementShortName">cidx[3:0]</obj_property>
@@ -179,7 +189,6 @@
    <wvobject fp_name="/framebuffer_tb/fb_inst/x_add" type="array">
       <obj_property name="ElementShortName">x_add[15:0]</obj_property>
       <obj_property name="ObjectShortName">x_add[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/pix_addr_line" type="array">
       <obj_property name="ElementShortName">pix_addr_line[6:0]</obj_property>
@@ -220,7 +229,6 @@
    <wvobject fp_name="/framebuffer_tb/fb_inst/lb_en_in_sr" type="array">
       <obj_property name="ElementShortName">lb_en_in_sr[2:0]</obj_property>
       <obj_property name="ObjectShortName">lb_en_in_sr[2:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/lb_in_0" type="array">
       <obj_property name="ElementShortName">lb_in_0[3:0]</obj_property>
@@ -265,6 +273,14 @@
    <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/clk_out" type="logic">
       <obj_property name="ElementShortName">clk_out</obj_property>
       <obj_property name="ObjectShortName">clk_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/rst_in" type="logic">
+      <obj_property name="ElementShortName">rst_in</obj_property>
+      <obj_property name="ObjectShortName">rst_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/rst_out" type="logic">
+      <obj_property name="ElementShortName">rst_out</obj_property>
+      <obj_property name="ObjectShortName">rst_out</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/data_req" type="logic">
       <obj_property name="ElementShortName">data_req</obj_property>
@@ -333,6 +349,42 @@
    <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/addr_in" type="array">
       <obj_property name="ElementShortName">addr_in[3:0]</obj_property>
       <obj_property name="ObjectShortName">addr_in[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider576">
+      <obj_property name="label"> XD (data_req)</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/clk_o" type="logic">
+      <obj_property name="ElementShortName">clk_o</obj_property>
+      <obj_property name="ObjectShortName">clk_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/rst_i" type="logic">
+      <obj_property name="ElementShortName">rst_i</obj_property>
+      <obj_property name="ObjectShortName">rst_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/rst_o" type="logic">
+      <obj_property name="ElementShortName">rst_o</obj_property>
+      <obj_property name="ObjectShortName">rst_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/i" type="logic">
+      <obj_property name="ElementShortName">i</obj_property>
+      <obj_property name="ObjectShortName">i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/o" type="logic">
+      <obj_property name="ElementShortName">o</obj_property>
+      <obj_property name="ObjectShortName">o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/toggle_i" type="logic">
+      <obj_property name="ElementShortName">toggle_i</obj_property>
+      <obj_property name="ObjectShortName">toggle_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_tb/fb_inst/lb_inst/xd_req/shr_o" type="array">
+      <obj_property name="ElementShortName">shr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">shr_o[3:0]</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider380">
       <obj_property name="label">LB Memory</obj_property>

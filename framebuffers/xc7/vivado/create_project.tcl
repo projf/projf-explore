@@ -96,6 +96,7 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${common_dir}/display_timings_24x18.sv"] \
   [file normalize "${common_dir}/xc7/xd_tb.sv"] \
   [file normalize "${common_dir}/xc7/vivado/xd_tb_behav.wcfg" ] \
   [file normalize "${origin_dir}/xc7/framebuffer_tb.sv"] \

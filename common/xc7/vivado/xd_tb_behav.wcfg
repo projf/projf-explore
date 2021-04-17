@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1425001fs"></ZoomEndTime>
-      <Cursor1Time time="600000fs"></Cursor1Time>
+      <ZoomEndTime time="700001fs"></ZoomEndTime>
+      <Cursor1Time time="700000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="118"></NameColumnWidth>
+      <NameColumnWidth column_width="114"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="10" />
    <wvobject fp_name="/xd_tb/clk_slow" type="logic">
       <obj_property name="ElementShortName">clk_slow</obj_property>
       <obj_property name="ObjectShortName">clk_slow</obj_property>
@@ -27,6 +27,14 @@
    <wvobject fp_name="/xd_tb/clk_fast" type="logic">
       <obj_property name="ElementShortName">clk_fast</obj_property>
       <obj_property name="ObjectShortName">clk_fast</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd_tb/rst_slow" type="logic">
+      <obj_property name="ElementShortName">rst_slow</obj_property>
+      <obj_property name="ObjectShortName">rst_slow</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd_tb/rst_fast" type="logic">
+      <obj_property name="ElementShortName">rst_fast</obj_property>
+      <obj_property name="ObjectShortName">rst_fast</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider36">
       <obj_property name="label">Slow-&gt;Fast</obj_property>

@@ -66,12 +66,10 @@ set design_sources [list \
   [file normalize "${common_dir}/xc7-tmds/tmds_out.sv"] \
   [file normalize "${origin_dir}/framebuffer.sv"] \
   [file normalize "${origin_dir}/linebuffer.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/display_timings_720p.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/display_timings_1080p.sv"] \
-  [file normalize "${origin_dir}/framebuffer.sv"] \
-  [file normalize "${origin_dir}/linebuffer.sv"] \
   [file normalize "${origin_dir}/draw_line.sv"] \
   [file normalize "${origin_dir}/draw_triangle.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/display_timings_720p.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/display_timings_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

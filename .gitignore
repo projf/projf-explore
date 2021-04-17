@@ -11,3 +11,6 @@ webtalk.*
 
 # IceStorm
 build/
+
+# Mac
+.DS_Store

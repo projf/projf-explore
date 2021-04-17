@@ -7,6 +7,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 module SB_PLL40_PAD #(
     parameter FEEDBACK_PATH,
     parameter DIVR,
@@ -14,17 +16,15 @@ module SB_PLL40_PAD #(
     parameter DIVQ,
     parameter FILTER_RANGE
     ) (
-    /* verilator lint_off UNUSED */
-    /* verilator lint_off UNDRIVEN */
     input  wire logic PACKAGEPIN,
     input  wire logic RESETB,
     input  wire logic BYPASS,
     output      logic PLLOUTGLOBAL,
     output      logic LOCK
     );
-    /* verilator lint_on UNDRIVEN */
-    /* verilator lint_on UNUSED */
 
     // NULL MODULE
 
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

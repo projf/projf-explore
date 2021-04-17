@@ -5,25 +5,25 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_line #(parameter CORDW=10) (  // FB coord width in bits
+module draw_line #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
     input  wire logic oe,              // output enable
-    input  wire logic [CORDW-1:0] x0,  // point 0 - horizontal position
-    input  wire logic [CORDW-1:0] y0,  // point 0 - vertical position
-    input  wire logic [CORDW-1:0] x1,  // point 1 - horizontal position
-    input  wire logic [CORDW-1:0] y1,  // point 1 - vertical position
-    output      logic [CORDW-1:0] x,   // horizontal drawing position
-    output      logic [CORDW-1:0] y,   // vertical drawing position
+    input  wire logic signed [CORDW-1:0] x0,  // point 0 - horizontal position
+    input  wire logic signed [CORDW-1:0] y0,  // point 0 - vertical position
+    input  wire logic signed [CORDW-1:0] x1,  // point 1 - horizontal position
+    input  wire logic signed [CORDW-1:0] y1,  // point 1 - vertical position
+    output      logic signed [CORDW-1:0] x,   // horizontal drawing position
+    output      logic signed [CORDW-1:0] y,   // vertical drawing position
     output      logic drawing,         // line is drawing
     output      logic done             // line complete (high for one tick)
     );
 
     // line properties
     logic right, swap;  // drawing direction
-    logic [CORDW-1:0] xa, ya;  // starting point
-    logic [CORDW-1:0] xb, yb;  // ending point
+    logic signed [CORDW-1:0] xa, ya;  // starting point
+    logic signed [CORDW-1:0] xb, yb;  // ending point
     always_comb begin
         swap = (y0 > y1);  // swap points if y0 is below y1
         xa = swap ? x1 : x0;
@@ -51,6 +51,7 @@ module draw_line #(parameter CORDW=10) (  // FB coord width in bits
     end
 
     enum {IDLE, INIT, DRAW} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
         case (state)
             DRAW: begin

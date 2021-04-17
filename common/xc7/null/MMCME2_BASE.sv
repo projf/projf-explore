@@ -1,5 +1,5 @@
 // Project F: Null Module for Xilinx 7 Series MMCME2_BASE
-// (C)2020 Will Green, Open source hardware released under the MIT License
+// (C)2021 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 // NB. For Verilator linting - don't include in synthesis
@@ -7,6 +7,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 module MMCME2_BASE #(
     parameter CLKFBOUT_MULT_F,
     parameter CLKIN1_PERIOD,
@@ -14,8 +16,6 @@ module MMCME2_BASE #(
     parameter CLKOUT1_DIVIDE,
     parameter DIVCLK_DIVIDE
     ) (
-    /* verilator lint_off UNUSED */
-    /* verilator lint_off UNDRIVEN */
     input  wire logic CLKIN1,
     input  wire logic PWRDWN,
     input  wire logic RST,
@@ -34,10 +34,10 @@ module MMCME2_BASE #(
     output      logic CLKFBOUT,
     output      logic CLKFBOUTB,
     output      logic LOCKED
-    /* verilator lint_on UNDRIVEN */
-    /* verilator lint_on UNUSED */
     );
 
     // NULL MODULE
 
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

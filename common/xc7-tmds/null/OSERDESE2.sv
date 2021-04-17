@@ -7,6 +7,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 module OSERDESE2 #(
     parameter SERDES_MODE,
     parameter DATA_WIDTH,
@@ -14,8 +16,6 @@ module OSERDESE2 #(
     parameter DATA_RATE_OQ,
     parameter DATA_RATE_TQ
     ) (
-    /* verilator lint_off UNUSED */
-    /* verilator lint_off UNDRIVEN */
     input  wire logic CLK,
     input  wire logic CLKDIV,
     input  wire logic D1,
@@ -43,10 +43,10 @@ module OSERDESE2 #(
     output      logic TBYTEOUT,
     output      logic TFB,
     output      logic TQ
-    /* verilator lint_on UNDRIVEN */
-    /* verilator lint_on UNUSED */
     );
 
     // NULL MODULE
 
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

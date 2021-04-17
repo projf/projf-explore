@@ -12,7 +12,7 @@ if [ -d "${DIR}/xc7-hd" ]; then
         echo "##   Checking ${f}";
         verilator --lint-only -Wall -I${DIR} -I${DIR}/xc7-hd \
             -I${DIR}/../common -I${DIR}/../common/xc7 -I${DIR}/../common/xc7/null \
-            -I${DIR}/../common/xc7-hd -I${DIR}/../common/xc7-hd/null $f;
+            -I${DIR}/../common/xc7-tmds -I${DIR}/../common/xc7-tmds/null $f;
     done
 fi
 
@@ -25,11 +25,11 @@ if [ -d "${DIR}/xc7" ]; then
     done
 fi
 
-if [ -d "${DIR}/ice40" ]; then
-    echo "## Linting top modules in ${DIR}/ice40"
-    for f in ${DIR}/ice40/top_*\.*v; do
-        echo "##   Checking ${f}";
-        verilator --lint-only -Wall -I${DIR} -I${DIR}/ice40 \
-            -I${DIR}/../common -I${DIR}/../common/ice40 -I${DIR}/../common/ice40/null $f;
-    done
-fi
+# if [ -d "${DIR}/ice40" ]; then
+#     echo "## Linting top modules in ${DIR}/ice40"
+#     for f in ${DIR}/ice40/top_*\.*v; do
+#         echo "##   Checking ${f}";
+#         verilator --lint-only -Wall -I${DIR} -I${DIR}/ice40 \
+#             -I${DIR}/../common -I${DIR}/../common/ice40 -I${DIR}/../common/ice40/null $f;
+#     done
+# fi

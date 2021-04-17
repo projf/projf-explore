@@ -23,7 +23,7 @@ module display_timings_720p #(
     output      logic hsync,    // horizontal sync
     output      logic vsync,    // vertical sync
     output      logic de,       // data enable (low in blanking intervals)
-    output      logic frame,    // high at start of frame 
+    output      logic frame,    // high at start of frame
     output      logic line,     // high at start of active line
     output      logic signed [CORDW-1:0] sx,  // horizontal screen position
     output      logic signed [CORDW-1:0] sy   // vertical screen position
@@ -53,9 +53,9 @@ module display_timings_720p #(
 
     // control signals
     always_comb begin
-        de    = (sy >= 0      && sx >= 0);
+        de    = (sy >= VA_STA && sx >= HA_STA);
         frame = (sy == V_STA  && sx == H_STA);
-        line  = (sy >= 0      && sx == H_STA);
+        line  = (sy >= VA_STA && sx == H_STA);
         if (rst) frame = 0;  // don't assert frame in reset
     end
 

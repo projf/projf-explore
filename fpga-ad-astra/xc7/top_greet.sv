@@ -26,13 +26,11 @@ module top_greet (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, line, frame;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
@@ -100,6 +98,7 @@ module top_greet (
     );
 
     // sprites
+    localparam V_RES = 480;        // vertical screen resolution
     localparam SPR_CNT = 8;        // number of sprites
     localparam LINE2 = V_RES / 2;  // where to consider second line of sprites
     localparam SPR_SCALE_X = 8;    // enlarge sprite width by this factor

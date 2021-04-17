@@ -7,19 +7,19 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+/* verilator lint_off UNUSED */
+/* verilator lint_off UNDRIVEN */
 module SB_IO #(
     parameter PIN_TYPE
     ) (
-    /* verilator lint_off UNUSED */
-    /* verilator lint_off UNDRIVEN */
     output      logic PACKAGE_PIN,
     input  wire logic OUTPUT_CLK,
     input  wire logic D_OUT_0,
     input  wire logic D_OUT_1
     );
-    /* verilator lint_on UNDRIVEN */
-    /* verilator lint_on UNUSED */
 
     // NULL MODULE
 
 endmodule
+/* verilator lint_on UNDRIVEN */
+/* verilator lint_on UNUSED */

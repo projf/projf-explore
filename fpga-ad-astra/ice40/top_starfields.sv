@@ -28,12 +28,10 @@ module top_starfields (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de;
-    display_timings_480p display_timings_inst (
+display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         /* verilator lint_off PINCONNECTEMPTY */

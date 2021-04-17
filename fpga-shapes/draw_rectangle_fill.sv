@@ -5,38 +5,38 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_rectangle_fill #(parameter CORDW=10) (  // FB coord width in bits
+module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start rectangle drawing
     input  wire logic oe,              // output enable
-    input  wire logic [CORDW-1:0] x0,  // vertex 0 - horizontal position
-    input  wire logic [CORDW-1:0] y0,  // vertex 0 - vertical position
-    input  wire logic [CORDW-1:0] x1,  // vertex 2 - horizontal position
-    input  wire logic [CORDW-1:0] y1,  // vertex 2 - vertical position
-    output      logic [CORDW-1:0] x,   // horizontal drawing position
-    output      logic [CORDW-1:0] y,   // vertical drawing position
+    input  wire logic signed [CORDW-1:0] x0,  // vertex 0 - horizontal position
+    input  wire logic signed [CORDW-1:0] y0,  // vertex 0 - vertical position
+    input  wire logic signed [CORDW-1:0] x1,  // vertex 2 - horizontal position
+    input  wire logic signed [CORDW-1:0] y1,  // vertex 2 - vertical position
+    output      logic signed [CORDW-1:0] x,   // horizontal drawing position
+    output      logic signed [CORDW-1:0] y,   // vertical drawing position
     output      logic drawing,         // rectangle is drawing
     output      logic done             // rectangle complete (high for one tick)
     );
 
-    enum {IDLE, INIT, DRAW} state;
-
     // filled rectangle has as many lines as it is tall abs(y1-y0)
-    logic [CORDW-1:0] line_id;  // current line
+    logic signed [CORDW-1:0] line_id;  // current line
     logic line_start;  // start drawing line
     logic line_done;   // finished drawing current line?
 
     // sort input Y coordinates so we always draw top-to-bottom
-    logic [CORDW-1:0] y0s, y1s;  // vertex 0 - ordered
+    logic signed [CORDW-1:0] y0s, y1s;  // vertex 0 - ordered
     always_comb begin
         y0s = (y0 > y1) ? y1 : y0;
         y1s = (y0 > y1) ? y0 : y1;  // last line
     end
 
     // line coordinates - horizontal lines, so only one y-value
-    logic [CORDW-1:0] lx0, lx1, ly;
+    logic signed [CORDW-1:0] lx0, lx1, ly;
 
+    enum {IDLE, INIT, DRAW} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
         line_start <= 0;
         case (state)

@@ -6,10 +6,14 @@ puts "INFO: Project F - FPGA Shapes Project Creation Script"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
-    set fpga_part "xc7a35ticsg324-1L"
+    set projf_fpga_part "xc7a35ticsg324-1L"
+} else {
+    set projf_fpga_part ${fpga_part}
 }
 if {! [info exists board_name]} {
-    set board_name "arty"
+    set projf_board_name "arty"
+} else {
+    set projf_board_name ${board_name}
 }
 
 # Set the project name
@@ -23,7 +27,7 @@ set common_dir [file normalize "./../../../common"]
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
 
 # Create Vivado project
-create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${fpga_part}
+create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${projf_fpga_part}
 
 #
 # Design sources
@@ -53,23 +57,23 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${common_dir}/debounce.sv"] \
-  [file normalize "${common_dir}/display_timings_480p.sv"] \
-  [file normalize "${common_dir}/linebuffer.sv"] \
   [file normalize "${common_dir}/rom_async.sv"] \
-  [file normalize "${common_dir}/rom_sync.sv"] \
   [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
-  [file normalize "${common_dir}/xc7/clock_gen.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen_480p.sv"] \
+  [file normalize "${origin_dir}/display_timings_480p.sv"] \
   [file normalize "${origin_dir}/draw_line.sv"] \
   [file normalize "${origin_dir}/draw_rectangle.sv"] \
   [file normalize "${origin_dir}/draw_rectangle_fill.sv"] \
-  [file normalize "${origin_dir}/pix_addr.sv"] \
+  [file normalize "${origin_dir}/framebuffer.sv"] \
+  [file normalize "${origin_dir}/framebuffer_db.sv"] \
+  [file normalize "${origin_dir}/linebuffer.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${common_dir}/res/test/test_clear_12x9.mem"] \
+  [file normalize "${common_dir}/res/test/test_box_db_12x9.mem"] \
   [file normalize "${common_dir}/res/test/test_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/tunnel_16_colr_4bit_palette.mem"] \
@@ -93,6 +97,9 @@ set sim_sources [list \
   [file normalize "${common_dir}/display_timings_24x18.sv"] \
   [file normalize "${origin_dir}/xc7/draw_rectangle_tb.sv"] \
   [file normalize "${origin_dir}/xc7/draw_rectangle_fill_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/framebuffer_db_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/draw_rectangle_tb_behav.wcfg" ] \
+  [file normalize "${origin_dir}/xc7/vivado/framebuffer_db_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
@@ -111,11 +118,15 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set fs_constr_obj [get_filesets constrs_1]
 
 set constr_sources [list \
-  [file normalize "$origin_dir/xc7/${board_name}.xdc"] \
+  [file normalize "$origin_dir/xc7/${projf_board_name}.xdc"] \
 ]
 add_files -norecurse -fileset $fs_constr_obj $constr_sources
 set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]
 set_property -name "file_type" -value "XDC" -objects $constr_file_obj
+
+# unset Project F variables
+unset projf_board_name
+unset projf_fpga_part
 
 #
 # Done

@@ -19,6 +19,8 @@ module framebuffer #(
     ) (
     input  wire logic clk_sys,    // system clock
     input  wire logic clk_pix,    // pixel clock
+    input  wire logic rst_sys,    // reset (clk_sys)
+    input  wire logic rst_pix,    // reset (clk_pix)
     input  wire logic de,         // data enable for display (clk_pix)
     input  wire logic frame,      // start a new frame (clk_pix)
     input  wire logic line,       // start a new screen line (clk_pix)
@@ -33,7 +35,8 @@ module framebuffer #(
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .i(frame), .o(frame_sys));
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
+                 .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;
@@ -45,32 +48,24 @@ module framebuffer #(
     logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_p1;
 
     // calculate write address from pixel coordinates (two stage: mul then add)
-    logic signed [CORDW-1:0] x_add;
-    logic [FB_ADDRW-1:0] pix_addr_line;
+    logic signed [CORDW-1:0] x_add;     // pixel position on line
+    logic [FB_ADDRW-1:0] fb_addr_line;  // address of line for writing
     always_ff @(posedge clk_sys) begin
-        if (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH) begin
-            clip <= 1;
-            pix_addr_line <= 0;
-            x_add <= 0;
-        end else begin
-            clip <= 0;
-            /* verilator lint_off WIDTH */
-            pix_addr_line <= WIDTH * y;
-            /* verilator lint_on WIDTH */
-            x_add <= x;  // save x for next stage
-        end
         /* verilator lint_off WIDTH */
-        fb_addr_write <= pix_addr_line + x_add;
+        fb_addr_line <= WIDTH * y;  // write address 1st stage
+        x_add <= x;  // save x for write address 2nd stage
+        fb_addr_write <= fb_addr_line + x_add;
         /* verilator lint_on WIDTH */
     end
 
-    // write to pixel address (delay to match address calculation)
+    // draw colour and write enable (delay to match address calculation)
     logic fb_we, we_in_p1;
     logic [FB_DATAW-1:0] fb_cidx_write, cidx_in_p1;
     always_ff @(posedge clk_sys) begin
         we_in_p1 <= we;
-        cidx_in_p1 <= cidx;
-        fb_we <= (clip == 0) ? we_in_p1 : 0;  // write enable if not clipped
+        cidx_in_p1 <= cidx;  // draw colour
+        clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
+        fb_we <= (clip) ? 0 : we_in_p1;  // write enable if not clipped
         fb_cidx_write <= cidx_in_p1;
     end
 
@@ -98,24 +93,33 @@ module framebuffer #(
     logic lb_data_req;  // LB requesting data
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
     always_ff @(posedge clk_sys) begin
-        if (lb_data_req) begin
-            cnt_h <= 0;  // start new line
-        end else if (cnt_h < LB_LEN) begin  // advance to start of next line
-            cnt_h <= cnt_h + 1;
-            fb_addr_read <= fb_addr_read + 1;
-        end
+        if (fb_addr_read < FB_PIXELS-1) begin
+            if (lb_data_req) begin
+                cnt_h <= 0;  // start new line
+            end else if (cnt_h < LB_LEN) begin  // advance to start of next line
+                cnt_h <= cnt_h + 1;
+                fb_addr_read <= fb_addr_read + 1;
+            end
+        end else cnt_h <= LB_LEN;
         if (frame_sys) fb_addr_read <= 0;  // new frame
+        if (rst_sys) begin
+            fb_addr_read <= 0;
+            cnt_h <= LB_LEN;  // don't start reading after reset
+        end
     end
 
     // LB enable (not corrected for latency)
     logic lb_en_in, lb_en_out;
-    always_comb lb_en_in  = (cnt_h < LB_LEN);
+    always_comb lb_en_in  = cnt_h < LB_LEN;
     always_comb lb_en_out = de;
 
     // LB enable in: address calc and CLUT reg add three cycles of latency
     localparam LAT = 3;  // write latency
     logic [LAT-1:0] lb_en_in_sr;
-    always @(posedge clk_sys) lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
+    always @(posedge clk_sys) begin
+        lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
+        if (rst_sys) lb_en_in_sr <= 0;
+    end
 
     // LB colour channels
     logic [LB_BPC-1:0] lb_in_0,  lb_in_1,  lb_in_2;
@@ -128,6 +132,8 @@ module framebuffer #(
         ) lb_inst (
         .clk_in(clk_sys),        // input clock
         .clk_out(clk_pix),       // output clock
+        .rst_in(rst_sys),        // reset (clk_in)
+        .rst_out(rst_pix),       // reset (clk_out)
         .data_req(lb_data_req),  // request input data (clk_in)
         .en_in(lb_en_in_sr[0]),  // enable input (clk_in)
         .en_out(lb_en_out),      // enable output (clk_out)

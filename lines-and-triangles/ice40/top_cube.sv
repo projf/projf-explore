@@ -28,12 +28,10 @@ module top_cube (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         /* verilator lint_off PINCONNECTEMPTY */
@@ -72,6 +70,8 @@ module top_cube (
     ) fb_inst (
         .clk_sys(clk_pix),
         .clk_pix(clk_pix),
+        .rst_sys(1'b0),
+        .rst_pix(1'b0),
         .de,
         .frame,
         .line,

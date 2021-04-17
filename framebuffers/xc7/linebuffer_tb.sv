@@ -12,6 +12,8 @@ module linebuffer_tb();
 
     logic clk_25m;
     logic clk_100m;
+    logic rst_in;   // clk_100m domain
+    logic rst_out;  // clk_25m domain
 
     parameter LB_SCALE = 2;  // scale (horizontal and vertical)
     parameter LB_LEN = 3;    // 3 pixels in test line
@@ -24,14 +26,14 @@ module linebuffer_tb();
     logic [LB_BPC-1:0] ch2 [PIXEL_CNT];
 
     logic data_req;
-    logic en_in = 0;
+    logic en_in;
     logic en_out;
     logic frame;
     logic line;
     logic [LB_BPC-1:0] din_0, din_1, din_2;
     logic [LB_BPC-1:0] dout_0, dout_1, dout_2;
 
-    // Load test data
+    // Load test data (clk_in domain)
     logic [$clog2(PIXEL_CNT)-1:0] read_addr;
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
     always_ff @(posedge clk_100m) begin
@@ -43,7 +45,12 @@ module linebuffer_tb();
             read_addr <= read_addr == PIXEL_CNT-1 ? 0 : read_addr + 1;
         end
         if (cnt_h == LB_LEN-1) en_in <= 0;  // disable en_in at line end
-        if (frame) read_addr <= 0;      // start new frame
+        if (frame) read_addr <= 0;  // start new frame
+        if (rst_in) begin
+            read_addr <= 0;
+            cnt_h <= 0;
+            en_in <= 0;
+        end
     end
 
     linebuffer #(
@@ -53,6 +60,8 @@ module linebuffer_tb();
         ) lb_inst (
         .clk_in(clk_100m),
         .clk_out(clk_25m),
+        .rst_in,
+        .rst_out,
         .data_req,
         .en_in,
         .en_out,
@@ -105,7 +114,10 @@ module linebuffer_tb();
 
     initial begin
         clk_100m = 1;
+        rst_in = 1;
         frame = 0;
+
+         #100 rst_in = 0;
 
          #240 frame = 1;
           #40 frame = 0;
@@ -123,56 +135,59 @@ module linebuffer_tb();
     // we should get 6x4 pixels of output (3x2 with scale=2)
     initial begin
         clk_25m = 1;
+        rst_out = 1;
         en_out = 0;
         line = 0;
 
-        #320 line = 1; 
+        #100 rst_out = 0;
+
+        #300 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
 
-        #160 line = 1; 
+        #160 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
 
-        #160 line = 1; 
+        #160 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;
-         #80 line = 1; 
+         #80 line = 1;
          #40 line = 0;
          #80 en_out = 1;
         #240 en_out = 0;

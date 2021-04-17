@@ -28,13 +28,11 @@ module top_line (
     );
 
     // display timings
-    localparam H_RES = 640;
-    localparam V_RES = 480;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame;
     logic signed [CORDW-1:0] sx, sy;
-    display_timings_480p display_timings_inst (
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
@@ -75,6 +73,7 @@ module top_line (
     // draw line across middle of framebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
     enum {IDLE, DRAW, DONE} state;
+    initial state = IDLE;  // needed for Yosys
     always @(posedge clk_pix) begin
         case (state)
             DRAW:

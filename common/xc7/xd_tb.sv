@@ -11,12 +11,15 @@ module xd_tb();
     parameter CLK_FAST_PERIOD =  4;  //  4 ns == 250 MHz
 
     logic clk_slow, clk_fast;
+    logic rst_slow, rst_fast;
     logic pulse_a_src, pulse_a_dst;  // for slow->fast
     logic pulse_b_src, pulse_b_dst;  // for fast->slow
 
     xd xd_slowfast (
         .clk_i(clk_slow),
         .clk_o(clk_fast),
+        .rst_i(rst_slow),
+        .rst_o(rst_fast),
         .i(pulse_a_src),
         .o(pulse_a_dst)
     );
@@ -24,6 +27,8 @@ module xd_tb();
     xd xd_fastslow (
         .clk_i(clk_fast),
         .clk_o(clk_slow),
+        .rst_i(rst_fast),
+        .rst_o(rst_slow),        
         .i(pulse_b_src),
         .o(pulse_b_dst)
     );
@@ -34,7 +39,12 @@ module xd_tb();
     initial begin
         clk_slow = 1;
         clk_fast = 1;
+        rst_slow = 1;
+        rst_fast = 1;
         pulse_a_src = 0;
+
+        #100 rst_slow = 0;
+             rst_fast = 0;
 
         #100 pulse_a_src = 1;
          #10 pulse_a_src = 0;
@@ -59,7 +69,7 @@ module xd_tb();
     initial begin
         pulse_b_src = 0;
 
-        #100 pulse_b_src = 1;
+        #200 pulse_b_src = 1;
           #4 pulse_b_src = 0;
          #16 pulse_b_src = 1;
           #4 pulse_b_src = 0;

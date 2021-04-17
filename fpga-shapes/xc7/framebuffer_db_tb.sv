@@ -1,11 +1,11 @@
-// Project F: Framebuffers - Framebuffer Test Bench (XC7)
+// Project F: FPGA Shapes - Double-Buffered Framebuffer Test Bench (XC7)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module framebuffer_tb();
+module framebuffer_db_tb();
 
     parameter CLK_PERIOD_100M = 10;  // 10 ns == 100 MHz
     parameter CLK_PERIOD_25M  = 40;  // 40 ns == 25 MHz
@@ -51,14 +51,16 @@ module framebuffer_tb();
     localparam FB_HEIGHT  = 9;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_IMAGE   = "test_box_12x9.mem";
+    localparam FB_IMAGE   = "test_box_db_12x9.mem";
     localparam FB_PALETTE = "test_palette.mem";
     localparam FB_SCALE   = 2;  // use =1 with fb active = (sy >=0 ....
 
     logic fb_we;
+    logic fb_clear;
+    logic fb_wready;
     logic fb_clip;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
+    logic [FB_CIDXW-1:0] fb_cidx, fb_bgidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
     // determine when framebuffer is active for display
@@ -68,7 +70,7 @@ module framebuffer_tb();
         // fb_active = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
     end
 
-    framebuffer #(
+    framebuffer_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -88,6 +90,9 @@ module framebuffer_tb();
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .bgidx(fb_bgidx),
+        .clear(fb_clear),
+        .wready(fb_wready),
         .clip(fb_clip),
         .red(fb_red),
         .green(fb_green),
@@ -95,9 +100,17 @@ module framebuffer_tb();
     );
 
     // draw line across middle of framebuffer
-    enum {IDLE, DRAW, DONE} state;
+    enum {IDLE, INIT, DRAW, DONE} state;
     always @(posedge clk_100m) begin
         case (state)
+            INIT:
+                if (fb_wready) begin
+                    fb_cidx <= 7;
+                    fb_we <= 1;
+                    fbx <= 0;
+                    fby <= (fby > 1 && fby < 6) ? fby + 1 : 2;
+                    state <= DRAW;
+                end
             DRAW:
                 if (fbx < FB_WIDTH-1) begin
                     fbx <= fbx + 1;
@@ -105,16 +118,8 @@ module framebuffer_tb();
                     fb_we <= 0;
                     state <= DONE;
                 end
-            IDLE:
-                if (frame_sys) begin
-                    fb_cidx <= 7;
-                    fb_we <= 1;
-                    fby <= 4;  // draw in the middle(ish)
-                    state <= DRAW;
-                end
-            default: state <= DONE;  // done forever!
+            default: if (frame_sys) state <= INIT;  // IDLE or DONE
         endcase
-
         if (rst_sys) begin
             fb_we <= 0;
             fbx <= 0;
@@ -150,12 +155,17 @@ module framebuffer_tb();
         clk_25m = 1;
         rst_sys = 1;
         rst_pix = 1;
+        fb_bgidx = 0;
+        fb_clear = 0;
         state = IDLE;
 
         #100
         rst_sys = 0;
         rst_pix = 0;
 
-        #100000 $finish;
+        #28140
+        fb_clear = 1;
+
+        #120000 $finish;
     end
 endmodule

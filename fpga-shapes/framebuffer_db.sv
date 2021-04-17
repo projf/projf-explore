@@ -1,4 +1,4 @@
-// Project F: Framebuffers - Framebuffer in BRAM (Indexed Colour)
+// Project F: FPGA Shapes - Double-Buffered Framebuffer in BRAM (Indexed Colour)
 // (C)2021 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -7,7 +7,7 @@
 
 // NB. Signals are in clk_sys domain unless indicated
 
-module framebuffer #(
+module framebuffer_db #(
     parameter CORDW=16,      // signed coordinate width (bits)
     parameter WIDTH=160,     // width of framebuffer in pixels
     parameter HEIGHT=120,    // height of framebuffer in pixels
@@ -28,6 +28,9 @@ module framebuffer #(
     input  wire logic signed [CORDW-1:0] x,  // horizontal pixel coordinate
     input  wire logic signed [CORDW-1:0] y,  // vertical pixel coordinate
     input  wire logic [CIDXW-1:0] cidx,   // framebuffer colour index
+    input  wire logic [CIDXW-1:0] bgidx,  // framebuffer background colour index
+    input  wire logic clear,              // clear write buffer on frame start
+    output      logic wready,             // ready for writing
     output      logic clip,               // pixel coordinate outside buffer
     output      logic [CHANW-1:0] red,    // colour output to display (clk_pix)
     output      logic [CHANW-1:0] green,  //     "    "    "    "    "
@@ -38,23 +41,47 @@ module framebuffer #(
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
                  .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
 
+    // buffer selection
+    logic front_buf;
+    always @(posedge clk_sys) begin
+        if (frame_sys) front_buf <= ~front_buf;  // swap every frame
+        if (rst_sys) front_buf <= 0;
+    end
+
     // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;
-    localparam FB_DEPTH  = FB_PIXELS;  // single buffer
+    localparam FB_DEPTH  = 2 * FB_PIXELS;  // double buffer
     localparam FB_ADDRW  = $clog2(FB_DEPTH);
     localparam FB_DATAW  = CIDXW;
 
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
     logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_p1;
 
-    // calculate write address from pixel coordinates (two stage: mul then add)
+    // write address components
     logic signed [CORDW-1:0] x_add;     // pixel position on line
     logic [FB_ADDRW-1:0] fb_addr_line;  // address of line for writing
+    logic [FB_ADDRW-1:0] fb_addr_clr;   // address for clearing screen
+
+    // write state machine
+    enum {IDLE, INIT, CLR, ACTIVE} wstate;
+    initial wstate = IDLE;  // needed for Yosys
+    always @(posedge clk_sys) begin
+        case (wstate)
+            INIT: wstate <= (clear) ? CLR : ACTIVE;
+            CLR: if (fb_addr_clr == FB_PIXELS-1) wstate <= ACTIVE;
+            default: if (frame_sys) wstate <= INIT;  // IDLE or ACTIVE
+        endcase
+    end
+
+    always_comb wready = (wstate == ACTIVE);
+
+    // calculate write address from pixel coordinates (two stage: mul then add)
     always_ff @(posedge clk_sys) begin
-        /* verilator lint_off WIDTH */
         fb_addr_line <= WIDTH * y;  // write address 1st stage
         x_add <= x;  // save x for write address 2nd stage
-        fb_addr_write <= fb_addr_line + x_add;
+        fb_addr_clr <= (wstate == INIT) ? 0 : fb_addr_clr + 1;
+        /* verilator lint_off WIDTH */
+        fb_addr_write <= (wstate == CLR) ? fb_addr_clr : fb_addr_line + x_add;
         /* verilator lint_on WIDTH */
     end
 
@@ -62,11 +89,18 @@ module framebuffer #(
     logic fb_we, we_in_p1;
     logic [FB_DATAW-1:0] fb_cidx_write, cidx_in_p1;
     always_ff @(posedge clk_sys) begin
-        we_in_p1 <= we;
-        cidx_in_p1 <= cidx;  // draw colour
+        we_in_p1 <= (we || (wstate == CLR));  // write enable for input or clear
+        cidx_in_p1 <= (wstate == CLR) ? bgidx : cidx;  // which draw colour?
         clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
         fb_we <= (clip) ? 0 : we_in_p1;  // write enable if not clipped
         fb_cidx_write <= cidx_in_p1;
+    end
+
+    // add offset to read and write addresses to match buffer used
+    logic [FB_ADDRW-1:0] fb_addr_read_offs, fb_addr_write_offs;
+    always_comb begin  // this could be a performance bottleneck
+        fb_addr_read_offs  = fb_addr_read  + ((front_buf) ? FB_PIXELS : 0);
+        fb_addr_write_offs = fb_addr_write + ((front_buf) ? 0 : FB_PIXELS);
     end
 
     // framebuffer memory (BRAM)
@@ -78,8 +112,8 @@ module framebuffer #(
         .clk_write(clk_sys),
         .clk_read(clk_sys),
         .we(fb_we),
-        .addr_write(fb_addr_write),
-        .addr_read(fb_addr_read),
+        .addr_write(fb_addr_write_offs),
+        .addr_read(fb_addr_read_offs),
         .data_in(fb_cidx_write),
         .data_out(fb_cidx_read)
     );
