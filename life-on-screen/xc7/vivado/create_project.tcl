@@ -6,10 +6,14 @@ puts "INFO: Project F - Life on Screen Project Creation Script"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
-    set fpga_part "xc7a35ticsg324-1L"
+    set projf_fpga_part "xc7a35ticsg324-1L"
+} else {
+    set projf_fpga_part ${fpga_part}
 }
 if {! [info exists board_name]} {
-    set board_name "arty"
+    set projf_board_name "arty"
+} else {
+    set projf_board_name ${board_name}
 }
 
 # Set the project name
@@ -23,7 +27,7 @@ set common_dir [file normalize "./../../../common"]
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
 
 # Create Vivado project
-create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${fpga_part}
+create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${projf_fpga_part}
 
 #
 # Design sources
@@ -103,11 +107,15 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set fs_constr_obj [get_filesets constrs_1]
 
 set constr_sources [list \
-  [file normalize "$origin_dir/xc7/${board_name}.xdc"] \
+  [file normalize "$origin_dir/xc7/${projf_board_name}.xdc"] \
 ]
 add_files -norecurse -fileset $fs_constr_obj $constr_sources
 set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]
 set_property -name "file_type" -value "XDC" -objects $constr_file_obj
+
+# unset Project F variables
+unset projf_board_name
+unset projf_fpga_part
 
 #
 # Done

@@ -12,7 +12,7 @@ Designs for iCEBreaker are not available at this time. Have you tried the [other
 
 ## Xilinx Vivado Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the tcl console:
+To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/life-on-screen/xc7/vivado
@@ -23,7 +23,7 @@ You can then build `top_life` as you would for any Vivado project.
 
 ### Simulation
 
-This design includes a test bench for the life module. You can run the test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
+This design includes a test bench for the life module. You can run the test bench simulation from the GUI under the "Flow" menu or from the Tcl console with:
 
 ```tcl
 launch_simulation
@@ -38,7 +38,7 @@ It's straightforward to adapt the project for other Xilinx Series 7 boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
-3. Set the board and part names in tcl, then source the create project script:
+3. Set the board and part names in Tcl, then source the create project script:
 
 ```tcl
 set board_name <board>

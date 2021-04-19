@@ -34,6 +34,7 @@ module life #(
 
     // simulation state (once started, only stops after updating a cell)
     enum {IDLE, NEXT_CELL, NEIGHBOURS, CURRENT_CELL, UPDATE_CELL} state, state_next;
+    initial state = IDLE;  // needed for Yosys
     always_comb begin
         case(state)
             IDLE: state_next = (start && !done) ? NEXT_CELL : IDLE;
