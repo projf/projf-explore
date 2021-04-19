@@ -52,18 +52,22 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${origin_dir}/life.sv"] \
-  [file normalize "${common_dir}/display_timings_480p.sv"] \
-  [file normalize "${common_dir}/linebuffer.sv"] \
+  [file normalize "${common_dir}/rom_async.sv"] \
   [file normalize "${common_dir}/xd.sv"] \
   [file normalize "${common_dir}/xc7/bram_sdp.sv"] \
-  [file normalize "${common_dir}/xc7/clock_gen.sv"] \
+  [file normalize "${common_dir}/xc7/clock_gen_480p.sv"] \
+  [file normalize "${origin_dir}/display_timings_480p.sv"] \
+  [file normalize "${origin_dir}/framebuffer.sv"] \
+  [file normalize "${origin_dir}/linebuffer.sv"] \
+  [file normalize "${origin_dir}/life.sv"] \
+  [file normalize "${origin_dir}/new_life.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
   [file normalize "${origin_dir}/res/life/gosper_glider.mem"] \
+  [file normalize "${origin_dir}/res/life/life_palette.mem"] \
   [file normalize "${origin_dir}/res/life/simple_life.mem"] \
   [file normalize "${origin_dir}/res/life/test_beacon.mem"] \
   [file normalize "${origin_dir}/res/life/test_beehive.mem"] \
@@ -89,6 +93,9 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${origin_dir}/xc7/life_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/new_life_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/new_life_tb_behav.wcfg"] \
+
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="new_life_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="new_life_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="14240001fs"></ZoomEndTime>
+      <Cursor1Time time="14240fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="162"></NameColumnWidth>
+      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="44" />
+   <wvobject fp_name="/new_life_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/clk_100m" type="logic">
+      <obj_property name="ElementShortName">clk_100m</obj_property>
+      <obj_property name="ObjectShortName">clk_100m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/ready" type="logic">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/alive" type="logic">
+      <obj_property name="ElementShortName">alive</obj_property>
+      <obj_property name="ObjectShortName">alive</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/changed" type="logic">
+      <obj_property name="ElementShortName">changed</obj_property>
+      <obj_property name="ObjectShortName">changed</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/x" type="array">
+      <obj_property name="ElementShortName">x[15:0]</obj_property>
+      <obj_property name="ObjectShortName">x[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/y" type="array">
+      <obj_property name="ElementShortName">y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">y[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/running" type="logic">
+      <obj_property name="ElementShortName">running</obj_property>
+      <obj_property name="ObjectShortName">running</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider32">
+      <obj_property name="label">new_life</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/ready" type="logic">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/alive" type="logic">
+      <obj_property name="ElementShortName">alive</obj_property>
+      <obj_property name="ObjectShortName">alive</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/changed" type="logic">
+      <obj_property name="ElementShortName">changed</obj_property>
+      <obj_property name="ObjectShortName">changed</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/x" type="array">
+      <obj_property name="ElementShortName">x[15:0]</obj_property>
+      <obj_property name="ObjectShortName">x[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/y" type="array">
+      <obj_property name="ElementShortName">y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">y[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/running" type="logic">
+      <obj_property name="ElementShortName">running</obj_property>
+      <obj_property name="ObjectShortName">running</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/next_gen" type="logic">
+      <obj_property name="ElementShortName">next_gen</obj_property>
+      <obj_property name="ObjectShortName">next_gen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/cell_id" type="array">
+      <obj_property name="ElementShortName">cell_id[6:0]</obj_property>
+      <obj_property name="ObjectShortName">cell_id[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/cell_y" type="array">
+      <obj_property name="ElementShortName">cell_y[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cell_y[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/cell_x" type="array">
+      <obj_property name="ElementShortName">cell_x[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cell_x[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/read_step" type="array">
+      <obj_property name="ElementShortName">read_step[3:0]</obj_property>
+      <obj_property name="ObjectShortName">read_step[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/inc_read" type="logic">
+      <obj_property name="ElementShortName">inc_read</obj_property>
+      <obj_property name="ObjectShortName">inc_read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/addr_read" type="array">
+      <obj_property name="ElementShortName">addr_read[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/addr_read_offs" type="array">
+      <obj_property name="ElementShortName">addr_read_offs[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read_offs[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/addr_write_offs" type="array">
+      <obj_property name="ElementShortName">addr_write_offs[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write_offs[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider320">
+      <obj_property name="label">Neighbours</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/top_sr" type="array">
+      <obj_property name="ElementShortName">top_sr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">top_sr[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/mid_sr" type="array">
+      <obj_property name="ElementShortName">mid_sr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">mid_sr[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bot_sr" type="array">
+      <obj_property name="ElementShortName">bot_sr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bot_sr[2:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/neigh_cnt" type="array">
+      <obj_property name="ElementShortName">neigh_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">neigh_cnt[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider175">
+      <obj_property name="label">World Memory</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/addr_write" type="array">
+      <obj_property name="ElementShortName">addr_write[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/addr_read" type="array">
+      <obj_property name="ElementShortName">addr_read[6:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read[6:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/new_life_tb/new_life_inst/bram_inst/memory" type="array">
+      <obj_property name="ElementShortName">memory[0:127][0:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:127][0:0]</obj_property>
+   </wvobject>
+</wave_config>
