@@ -140,9 +140,11 @@ module new_life #(
                         bot_sr <= {bot_sr[1:0], data_out};  // I
                     end
                     4'd11: begin  // should be another state machine step
+                        /* verilator lint_off WIDTH */
                         neigh_cnt <= top_sr[0] + top_sr[1] + top_sr[2] +
                                      mid_sr[0]             + mid_sr[2] +
                                      bot_sr[0] + bot_sr[1] + bot_sr[2];
+                        /* verilator lint_on WIDTH */
                     end                    
                     default: addr_read <= 0;
                 endcase
@@ -154,8 +156,10 @@ module new_life #(
                 // update cell state
                 we <= 1;  // write new state next cycle
                 ready <= 1;  // ready for output read next cycle
+                /* verilator lint_off WIDTH */
                 x <= cell_x - 1;  // correct for padding
                 y <= cell_y - 1;  // correct for padding
+                /* verilator lint_on WIDTH */
 
                 if (mid_sr[1]) begin // cell is alive this generation
                     if (neigh_cnt == 2 || neigh_cnt == 3) begin  // still alive

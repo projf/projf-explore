@@ -39,7 +39,9 @@ module linebuffer #(
             if (cnt_h == SCALE-1) begin
             /* verilator lint_on WIDTH */
                 cnt_h <= 0;
+                /* verilator lint_off WIDTH */
                 if (addr_out == LEN-1) begin  // end of line
+                /* verilator lint_on WIDTH */
                     addr_out <= 0;
                     /* verilator lint_off WIDTH */
                     if (cnt_v == SCALE-1) begin  // end of line set
@@ -66,7 +68,9 @@ module linebuffer #(
     // read data in
     logic [$clog2(LEN)-1:0] addr_in;
     always_ff @(posedge clk_in) begin
+        /* verilator lint_off WIDTH */
         if (en_in) addr_in <= (addr_in == LEN-1) ? 0 : addr_in + 1;
+        /* verilator lint_on WIDTH */
         if (data_req) addr_in <= 0;  // reset addr_in when we request new data
         if (rst_in) addr_in <= 0;
     end

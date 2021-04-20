@@ -30,14 +30,15 @@ module top_life (
 
     // display timings
     localparam CORDW = 16;
-    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .hsync,
         .vsync,
         .de,
@@ -49,12 +50,30 @@ module top_life (
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
+    // life signals
+    logic life_start, life_alive, life_changed;
+    /* verilator lint_off UNUSED */
+    logic life_running, life_done;
+    /* verilator lint_on UNUSED */
+
+    // start life generation in blanking every GEN_FRAMES
+    logic [$clog2(GEN_FRAMES)-1:0] cnt_frames;
+    always @(posedge clk_100m) begin
+        life_start <= 0;
+        if (frame_sys) begin
+            if (cnt_frames == GEN_FRAMES-1) begin
+                life_start <= 1;
+                cnt_frames <= 0;
+            end else cnt_frames <= cnt_frames + 1;
+        end
+    end
+
     // framebuffer (FB)
-    localparam FB_WIDTH   = 80;
-    localparam FB_HEIGHT  = 60;
+    localparam FB_WIDTH   = 64;
+    localparam FB_HEIGHT  = 48;
     localparam FB_CIDXW   = 2;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 8;
+    localparam FB_SCALE   = 10;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "life_palette.mem";
 
@@ -91,23 +110,25 @@ module top_life (
         .blue(fb_blue)
     );
 
-    logic life_run;
-    logic [FB_ADDRW-1:0] cell_id;
-    life #(
-        .WORLD_WIDTH(FB_WIDTH),
-        .WORLD_HEIGHT(FB_HEIGHT),
-        .ADDRW(FB_ADDRW)
-    ) life_sim (
-        .clk(clk_100m),
-        .start(life_start),
-        .run(life_run),
-        .id(cell_id),
-        .r_status(pix_out),
-        .w_status(pix_in),
-        .we(fb_we),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .done()
-        /* verilator lint_on PINCONNECTEMPTY */
+    // select colour based on cell state and whether it's changed
+    always_comb fb_cidx = {life_changed, life_alive};
+
+    new_life #(
+        .CORDW(CORDW),
+        .WIDTH(FB_WIDTH),
+        .HEIGHT(FB_HEIGHT),
+        .F_INIT(SEED_FILE)
+    ) new_life_inst (
+        .clk(clk_100m),          // clock
+        .rst(1'b0),              // reset
+        .start(life_start),      // start sim generation
+        .ready(fb_we),           // cell state ready to be read
+        .alive(life_alive),      // is the cell alive? (when ready)
+        .changed(life_changed),  // cell's state changed (when ready)
+        .x(fbx),                 // horizontal cell position
+        .y(fby),                 // vertical cell position
+        .running(life_running),  // sim is running
+        .done(life_done)         // sim complete (high for one tick)
     );
 
     // reading from FB takes one cycle: delay display signals to match
