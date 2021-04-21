@@ -18,7 +18,7 @@ module top_life (
     );
 
     localparam GEN_FRAMES = 15;  // each generation lasts this many frames
-    localparam SEED_FILE = "../res/seed/gosper_gun_64x48.mem";  // world seed
+    localparam SEED_FILE = "../res/seed/simple_64x48.mem";  // world seed
 
     // generate pixel clock
     logic clk_pix;
