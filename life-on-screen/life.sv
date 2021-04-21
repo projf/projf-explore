@@ -74,7 +74,8 @@ module life #(
     logic [$clog2(GRID*GRID)-1:0] neigh_cnt;  // count of neighbours
 
     // life sim state
-    enum {IDLE, INIT, READ, UPDATE, NEW_CELL, NEW_LINE, PAD_LR, PAD_TB} state;
+    enum {IDLE, INIT, READ, UPDATE, NEW_CELL, NEW_LINE,
+          PAD_L, PAD_R, PAD_T, PAD_B} state;
     initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
         ready <= 0;
@@ -146,7 +147,7 @@ module life #(
                                      mid_sr[0]             + mid_sr[2] +
                                      bot_sr[0] + bot_sr[1] + bot_sr[2];
                         /* verilator lint_on WIDTH */
-                    end                    
+                    end
                     default: addr_read <= 0;
                 endcase
 
@@ -170,7 +171,7 @@ module life #(
                     end else begin  // now dead
                         data_in <= 0;
                         alive <= 0;
-                        changed <= 1;                    
+                        changed <= 1;
                     end
                 end else begin  // was is dead this generation
                     if (neigh_cnt == 3) begin  // now alive
@@ -180,14 +181,14 @@ module life #(
                     end else begin  // still dead
                         data_in <= 0;
                         alive <= 0;
-                        changed <= 0;                    
-                    end                
+                        changed <= 0;
+                    end
                 end
 
                 // what next?
                 if (cell_x == WORLD_WIDTH-2) begin  // final cell on line
                     if (cell_y == WORLD_HEIGHT-2) begin  // final line of cells
-                        state <= PAD_LR;
+                        state <= PAD_L;
                     end else state <= NEW_LINE;
                 end else state <= NEW_CELL;
             end
@@ -205,11 +206,19 @@ module life #(
                 read_step <= 0;  // read all nine cells at start of line
                 state <= READ;
             end
-            PAD_LR: begin
+            PAD_L: begin
                 // not yet implemented
-                state <= PAD_TB;
-            end 
-            PAD_TB: begin
+                state <= PAD_R;
+            end
+            PAD_R: begin
+                // not yet implemented
+                state <= PAD_T;
+            end
+            PAD_T: begin
+                // not yet implemented
+                state <= PAD_B;
+            end
+            PAD_B: begin
                 // not yet implemented
                 state <= IDLE;
                 running <= 0;
