@@ -1,4 +1,4 @@
-// Project F: Life on Screen - Top Life Sim (Arty with Pmod VGA)
+// Project F: Life on Screen - Top Life Sim (iCEBreaker with 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -6,24 +6,26 @@
 `timescale 1ns / 1ps
 
 module top_life (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button (active high)
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
     localparam GEN_FRAMES = 15;  // each generation lasts this many frames
-    localparam SEED_FILE = "simple_64x48.mem";  // world seed
+    localparam SEED_FILE = "../res/seed/gosper_gun_64x48.mem";  // world seed
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen_480p clock_pix_inst (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+       .clk(clk_12m),
+       .rst(btn_rst),
        .clk_pix,
        .clk_locked
     );
@@ -46,10 +48,6 @@ module top_life (
         .line
     );
 
-    logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
-                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
-
     // life signals
     /* verilator lint_off UNUSED */
     logic life_start, life_alive, life_changed;
@@ -57,9 +55,9 @@ module top_life (
 
     // start life generation in blanking every GEN_FRAMES
     logic [$clog2(GEN_FRAMES)-1:0] cnt_frames;
-    always @(posedge clk_100m) begin
+    always @(posedge clk_pix) begin
         life_start <= 0;
-        if (frame_sys) begin
+        if (frame) begin
             if (cnt_frames == GEN_FRAMES-1) begin
                 life_start <= 1;
                 cnt_frames <= 0;
@@ -74,7 +72,7 @@ module top_life (
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 10;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "life_palette.mem";
+    localparam FB_PALETTE = "../res/life_palette.mem";
 
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -90,8 +88,8 @@ module top_life (
         .F_IMAGE(FB_IMAGE),
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
-        .clk_sys(clk_100m),
-        .clk_pix,
+        .clk_sys(clk_pix),
+        .clk_pix(clk_pix),
         .rst_sys(1'b0),
         .rst_pix(1'b0),
         .de,
@@ -118,7 +116,7 @@ module top_life (
         .HEIGHT(FB_HEIGHT),
         .F_INIT(SEED_FILE)
     ) life_inst (
-        .clk(clk_100m),          // clock
+        .clk(clk_pix),          // clock
         .rst(1'b0),              // reset
         .start(life_start),      // start sim generation
         .ready(fb_we),           // cell state ready to be read
@@ -133,18 +131,32 @@ module top_life (
     );
 
     // reading from FB takes one cycle: delay display signals to match
-    logic hsync_p1, vsync_p1;
-    always_ff @(posedge clk_pix) begin
+    logic hsync_p1, vsync_p1, de_p1;
+    always @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
+        de_p1 <= de;
     end
 
-    // VGA output
-    always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync_p1;
-        vga_vsync <= vsync_p1;
-        vga_r <= fb_red;
-        vga_g <= fb_green;
-        vga_b <= fb_blue;
-    end
+    // Output DVI clock: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
+    // Output DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync_p1, vsync_p1, de_p1, fb_red, fb_green, fb_blue}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 endmodule

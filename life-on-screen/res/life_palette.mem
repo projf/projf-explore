@@ -1,0 +1,6 @@
+// Project F: Life on Screen - Life Palette (2 bit)
+// Learn more at https://projectf.io
+000  // 0 - black
+FFF  // 1 - white
+FA0  // 2 - orange
+0E3  // 3 - green

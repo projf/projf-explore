@@ -1,136 +1,223 @@
-// Project F: Life on Screen - Life Simulation
-// (C)2020 Will Green, open source hardware released under the MIT License
+// Project F: Life on Screen - Conway's Game of Life Sim
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module life #(
-    parameter WORLD_WIDTH=6,
-    parameter WORLD_HEIGHT=6,
-    parameter ADDRW=$clog2(WORLD_WIDTH * WORLD_HEIGHT)
+    parameter CORDW=16,   // signed coordinate width
+    parameter WIDTH=6,    // world width in cells
+    parameter HEIGHT=6,   // world height in cells
+    parameter F_INIT=""   // initial world state
     ) (
-    input  wire logic clk,
-    input  wire logic start,
-    input  wire logic run,
-    output      logic [ADDRW-1:0] id,
-    input  wire logic r_status,
-    output      logic w_status,
-    output      logic we,
-    output      logic done
+    input  wire logic clk,             // clock
+    input  wire logic rst,             // reset
+    input  wire logic start,           // start sim generation
+    output      logic ready,           // cell state ready to be read
+    output      logic alive,           // is the cell alive? (when ready)
+    output      logic changed,         // cell's state changed (when ready)
+    output      logic signed [CORDW-1:0] x,  // horizontal cell position
+    output      logic signed [CORDW-1:0] y,  // vertical cell position
+    output      logic running,         // sim is running
+    output      logic done             // sim complete (high for one tick)
     );
 
-    // simulation parameters
-    localparam CELL_COUNT = WORLD_WIDTH * WORLD_HEIGHT;  // total number of cells
-    localparam NEIGHBOURS_COUNT = 8;  // number of neighbours each cell has
-
-    // number of alive neighbours (could be eight!)
-    logic [$clog2(NEIGHBOURS_COUNT+1)-1:0] neighbours_alive;
-
-    // internal cell and neighbour IDs
-    logic [ADDRW-1:0] cid, cid_next;
-    logic [ADDRW-1:0] nid;  // adding nid_next would improve timing slack
-    logic [$clog2(NEIGHBOURS_COUNT)-1:0] npos, npos_next;
-
-    // simulation state (once started, only stops after updating a cell)
-    enum {IDLE, NEXT_CELL, NEIGHBOURS, CURRENT_CELL, UPDATE_CELL} state, state_next;
-    always_comb begin
-        case(state)
-            IDLE: state_next = (start && !done) ? NEXT_CELL : IDLE;
-            NEXT_CELL: begin
-                if (done) begin
-                    state_next = IDLE;
-                end else if (run) begin
-                    state_next = NEIGHBOURS;
-                end else begin
-                    state_next = NEXT_CELL;
-                end
-            end
-            /* verilator lint_off WIDTH */
-            NEIGHBOURS: state_next = (npos == NEIGHBOURS_COUNT-1) ? CURRENT_CELL : NEIGHBOURS;
-            /* verilator lint_on WIDTH */
-            CURRENT_CELL: state_next = UPDATE_CELL;
-            UPDATE_CELL: state_next = NEXT_CELL;
-            default: state_next = IDLE;
-        endcase
+    // sim buffer selection
+    logic next_gen;  // where to write the next generation
+    always @(posedge clk) begin
+        if (start) next_gen <= ~next_gen;  // swap every generation
+        if (rst) next_gen <= 0;
     end
 
-    always_ff @(posedge clk) begin
-        state <= state_next;
-        cid <= cid_next;
-        npos <= npos_next;
+    // world in BRAM
+    localparam DATAW = 1;  // cells are either dead or alive
+    localparam WORLD_WIDTH  = WIDTH  + 2;  // wider to handle boundary
+    localparam WORLD_HEIGHT = HEIGHT + 2;  // taller to handle boundary
+    localparam WORLD_CELLS = WORLD_WIDTH * WORLD_HEIGHT;
+    localparam DEPTH = 2 * WORLD_CELLS;
+    localparam ADDRW = $clog2(DEPTH);
+
+    logic we;
+    logic [ADDRW-1:0] cell_id, addr_read;  // cell_id is basis of write address
+    logic [DATAW-1:0] data_in, data_out;
+
+    // add offset to read and write addresses to match buffer used
+    logic [ADDRW-1:0] addr_read_offs, addr_write_offs;
+    always_comb begin
+        addr_read_offs = addr_read + ((next_gen) ? 0 : WORLD_CELLS);
+        addr_write_offs = cell_id + ((next_gen) ? WORLD_CELLS : 0);
     end
 
-    // simulation calculations
-    always_comb begin
-        we = (state == UPDATE_CELL) ? 1 : 0;  // enable writing when updating
-        id = cid;
-        npos_next = npos;
-        cid_next = cid;
-        w_status = 0;
+    bram_sdp #(
+        .WIDTH(DATAW),
+        .DEPTH(DEPTH),
+        .INIT_F(F_INIT)
+    ) bram_inst (
+        .clk_write(clk),
+        .clk_read(clk),
+        .we,
+        .addr_write(addr_write_offs),
+        .addr_read(addr_read_offs),
+        .data_in,
+        .data_out
+    );
+
+    // cell coordinates
+    localparam GRID = 3;    // neighbours are a 3x3 grid
+    localparam STEPS = 11;  // 9 reads and 2 cycles of latency
+    logic [$clog2(WORLD_WIDTH)-1:0]  cell_x;  // active cell (horizontal)
+    logic [$clog2(WORLD_HEIGHT)-1:0] cell_y;  // active cell (vertical)
+    logic [$clog2(STEPS)-1:0] read_step;      // reading step
+    logic inc_read;                           // perform incremental read
+    logic [GRID-1:0] top_sr, mid_sr, bot_sr;  // shift reg for neighbours
+    logic [$clog2(GRID*GRID)-1:0] neigh_cnt;  // count of neighbours
+
+    // life sim state
+    enum {IDLE, INIT, READ, NEIGH, UPDATE, NEW_CELL, NEW_LINE} state;
+    initial state = IDLE;  // needed for Yosys
+    always @(posedge clk) begin
+        // single-cycle flags: 0 by default
+        ready <= 0;
+        we <= 0;
+        done <= 0;
 
         case(state)
-            IDLE: begin
-                cid_next = 0;
-                nid = 0;
-                npos_next = 0;
+            INIT: begin
+                read_step <= 0;
+                inc_read <= 0;
+                top_sr <= 0;
+                mid_sr <= 0;
+                bot_sr <= 0;
+                neigh_cnt <= 0;
+                state <= READ;
+                running <= 1;
+
+                // first cell after padding
+                cell_x <= 1;
+                cell_y <= 1;
+                cell_id <= WORLD_WIDTH + 1;
             end
-            NEIGHBOURS: begin
-                // map neighbour index onto ID
-                case (npos)
-                    3'd0: nid = cid - (WORLD_WIDTH + 1);
-                    3'd1: nid = cid - WORLD_WIDTH;
-                    3'd2: nid = cid - (WORLD_WIDTH - 1);
-                    3'd3: nid = cid - 1;
-                    3'd4: nid = cid + 1;
-                    3'd5: nid = cid + (WORLD_WIDTH - 1);
-                    3'd6: nid = cid + WORLD_WIDTH;
-                    3'd7: nid = cid + (WORLD_WIDTH + 1);
+            READ: begin  // 1 cycle to set address and 1 cycle BRAM read latency
+                case (read_step)
+                    4'd0: begin
+                        addr_read <= cell_id - WORLD_WIDTH - 1;  // A
+                    end
+                    4'd1: begin
+                        addr_read <= cell_id - 1;  // B
+                    end
+                    4'd2: begin
+                        addr_read <= cell_id + WORLD_WIDTH - 1;  // C
+                        if (!inc_read) top_sr <= {top_sr[1:0], data_out};  // A
+                    end
+                    4'd3: begin
+                        addr_read <= cell_id - WORLD_WIDTH;  // D
+                        if (!inc_read) mid_sr <= {mid_sr[1:0], data_out};  // B
+                    end
+                    4'd4: begin
+                        addr_read <= cell_id;  // E
+                        if (!inc_read) bot_sr <= {bot_sr[1:0], data_out};  // C
+                    end
+                    4'd5: begin
+                        addr_read <= cell_id + WORLD_WIDTH;  // F
+                        if (!inc_read) top_sr <= {top_sr[1:0], data_out};  // D
+                    end
+                    4'd6: begin
+                        addr_read <= cell_id - WORLD_WIDTH + 1;  // G
+                        if (!inc_read) mid_sr <= {mid_sr[1:0], data_out};  // E
+                    end
+                    4'd7: begin
+                        addr_read <= cell_id + 1;  // H
+                        if (!inc_read) bot_sr <= {bot_sr[1:0], data_out};  // F
+                    end
+                    4'd8: begin
+                        addr_read <= cell_id + WORLD_WIDTH + 1;  // I
+                        top_sr <= {top_sr[1:0], data_out};  // G
+                    end
+                    4'd9: begin
+                        mid_sr <= {mid_sr[1:0], data_out};  // H
+                    end
+                    4'd10: begin
+                        bot_sr <= {bot_sr[1:0], data_out};  // I
+                    end
+                    default: addr_read <= 0;
                 endcase
 
-                // because the life universe wraps we need to correct for possible under/overflow
-                if (nid >= CELL_COUNT) begin
-                    if (npos <= 3'd3) begin
-                        nid = CELL_COUNT - (2**ADDRW - nid);
-                    end else begin
-                        nid = nid - CELL_COUNT;
+                if (read_step == STEPS-1) state <= NEIGH;
+                else read_step <= read_step + 1;
+            end
+            NEIGH: begin
+                /* verilator lint_off WIDTH */
+                neigh_cnt <= top_sr[0] + top_sr[1] + top_sr[2] +
+                             mid_sr[0]             + mid_sr[2] +
+                             bot_sr[0] + bot_sr[1] + bot_sr[2];
+                /* verilator lint_on WIDTH */
+                state <= UPDATE;
+            end
+            UPDATE: begin
+                // update cell state
+                we <= 1;     // write new cell state next cycle
+                ready <= 1;  // ready for output next cycle
+                /* verilator lint_off WIDTH */
+                x <= cell_x - 1;  // correct horizontal position for padding
+                y <= cell_y - 1;  // correct vertical position for padding
+                /* verilator lint_on WIDTH */
+
+                if (mid_sr[1]) begin // cell was alive this generation
+                    if (neigh_cnt == 2 || neigh_cnt == 3) begin  // still alive
+                        data_in <= 1;
+                        alive <= 1;
+                        changed <= 0;
+                    end else begin  // now dead
+                        data_in <= 0;
+                        alive <= 0;
+                        changed <= 1;
+                    end
+                end else begin  // was dead this generation
+                    if (neigh_cnt == 3) begin  // now alive
+                        data_in <= 1;
+                        alive <= 1;
+                        changed <= 1;
+                    end else begin  // still dead
+                        data_in <= 0;
+                        alive <= 0;
+                        changed <= 0;
                     end
                 end
 
-                npos_next = (state == NEIGHBOURS) ? npos + 1 : 0;
-                id = nid;
+                // what next?
+                if (cell_x == WORLD_WIDTH-2) begin  // final cell on line
+                    if (cell_y == WORLD_HEIGHT-2) begin  // final line of cells
+                        state <= IDLE;
+                        running <= 0;
+                        done <= 1;
+                    end else state <= NEW_LINE;
+                end else state <= NEW_CELL;
             end
-            UPDATE_CELL: begin
-                if (r_status == 1) begin  // if cell is currently alive
-                    w_status = (neighbours_alive == 4'd2 || neighbours_alive == 4'd3) ? 1 : 0;
-                end else begin  // or dead
-                    w_status = (neighbours_alive == 4'd3) ? 1 : 0;
-                end
-
-                // ready for next cell
-                cid_next = (cid < CELL_COUNT-1) ? cid + 1 : 0;
+            NEW_CELL: begin
+                cell_x <= cell_x + 1;
+                cell_id <= cell_id + 1;
+                inc_read  <= 1;  // incremental read
+                read_step <= 6;  // read new column of 3 cells (skip A-F)
+                state <= READ;
             end
-            // consider adding a default case
+            NEW_LINE: begin
+                cell_y <= cell_y + 1;
+                cell_x <= 1;
+                cell_id <= cell_id + 3;  // skip 2 cells of padding
+                read_step <= 0;  // read all nine cells at start of line
+                state <= READ;
+            end
+            default: state <= (start) ? INIT : IDLE;  // IDLE
         endcase
-    end
-
-    always_ff @(posedge clk) begin
-        case(state)
-            IDLE: begin
-                neighbours_alive <= 0;
-                done <= 0;
-            end
-            // BRAM takes one cycle to read data, so we need to offset by one cycle
-            NEIGHBOURS: if (npos >= 3'd1) neighbours_alive <= neighbours_alive + {3'b0, r_status};
-            CURRENT_CELL: neighbours_alive <= neighbours_alive + {3'b0, r_status};
-            UPDATE_CELL: begin
-                // prepare for next cell
-                if (cid < CELL_COUNT-1) begin
-                    neighbours_alive <= 0;
-                end else begin
-                    done <= 1;
-                end
-            end
-        endcase
+        if (rst) begin
+            ready <= 0;
+            alive <= 0;
+            changed <= 0;
+            x <= 0;
+            y <= 0;
+            running <= 0;
+            done <= 0;
+        end
     end
 endmodule
