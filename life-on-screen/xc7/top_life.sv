@@ -15,7 +15,7 @@ module top_life (
     output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    localparam GEN_FRAMES = 30;  // each generation lasts this many frames
+    localparam GEN_FRAMES = 15;  // each generation lasts this many frames
     localparam SEED_FILE = "simple_64x48.mem";  // world seed
 
     // generate pixel clock
@@ -51,7 +51,9 @@ module top_life (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // life signals
+    /* verilator lint_off UNUSED */
     logic life_start, life_alive, life_changed;
+    /* verilator lint_on UNUSED */
 
     // start life generation in blanking every GEN_FRAMES
     logic [$clog2(GEN_FRAMES)-1:0] cnt_frames;
@@ -108,7 +110,7 @@ module top_life (
     );
 
     // select colour based on cell state and whether it's changed
-    always_comb fb_cidx = {life_changed, life_alive};
+    always_comb fb_cidx = {1'b0, life_alive};
 
     life #(
         .CORDW(CORDW),
@@ -124,8 +126,10 @@ module top_life (
         .changed(life_changed),  // cell's state changed (when ready)
         .x(fbx),                 // horizontal cell position
         .y(fby),                 // vertical cell position
+        /* verilator lint_off PINCONNECTEMPTY */
         .running(),              // sim is running
         .done()                  // sim complete (high for one tick)
+        /* verilator lint_on PINCONNECTEMPTY */
     );
 
     // reading from FB takes one cycle: delay display signals to match
