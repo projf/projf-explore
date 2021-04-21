@@ -1,5 +1,5 @@
 // Project F: Life on Screen - Test: Toad (Oscillator)
-// 6x6 world with 1 cell of padding - duplicated to fill sim buffer
+// 6x6 world with 1 cell of padding (8x8) - duplicated to fill sim buffer
 // Learn more at https://projectf.io
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0

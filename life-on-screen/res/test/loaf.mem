@@ -1,19 +1,19 @@
-// Project F: Life on Screen - Test: Beehive (Still Life)
-// 6x6 world with 1 cell of padding - duplicated to fill sim buffer
+// Project F: Life on Screen - Test: Loaf (Still Life)
+// 6x6 world with 1 cell of padding (8x8) - duplicated to fill sim buffer
 // Learn more at https://projectf.io
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 1 1 0 0 0
 0 0 1 0 0 1 0 0
-0 0 0 1 1 0 0 0
-0 0 0 0 0 0 0 0
+0 0 0 1 0 1 0 0
+0 0 0 0 1 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 1 1 0 0 0
 0 0 1 0 0 1 0 0
-0 0 0 1 1 0 0 0
-0 0 0 0 0 0 0 0
+0 0 0 1 0 1 0 0
+0 0 0 0 1 0 0 0
 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0

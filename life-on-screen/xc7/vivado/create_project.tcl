@@ -60,21 +60,22 @@ set design_sources [list \
   [file normalize "${origin_dir}/framebuffer.sv"] \
   [file normalize "${origin_dir}/linebuffer.sv"] \
   [file normalize "${origin_dir}/life.sv"] \
-  [file normalize "${origin_dir}/new_life.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/life/gosper_glider.mem"] \
-  [file normalize "${origin_dir}/res/life/life_palette.mem"] \
-  [file normalize "${origin_dir}/res/life/simple_life.mem"] \
-  [file normalize "${origin_dir}/res/life/test_beacon.mem"] \
-  [file normalize "${origin_dir}/res/life/test_beehive.mem"] \
-  [file normalize "${origin_dir}/res/life/test_blinker.mem"] \
-  [file normalize "${origin_dir}/res/life/test_block.mem"] \
-  [file normalize "${origin_dir}/res/life/test_loaf.mem"] \
-  [file normalize "${origin_dir}/res/life/test_toad.mem"] \
+  [file normalize "${origin_dir}/res/life_palette.mem"] \
+  [file normalize "${origin_dir}/res/seed/glider_64x48.mem"] \
+  [file normalize "${origin_dir}/res/seed/gosper_gun_64x48.mem"] \
+  [file normalize "${origin_dir}/res/seed/simple_64x48.mem"] \
+  [file normalize "${origin_dir}/res/test/beacon.mem"] \
+  [file normalize "${origin_dir}/res/test/beehive.mem"] \
+  [file normalize "${origin_dir}/res/test/blinker.mem"] \
+  [file normalize "${origin_dir}/res/test/block.mem"] \
+  [file normalize "${origin_dir}/res/test/glider.mem"] \
+  [file normalize "${origin_dir}/res/test/loaf.mem"] \
+  [file normalize "${origin_dir}/res/test/toad.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
@@ -93,9 +94,7 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${origin_dir}/xc7/life_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/new_life_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/vivado/new_life_tb_behav.wcfg"] \
-
+  [file normalize "${origin_dir}/xc7/vivado/life_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
