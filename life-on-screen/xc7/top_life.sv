@@ -1,4 +1,4 @@
-// Project F: Life on Screen - Top Life Simulation (Arty with Pmod VGA)
+// Project F: Life on Screen - Top Life Sim (Arty with Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -109,7 +109,7 @@ module top_life (
         .blue(fb_blue)
     );
 
-    // select colour based on cell state and whether it's changed
+    // select colour based on cell state
     always_comb fb_cidx = {1'b0, life_alive};
 
     life #(

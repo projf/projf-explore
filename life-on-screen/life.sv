@@ -23,7 +23,7 @@ module life #(
     output      logic done             // sim complete (high for one tick)
     );
 
-    // buffer selection
+    // sim buffer selection
     logic next_gen;  // where to write the next generation
     always @(posedge clk) begin
         if (start) next_gen <= ~next_gen;  // swap every generation
@@ -45,7 +45,7 @@ module life #(
     // add offset to read and write addresses to match buffer used
     logic [ADDRW-1:0] addr_read_offs, addr_write_offs;
     always_comb begin
-        addr_read_offs  = addr_read  + ((next_gen) ? 0 : WORLD_CELLS);
+        addr_read_offs = addr_read + ((next_gen) ? 0 : WORLD_CELLS);
         addr_write_offs = cell_id + ((next_gen) ? WORLD_CELLS : 0);
     end
 
@@ -64,8 +64,8 @@ module life #(
     );
 
     // cell coordinates
-    localparam GRID = 3;    // examine 3x3 grid to determine neighbours
-    localparam STEPS = 12;  // 9 reads, 2 cycle latency, 1 neighbour count
+    localparam GRID = 3;    // neighbours are a 3x3 grid
+    localparam STEPS = 11;  // 9 reads and 2 cycles of latency
     logic [$clog2(WORLD_WIDTH)-1:0]  cell_x;  // active cell (horizontal)
     logic [$clog2(WORLD_HEIGHT)-1:0] cell_y;  // active cell (vertical)
     logic [$clog2(STEPS)-1:0] read_step;      // reading step
@@ -74,30 +74,29 @@ module life #(
     logic [$clog2(GRID*GRID)-1:0] neigh_cnt;  // count of neighbours
 
     // life sim state
-    enum {IDLE, INIT, READ, UPDATE, NEW_CELL, NEW_LINE,
-          PAD_L, PAD_R, PAD_T, PAD_B} state;
+    enum {IDLE, INIT, READ, NEIGH, UPDATE, NEW_CELL, NEW_LINE} state;
     initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
+        // single-cycle flags: 0 by default
         ready <= 0;
         we <= 0;
         done <= 0;
 
         case(state)
             INIT: begin
-                // first cell after padding
-                cell_x <= 1;
-                cell_y <= 1;
-                cell_id <= WORLD_WIDTH + 1;
                 read_step <= 0;
                 inc_read <= 0;
                 top_sr <= 0;
                 mid_sr <= 0;
                 bot_sr <= 0;
                 neigh_cnt <= 0;
-
                 state <= READ;
                 running <= 1;
-                done <= 0;
+
+                // first cell after padding
+                cell_x <= 1;
+                cell_y <= 1;
+                cell_id <= WORLD_WIDTH + 1;
             end
             READ: begin  // 1 cycle to set address and 1 cycle BRAM read latency
                 case (read_step)
@@ -141,29 +140,30 @@ module life #(
                     4'd10: begin
                         bot_sr <= {bot_sr[1:0], data_out};  // I
                     end
-                    4'd11: begin  // should be another state machine step
-                        /* verilator lint_off WIDTH */
-                        neigh_cnt <= top_sr[0] + top_sr[1] + top_sr[2] +
-                                     mid_sr[0]             + mid_sr[2] +
-                                     bot_sr[0] + bot_sr[1] + bot_sr[2];
-                        /* verilator lint_on WIDTH */
-                    end
                     default: addr_read <= 0;
                 endcase
 
-                if (read_step == STEPS-1) state <= UPDATE;
+                if (read_step == STEPS-1) state <= NEIGH;
                 else read_step <= read_step + 1;
+            end
+            NEIGH: begin
+                /* verilator lint_off WIDTH */
+                neigh_cnt <= top_sr[0] + top_sr[1] + top_sr[2] +
+                             mid_sr[0]             + mid_sr[2] +
+                             bot_sr[0] + bot_sr[1] + bot_sr[2];
+                /* verilator lint_on WIDTH */
+                state <= UPDATE;
             end
             UPDATE: begin
                 // update cell state
-                we <= 1;  // write new state next cycle
-                ready <= 1;  // ready for output read next cycle
+                we <= 1;     // write new cell state next cycle
+                ready <= 1;  // ready for output next cycle
                 /* verilator lint_off WIDTH */
-                x <= cell_x - 1;  // correct for padding
-                y <= cell_y - 1;  // correct for padding
+                x <= cell_x - 1;  // correct horizontal position for padding
+                y <= cell_y - 1;  // correct vertical position for padding
                 /* verilator lint_on WIDTH */
 
-                if (mid_sr[1]) begin // cell is alive this generation
+                if (mid_sr[1]) begin // cell was alive this generation
                     if (neigh_cnt == 2 || neigh_cnt == 3) begin  // still alive
                         data_in <= 1;
                         alive <= 1;
@@ -173,7 +173,7 @@ module life #(
                         alive <= 0;
                         changed <= 1;
                     end
-                end else begin  // was is dead this generation
+                end else begin  // was dead this generation
                     if (neigh_cnt == 3) begin  // now alive
                         data_in <= 1;
                         alive <= 1;
@@ -188,7 +188,9 @@ module life #(
                 // what next?
                 if (cell_x == WORLD_WIDTH-2) begin  // final cell on line
                     if (cell_y == WORLD_HEIGHT-2) begin  // final line of cells
-                        state <= PAD_L;
+                        state <= IDLE;
+                        running <= 0;
+                        done <= 1;
                     end else state <= NEW_LINE;
                 end else state <= NEW_CELL;
             end
@@ -206,32 +208,14 @@ module life #(
                 read_step <= 0;  // read all nine cells at start of line
                 state <= READ;
             end
-            PAD_L: begin
-                // not yet implemented
-                state <= PAD_R;
-            end
-            PAD_R: begin
-                // not yet implemented
-                state <= PAD_T;
-            end
-            PAD_T: begin
-                // not yet implemented
-                state <= PAD_B;
-            end
-            PAD_B: begin
-                // not yet implemented
-                state <= IDLE;
-                running <= 0;
-                done <= 1;
-            end
             default: state <= (start) ? INIT : IDLE;  // IDLE
         endcase
         if (rst) begin
-            x <= 0;
-            y <= 0;
             ready <= 0;
             alive <= 0;
             changed <= 0;
+            x <= 0;
+            y <= 0;
             running <= 0;
             done <= 0;
         end
