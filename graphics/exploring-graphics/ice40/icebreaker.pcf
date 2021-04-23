@@ -1,0 +1,28 @@
+## Project F: Exploring FPGA Graphics - iCEBreaker Board Constraints (DVI)
+## (C)2021 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io
+
+## Board Clock: 12 MHz
+set_frequency  clk_12m      12
+set_io -nowarn clk_12m      35
+
+## Buttons
+set_io -nowarn btn_rst      10
+
+## 12-bit DVI Pmod on Pmod 1A/1B
+set_io -nowarn dvi_clk      38
+set_io -nowarn dvi_hsync    31
+set_io -nowarn dvi_vsync    28
+set_io -nowarn dvi_de       32
+set_io -nowarn dvi_r[0]     48
+set_io -nowarn dvi_r[1]      2
+set_io -nowarn dvi_r[2]      3
+set_io -nowarn dvi_r[3]      4
+set_io -nowarn dvi_g[0]     44
+set_io -nowarn dvi_g[1]     45
+set_io -nowarn dvi_g[2]     46
+set_io -nowarn dvi_g[3]     47
+set_io -nowarn dvi_b[0]     34
+set_io -nowarn dvi_b[1]     36
+set_io -nowarn dvi_b[2]     42
+set_io -nowarn dvi_b[3]     43

@@ -1,0 +1,20 @@
+// Project F Library - Test 16 Colour Palette
+// PICO-8 Palette with 4 bits per channel
+// Learn more at https://projectf.io
+
+000  // 0 - black
+235  // 1 - dark-blue
+825  // 2 - dark-purple
+085  // 3 - dark-green
+B53  // 4 - brown
+655  // 5 - dark-grey
+CCC  // 6 - light-grey
+FFF  // 7 - white
+F05  // 8 - red
+FA0  // 9 - orange
+FF2  // A - yellow
+0E3  // B - green
+3BF  // C - blue
+87A  // D - indigo
+F7B  // E - pink
+FCA  // F - peach

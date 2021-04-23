@@ -10,7 +10,9 @@
 webtalk.*
 
 # IceStorm
-build/
+*yosys.log
+*.bin
+*.rpt
 
 # Mac
 .DS_Store

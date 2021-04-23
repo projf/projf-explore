@@ -1,31 +1,52 @@
-# Project F: Exploring FPGAs
+# Exploring FPGAs from Project F
 
-This repository contains the SystemVerilog designs to accompany the Project F [Exploring FPGAs](https://projectf.io/tags/explore/) series. The designs are open source hardware under the permissive [MIT licence](LICENSE), but the blog is subject to normal copyright restrictions.
+Project F brings FPGAs to life with exciting [open-source](LICENSE) designs you can build on.
+Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
 
-## FPGA Graphics
+## Graphics
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how displays work, race the beam with Pong, animate starfields and sprites, paint Michelangelo's David, simulate life with bitmaps, draw lines and shapes, and finally render simple 3D models.
+In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. If you're new to the
+series, start by reading the [Exploring FPGA Graphics](https://projectf.io/posts/fpga-graphics/) blog post.
 
-* **Exploring FPGA Graphics**: [Design Sources](fpga-graphics) - [Blog Post](https://projectf.io/posts/fpga-graphics/)
-* **FPGA Pong**: [Design Sources](fpga-pong) - [Blog Post](https://projectf.io/posts/fpga-pong/)
-* **Hardware Sprites**: [Design Sources](hardware-sprites) - [Blog Post](https://projectf.io/posts/hardware-sprites/)
-* **FPGA Ad Astra**: [Design Sources](fpga-ad-astra) - [Blog Post](https://projectf.io/posts/fpga-ad-astra/)
-* **Framebuffers**: [Design Sources](framebuffers) - [Blog Post](https://projectf.io/posts/framebuffers/)
-* **Life on Screen** - [Design Sources](life-on-screen) - [Blog Post](https://projectf.io/posts/life-on-screen/)
-* **Lines and Triangles** - [Design Sources](lines-and-triangles) - [Blog Post](https://projectf.io/posts/lines-and-triangles/)
-* **FPGA Shapes** - [Design Sources](fpga-shapes) - [Blog Post](https://projectf.io/posts/fpga-shapes/)
+* **Exploring FPGA Graphics**: [Designs](graphics/exploring-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
+* **Pong**: [Designs](graphics/pong) - [Blog](https://projectf.io/posts/fpga-pong/)
+* **Hardware Sprites**: [Designs](graphics/hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
+* **Ad Astra**: [Designs](graphics/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
+* **Framebuffers**: [Designs](graphics/framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
+* **Life on Screen** - [Designs](graphics/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
+* **Lines and Triangles** - [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
+* **Shapes** - [Designs](graphics/shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
 * **Simple 3D** - _coming soon_
 
-## Hello - Learning FPGA Development
+## Hello
 
-A three-part introduction to FPGA development and Verilog with the Digilent Arty or Nexys Video boards:
+A three-part introduction to FPGA development with Verilog; currently available for two boards: the Arty A7 and Nexys Video.
 
-* **Hello Arty**: [Design Sources](hello-arty)
-  * [Blog Post 1](https://projectf.io/posts/hello-arty-1/)
-  * [Blog Post 2](https://projectf.io/posts/hello-arty-2/)
-  * Blog Post 3 (coming spring 2021)
+* **Hello Arty**: [Designs](hello/hello-arty) - [Blog 1](https://projectf.io/posts/hello-arty-1/) - [Blog 2](https://projectf.io/posts/hello-arty-2/)
+* **Hello Nexys**: [Designs](hello/hello-nexys) - [Blog 1](https://projectf.io/posts/hello-nexys-1/) - [Blog 2](https://projectf.io/posts/hello-nexys-2/)
 
-* **Hello Nexys**: [Design Sources](hello-nexys)
-  * [Blog Post 1](https://projectf.io/posts/hello-nexys-1/)
-  * [Blog Post 2](https://projectf.io/posts/hello-nexys-2/)
-  * Blog Post 3 (coming spring 2021)
+The third part will be available in spring 2021.
+
+## Maths
+
+Maths & Algorithms is our next topic. Stay tuned for this series in 2021.
+
+## Library
+
+Verilog library used across Project F. See [Library](lib/) for details.
+
+## Requirements
+
+### FPGA
+
+Our designs seek to be vendor-neutral, but some functionality requires
+support for vendor primitives. We currently support two FPGA architectures:
+
+* **XC7** - Xilinx Series 7 FPGAs, such as Spartan-7 and Arty-7
+* **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPLus
+
+Porting to other architectures should be straightforward.
+
+### SystemVerilog
+
+We use a few choice features from SystemVerilog to make Verilog a little more pleasant. If you’re familiar with Verilog, you’ll have no trouble. All the designs are tested with Yosys and Vivado.
