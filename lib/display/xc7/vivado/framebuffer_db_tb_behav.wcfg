@@ -13,11 +13,11 @@
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
       <ZoomEndTime time="148240001fs"></ZoomEndTime>
-      <Cursor1Time time="69600000fs"></Cursor1Time>
+      <Cursor1Time time="36360000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="197"></NameColumnWidth>
-      <ValueColumnWidth column_width="83"></ValueColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="116" />
    <wvobject fp_name="/framebuffer_db_tb/clk_25m" type="logic">
@@ -111,10 +111,12 @@
    <wvobject fp_name="/framebuffer_db_tb/fbx" type="array">
       <obj_property name="ElementShortName">fbx[15:0]</obj_property>
       <obj_property name="ObjectShortName">fbx[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_db_tb/fby" type="array">
       <obj_property name="ElementShortName">fby[15:0]</obj_property>
       <obj_property name="ObjectShortName">fby[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_db_tb/fb_cidx" type="array">
       <obj_property name="ElementShortName">fb_cidx[3:0]</obj_property>

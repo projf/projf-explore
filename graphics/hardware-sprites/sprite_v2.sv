@@ -49,6 +49,7 @@ module sprite_v2 #(
         DRAW,       // draw pixel
         NEXT_LINE   // prepare for next sprite line
     } state, state_next;
+    initial state = IDLE;  // needed for Yosys
 
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state
@@ -107,7 +108,7 @@ module sprite_v2 #(
 
     // determine next state
     always_comb begin
-        case(state)
+        case (state)
             IDLE:       state_next = start ? START : IDLE;
             START:      state_next = AWAIT_POS;
             AWAIT_POS:  state_next = (sx == sprx-1) ? DRAW : AWAIT_POS;

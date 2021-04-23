@@ -43,30 +43,42 @@ module display_timings_24x18 #(
     localparam signed VA_STA = 0;                           // active start
     localparam signed VA_END = V_RES - 1;                   // active end
 
+    logic signed [CORDW-1:0] x, y;  // screen position
+
     // generate horizontal and vertical syncs with correct polarity
-    always_comb begin
-        hsync = H_POL ? (sx > HS_STA && sx <= HS_END)
-                     : ~(sx > HS_STA && sx <= HS_END);
-        vsync = V_POL ? (sy > VS_STA && sy <= VS_END)
-                     : ~(sy > VS_STA && sy <= VS_END);
+    always_ff @(posedge clk_pix) begin
+        hsync <= H_POL ? (x > HS_STA && x <= HS_END)
+                      : ~(x > HS_STA && x <= HS_END);
+        vsync <= V_POL ? (y > VS_STA && y <= VS_END)
+                      : ~(y > VS_STA && y <= VS_END);
     end
 
     // control signals
-    always_comb begin
-        de    = (sy >= VA_STA && sx >= HA_STA);
-        frame = (sy == V_STA  && sx == H_STA);
-        line  = (sy >= VA_STA && sx == H_STA);
-        if (rst) frame = 0;  // don't assert frame in reset
+    always_ff @(posedge clk_pix) begin
+        de    <= (y >= VA_STA && x >= HA_STA);
+        frame <= (y == V_STA  && x == H_STA);
+        line  <= (y >= VA_STA && x == H_STA);
+        if (rst) frame <= 0;  // don't assert frame in reset
     end
 
     // calculate horizontal and vertical screen position
-    always_ff @ (posedge clk_pix) begin
-        if (sx == HA_END) begin  // last pixel on line?
-            sx <= H_STA;
-            sy <= (sy == VA_END) ? V_STA : sy + 1;  // last line on screen?
+    always_ff @(posedge clk_pix) begin
+        if (x == HA_END) begin  // last pixel on line?
+            x <= H_STA;
+            y <= (y == VA_END) ? V_STA : y + 1;  // last line on screen?
         end else begin
-            sx <= sx + 1;
+            x <= x + 1;
         end
+        if (rst) begin
+            x <= H_STA;
+            y <= V_STA;
+        end
+    end
+
+    // align screen position with sync and control signals
+    always_ff @ (posedge clk_pix) begin
+        sx <= x;
+        sy <= y;
         if (rst) begin
             sx <= H_STA;
             sy <= V_STA;

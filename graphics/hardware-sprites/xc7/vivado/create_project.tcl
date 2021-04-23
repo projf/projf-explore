@@ -23,6 +23,9 @@ set _xil_proj_name_ "hardware-sprites"
 set lib_dir [file normalize "./../../../../lib"]
 set origin_dir [file normalize "./../../"]
 
+puts "INFO: Library directory: ${lib_dir}"
+puts "INFO: Origin directory:  ${origin_dir}"
+
 # Set the directory path for the project
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
 
@@ -91,13 +94,15 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${lib_dir}/display/xc7/display_timings_480p_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/display_timings_480p_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/sprite_v1_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_v2_tb.sv"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "sprite_v1_tb" -objects $fs_sim_obj
+set_property -name "top" -value "display_timings_480p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
@@ -125,4 +130,4 @@ unset projf_fpga_part
 # Done
 #
 
-puts "INFO: Project created:${_xil_proj_name_}"
+puts "INFO: Project created: ${_xil_proj_name_}"

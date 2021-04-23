@@ -15,24 +15,28 @@ module display_timings_480p_tb();
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
-    clock_gen clock_640x480 (
+    clock_gen_480p clock_pix_inst (
        .clk(clk_100m),
-       .rst(rst),
+       .rst,
        .clk_pix,
        .clk_locked
     );
 
     // display timings
-    logic [9:0] sx, sy;
-    logic hsync, vsync, de;
-    display_timings_480p timings_640x480 (
+    localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
-        .rst(!clk_locked),
+        .rst(!clk_locked),  // wait for pixel clock lock
         .sx,
         .sy,
         .hsync,
         .vsync,
-        .de
+        .de,
+        .frame,
+        .line
     );
 
     // generate clock

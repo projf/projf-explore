@@ -23,6 +23,9 @@ set _xil_proj_name_ "framebuffers"
 set lib_dir [file normalize "./../../../../lib"]
 set origin_dir [file normalize "./../../"]
 
+puts "INFO: Library directory: ${lib_dir}"
+puts "INFO: Origin directory:  ${origin_dir}"
+
 # Set the directory path for the project
 set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
 
@@ -135,4 +138,4 @@ unset projf_fpga_part
 # Done
 #
 
-puts "INFO: Project created:${_xil_proj_name_}"
+puts "INFO: Project created: ${_xil_proj_name_}"

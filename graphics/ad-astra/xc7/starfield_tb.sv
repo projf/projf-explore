@@ -1,4 +1,4 @@
-// Project F: Exploring FPGA Graphics - Starfield Testbench
+// Project F: FPGA Graphics - Starfield Testbench
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

@@ -87,8 +87,9 @@ module top_pong (
 
     // game state
     enum {INIT, IDLE, START, PLAY, POINT_END} state, state_next;
+    initial state = IDLE;  // needed for Yosys
     always_comb begin
-        case(state)
+        case (state)
             INIT: state_next = IDLE;
             IDLE: state_next = (sig_ctrl) ? START : IDLE;
             START: state_next = (sig_ctrl) ? PLAY : START;

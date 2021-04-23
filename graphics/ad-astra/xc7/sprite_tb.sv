@@ -1,4 +1,4 @@
-// Project F: Exploring FPGA Graphics - Sprite (1-bit per Pixel) Test Bench
+// Project F: FPGA Graphics - Sprite (1-bit per Pixel) Test Bench
 // (C)2020 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
