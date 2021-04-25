@@ -1,4 +1,4 @@
-// Project F: 2D Shapes - Draw Filled Rectangle
+// Project F Library - Draw Filled Rectangle
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -39,6 +39,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
     initial state = IDLE;  // needed for Yosys
     always @(posedge clk) begin
         line_start <= 0;
+        done <= 0;
         case (state)
             INIT: begin  // register coordinates
                 // x-coordinates don't change for a given filled rectangle
@@ -60,7 +61,6 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
                 end
             end
             default: begin  // IDLE
-                done <= 0;
                 if (start) begin
                     line_id <= 0;
                     state <= INIT;

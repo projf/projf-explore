@@ -1,4 +1,4 @@
-// Project F: Lines and Triangles - Draw Line
+// Project F Library - Draw Line
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

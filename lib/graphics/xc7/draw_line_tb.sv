@@ -1,4 +1,4 @@
-// Project F: Lines and Triangles - Draw Line Test Bench
+// Project F Library - Draw Line Test Bench
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

@@ -15,10 +15,11 @@ ADD_SRC += ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
 ADD_SRC += ${PATH_LIB}/display/display_timings_480p.sv
 ADD_SRC += ${PATH_LIB}/display/framebuffer.sv
 ADD_SRC += ${PATH_LIB}/display/linebuffer.sv
+ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
+ADD_SRC += ${PATH_LIB}/graphics/draw_triangle.sv
 ADD_SRC += ${PATH_LIB}/maths/lfsr.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
 ADD_SRC += ${PATH_LIB}/memory/ice40/bram_sdp.sv 
-ADD_SRC += ../draw_line.sv ../draw_triangle.sv
 
 top_triangles: top_triangles.rpt top_triangles.bin
 top_line: top_line.rpt top_line.bin

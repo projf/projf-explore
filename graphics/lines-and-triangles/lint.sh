@@ -15,6 +15,7 @@ if [ -d "${DIR}/xc7-hd" ]; then
             -I${LIB}/clock     -I${LIB}/clock/xc7 \
             -I${LIB}/display   -I${LIB}/display/xc7 \
             -I${LIB}/essential -I${LIB}/essential/xc7 \
+            -I${LIB}/graphics  -I${LIB}/graphics/xc7 \
             -I${LIB}/maths     -I${LIB}/maths/xc7 \
             -I${LIB}/memory    -I${LIB}/memory/xc7 \
             -I${LIB}/null/xc7 $f;
@@ -29,6 +30,7 @@ if [ -d "${DIR}/xc7" ]; then
             -I${LIB}/clock     -I${LIB}/clock/xc7 \
             -I${LIB}/display   -I${LIB}/display/xc7 \
             -I${LIB}/essential -I${LIB}/essential/xc7 \
+            -I${LIB}/graphics  -I${LIB}/graphics/xc7 \
             -I${LIB}/maths     -I${LIB}/maths/xc7 \
             -I${LIB}/memory    -I${LIB}/memory/xc7 \
             -I${LIB}/null/xc7 $f;
@@ -43,9 +45,9 @@ if [ -d "${DIR}/ice40" ]; then
             -I${LIB}/clock     -I${LIB}/clock/ice40 \
             -I${LIB}/display   -I${LIB}/display/ice40 \
             -I${LIB}/essential -I${LIB}/essential/ice40 \
+            -I${LIB}/graphics  -I${LIB}/graphics/ice40 \
             -I${LIB}/maths     -I${LIB}/maths/ice40 \
             -I${LIB}/memory    -I${LIB}/memory/ice40 \
             -I${LIB}/null/ice40 $f;
     done
 fi
-
