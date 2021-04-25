@@ -1,4 +1,4 @@
-// Project F: 2D Shapes - Draw Filled Rectangle Test Bench
+// Project F Library - Draw Filled Rectangle Test Bench
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

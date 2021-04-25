@@ -62,10 +62,10 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
   [file normalize "${lib_dir}/display/framebuffer.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
+  [file normalize "${lib_dir}/graphics/draw_line.sv"] \
+  [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
-  [file normalize "${origin_dir}/draw_line.sv"] \
-  [file normalize "${origin_dir}/draw_triangle.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -91,13 +91,10 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
-  [file normalize "${origin_dir}/xc7/draw_framebuffer_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/draw_line_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/draw_triangle_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/vivado/draw_framebuffer_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7/vivado/draw_line_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7/vivado/draw_triangle_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/graphics/xc7/draw_line_tb.sv"] \
+  [file normalize "${lib_dir}/graphics/xc7/draw_triangle_tb.sv"] \
+  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_line_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_triangle_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
