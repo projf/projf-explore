@@ -57,7 +57,7 @@ module top_life (
 
     // start life generation in blanking every GEN_FRAMES
     logic [$clog2(GEN_FRAMES)-1:0] cnt_frames;
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         life_start <= 0;
         if (frame_sys) begin
             if (cnt_frames == GEN_FRAMES-1) begin

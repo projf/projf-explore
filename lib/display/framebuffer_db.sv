@@ -43,7 +43,7 @@ module framebuffer_db #(
 
     // buffer selection
     logic front_buf;
-    always @(posedge clk_sys) begin
+    always_ff @(posedge clk_sys) begin
         if (frame_sys) front_buf <= ~front_buf;  // swap every frame
         if (rst_sys) front_buf <= 0;
     end
@@ -65,7 +65,7 @@ module framebuffer_db #(
     // write state machine
     enum {IDLE, INIT, CLR, ACTIVE} wstate;
     initial wstate = IDLE;  // needed for Yosys
-    always @(posedge clk_sys) begin
+    always_ff @(posedge clk_sys) begin
         case (wstate)
             INIT: wstate <= (clear) ? CLR : ACTIVE;
             CLR: if (fb_addr_clr == FB_PIXELS-1) wstate <= ACTIVE;
@@ -150,7 +150,7 @@ module framebuffer_db #(
     // LB enable in: address calc and CLUT reg add three cycles of latency
     localparam LAT = 3;  // write latency
     logic [LAT-1:0] lb_en_in_sr;
-    always @(posedge clk_sys) begin
+    always_ff @(posedge clk_sys) begin
         lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
         if (rst_sys) lb_en_in_sr <= 0;
     end
@@ -182,7 +182,7 @@ module framebuffer_db #(
     );
 
     // improve timing with register between BRAM and async ROM
-    always @(posedge clk_sys) fb_cidx_read_p1 <= fb_cidx_read;
+    always_ff @(posedge clk_sys) fb_cidx_read_p1 <= fb_cidx_read;
 
     // colour lookup table (ROM)
     localparam CLUTW = 3 * CHANW;

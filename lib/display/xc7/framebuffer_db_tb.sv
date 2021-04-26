@@ -101,7 +101,7 @@ module framebuffer_db_tb();
 
     // draw line across middle of framebuffer
     enum {IDLE, INIT, DRAW, DONE} state;
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         case (state)
             INIT:
                 if (fb_wready) begin

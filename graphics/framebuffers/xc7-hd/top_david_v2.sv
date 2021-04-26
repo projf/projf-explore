@@ -126,7 +126,7 @@ module top_david_v2 (
 
     // add register between BRAM and CLUT (async ROM)
     logic [FB_DATAW-1:0] fb_cidx_read_p1;
-    always @(posedge clk_pix) fb_cidx_read_p1 <= fb_cidx_read;
+    always_ff @(posedge clk_pix) fb_cidx_read_p1 <= fb_cidx_read;
 
     // colour lookup table (ROM) 16x12-bit entries
     logic [11:0] clut_colr;
@@ -142,7 +142,7 @@ module top_david_v2 (
     // BRAM read and CLUT reg add two cycles of latency
     localparam LAT = 2;  // display latency
     logic [LAT-1:0] paint_sr, hsync_sr, vsync_sr, de_sr;
-    always @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         paint_sr <= {paint, paint_sr[LAT-1:1]};
         hsync_sr <= {hsync, hsync_sr[LAT-1:1]};
         vsync_sr <= {vsync, vsync_sr[LAT-1:1]};

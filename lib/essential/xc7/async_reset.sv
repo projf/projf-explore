@@ -16,7 +16,7 @@ module async_reset (
     initial rst_out = 1'b1;     // start off with reset asserted
     initial rst_shf = 2'b11;    //  and reset shift reg populated
 
-    always @(posedge clk or posedge rst_in) begin
+    always_ff @(posedge clk or posedge rst_in) begin
         /* verilator lint_off SYNCASYNCNET */
         if (rst_in) {rst_out, rst_shf} <= 3'b111;
         else {rst_out, rst_shf} <= {rst_shf, 1'b0};

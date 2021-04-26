@@ -116,7 +116,7 @@ module framebuffer #(
     // LB enable in: address calc and CLUT reg add three cycles of latency
     localparam LAT = 3;  // write latency
     logic [LAT-1:0] lb_en_in_sr;
-    always @(posedge clk_sys) begin
+    always_ff @(posedge clk_sys) begin
         lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
         if (rst_sys) lb_en_in_sr <= 0;
     end
@@ -148,7 +148,7 @@ module framebuffer #(
     );
 
     // improve timing with register between BRAM and async ROM
-    always @(posedge clk_sys) fb_cidx_read_p1 <= fb_cidx_read;
+    always_ff @(posedge clk_sys) fb_cidx_read_p1 <= fb_cidx_read;
 
     // colour lookup table (ROM)
     localparam CLUTW = 3 * CHANW;

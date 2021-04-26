@@ -92,7 +92,7 @@ module top_david (
     // draw box around framebuffer
     enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         case (state)
             TOP:
                 if (fbx < FB_WIDTH-1) begin

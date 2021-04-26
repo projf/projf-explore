@@ -25,7 +25,7 @@ module life #(
 
     // world buffer selection
     logic next_gen;  // where to write the next generation
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         if (start) next_gen <= ~next_gen;  // swap every generation
         if (rst) next_gen <= 0;
     end
@@ -76,7 +76,7 @@ module life #(
     // life generation state
     enum {IDLE, INIT, READ, NEIGH, UPDATE, NEW_CELL, NEW_LINE} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         // single-cycle flags: 0 by default
         ready <= 0;
         we <= 0;

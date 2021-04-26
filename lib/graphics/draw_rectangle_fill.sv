@@ -37,7 +37,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
 
     enum {IDLE, INIT, DRAW} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         line_start <= 0;
         done <= 0;
         case (state)

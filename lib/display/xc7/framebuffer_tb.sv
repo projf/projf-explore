@@ -96,7 +96,7 @@ module framebuffer_tb();
 
     // draw line across middle of framebuffer
     enum {IDLE, DRAW, DONE} state;
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         case (state)
             DRAW:
                 if (fbx < FB_WIDTH-1) begin

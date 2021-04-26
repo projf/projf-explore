@@ -2,7 +2,7 @@
 # (C)2021 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
-puts "INFO: Project F - FPGA Shapes Project Creation Script"
+puts "INFO: Project F - 2D Shapes Project Creation Script"
 
 # If the FPGA board/part isn't set use Nexys Video
 if {! [info exists fpga_part]} {

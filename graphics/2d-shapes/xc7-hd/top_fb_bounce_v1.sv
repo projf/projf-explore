@@ -125,7 +125,7 @@ module top_fb_bounce_v1 (
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
@@ -163,7 +163,7 @@ module top_fb_bounce_v1 (
 
 // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
-    always @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
         de_p1 <= de;

@@ -102,7 +102,7 @@ module top_tunnel (
     logic [$clog2(ANIM_CNT)-1:0] cnt_anim;
     logic [$clog2(ANIM_SPEED)-1:0] cnt_anim_speed;
     logic [FB_CIDXW-1:0] colr_offs;  // colour offset
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
             if (cnt_anim_speed == ANIM_SPEED-1) begin
                 if (cnt_anim == ANIM_CNT-1) begin
@@ -123,7 +123,7 @@ module top_tunnel (
     // draw state machine
     enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk_100m) begin
+    always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
@@ -224,7 +224,7 @@ module top_tunnel (
 
 // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
-    always @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
         de_p1 <= de;

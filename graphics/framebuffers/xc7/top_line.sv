@@ -72,7 +72,7 @@ module top_line (
     logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
     enum {IDLE, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
-    always @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         case (state)
             DRAW:
                 if (cnt_draw < FB_WIDTH-1) begin
@@ -111,7 +111,7 @@ module top_line (
 
     // reading from BRAM takes one cycle: delay display signals to match
     logic paint_p1, hsync_p1, vsync_p1;
-    always @(posedge clk_pix) begin
+    always_ff @(posedge clk_pix) begin
         paint_p1 <= paint;
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
