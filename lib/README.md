@@ -2,7 +2,7 @@
 
 Verilog designs used across Project F.
 
-This section of the repository is still being populated.
+This section of the repository is still being populated. Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
 
 * [clock](clock) - clock generation (PLL) and domain crossing
 * [display](display) - display timings, DVI, and HDMI output
@@ -13,7 +13,7 @@ This section of the repository is still being populated.
 * [null](null) - null modules for linting
 * [res](res) - resource files for testing
 
-_Documentation and test benches will be added shortly._
+_More documentation will be added shortly._
 
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
