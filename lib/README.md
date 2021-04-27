@@ -1,6 +1,8 @@
 # Verilog Library from Project F
 
-The Library includes handy Verilog designs from across Project F. You can [learn the background to the Library](https://projectf.io/posts/verilog-library-announcement/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
+The Library includes handy Verilog designs from across Project F.
+
+You can [learn the background to the Library](https://projectf.io/posts/verilog-library-announcement/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
 
 * [clock](clock) - clock generation (PLL) and domain crossing
 * [display](display) - display timings, framebuffer, DVI/HDMI output
