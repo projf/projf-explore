@@ -108,23 +108,26 @@ module top_cube (
         .data(rom_data)
     );
 
-    // sine table
-    localparam SIN_DEPTH=64;  // entires in sine ROM 0°-90°
-    localparam SIN_WIDTH=8;   // width of sine ROM data
-    localparam SIN_ADDRW=$clog2(4*SIN_DEPTH);   // full table -180° to +180°
-    localparam SIN_FILE="sine_table_64x8.mem";  // file to populate ROM
+    localparam SIN_ADDRW=8;  // must match rotate module
+    logic [SIN_ADDRW-1:0] angle;
 
-    logic [SIN_ADDRW-1:0] sin_id;
-    logic signed [CORDW-1:0] sin_data;
-    sine_table #(
-        .CORDW(CORDW),
-        .ROM_DEPTH(SIN_DEPTH),
-        .ROM_WIDTH(SIN_WIDTH),
-        .ROM_FILE(SIN_FILE)
-    ) sine_table_inst (
-        .id(sin_id),
-        .data(sin_data)
-    );
+    // module rotate #(
+    // parameter CORDW=16,  // signed coordinate width
+    // parameter ANGLEW=8    // angle width
+    // ) (
+    // input  wire logic clk,         // clock
+    // input  wire logic rst,         // reset
+    // input  wire logic start,       // start rotation
+    // input  wire logic [1:0] axis,  // axis (none=00, x=01, y=10, z=11)
+    // input  wire logic [ANGLEW-1:0] angle,     // rotation angle
+    // input  wire logic signed [CORDW-1:0] x,   // x coord in
+    // input  wire logic signed [CORDW-1:0] y,   // y coord in
+    // input  wire logic signed [CORDW-1:0] z,   // z coord in
+    // output      logic signed [CORDW-1:0] xr,  // rotated x coord
+    // output      logic signed [CORDW-1:0] yr,  // rotated y coord
+    // output      logic signed [CORDW-1:0] zr,  // rotated z coord
+    // output      logic done  // rotation complete (high for one tick)
+    // );
 
     // draw model in framebuffer
     /* verilator lint_off UNUSED */
@@ -133,17 +136,8 @@ module top_cube (
     logic [CORDW-1:0] x0, y0, x1, y1;  // screen line coords
     logic draw_start, drawing, draw_done;  // draw_line signals
 
-    // rotation intermediates: 16-bit (Q8.8)
-    logic [CORDW-1:0] sin_a, cos_a;
-    /* verilator lint_off UNUSED */
-    logic signed [2*CORDW-1:0] sin_x0_w, sin_y0_w, cos_x0_w, cos_y0_w;
-    logic signed [2*CORDW-1:0] sin_x1_w, sin_y1_w, cos_x1_w, cos_y1_w;
-    /* verilator lint_on UNUSED */
-    logic signed [CORDW-1:0] sin_x0, sin_y0, cos_x0, cos_y0;
-    logic signed [CORDW-1:0] sin_x1, sin_y1, cos_x1, cos_y1;
-
     // draw state machine
-    enum {IDLE, CLEAR, INIT, SIN, COS, ROT1, ROT2, VIEW, DRAW, DONE} state;
+    enum {IDLE, CLEAR, INIT, ROT0, ROT1, VIEW, DRAW, DONE} state;
     initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
@@ -151,47 +145,25 @@ module top_cube (
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
-                sin_id <= 149;
-                state <= SIN;
+                angle <= 140;
+                state <= ROT0;
             end
-            SIN: begin
-                sin_id <= SIN_DEPTH - sin_id;  // cos(x) = sin(90° - x)
-                sin_a <= sin_data;
-                state <= COS;
-            end
-            COS: begin
-                cos_a <= sin_data;
-                state <= ROT1;
+            ROT0: begin
+                // get x0, y0, z0 (need temporary vars to hold all three)
+                state <= ROT1;  // move to next state once rotation completes
             end
             ROT1: begin
-                state <= ROT2;
-                sin_x0_w <= lx0 * sin_a;
-                sin_y0_w <= ly0 * sin_a;
-                cos_x0_w <= lx0 * cos_a;
-                cos_y0_w <= ly0 * cos_a;
-                sin_x1_w <= lx1 * sin_a;
-                sin_y1_w <= ly1 * sin_a;
-                cos_x1_w <= lx1 * cos_a;
-                cos_y1_w <= ly1 * cos_a;
-            end
-            ROT2: begin
-                state <= VIEW;
-                sin_x0 <= sin_x0_w[23:8];
-                sin_y0 <= sin_y0_w[23:8];
-                cos_x0 <= cos_x0_w[23:8];
-                cos_y0 <= cos_y0_w[23:8];
-                sin_x1 <= sin_x1_w[23:8];
-                sin_y1 <= sin_y1_w[23:8];
-                cos_x1 <= cos_x1_w[23:8];
-                cos_y1 <= cos_y1_w[23:8];
+                // get x1, y1, z1 (need temporary vars to hold all three)
+                state <= VIEW;  // move to next state once rotation completes
             end
             VIEW: begin
+                // select which orientation to view XY YZ ZX
                 draw_start <= 1;
                 state <= DRAW;
-                x0 <= cos_x0 - sin_y0;
-                y0 <= FB_HEIGHT - (cos_y0 + sin_x0);  // 3D models draw up the screen
-                x1 <= cos_x1 - sin_y1;
-                y1 <= FB_HEIGHT - (cos_y1 + sin_x1);
+                x0 <= 0;
+                y0 <= 0;
+                x1 <= 0;
+                y1 <= 0;
             end
             DRAW: if (draw_done) begin
                 if (line_id == LINE_CNT-1) begin

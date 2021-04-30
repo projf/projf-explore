@@ -71,6 +71,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${origin_dir}/rotate.sv"] \
   [file normalize "${origin_dir}/sine_table.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
