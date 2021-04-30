@@ -12,64 +12,46 @@ module sine_table #(
     parameter ROM_FILE="",   // file to populate ROM
     parameter ADDRW=$clog2(4*ROM_DEPTH)  // full table contains -180° to +180°
     ) (
-    input  wire logic clk,    // clock
-    input  wire logic rst,    // reset
-    input  wire logic start,  // start lookup
     input  wire logic [ADDRW-1:0] id,  // table ID to lookup
-    output      logic signed [2*ROM_WIDTH-1:0] data, // answer
-    output      logic done  // lookup complete (high for one tick)
+    output      logic signed [2*ROM_WIDTH-1:0] data  // answer
     );
 
     // sine table ROM: 0°-90°
     logic [$clog2(ROM_DEPTH)-1:0] tab_id;
     logic [ROM_WIDTH-1:0] tab_data;
-    rom_sync #(
+    rom_async #(
         .WIDTH(ROM_WIDTH),
         .DEPTH(ROM_DEPTH),
         .INIT_F(ROM_FILE)
     ) sine_rom (
-        .clk,
         .addr(tab_id),
         .data(tab_data)
     );
 
     logic [1:0] quad;  // quadrant we're in 0-3
-    always_comb quad = id[ADDRW-1:ADDRW-2];
-
-    enum {IDLE, LOOKUP, SIGN} state;
-    initial state = IDLE;  // needed for Yosys
-    always @(posedge clk) begin
-        done <= 0;
-        case (state)
-            LOOKUP: state <= SIGN;
-            SIGN: begin
-                if (quad[1] == 1) begin  // positive
-                    data <= {{ROM_WIDTH{1'b0}}, tab_data};
-                end else begin
-                    data <= {2*ROM_WIDTH{1'b0}} - {{ROM_WIDTH{1'b0}}, tab_data};
-                end
-                state <= IDLE;
-                done <= 1;
-            end
-            default: begin  // IDLE
-                if (start) begin
-                    if (id == ROM_DEPTH) begin  // sin(-90°) = -1
-                        data <= {{ROM_WIDTH{1'b1}}, {ROM_WIDTH{1'b0}}};
-                        done <= 1;
-                    end else if (id == 3*ROM_DEPTH) begin  // sin(90°) = 0
-                        data <= {{ROM_WIDTH-1{1'b0}}, 1'b1, {ROM_WIDTH{1'b0}}};
-                        done <= 1;
-                    end else begin
-                        case (quad)
-                            2'b00: tab_id <= id;
-                            2'b01: tab_id <= 2*ROM_DEPTH - id;
-                            2'b10: tab_id <= id - 2*ROM_DEPTH;
-                            2'b11: tab_id <= 4*ROM_DEPTH - id;
-                        endcase
-                        state <= LOOKUP;
-                    end
-                end
-            end
+    always_comb begin
+        quad = id[ADDRW-1:ADDRW-2];
+        case (quad)
+            /* verilator lint_off WIDTH */
+            2'b00: tab_id = id[ADDRW-3:0];
+            2'b01: tab_id = 2*ROM_DEPTH - id[ADDRW-3:0];
+            2'b10: tab_id = id[ADDRW-3:0] - 2*ROM_DEPTH;
+            2'b11: tab_id = 4*ROM_DEPTH - id[ADDRW-3:0];
+            /* verilator lint_on WIDTH */
         endcase
+    end
+
+    always_comb begin
+        if (id == ROM_DEPTH) begin  // sin(-90°) = -1
+            data = {{ROM_WIDTH{1'b1}}, {ROM_WIDTH{1'b0}}};
+        end else if (id == 3*ROM_DEPTH) begin  // sin(90°) = 0
+            data = {{ROM_WIDTH-1{1'b0}}, 1'b1, {ROM_WIDTH{1'b0}}};
+        end else begin
+            if (quad[1] == 1) begin  // positive
+                data = {{ROM_WIDTH{1'b0}}, tab_data};
+            end else begin
+                data = {2*ROM_WIDTH{1'b0}} - {{ROM_WIDTH{1'b0}}, tab_data};
+            end
+        end
     end
 endmodule

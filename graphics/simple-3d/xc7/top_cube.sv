@@ -108,29 +108,12 @@ module top_cube (
         .data(rom_data)
     );
 
-    // // sine table ROM
-    // localparam SIN_FILE  = "sine_table_16x8.mem";
-    // localparam SIN_CNT   = 16;  // number of entries in table
-    // localparam SIN_WIDTH = 8;   // width of sine entries in bits
-    // logic [$clog2(SIN_CNT)-1:0] sin_id;  // table entry identifier
-    // logic [SIN_WIDTH-1:0] sin_data;
-    // rom_sync #(
-    //     .WIDTH(SIN_WIDTH),
-    //     .DEPTH(SIN_CNT),
-    //     .INIT_F(SIN_FILE)
-    // ) sine_rom (
-    //     .clk(clk_100m),
-    //     .addr(sin_id),
-    //     .data(sin_data)
-    // );
-
     // sine table
     localparam SIN_DEPTH=64;  // entires in sine ROM 0°-90°
     localparam SIN_WIDTH=8;   // width of sine ROM data
     localparam SIN_ADDRW=$clog2(4*SIN_DEPTH);   // full table -180° to +180°
     localparam SIN_FILE="sine_table_64x8.mem";  // file to populate ROM
 
-    logic sin_start, sin_done;
     logic [SIN_ADDRW-1:0] sin_id;
     logic signed [CORDW-1:0] sin_data;
     sine_table #(
@@ -139,12 +122,8 @@ module top_cube (
         .ROM_WIDTH(SIN_WIDTH),
         .ROM_FILE(SIN_FILE)
     ) sine_table_inst (
-        .clk(clk_100m),
-        .rst(1'b0),
-        .start(sin_start),
         .id(sin_id),
-        .data(sin_data),
-        .done(sin_done)
+        .data(sin_data)
     );
 
     // draw model in framebuffer
@@ -156,8 +135,10 @@ module top_cube (
 
     // rotation intermediates: 16-bit (Q8.8)
     logic [CORDW-1:0] sin_a, cos_a;
+    /* verilator lint_off UNUSED */
     logic signed [2*CORDW-1:0] sin_x0_w, sin_y0_w, cos_x0_w, cos_y0_w;
     logic signed [2*CORDW-1:0] sin_x1_w, sin_y1_w, cos_x1_w, cos_y1_w;
+    /* verilator lint_on UNUSED */
     logic signed [CORDW-1:0] sin_x0, sin_y0, cos_x0, cos_y0;
     logic signed [CORDW-1:0] sin_x1, sin_y1, cos_x1, cos_y1;
 
@@ -170,26 +151,17 @@ module top_cube (
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
-                // request sine
                 sin_id <= 149;
-                sin_start <= 1;
                 state <= SIN;
             end
             SIN: begin
-                sin_start <= 0;
-                if (sin_done) begin
-                    sin_a <= sin_data;
-                    sin_id <= SIN_DEPTH - sin_id;  // cos(x) = sin(90° - x)
-                    sin_start <= 1;
-                    state <= COS;
-                end
+                sin_id <= SIN_DEPTH - sin_id;  // cos(x) = sin(90° - x)
+                sin_a <= sin_data;
+                state <= COS;
             end
             COS: begin
-                sin_start <= 0;
-                if (sin_done) begin
-                    cos_a <= sin_data;
-                    state <= ROT1;
-                end
+                cos_a <= sin_data;
+                state <= ROT1;
             end
             ROT1: begin
                 state <= ROT2;
@@ -230,7 +202,9 @@ module top_cube (
                 end
             end
             DONE: state <= DONE;
-            default: if (frame_sys) state <= INIT;  // IDLE
+            default: if (frame_sys) begin  // IDLE
+                state <= INIT;
+            end
         endcase
     end
 
