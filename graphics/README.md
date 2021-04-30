@@ -11,9 +11,9 @@ series, start by reading [FPGA Graphics](https://projectf.io/posts/fpga-graphics
 * **Hardware Sprites**: [Designs](hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
 * **Ad Astra**: [Designs](ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
 * **Framebuffers**: [Designs](framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
-* **Life on Screen** - [Designs](life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
-* **Lines and Triangles** - [Designs](lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
-* **2D Shapes** - [Designs](2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
-* **Simple 3D** - _coming soon_
+* **Life on Screen**: [Designs](life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
+* **Lines and Triangles**: [Designs](lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
+* **2D Shapes**: [Designs](2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
+* **Simple 3D**: _coming soon_
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).

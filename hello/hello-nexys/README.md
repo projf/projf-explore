@@ -1,6 +1,7 @@
 # Hello Nexys from Project F
 
-Hello Nexys is a three-part introduction to FPGA development with Verilog and the Digilent Nexys Video board. This series is also available for the [Arty A7](../hello-arty).
+Hello Nexys is a three-part introduction to FPGA development with Verilog and the Digilent Nexys Video board.  
+This series is also available for the [Arty A7](../hello-arty).
 
 * [Hello Nexys - Part 1](https://projectf.io/posts/hello-nexys-1/)
   * [A source](A/)

@@ -1,6 +1,7 @@
 # Hello Arty from Project F
 
-Hello Arty is a three-part introduction to FPGA development with Verilog and the Digilent Arty A7 board. This series is also available for the [Nexys Video](../hello-nexys).
+Hello Arty is a three-part introduction to FPGA development with Verilog and the Digilent Arty A7 board.  
+This series is also available for the [Nexys Video](../hello-nexys).
 
 * [Hello Arty - Part 1](https://projectf.io/posts/hello-arty-1/)
   * [A source](A/)

@@ -18,7 +18,7 @@ module top_life (
     );
 
     localparam GEN_FRAMES = 15;  // each generation lasts this many frames
-    localparam SEED_FILE = "../res/seed/simple_64x48.mem";  // world seed
+    localparam SEED_FILE = "simple_64x48.mem";  // world seed
 
     // generate pixel clock
     logic clk_pix;
@@ -114,7 +114,7 @@ module top_life (
         .CORDW(CORDW),
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
-        .F_INIT(SEED_FILE)
+        .F_INIT({"../res/seed/",SEED_FILE})
     ) life_inst (
         .clk(clk_pix),          // clock
         .rst(1'b0),              // reset
