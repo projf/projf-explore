@@ -1,4 +1,4 @@
-// Project F: Hello Arty K - Top
+// Project F: Hello Arty K - Top Timer
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -13,7 +13,8 @@ module top (
     output     logic [3:0] led
     );
 
-    localparam FLASH_TIME = 4;  // seconds to flash at end of timer
+    localparam DEF_TIME = 4'b1000;  // default timer in seconds
+    localparam FLASH_TIME = 4;  // seconds to flash for when done
     logic [$clog2(FLASH_TIME+1)-1:0] cnt_flash;  // counter for done flashing
 
     // debounce buttons
@@ -22,11 +23,12 @@ module top (
     debounce deb_0 (.clk, .in(btn_0), .out(), .ondn(), .onup(sig_0));
     debounce deb_1 (.clk, .in(btn_1), .out(), .ondn(), .onup(sig_1));
 
-    // finite state machine control process
-    enum {IDLE, SET_TIME, COUNTDOWN, DONE} state, state_next;
+    // finite state machine: state change
+    enum {IDLE, INIT, SET_TIME, COUNTDOWN, DONE} state, state_next;
     always_comb begin
         case (state)
-            IDLE:      state_next = (sig_ctrl) ? SET_TIME : IDLE;
+            IDLE:      state_next = (sig_ctrl) ? INIT : IDLE;
+            INIT:      state_next = SET_TIME;
             SET_TIME:  state_next = (sig_ctrl) ? COUNTDOWN : SET_TIME;
             COUNTDOWN: state_next = (led == 0) ? DONE : COUNTDOWN;
             DONE:      state_next = (cnt_flash == 0) ? IDLE : DONE;
@@ -51,10 +53,13 @@ module top (
         end
     end
 
-    // finite state machine output process
+    // finite state machine: output logic
     always_ff @(posedge clk) begin
         case (state)
-            IDLE: cnt_flash <= FLASH_TIME;  // initialize flash timer
+            INIT: begin
+                led <= DEF_TIME;  // set default time
+                cnt_flash <= FLASH_TIME;  // initialize flash timer
+            end
             SET_TIME: begin
                 if (sig_0) led <= {led[2:0], 1'b0};  // user pressed 0
                 else if (sig_1) led <= {led[2:0], 1'b1};  // user pressed 1
