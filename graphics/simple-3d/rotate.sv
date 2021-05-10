@@ -54,8 +54,7 @@ module rotate #(
     logic signed [CORDW-1:0] cos_x, cos_y, cos_z;
 
     // rotate state machine
-    enum {IDLE, INIT, SIN, COS, R1, R2, R3} state;
-    initial state = IDLE;  // needed for Yosys
+    enum {IDLE, INIT, SIN, COS, R1, R2, R3} state = IDLE;
     always_ff @(posedge clk) begin
         done <= 0;
         case (state)

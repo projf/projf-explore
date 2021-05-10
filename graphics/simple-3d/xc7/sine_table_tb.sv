@@ -7,9 +7,9 @@
 
 module sine_table_tb ();
     localparam SF = 2.0**-8.0;  // Q8.8 scaling factor is 2^-8
-    localparam CORDW=16;      // signed number width
-    localparam ROM_DEPTH=64;  // entires in sine ROM 0°-90°
-    localparam ROM_WIDTH=8;   // width of sine ROM data
+    localparam CORDW=16;        // signed number width
+    localparam ROM_DEPTH=64;    // entires in sine ROM 0°-90°
+    localparam ROM_WIDTH=8;     // width of sine ROM data
     localparam ROM_FILE="sine_table_64x8.mem";  // file to populate ROM
     localparam ADDRW=$clog2(4*ROM_DEPTH);  // full table -180° to +180°
 

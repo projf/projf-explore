@@ -92,8 +92,10 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${origin_dir}/xc7/rotate_tb.sv"] \
   [file normalize "${origin_dir}/xc7/rotation_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sine_table_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/rotate_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/rotation_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/sine_table_tb_behav.wcfg"] \
 ]
