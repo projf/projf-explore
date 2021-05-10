@@ -18,7 +18,7 @@ module debounce (
     always_ff @(posedge clk) sync_0 <= in;
     always_ff @(posedge clk) sync_1 <= sync_0;
 
-    logic [16:0] cnt;  // 2^17 = 1.3 ms counter at 100 MHz
+    logic [17:0] cnt;  // 2^18 = 2.6 ms counter at 100 MHz
     logic idle, max;
     always_comb begin
         idle = (out == sync_1);
