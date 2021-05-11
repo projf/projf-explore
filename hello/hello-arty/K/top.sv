@@ -69,6 +69,7 @@ module top (
                 led <= {4{cnt_stb[23]}};  // flash rate is 2^23 x 10ns
                 if (stb) cnt_flash <= cnt_flash - 1;
             end
+            default: led <= 4'b0000;
         endcase
     end
 endmodule
