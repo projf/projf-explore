@@ -26,7 +26,7 @@ module top (
     // generate 1 second strobe from 100 MHz clock
     localparam DIV_BY = 27'd100_000_000;  // 100 million
     logic stb;
-    logic [26:0] cnt_stb;
+    logic [$clog2(DIV_BY)-1:0] cnt_stb;
     always_ff @(posedge clk) begin
         if (cnt_stb != DIV_BY-1) begin
             stb <= 0;
@@ -69,13 +69,14 @@ module top (
                 if (cnt_phase == 0) begin
                     state <= RED;
                     cnt_phase <= T_RED;
-                    light_set <= ~light_set;  // switch light set
+                    light_set <= ~light_set;  // switch active light set
                 end else if (stb) cnt_phase <= cnt_phase - 1;
             end
             default: state <= IDLE;
         endcase
     end
 
+    // PWM duty values are 8-bit
     logic [7:0] duty_main_r, duty_main_g;
     logic [7:0] duty_side_r, duty_side_g;
 

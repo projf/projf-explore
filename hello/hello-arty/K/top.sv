@@ -42,7 +42,7 @@ module top (
     // generate 1 second strobe from 100 MHz clock
     localparam DIV_BY = 27'd100_000_000;  // 100 million
     logic stb;
-    logic [26:0] cnt_stb;
+    logic [$clog2(DIV_BY)-1:0] cnt_stb;
     always_ff @(posedge clk) begin
         if (cnt_stb != DIV_BY-1) begin
             stb <= 0;
