@@ -1,5 +1,5 @@
-// Project F Library - Button Debounce
-// (C)2020 Will Green, open source hardware released under the MIT License
+// Project F: Hello Arty K - Debounce
+// (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -18,7 +18,7 @@ module debounce (
     always_ff @(posedge clk) sync_0 <= in;
     always_ff @(posedge clk) sync_1 <= sync_0;
 
-    logic [17:0] cnt;  // 2^18 = 2.6 ms counter at 100 MHz
+    logic [19:0] cnt;  // 2^20 = 10 ms counter at 100 MHz
     logic idle, max;
     always_comb begin
         idle = (out == sync_1);
