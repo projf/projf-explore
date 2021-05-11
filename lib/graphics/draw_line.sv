@@ -50,9 +50,9 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
         if (in_progress && oe) drawing = 1;
     end
 
-    enum {IDLE, INIT, DRAW} state;
-    initial state = IDLE;  // needed for Yosys
+    enum {IDLE, INIT, DRAW} state = IDLE;
     always_ff @(posedge clk) begin
+        done <= 0;
         case (state)
             DRAW: begin
                 if (oe) begin
@@ -75,7 +75,6 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
                 state <= DRAW;
             end
             default: begin  // IDLE
-                done <= 0;
                 if (start) begin
                     dx <= right ? xb - xa : xa - xb;  // dx = abs(xb - xa)
                     dy <= ya - yb;  // dy = -abs(yb - ya)
