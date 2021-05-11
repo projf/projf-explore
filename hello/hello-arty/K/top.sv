@@ -42,18 +42,18 @@ module top (
     // generate 1 second strobe from 100 MHz clock
     localparam DIV_BY = 27'd100_000_000;  // 100 million
     logic stb;
-    logic [26:0] cnt = 0;
+    logic [26:0] cnt_stb;
     always_ff @(posedge clk) begin
-        if (cnt != DIV_BY-1) begin
+        if (cnt_stb != DIV_BY-1) begin
             stb <= 0;
-            cnt <= cnt + 1;
+            cnt_stb <= cnt_stb + 1;
         end else begin
             stb <= 1;
-            cnt <= 0;
+            cnt_stb <= 0;
         end
     end
 
-    // finite state machine: output logic
+    // finite state machine: behaviour
     always_ff @(posedge clk) begin
         case (state)
             INIT: begin
@@ -66,7 +66,7 @@ module top (
             end
             COUNTDOWN: if (stb) led <= led - 1;
             DONE: begin
-                led <= {4{cnt[23]}};  // flash rate is 2^23 x 10ns
+                led <= {4{cnt_stb[23]}};  // flash rate is 2^23 x 10ns
                 if (stb) cnt_flash <= cnt_flash - 1;
             end
         endcase
