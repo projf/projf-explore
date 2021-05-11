@@ -13,7 +13,5 @@ create_clock -name clk_100m -period 10.00 [get_ports {clk}];
 ## RGB LEDs
 set_property -dict {PACKAGE_PIN G6  IOSTANDARD LVCMOS33} [get_ports {led_main_r}];
 set_property -dict {PACKAGE_PIN F6  IOSTANDARD LVCMOS33} [get_ports {led_main_g}];
-set_property -dict {PACKAGE_PIN E1  IOSTANDARD LVCMOS33} [get_ports {led_main_b}];
 set_property -dict {PACKAGE_PIN G3  IOSTANDARD LVCMOS33} [get_ports {led_side_r}];
 set_property -dict {PACKAGE_PIN J4  IOSTANDARD LVCMOS33} [get_ports {led_side_g}];
-set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS33} [get_ports {led_side_b}];
