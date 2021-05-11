@@ -48,8 +48,10 @@ module rotate #(
     logic [CORDW-1:0] sin_angle, cos_angle;
 
     // rotation intermediates (wide and regular)
+    /* verilator lint_off UNUSED */
     logic signed [2*CORDW-1:0] sin_xw, sin_yw, sin_zw;
     logic signed [2*CORDW-1:0] cos_xw, cos_yw, cos_zw;
+    /* verilator lint_on UNUSED */
     logic signed [CORDW-1:0] sin_x, sin_y, sin_z;
     logic signed [CORDW-1:0] cos_x, cos_y, cos_z;
 
