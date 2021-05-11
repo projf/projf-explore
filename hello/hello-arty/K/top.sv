@@ -14,7 +14,7 @@ module top (
     );
 
     localparam DEF_TIME = 4'b1000;  // default timer in seconds
-    localparam FLASH_TIME = 4;  // seconds to flash for when done
+    localparam FLASH_TIME = 2;  // seconds to flash for when done
     logic [$clog2(FLASH_TIME+1)-1:0] cnt_flash;  // counter for done flashing
 
     // debounce buttons
