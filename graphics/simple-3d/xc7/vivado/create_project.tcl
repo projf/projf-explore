@@ -102,7 +102,7 @@ set sim_sources [list \
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "rotation_tb" -objects $fs_sim_obj
+set_property -name "top" -value "rotate_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

@@ -108,62 +108,118 @@ module top_cube (
         .data(rom_data)
     );
 
-    localparam SIN_ADDRW=8;  // must match rotate module
-    logic [SIN_ADDRW-1:0] angle;
+    localparam ANGLEW=8;  // angle width in bits
+    logic [ANGLEW-1:0] angle;
+    logic [1:0] axis;  // consider making enum
+    logic [CORDW-1:0] rot_x, rot_y, rot_z;
+    logic [CORDW-1:0] rot_xr, rot_yr, rot_zr;
+    logic rot_start, rot_done;
 
-    // module rotate #(
-    // parameter CORDW=16,  // signed coordinate width
-    // parameter ANGLEW=8    // angle width
-    // ) (
-    // input  wire logic clk,         // clock
-    // input  wire logic rst,         // reset
-    // input  wire logic start,       // start rotation
-    // input  wire logic [1:0] axis,  // axis (none=00, x=01, y=10, z=11)
-    // input  wire logic [ANGLEW-1:0] angle,     // rotation angle
-    // input  wire logic signed [CORDW-1:0] x,   // x coord in
-    // input  wire logic signed [CORDW-1:0] y,   // y coord in
-    // input  wire logic signed [CORDW-1:0] z,   // z coord in
-    // output      logic signed [CORDW-1:0] xr,  // rotated x coord
-    // output      logic signed [CORDW-1:0] yr,  // rotated y coord
-    // output      logic signed [CORDW-1:0] zr,  // rotated z coord
-    // output      logic done  // rotation complete (high for one tick)
-    // );
+    rotate #(.CORDW(CORDW), .ANGLEW(ANGLEW)) rotate_inst (
+        .clk(clk_100m),     // clock
+        .rst(1'b0),         // reset
+        .start(rot_start),  // start rotation
+        .axis,              // axis (none=00, x=01, y=10, z=11)
+        .angle,             // rotation angle
+        .x(rot_x),          // x coord in
+        .y(rot_y),          // y coord in
+        .z(rot_z),          // z coord in
+        .xr(rot_xr),        // rotated x coord
+        .yr(rot_yr),        // rotated y coord
+        .zr(rot_zr),        // rotated z coord
+        .done(rot_done)     // rotation complete (high for one tick)
+    );
 
     // draw model in framebuffer
     /* verilator lint_off UNUSED */
     logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;
     /* verilator lint_on UNUSED */
-    logic [CORDW-1:0] x0, y0, x1, y1;  // screen line coords
+    logic [CORDW-1:0] x0, y0, z0, x1, y1, z1;  // line coords
+    logic [CORDW-1:0] xv0, yv0, xv1, yv1;  // view coords
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
-    enum {IDLE, CLEAR, INIT, ROT0, ROT1, VIEW, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
+    enum {IDLE, INIT, VIEW, DRAW, DONE, ROT_INIT,
+          ROT_X0, ROT_Y0, ROT_Z0,
+          ROT_X1, ROT_Y1, ROT_Z1} state = IDLE;
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
+        rot_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
-                angle <= 140;
-                state <= ROT0;
+                state <= ROT_INIT;
             end
-            ROT0: begin
-                // get x0, y0, z0 (need temporary vars to hold all three)
-                state <= ROT1;  // move to next state once rotation completes
+            ROT_INIT: begin
+                angle <= 140;   // small anti-clockwise rotation
+                axis <= 2'b01;  // rotate around x-axis
+                rot_x <= {lx0,8'b0};
+                rot_y <= {ly0,8'b0};
+                rot_z <= {lz0,8'b0};
+                rot_start <= 1;
+                state <= ROT_X0;
             end
-            ROT1: begin
-                // get x1, y1, z1 (need temporary vars to hold all three)
-                state <= VIEW;  // move to next state once rotation completes
+            ROT_X0: if (rot_done) begin
+                axis <= 2'b10;  // now rotate around y-axis
+                rot_x <= rot_xr;
+                rot_y <= rot_yr;
+                rot_z <= rot_zr;
+                rot_start <= 1;
+                state <= ROT_Y0;
+            end
+            ROT_Y0: if (rot_done) begin
+                axis <= 2'b11;  // now rotate around z-axis
+                rot_x <= rot_xr;
+                rot_y <= rot_yr;
+                rot_z <= rot_zr;
+                rot_start <= 1;
+                state <= ROT_Z0;
+            end
+            ROT_Z0: if (rot_done) begin
+                // save rotated (x0,y0,z0)
+                x0 <= rot_xr >>> 8;  
+                y0 <= rot_yr >>> 8;
+                z0 <= rot_zr >>> 8;
+                // now rotate around x-axis
+                axis <= 2'b01;
+                rot_x <= {lx1,8'b0};
+                rot_y <= {ly1,8'b0};
+                rot_z <= {lz1,8'b0};
+                rot_start <= 1;
+                state <= ROT_X1;
+            end
+            ROT_X1: if (rot_done) begin
+                axis <= 2'b10;  // now rotate around y-axis
+                rot_x <= rot_xr;
+                rot_y <= rot_yr;
+                rot_z <= rot_zr;
+                rot_start <= 1;
+                state <= ROT_Y1;
+            end
+            ROT_Y1: if (rot_done) begin
+                axis <= 2'b11;  // now rotate around z-axis
+                rot_x <= rot_xr;
+                rot_y <= rot_yr;
+                rot_z <= rot_zr;
+                rot_start <= 1;
+                state <= ROT_Z1;
+            end
+            ROT_Z1: if (rot_done) begin
+                // save rotated (x1,y1,z1)
+                x1 <= rot_xr >>> 8;  
+                y1 <= rot_yr >>> 8;
+                z1 <= rot_zr >>> 8;
+                state <= VIEW;
             end
             VIEW: begin
                 // select which orientation to view XY YZ ZX
                 draw_start <= 1;
                 state <= DRAW;
-                x0 <= 0;
-                y0 <= 0;
-                x1 <= 0;
-                y1 <= 0;
+                xv0 <= x0;
+                yv0 <= FB_HEIGHT - y0;  // 3D models draw up the screen
+                xv1 <= x1;
+                yv1 <= FB_HEIGHT - y1;
             end
             DRAW: if (draw_done) begin
                 if (line_id == LINE_CNT-1) begin
@@ -185,10 +241,10 @@ module top_cube (
         .rst(1'b0),
         .start(draw_start),
         .oe(1'b1),
-        .x0,
-        .y0,
-        .x1,
-        .y1,
+        .x0(xv0),
+        .y0(yv0),
+        .x1(xv1),
+        .y1(yv1),
         .x(fbx),
         .y(fby),
         .drawing,
