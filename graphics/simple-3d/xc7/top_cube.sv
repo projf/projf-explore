@@ -139,7 +139,7 @@ module top_cube (
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
-    enum {IDLE, INIT, VIEW, DRAW, DONE, ROT_INIT,
+    enum {IDLE, INIT, LOAD, VIEW, DRAW, DONE, ROT_INIT,
           ROT_X0, ROT_Y0, ROT_Z0,
           ROT_X1, ROT_Y1, ROT_Z1} state = IDLE;
     always_ff @(posedge clk_100m) begin
@@ -148,11 +148,15 @@ module top_cube (
         case (state)
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
+                angle <= 136;
+                line_id <= 0;
+                state <= LOAD;
+            end
+            LOAD: begin  // register coordinates and colour
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
                 state <= ROT_INIT;
             end
             ROT_INIT: begin
-                angle <= 140;   // small anti-clockwise rotation
                 axis <= 2'b01;  // rotate around x-axis
                 rot_x <= {lx0,8'b0};
                 rot_y <= {ly0,8'b0};
@@ -226,7 +230,7 @@ module top_cube (
                     state <= DONE;
                 end else begin
                     line_id <= line_id + 1;
-                    state <= INIT;
+                    state <= LOAD;
                 end
             end
             DONE: state <= DONE;
