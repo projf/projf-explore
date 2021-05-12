@@ -141,7 +141,7 @@ module top_cube (
     // draw state machine
     enum {IDLE, INIT, RAM_WAIT, LOAD, VIEW, DRAW, DONE, ROT_INIT,
           ROT_X0, ROT_Y0, ROT_Z0,
-          ROT_X1, ROT_Y1, ROT_Z1} state = IDLE;
+          ROT_X1, ROT_Y1, ROT_Z1} state;
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         rot_start <= 0;
