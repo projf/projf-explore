@@ -76,7 +76,6 @@ module top_david_v3 (
     // draw box around framebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
     enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
         case (state)
             TOP:
@@ -121,7 +120,6 @@ module top_david_v3 (
                 end
             default: state <= DONE;  // done forever!
         endcase
-
         if (!clk_locked) state <= IDLE;
     end
 

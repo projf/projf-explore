@@ -75,7 +75,6 @@ module life #(
 
     // life generation state
     enum {IDLE, INIT, READ, NEIGH, UPDATE, NEW_CELL, NEW_LINE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk) begin
         // single-cycle flags: 0 by default
         ready <= 0;
@@ -211,6 +210,7 @@ module life #(
             default: state <= (start) ? INIT : IDLE;  // IDLE
         endcase
         if (rst) begin
+            state <= IDLE;
             ready <= 0;
             alive <= 0;
             changed <= 0;

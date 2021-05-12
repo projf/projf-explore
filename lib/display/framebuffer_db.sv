@@ -64,7 +64,6 @@ module framebuffer_db #(
 
     // write state machine
     enum {IDLE, INIT, CLR, ACTIVE} wstate;
-    initial wstate = IDLE;  // needed for Yosys
     always_ff @(posedge clk_sys) begin
         case (wstate)
             INIT: wstate <= (clear) ? CLR : ACTIVE;

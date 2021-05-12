@@ -44,6 +44,7 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_icosphere.sv"] \
+  [file normalize "${origin_dir}/xc7/top_cube.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
@@ -65,11 +66,14 @@ set design_sources [list \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${origin_dir}/rotate.sv"] \
+  [file normalize "${origin_dir}/sine_table.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${origin_dir}/res/maths/sine_table_64x8.mem"] \
   [file normalize "${origin_dir}/res/models/cube.mem"] \
   [file normalize "${origin_dir}/res/models/icosphere.mem"] \
   [file normalize "${origin_dir}/res/models/monkey.mem"] \
@@ -80,15 +84,26 @@ add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
 set_property -name "file_type" -value "Memory File" -objects $design_mem_obj
 
-#
-# Simulation Sources
-#
-
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
   create_fileset -simset sim_1
 }
 set fs_sim_obj [get_filesets sim_1]
+
+# Generic simulation sources
+set sim_sources [list \
+  [file normalize "${origin_dir}/xc7/rotate_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/rotation_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/sine_table_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/rotate_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/rotation_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/sine_table_tb_behav.wcfg"] \
+]
+add_files -norecurse -fileset $fs_sim_obj $sim_sources
+
+# Set 'sim_1' fileset properties
+set_property -name "top" -value "rotate_tb" -objects $fs_sim_obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
 # Constraints

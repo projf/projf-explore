@@ -150,7 +150,6 @@ module framebuffer_tb();
         clk_25m = 1;
         rst_sys = 1;
         rst_pix = 1;
-        state = IDLE;
 
         #100
         rst_sys = 0;

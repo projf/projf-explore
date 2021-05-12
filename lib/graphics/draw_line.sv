@@ -51,7 +51,6 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
     end
 
     enum {IDLE, INIT, DRAW} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk) begin
         case (state)
             DRAW: begin

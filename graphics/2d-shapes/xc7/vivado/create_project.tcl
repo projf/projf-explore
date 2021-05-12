@@ -102,6 +102,7 @@ set sim_sources [list \
   [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_fill_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_fill_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

@@ -47,7 +47,6 @@ module sprite #(
         NEXT_LINE,  // prepare for next sprite line
         DONE        // set done signal
     } state, state_next;
-    initial state = IDLE;  // needed for Yosys
 
     integer i;  // for bit reversal in READ_MEM
 

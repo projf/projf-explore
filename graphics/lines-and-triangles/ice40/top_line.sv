@@ -94,9 +94,7 @@ module top_line (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
-        draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 lx0 <=  20; ly0 <=   0;
@@ -105,10 +103,14 @@ module top_line (
                 draw_start <= 1;
                 state <= DRAW;
             end
-            DRAW: if (draw_done) state <= DONE;
+            DRAW: begin
+                draw_start <= 0;
+                if (draw_done) state <= DONE;
+            end
             DONE: state <= DONE;
             default: if (frame) state <= INIT;  // IDLE
         endcase
+        if (!clk_locked) state <= IDLE;
     end
 
     draw_line #(.CORDW(CORDW)) draw_line_inst (

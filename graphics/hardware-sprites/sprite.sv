@@ -42,7 +42,6 @@ module sprite #(
         NEXT_LINE,  // prepare for next sprite line
         DONE        // set done signal, then go idle
     } state, state_next;
-    initial state = IDLE;  // needed for Yosys
 
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state

@@ -71,7 +71,6 @@ module top_line (
     // draw line across middle of framebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_draw;
     enum {IDLE, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
         case (state)
             DRAW:
@@ -92,8 +91,6 @@ module top_line (
                 end
             default: state <= DONE;  // done forever!
         endcase
-
-        if (!clk_locked) state <= IDLE;
     end
 
     logic paint;  // which area of the framebuffer should we paint?

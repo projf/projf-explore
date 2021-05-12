@@ -95,9 +95,7 @@ module top_cube (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
-        draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
@@ -136,17 +134,21 @@ module top_cube (
                     end
                 endcase
             end
-            DRAW: if (draw_done) begin
-                if (line_id == LINE_CNT-1) begin
-                    state <= DONE;
-                end else begin
-                    line_id <= line_id + 1;
-                    state <= INIT;
+            DRAW: begin
+                draw_start <= 0;
+                if (draw_done) begin
+                    if (line_id == LINE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        line_id <= line_id + 1;
+                        state <= INIT;
+                    end
                 end
             end
             DONE: state <= DONE;
             default: if (frame) state <= INIT;  // IDLE
         endcase
+        if (!clk_locked) state <= IDLE;
     end
 
     // control drawing output enable - wait 300 frames, then 1 pixel/frame

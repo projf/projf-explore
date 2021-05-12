@@ -12,12 +12,12 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="148240001fs"></ZoomEndTime>
-      <Cursor1Time time="36360000fs"></Cursor1Time>
+      <ZoomEndTime time="1000001fs"></ZoomEndTime>
+      <Cursor1Time time="36360fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="197"></NameColumnWidth>
-      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+      <ValueColumnWidth column_width="75"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="116" />
    <wvobject fp_name="/framebuffer_db_tb/clk_25m" type="logic">
@@ -496,6 +496,5 @@
    <wvobject fp_name="/framebuffer_db_tb/fb_inst/bram_inst/memory" type="array">
       <obj_property name="ElementShortName">memory[0:215][3:0]</obj_property>
       <obj_property name="ObjectShortName">memory[0:215][3:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

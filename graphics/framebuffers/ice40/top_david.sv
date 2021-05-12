@@ -89,7 +89,6 @@ module top_david (
 
     // draw box around framebuffer
     enum {IDLE, TOP, RIGHT, BOTTOM, LEFT, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
         case (state)
             TOP:
@@ -129,6 +128,7 @@ module top_david (
                 end
             default: state <= DONE;  // done forever!
         endcase
+        if (!clk_locked) state <= IDLE;
     end
 
     // reading from FB takes one cycle: delay display signals to match

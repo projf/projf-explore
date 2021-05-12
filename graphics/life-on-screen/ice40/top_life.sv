@@ -116,8 +116,8 @@ module top_life (
         .HEIGHT(FB_HEIGHT),
         .F_INIT({"../res/seed/",SEED_FILE})
     ) life_inst (
-        .clk(clk_pix),          // clock
-        .rst(1'b0),              // reset
+        .clk(clk_pix),           // clock
+        .rst(!clk_locked),       // reset
         .start(life_start),      // start generation
         .ready(fb_we),           // cell state ready to be read
         .alive(life_alive),      // is the cell alive? (when ready)

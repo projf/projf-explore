@@ -121,7 +121,6 @@ module top_icosphere (
 
     // draw state machine
     enum {IDLE, CLEAR, INIT, VIEW, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         case (state)
