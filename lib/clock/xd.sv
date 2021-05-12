@@ -8,8 +8,8 @@
 module xd (
     input  wire logic clk_i,  //  input clock: source domain
     input  wire logic clk_o,  // output clock: destination domain
-    input  wire logic rst_i,  // reset (source domain)
-    input  wire logic rst_o,  // reset (destination domain)
+    input  wire logic rst_i,  //        reset: source domain
+    input  wire logic rst_o,  //        reset: destination domain
     input  wire logic i,      //  input pulse: source domain
     output      logic o       // output pulse: destination domain
     );
