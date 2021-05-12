@@ -33,9 +33,8 @@ module rotate #(
     localparam SIN_FILE="sine_table_64x8.mem";  // file to populate ROM
 
     logic [SIN_ADDRW-1:0] sin_id;
-    logic signed [CORDW-1:0] sin_data;
+    logic signed [CORDW-1:0] sin_data;  // sign extend data to match coords
     sine_table #(
-        .CORDW(CORDW),
         .ROM_DEPTH(SIN_DEPTH),
         .ROM_WIDTH(SIN_WIDTH),
         .ROM_FILE(SIN_FILE)
@@ -45,7 +44,7 @@ module rotate #(
     );
 
     // sine and cosine of angle
-    logic [CORDW-1:0] sin_angle, cos_angle;
+    logic signed [CORDW-1:0] sin_angle, cos_angle;
 
     // rotation intermediates (wide and regular)
     /* verilator lint_off UNUSED */
@@ -121,5 +120,9 @@ module rotate #(
             // add translate stage here to undo origin offset 
             default: if (start) state <= INIT;  // IDLE
         endcase
+        if (rst) begin
+            done <= 0;           
+            state <= IDLE;
+        end
     end
 endmodule

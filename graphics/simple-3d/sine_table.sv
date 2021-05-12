@@ -6,7 +6,6 @@
 `timescale 1ns / 1ps
 
 module sine_table #(
-    parameter CORDW=16,      // signed number width
     parameter ROM_DEPTH=64,  // entires in sine ROM 0°-90°
     parameter ROM_WIDTH=8,   // width of sine ROM data
     parameter ROM_FILE="",   // file to populate ROM

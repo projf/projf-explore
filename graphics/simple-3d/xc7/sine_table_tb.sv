@@ -7,7 +7,6 @@
 
 module sine_table_tb ();
     localparam SF = 2.0**-8.0;  // Q8.8 scaling factor is 2^-8
-    localparam CORDW=16;        // signed number width
     localparam ROM_DEPTH=64;    // entires in sine ROM 0°-90°
     localparam ROM_WIDTH=8;     // width of sine ROM data
     localparam ROM_FILE="sine_table_64x8.mem";  // file to populate ROM
@@ -16,7 +15,6 @@ module sine_table_tb ();
     logic [ADDRW-1:0] id;  // table ID to lookup
     logic signed [2*ROM_WIDTH-1:0] data; // answer
     sine_table #(
-        .CORDW(CORDW),
         .ROM_DEPTH(ROM_DEPTH),
         .ROM_WIDTH(ROM_WIDTH),
         .ROM_FILE(ROM_FILE)

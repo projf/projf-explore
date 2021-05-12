@@ -131,16 +131,15 @@ module top_cube_simple (
     );
 
     // draw model in framebuffer
+    logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;  // line coords
     /* verilator lint_off UNUSED */
-    logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;
+    logic [CORDW-1:0] x0, y0, z0, x1, y1, z1;  // rotated line coords
     /* verilator lint_on UNUSED */
-    logic [CORDW-1:0] x0, y0, z0, x1, y1, z1;  // line coords
     logic [CORDW-1:0] xv0, yv0, xv1, yv1;  // view coords
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
     enum {IDLE, CLEAR, LOAD, INIT, ROT0, ROT1, VIEW, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         rot_start <= 0;

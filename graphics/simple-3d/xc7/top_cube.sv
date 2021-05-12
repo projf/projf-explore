@@ -131,15 +131,15 @@ module top_cube (
     );
 
     // draw model in framebuffer
+    logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;  // line coords
     /* verilator lint_off UNUSED */
-    logic [ROM_CORDW-1:0] lx0, ly0, lz0, lx1, ly1, lz1;
+    logic [CORDW-1:0] x0, y0, z0, x1, y1, z1;  // rotated line coords
     /* verilator lint_on UNUSED */
-    logic [CORDW-1:0] x0, y0, z0, x1, y1, z1;  // line coords
     logic [CORDW-1:0] xv0, yv0, xv1, yv1;  // view coords
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
-    enum {IDLE, INIT, LOAD, VIEW, DRAW, DONE, ROT_INIT,
+    enum {IDLE, INIT, RAM_WAIT, LOAD, VIEW, DRAW, DONE, ROT_INIT,
           ROT_X0, ROT_Y0, ROT_Z0,
           ROT_X1, ROT_Y1, ROT_Z1} state = IDLE;
     always_ff @(posedge clk_100m) begin
@@ -150,8 +150,9 @@ module top_cube (
                 fb_cidx <= 4'h9;  // orange
                 angle <= 136;
                 line_id <= 0;
-                state <= LOAD;
+                state <= RAM_WAIT;
             end
+            RAM_WAIT: state <= LOAD;  // allow a cycle for ram
             LOAD: begin  // register coordinates and colour
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
                 state <= ROT_INIT;
@@ -230,7 +231,7 @@ module top_cube (
                     state <= DONE;
                 end else begin
                     line_id <= line_id + 1;
-                    state <= LOAD;
+                    state <= RAM_WAIT;
                 end
             end
             DONE: state <= DONE;

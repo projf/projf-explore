@@ -116,15 +116,19 @@ module top_icosphere (
     logic draw_start, drawing, draw_done;  // draw_line signals
 
     // draw state machine
-    enum {IDLE, CLEAR, INIT, VIEW, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
+    enum {IDLE, INIT, RAM_WAIT, LOAD, VIEW, DRAW, DONE} state;
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
-                state <= VIEW;
+                line_id <= 0;
+                state <= RAM_WAIT;
+            end
+            RAM_WAIT: state <= LOAD;  // allow a cycle for ram
+            LOAD: begin  // register coordinates and colour
                 {lx0,ly0,lz0,lx1,ly1,lz1} <= rom_data;
+                state <= VIEW;
             end
             VIEW: begin  // select view - map world coords to screen coords
                 draw_start <= 1;
@@ -139,7 +143,7 @@ module top_icosphere (
                     state <= DONE;
                 end else begin
                     line_id <= line_id + 1;
-                    state <= INIT;
+                    state <= RAM_WAIT;
                 end
             end
             DONE: state <= DONE;
