@@ -415,17 +415,19 @@ module top_greet (
     logic [11:0] font_colr;  // 12 bit colour (4-bit per channel)
     logic [$clog2(LINE_INC)-1:0] cnt_line;
     always_ff @(posedge clk_pix) begin
-        if ((sy == SLIN_1A || sy == SLIN_2A) && sx == 0) begin
-            cnt_line <= 0;
-            font_colr <= COLR_A;
-        end else if ((sy == SLIN_1B || sy == SLIN_2B) && sx == 0) begin
-            cnt_line <= 0;
-            font_colr <= COLR_B;
-        end else if (sx == 0) begin
-            cnt_line <= cnt_line + 1;
-            if (cnt_line == LINE_INC-1) begin
+        if (line) begin
+            if (sy == SLIN_1A || sy == SLIN_2A) begin
                 cnt_line <= 0;
-                font_colr <= font_colr + 'h111;
+                font_colr <= COLR_A;
+            end else if (sy == SLIN_1B || sy == SLIN_2B) begin
+                cnt_line <= 0;
+                font_colr <= COLR_B;
+            end else begin
+                cnt_line <= cnt_line + 1;
+                if (cnt_line == LINE_INC-1) begin
+                    cnt_line <= 0;
+                    font_colr <= font_colr + 'h111;
+                end
             end
         end
     end

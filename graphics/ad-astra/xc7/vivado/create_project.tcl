@@ -93,8 +93,11 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${lib_dir}/maths/xc7/lfsr_tb.sv"] \
+  [file normalize "${lib_dir}/maths/xc7/vivado/lfsr_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/starfield_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/starfield_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/sprite_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/sprite_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

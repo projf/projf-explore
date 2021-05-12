@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sprite_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sprite_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="100100001fs"></ZoomEndTime>
+      <Cursor1Time time="8440fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="161"></NameColumnWidth>
+      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="18" />
+   <wvobject fp_name="/sprite_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/clk_25m" type="logic">
+      <obj_property name="ElementShortName">clk_25m</obj_property>
+      <obj_property name="ObjectShortName">clk_25m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/sx" type="array">
+      <obj_property name="ElementShortName">sx[5:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/sy" type="array">
+      <obj_property name="ElementShortName">sy[5:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/de" type="logic">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/font_addr" type="array">
+      <obj_property name="ElementShortName">font_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">font_addr[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/font_data" type="array">
+      <obj_property name="ElementShortName">font_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">font_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr_start" type="logic">
+      <obj_property name="ElementShortName">spr_start</obj_property>
+      <obj_property name="ObjectShortName">spr_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr0_gfx_addr" type="array">
+      <obj_property name="ElementShortName">spr0_gfx_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">spr0_gfx_addr[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr1_gfx_addr" type="array">
+      <obj_property name="ElementShortName">spr1_gfx_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">spr1_gfx_addr[8:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr0_dma" type="logic">
+      <obj_property name="ElementShortName">spr0_dma</obj_property>
+      <obj_property name="ObjectShortName">spr0_dma</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr0_pix" type="logic">
+      <obj_property name="ElementShortName">spr0_pix</obj_property>
+      <obj_property name="ObjectShortName">spr0_pix</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr0_drawing" type="logic">
+      <obj_property name="ElementShortName">spr0_drawing</obj_property>
+      <obj_property name="ObjectShortName">spr0_drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr0_done" type="logic">
+      <obj_property name="ElementShortName">spr0_done</obj_property>
+      <obj_property name="ObjectShortName">spr0_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr1_dma" type="logic">
+      <obj_property name="ElementShortName">spr1_dma</obj_property>
+      <obj_property name="ObjectShortName">spr1_dma</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr1_pix" type="logic">
+      <obj_property name="ElementShortName">spr1_pix</obj_property>
+      <obj_property name="ObjectShortName">spr1_pix</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr1_drawing" type="logic">
+      <obj_property name="ElementShortName">spr1_drawing</obj_property>
+      <obj_property name="ObjectShortName">spr1_drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_tb/spr1_done" type="logic">
+      <obj_property name="ElementShortName">spr1_done</obj_property>
+      <obj_property name="ObjectShortName">spr1_done</obj_property>
+   </wvobject>
+</wave_config>
