@@ -43,7 +43,6 @@ module sprite_v1 #(
         DRAW,       // draw pixel
         NEXT_LINE   // prepare for next sprite line
     } state, state_next;
-    initial state = IDLE;  // needed for Yosys
 
     always_ff @(posedge clk) begin
         state <= state_next;  // advance to next state
