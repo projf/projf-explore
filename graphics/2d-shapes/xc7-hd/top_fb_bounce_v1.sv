@@ -124,9 +124,7 @@ module top_fb_bounce_v1 (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_100m) begin
-        draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
@@ -137,7 +135,10 @@ module top_fb_bounce_v1 (
                 ry1 <= q1y + Q1_SIZE;
                 fb_cidx <= fb_cidx + 1;
             end
-            DRAW: if (draw_done) state <= DONE;
+            DRAW: begin
+                draw_start <= 0;
+                if (draw_done) state <= DONE;
+            end
             DONE: state <= IDLE;
             default: if (frame_sys) state <= INIT;  // IDLE
         endcase

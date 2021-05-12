@@ -29,10 +29,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
     logic signed [CORDW-1:0] lx1, ly1;  // point 1 position
 
     enum {IDLE, INIT, DRAW} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk) begin
-        line_start <= 0;
-        done <= 0;
         case (state)
             INIT: begin  // register coordinates
                 if (line_id == 2'd0) begin  // (x0,y0) (x1,y0)
@@ -52,6 +49,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
                 line_start <= 1;
             end
             DRAW: begin
+                line_start <= 0;
                 if (line_done) begin
                     if (line_id == 3) begin  // final line
                         done <= 1;
@@ -63,6 +61,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
                 end
             end
             default: begin  // IDLE
+                done <= 0;
                 if (start) begin
                     line_id <= 0;
                     state <= INIT;

@@ -148,7 +148,7 @@ module framebuffer_db_tb();
 
     // generate clocks
     always #(CLK_PERIOD_100M / 2) clk_100m = ~clk_100m;
-    always #(CLK_PERIOD_25M / 2) clk_25m = ~clk_25m;
+    always #(CLK_PERIOD_25M  / 2) clk_25m  = ~clk_25m;
 
     initial begin
         clk_100m = 1;
@@ -157,7 +157,6 @@ module framebuffer_db_tb();
         rst_pix = 1;
         fb_bgidx = 0;
         fb_clear = 0;
-        state = IDLE;
 
         #100
         rst_sys = 0;

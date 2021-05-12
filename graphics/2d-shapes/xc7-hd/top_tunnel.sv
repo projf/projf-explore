@@ -122,9 +122,7 @@ module top_tunnel (
 
     // draw state machine
     enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_100m) begin
-        draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 if (fb_wready) begin
@@ -188,12 +186,15 @@ module top_tunnel (
                     endcase
                 end
             end
-            DRAW: if (draw_done) begin
-                if (shape_id == SHAPE_CNT-1) begin
-                    state <= DONE;
-                end else begin
-                    shape_id <= shape_id + 1;
-                    state <= INIT;
+            DRAW: begin
+                draw_start <= 0;
+                if (draw_done) begin
+                    if (shape_id == SHAPE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        shape_id <= shape_id + 1;
+                        state <= INIT;
+                    end
                 end
             end
             DONE: state <= IDLE;

@@ -95,9 +95,7 @@ module top_triangles (
 
     // draw state machine
     enum {IDLE, INIT, DRAW, DONE} state;
-    initial state = IDLE;  // needed for Yosys
     always_ff @(posedge clk_pix) begin
-        draw_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
@@ -106,40 +104,44 @@ module top_triangles (
                     2'd0: begin
                         tx0 <=  10; ty0 <=  30;
                         tx1 <=  30; ty1 <=  90;
-                        tx2 <=  65; ty2 <=  45;
-                         fb_cidx <= 2'h1;  // orange
+                        tx2 <=  55; ty2 <=  45;
+                        fb_cidx <= 2'h1;  // orange
                     end
                     2'd1: begin
                         tx0 <=  35; ty0 <= 100;
                         tx1 <= 120; ty1 <=  50;
                         tx2 <=  85; ty2 <=  5;
-                         fb_cidx <= 2'h2;  // green
+                        fb_cidx <= 2'h2;  // green
                     end
                     2'd2: begin
                         tx0 <=  30; ty0 <=  15;
                         tx1 <= 150; ty1 <=  40;
                         tx2 <=  80; ty2 <= 110;
-                         fb_cidx <= 2'h3;  // blue
+                        fb_cidx <= 2'h3;  // blue
                     end
                     default: begin  // should never occur
                         tx0 <=   10; ty0 <=   10;
                         tx1 <=   10; ty1 <=   30;
                         tx2 <=   20; ty2 <=   20;
-                         fb_cidx <= 2'h1;  // orange
+                        fb_cidx <= 2'h1;  // orange
                     end
                 endcase
             end
-            DRAW: if (draw_done) begin
-                if (shape_id == SHAPE_CNT-1) begin
-                    state <= DONE;
-                end else begin
-                    shape_id <= shape_id + 1;
-                    state <= INIT;
+            DRAW: begin
+                draw_start <= 0;
+                if (draw_done) begin
+                    if (shape_id == SHAPE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        shape_id <= shape_id + 1;
+                        state <= INIT;
+                    end
                 end
             end
             DONE: state <= DONE;
             default: if (frame) state <= INIT;  // IDLE
         endcase
+        if (!clk_locked) state <= IDLE;
     end
 
     // control drawing output enable - wait 300 frames, then 1 pixel/frame
