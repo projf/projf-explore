@@ -34,14 +34,12 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
     end
 
     // error values
-    logic signed [CORDW:0] err, derr;  // a bit wider as signed
+    logic signed [CORDW:0] err;  // a bit wider as signed
     logic signed [CORDW:0] dx, dy;
-    logic movx, movy;  // horizontal or vertical move required
+    logic movx, movy;  // horizontal/vertical move required
     always_comb begin
         movx = (2*err >= dy);
         movy = (2*err <= dx);
-        derr = movx ? dy : 0;
-        if (movy) derr = derr + dx;
     end
 
     logic in_progress = 0;  // calculation in progress (but only output if oe)
@@ -60,9 +58,19 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
                         done <= 1;
                         state <= IDLE;
                     end else begin
-                        if (movx) x <= right ? x + 1 : x - 1;
-                        if (movy) y <= y + 1;  // always down
-                        err <= err + derr;
+                        if (movx) begin
+                            x <= right ? x + 1 : x - 1;
+                            err <= err + dy;
+                        end
+                        if (movy) begin
+                            y <= y + 1;  // always down
+                            err <= err + dx;
+                        end
+                        if (movx && movy) begin
+                            x <= right ? x + 1 : x - 1;
+                            y <= y + 1;  // always down
+                            err <= err + dy + dx;
+                        end
                     end
                 end
             end
