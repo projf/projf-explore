@@ -15,6 +15,8 @@ This series is also available for the [Nexys Video](../hello-nexys).
   * [H source](H/)
   * [I source](I/)
   * [J source](J/)
-* Hello Arty - Part 3 (coming spring 2021)
+* [Hello Arty - Part 3](https://projectf.io/posts/hello-arty-3/)
+  * [K source](K/)
+  * [L source](L/)
 
 For other designs from Project F, see the main [README](../../README.md) or visit [projectf.io](https://projectf.io/).

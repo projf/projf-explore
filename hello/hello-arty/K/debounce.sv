@@ -9,7 +9,6 @@ module debounce (
     input  wire logic clk,   // clock
     input  wire logic in,    // signal input
     output      logic out,   // signal output (debounced)
-    output      logic ondn,  // on down (one tick)
     output      logic onup   // on up (one tick)
     );
 
@@ -23,7 +22,6 @@ module debounce (
     always_comb begin
         idle = (out == sync_1);
         max  = &cnt;
-        ondn = ~idle & max & ~out;
         onup = ~idle & max & out;
     end
 

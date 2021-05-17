@@ -15,7 +15,7 @@ module top (
 
     // traffic light phases in seconds
     localparam T_RED = 1;
-    localparam T_REDAMBER = 1;
+    localparam T_RED_AMBER = 1;
     localparam T_GREEN_MAIN = 10;
     localparam T_GREEN_SIDE = 4;
     localparam T_AMBER = 2;
@@ -38,7 +38,7 @@ module top (
     end
 
     // finite state machine: state change & behavior
-    enum {IDLE, INIT, RED, REDAMBER, GREEN, AMBER} state;
+    enum {IDLE, INIT, RED, RED_AMBER, GREEN, AMBER} state;
     always_ff @(posedge clk) begin
         case (state)
             IDLE: state <= INIT;
@@ -49,11 +49,11 @@ module top (
             end
             RED: begin
                 if (cnt_phase == 0) begin
-                    state <= REDAMBER;
-                    cnt_phase <= T_REDAMBER;
+                    state <= RED_AMBER;
+                    cnt_phase <= T_RED_AMBER;
                 end else if (stb) cnt_phase <= cnt_phase - 1;
             end
-            REDAMBER: begin
+            RED_AMBER: begin
                 if (cnt_phase == 0) begin
                     state <= GREEN;
                     cnt_phase <= (light_set == 1) ? T_GREEN_SIDE : T_GREEN_MAIN;
@@ -86,39 +86,39 @@ module top (
     pwm pwm_side_g (.clk, .duty(duty_side_g), .pwm_out(led_side_g));
 
     // set light colour based on active light set and state
-    always_comb begin
+    always_ff @(posedge clk) begin
         // all lights are red by default
-        duty_main_r = 8'd64;
-        duty_main_g = 8'd0;
-        duty_side_r = 8'd64;
-        duty_side_g = 8'd0;
+        duty_main_r <= 8'd64;
+        duty_main_g <= 8'd0;
+        duty_side_r <= 8'd64;
+        duty_side_g <= 8'd0;
 
         case (state)
-            REDAMBER: begin
+            RED_AMBER: begin
                 if (light_set == 0) begin
-                    duty_main_r = 8'd56;
-                    duty_main_g = 8'd8;
+                    duty_main_r <= 8'd56;
+                    duty_main_g <= 8'd8;
                 end else if (light_set == 1) begin
-                    duty_side_r = 8'd56;
-                    duty_side_g = 8'd8;
+                    duty_side_r <= 8'd56;
+                    duty_side_g <= 8'd8;
                 end
             end
             GREEN: begin
                 if (light_set == 0) begin
-                    duty_main_r = 8'd0;
-                    duty_main_g = 8'd64;
+                    duty_main_r <= 8'd0;
+                    duty_main_g <= 8'd64;
                 end else if (light_set == 1) begin
-                    duty_side_r = 8'd0;
-                    duty_side_g = 8'd64;
+                    duty_side_r <= 8'd0;
+                    duty_side_g <= 8'd64;
                 end
             end
             AMBER: begin
                 if (light_set == 0) begin
-                    duty_main_r = 8'd48;
-                    duty_main_g = 8'd16;
+                    duty_main_r <= 8'd48;
+                    duty_main_g <= 8'd16;
                 end else if (light_set == 1) begin
-                    duty_side_r = 8'd48;
-                    duty_side_g = 8'd16;
+                    duty_side_r <= 8'd48;
+                    duty_side_g <= 8'd16;
                 end
             end
         endcase

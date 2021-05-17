@@ -14,14 +14,15 @@ module top (
     );
 
     localparam DEF_TIME = 4'b1000;  // default timer in seconds
-    localparam FLASH_TIME = 2;  // seconds to flash for when done
+    localparam FLASH_BIT = 23;      // bit of counter to use for done flashing
+    localparam FLASH_TIME = 2;      // seconds to flash when done
     logic [$clog2(FLASH_TIME+1)-1:0] cnt_flash;  // counter for done flashing
 
-    // debounce buttons
-    logic sig_ctrl, sig_0, sig_1;  // signal button presses
-    debounce deb_ctrl (.clk, .in(btn_ctrl), .out(), .ondn(), .onup(sig_ctrl));
-    debounce deb_0 (.clk, .in(btn_0), .out(), .ondn(), .onup(sig_0));
-    debounce deb_1 (.clk, .in(btn_1), .out(), .ondn(), .onup(sig_1));
+    // debounce each button using the debounce module
+    logic sig_ctrl, sig_0, sig_1;  // button press signals
+    debounce deb_ctrl (.clk, .in(btn_ctrl), .out(), .onup(sig_ctrl));
+    debounce deb_0 (.clk, .in(btn_0), .out(), .onup(sig_0));
+    debounce deb_1 (.clk, .in(btn_1), .out(), .onup(sig_1));
 
     // finite state machine: state change
     enum {IDLE, INIT, SET_TIME, COUNTDOWN, DONE} state, state_next;
@@ -36,7 +37,7 @@ module top (
         endcase
     end
 
-    // save next FSM state
+    // move to next FSM state
     always_ff @(posedge clk) state <= state_next;
 
     // generate 1 second strobe from 100 MHz clock
@@ -61,12 +62,12 @@ module top (
                 cnt_flash <= FLASH_TIME;  // initialize flash timer
             end
             SET_TIME: begin
-                if (sig_0) led <= {led[2:0], 1'b0};  // user pressed 0
+                if (sig_0) led <= {led[2:0], 1'b0};       // user pressed 0
                 else if (sig_1) led <= {led[2:0], 1'b1};  // user pressed 1
             end
             COUNTDOWN: if (stb) led <= led - 1;
             DONE: begin
-                led <= {4{cnt_stb[23]}};  // flash rate is 2^23 x 10ns
+                led <= {4{cnt_stb[FLASH_BIT]}};  // flash all four LEDs
                 if (stb) cnt_flash <= cnt_flash - 1;
             end
             default: led <= 4'b0000;
