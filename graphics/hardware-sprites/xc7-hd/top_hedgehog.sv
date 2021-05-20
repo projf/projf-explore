@@ -136,13 +136,13 @@ module top_hedgehog (
     always_ff @(posedge clk_pix) begin
         if (line) begin
             if      (sy == 0)   bg_colr <= 12'h239;
-            else if (sy == 80)  bg_colr <= 12'h24A;
-            else if (sy == 140) bg_colr <= 12'h25B;
-            else if (sy == 190) bg_colr <= 12'h26C;
-            else if (sy == 230) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 295) bg_colr <= 12'h2BF;
-            else if (sy == 320) bg_colr <= 12'h260;
+            else if (sy == 120) bg_colr <= 12'h24A;
+            else if (sy == 220) bg_colr <= 12'h25B;
+            else if (sy == 300) bg_colr <= 12'h26C;
+            else if (sy == 360) bg_colr <= 12'h27D;
+            else if (sy == 410) bg_colr <= 12'h29E;
+            else if (sy == 450) bg_colr <= 12'h2BF;
+            else if (sy == 480) bg_colr <= 12'h260;
         end
     end
 
