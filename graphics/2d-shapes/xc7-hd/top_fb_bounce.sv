@@ -75,7 +75,7 @@ module top_fb_bounce (
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
         .clk_sys(clk_100m),
-        .clk_pix(clk_pix),
+        .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
         .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
