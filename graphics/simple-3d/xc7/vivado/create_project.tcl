@@ -62,6 +62,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/framebuffer.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_db.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
+  [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \

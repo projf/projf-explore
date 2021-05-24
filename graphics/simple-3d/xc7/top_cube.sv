@@ -8,6 +8,10 @@
 module top_cube (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
+    input  wire logic btn_inc,      // increase button (BTN0)
+    input  wire logic btn_dec,      // decrease button (BTN1)
+    input  wire logic btn_axis,     // axis button (BTN2)
+    input  wire logic btn_view,     // view button (BTN3)
     output      logic vga_hsync,    // horizontal sync
     output      logic vga_vsync,    // vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
@@ -47,6 +51,19 @@ module top_cube (
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
+    // debounce buttons
+    logic sig_inc, sig_dec, sig_axis, sig_view;
+    /* verilator lint_off PINCONNECTEMPTY */
+    debounce deb_inc
+        (.clk(clk_100m), .in(btn_inc), .out(), .ondn(), .onup(sig_inc));
+    debounce deb_dec
+        (.clk(clk_100m), .in(btn_dec), .out(), .ondn(), .onup(sig_dec));
+    debounce deb_axis
+        (.clk(clk_100m), .in(btn_axis), .out(), .ondn(), .onup(sig_axis));
+    debounce deb_view
+        (.clk(clk_100m), .in(btn_view), .out(), .ondn(), .onup(sig_view));
+    /* verilator lint_on PINCONNECTEMPTY */
+
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 240;
@@ -56,12 +73,12 @@ module top_cube (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
+    logic fb_we, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -81,6 +98,9 @@ module top_cube (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .bgidx(4'b0),
+        .clear(1),  // enable clearing of buffer before drawing
+        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -111,6 +131,7 @@ module top_cube (
     localparam ANGLEW=8;  // angle width in bits
     logic [ANGLEW-1:0] angle;
     logic [1:0] axis;  // consider making enum
+    logic [1:0] view;  // consider making enum
     logic [CORDW-1:0] rot_x, rot_y, rot_z;
     logic [CORDW-1:0] rot_xr, rot_yr, rot_zr;
     logic rot_start, rot_done;
@@ -138,17 +159,23 @@ module top_cube (
     logic [CORDW-1:0] xv0, yv0, xv1, yv1;  // view coords
     logic draw_start, drawing, draw_done;  // draw_line signals
 
+    // set angle and rotation axis using buttons
+    always_ff @(posedge clk_100m) begin
+        if (sig_axis) axis <= (axis == 2'b10) ? 2'b0 : axis + 1;
+        if (sig_view) view <= (view == 2'b10) ? 2'b0 : view + 1;
+        if (sig_inc) angle <= angle + 1;
+        if (sig_dec) angle <= angle - 1;
+    end
+
     // draw state machine
-    enum {IDLE, INIT, RAM_WAIT, LOAD, VIEW, DRAW, DONE, ROT_INIT,
-          ROT_X0, ROT_Y0, ROT_Z0,
-          ROT_X1, ROT_Y1, ROT_Z1} state;
+    enum {IDLE, INIT, RAM_WAIT, LOAD, VIEW, DRAW, DONE,
+          ROT_INIT, ROT_0, ROT_1} state;
     always_ff @(posedge clk_100m) begin
         draw_start <= 0;
         rot_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 fb_cidx <= 4'h9;  // orange
-                angle <= 136;
                 line_id <= 0;
                 state <= RAM_WAIT;
             end
@@ -158,61 +185,28 @@ module top_cube (
                 state <= ROT_INIT;
             end
             ROT_INIT: begin
-                axis <= 2'b01;  // rotate around x-axis
+                // rotation corrds (x0,y0,z0)
                 rot_x <= {lx0,8'b0};
                 rot_y <= {ly0,8'b0};
                 rot_z <= {lz0,8'b0};
                 rot_start <= 1;
-                state <= ROT_X0;
+                state <= ROT_0;
             end
-            ROT_X0: if (rot_done) begin
-                axis <= 2'b10;  // now rotate around y-axis
-                rot_x <= rot_xr;
-                rot_y <= rot_yr;
-                rot_z <= rot_zr;
-                rot_start <= 1;
-                state <= ROT_Y0;
-            end
-            ROT_Y0: if (rot_done) begin
-                axis <= 2'b11;  // now rotate around z-axis
-                rot_x <= rot_xr;
-                rot_y <= rot_yr;
-                rot_z <= rot_zr;
-                rot_start <= 1;
-                state <= ROT_Z0;
-            end
-            ROT_Z0: if (rot_done) begin
+            ROT_0: if (rot_done) begin
                 // save rotated (x0,y0,z0)
-                x0 <= rot_xr >>> 8;  
+                x0 <= rot_xr >>> 8;
                 y0 <= rot_yr >>> 8;
                 z0 <= rot_zr >>> 8;
-                // now rotate around x-axis
-                axis <= 2'b01;
+                // rotation corrds (x1,y1,z1)
                 rot_x <= {lx1,8'b0};
                 rot_y <= {ly1,8'b0};
                 rot_z <= {lz1,8'b0};
                 rot_start <= 1;
-                state <= ROT_X1;
+                state <= ROT_1;
             end
-            ROT_X1: if (rot_done) begin
-                axis <= 2'b10;  // now rotate around y-axis
-                rot_x <= rot_xr;
-                rot_y <= rot_yr;
-                rot_z <= rot_zr;
-                rot_start <= 1;
-                state <= ROT_Y1;
-            end
-            ROT_Y1: if (rot_done) begin
-                axis <= 2'b11;  // now rotate around z-axis
-                rot_x <= rot_xr;
-                rot_y <= rot_yr;
-                rot_z <= rot_zr;
-                rot_start <= 1;
-                state <= ROT_Z1;
-            end
-            ROT_Z1: if (rot_done) begin
+            ROT_1: if (rot_done) begin
                 // save rotated (x1,y1,z1)
-                x1 <= rot_xr >>> 8;  
+                x1 <= rot_xr >>> 8;
                 y1 <= rot_yr >>> 8;
                 z1 <= rot_zr >>> 8;
                 state <= VIEW;
@@ -221,10 +215,26 @@ module top_cube (
                 // select which orientation to view XY YZ ZX
                 draw_start <= 1;
                 state <= DRAW;
-                xv0 <= x0;
-                yv0 <= FB_HEIGHT - y0;  // 3D models draw up the screen
-                xv1 <= x1;
-                yv1 <= FB_HEIGHT - y1;
+                case (view)
+                    2'b00: begin  // XY
+                        xv0 <= x0;
+                        yv0 <= FB_HEIGHT - y0;  // 3D models draw up the screen
+                        xv1 <= x1;
+                        yv1 <= FB_HEIGHT - y1;
+                    end
+                    2'b01: begin  // YZ
+                        xv0 <= FB_HEIGHT - y0;
+                        yv0 <= z0;
+                        xv1 <= FB_HEIGHT - y1;
+                        yv1 <= z1;
+                    end
+                    default: begin  // ZX
+                        xv0 <= z0;
+                        yv0 <= x0;
+                        xv1 <= z1;
+                        yv1 <= x1;
+                    end
+                endcase
             end
             DRAW: if (draw_done) begin
                 if (line_id == LINE_CNT-1) begin
@@ -234,8 +244,7 @@ module top_cube (
                     state <= RAM_WAIT;
                 end
             end
-            DONE: state <= DONE;
-            default: if (frame_sys) begin  // IDLE
+            default: if (frame_sys) begin  // IDLE or DONE
                 state <= INIT;
             end
         endcase
@@ -245,7 +254,7 @@ module top_cube (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(fb_wready),
         .x0(xv0),
         .y0(yv0),
         .x1(xv1),
