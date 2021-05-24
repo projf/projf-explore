@@ -3,7 +3,7 @@
 ## Learn more at https://projectf.io
 
 ## Board Clock: 12 MHz
-set_frequency  clk_12m      12  # timing is too tight for top_greet
+set_frequency  clk_12m      12
 set_io -nowarn clk_12m      35
 
 ## Buttons

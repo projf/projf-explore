@@ -20,8 +20,8 @@ top_pong_v2: top_pong_v2.rpt top_pong_v2.bin
 top_pong_v3: top_pong_v3.rpt top_pong_v3.bin
 top_pong_v4: top_pong_v4.rpt top_pong_v4.bin
 
-%.json: %.sv
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: %.sv $(ADD_SRC)
+	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@

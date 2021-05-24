@@ -24,8 +24,9 @@ top_space_f: top_space_f.rpt top_space_f.bin
 top_hello_en: top_hello_en.rpt top_hello_en.bin
 top_hello_jp: top_hello_jp.rpt top_hello_jp.bin
 
-%.json: %.sv
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+# Uses ABC logic lib version 9 for improved timing with complex sprite designs
+%.json: %.sv $(ADD_SRC)
+	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc9 -device u -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@

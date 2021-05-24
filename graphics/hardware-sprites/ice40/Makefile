@@ -22,8 +22,8 @@ top_sprite_v2: top_sprite_v2.rpt top_sprite_v2.bin
 top_sprite_v2a: top_sprite_v2a.rpt top_sprite_v2a.bin
 top_hedgehog_v1: top_hedgehog_v1.rpt top_hedgehog_v1.bin
 
-%.json: %.sv
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: %.sv $(ADD_SRC)
+	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@

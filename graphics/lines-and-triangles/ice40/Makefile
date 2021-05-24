@@ -25,8 +25,8 @@ top_triangles: top_triangles.rpt top_triangles.bin
 top_line: top_line.rpt top_line.bin
 top_cube: top_cube.rpt top_cube.bin
 
-%.json: %.sv
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: %.sv $(ADD_SRC)
+	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
