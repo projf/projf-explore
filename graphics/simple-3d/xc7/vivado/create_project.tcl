@@ -64,11 +64,11 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
+  [file normalize "${lib_dir}/maths/sine_table.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
   [file normalize "${origin_dir}/rotate.sv"] \
-  [file normalize "${origin_dir}/sine_table.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -93,12 +93,12 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${lib_dir}/maths/xc7/sine_table_tb.sv"] \
+  [file normalize "${lib_dir}/maths/xc7/vivado/sine_table_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/rotate_tb.sv"] \
   [file normalize "${origin_dir}/xc7/rotation_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/sine_table_tb.sv"] \
   [file normalize "${origin_dir}/xc7/vivado/rotate_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/rotation_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7/vivado/sine_table_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
