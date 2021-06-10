@@ -2,6 +2,8 @@
 
 This folder contains Verilator simulations to accompany the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
+As well as the Verilog modules in this directory, you also need [simple_display_timings_480p.sv](/projf/projf-explore/blob/master/graphics/fpga-graphics/simple_display_timings_480p.sv); the instructions below include this for you.
+
 There are separate instructions for building _FPGA Graphics_ for [FPGA dev boards](../README.md) (iCEBreaker and Arty).
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. For these single-threaded designs, you can expect around one frame per second on a modern PC.
@@ -66,7 +68,7 @@ That's it!
 
 ### macOS Install
 
-Install [Xcode](https://developer.apple.com/xcode/) to get a C++ compiler and toolchain.
+Install [Xcode](https://developer.apple.com/xcode/) to get a C++ toolchain.
 
 Install the [Homebrew](https://brew.sh/) package manager.
 

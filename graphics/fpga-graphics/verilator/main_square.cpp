@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <verilated.h>
 #include "Vtop_square.h"
 
 const int SCREEN_WIDTH  = 640;
@@ -24,32 +25,35 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    Pixel screenbuffer[SCREEN_WIDTH*SCREEN_HEIGHT];
+
     SDL_Window*   sdl_window   = NULL;
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-    Pixel screenbuffer[SCREEN_WIDTH*SCREEN_HEIGHT];
-
-	sdl_window = SDL_CreateWindow("Top Square", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	sdl_window = SDL_CreateWindow("Top Square", SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (!sdl_window) {
-		printf( "Window creation failed: %s\n", SDL_GetError());
+		printf("Window creation failed: %s\n", SDL_GetError());
         return 1;
 	}
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
 	if (!sdl_renderer) {
-		printf("Create renderer failed: %s\n", SDL_GetError());
+		printf("Renderer creation failed: %s\n", SDL_GetError());
         return 1;
 	}
 
-    sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+    sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 	if (!sdl_texture) {
-		printf( "Texture creation failed: %s\n", SDL_GetError());
+		printf("Texture creation failed: %s\n", SDL_GetError());
         return 1;
 	}
 
     // initialize Verilog module
     Vtop_square *top = new Vtop_square;
+
     top->rst = 1;
     top->clk_pix = 0;
     top->eval();
@@ -85,6 +89,8 @@ int main(int argc, char* argv[]) {
             SDL_RenderPresent(sdl_renderer);
         }
     }
+
+    top->final();  // done simulation
 
     SDL_DestroyTexture(sdl_texture);
     SDL_DestroyRenderer(sdl_renderer);
