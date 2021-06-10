@@ -31,25 +31,25 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-	sdl_window = SDL_CreateWindow("Top Square", SDL_WINDOWPOS_CENTERED,
+    sdl_window = SDL_CreateWindow("Top Square", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (!sdl_window) {
-		printf("Window creation failed: %s\n", SDL_GetError());
+    if (!sdl_window) {
+        printf("Window creation failed: %s\n", SDL_GetError());
         return 1;
-	}
+    }
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
-	if (!sdl_renderer) {
-		printf("Renderer creation failed: %s\n", SDL_GetError());
+    if (!sdl_renderer) {
+        printf("Renderer creation failed: %s\n", SDL_GetError());
         return 1;
-	}
+    }
 
     sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888,
         SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (!sdl_texture) {
-		printf("Texture creation failed: %s\n", SDL_GetError());
+    if (!sdl_texture) {
+        printf("Texture creation failed: %s\n", SDL_GetError());
         return 1;
-	}
+    }
 
     // initialize Verilog module
     Vtop_square *top = new Vtop_square;
