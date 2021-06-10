@@ -14,5 +14,8 @@ webtalk.*
 *.bin
 *.rpt
 
+# Verilator
+obj_dir
+
 # Mac
 .DS_Store

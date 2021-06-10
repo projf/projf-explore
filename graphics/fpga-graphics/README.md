@@ -40,7 +40,7 @@ source ./create_project.tcl
 
 You can then build `top_bounce`, `top_beam`, or `top_square` as you would for any Vivado project.
 
-### Simulation
+### Behavioural Simulation
 
 This design includes test benches for the `clock_gen_480p` and `simple_display_timings_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
 
@@ -74,6 +74,10 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Verilator SDL Simulation
+
+Verilator creates C++ simulations of Verilog designs, while SDL produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. See the [Verilator README](verilator/README.md) for installation and build instructions.
 
 ## Linting
 
