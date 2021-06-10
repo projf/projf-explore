@@ -2,7 +2,7 @@
 
 This folder contains Verilator simulations to accompany the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
-As well as the Verilog modules in this directory, you also need [simple_display_timings_480p.sv](/projf/projf-explore/blob/master/graphics/fpga-graphics/simple_display_timings_480p.sv); the instructions below include this for you.
+As well as the Verilog modules in this directory, you also need [simple_display_timings_480p.sv](../simple_display_timings_480p.sv); the instructions below include this for you.
 
 There are separate instructions for building _FPGA Graphics_ for [FPGA dev boards](../README.md) (iCEBreaker and Arty).
 
