@@ -10,13 +10,13 @@ module top_bounce #(parameter CORDW=10) (  // coordinate width
     input  wire logic rst,             // reset
     output      logic [CORDW-1:0] sx,  // horizontal screen position
     output      logic [CORDW-1:0] sy,  // vertical screen position
+    output      logic de,              // data enable (low in blanking interval)
     output      logic [7:0] sdl_r,     // 8-bit red
     output      logic [7:0] sdl_g,     // 8-bit green
     output      logic [7:0] sdl_b      // 8-bit blue
     );
 
     // display timings
-    logic de;
     simple_display_timings_480p display_timings_inst (
         .clk_pix,
         .rst,
