@@ -13,7 +13,7 @@ You can learn the [background to the Library](https://projectf.io/posts/verilog-
 * [null](null) - null modules for linting
 * [res](res) - resource files for testing
 
-_NB. Documentation is being added throughout May and June 2021._
+_NB. Documentation and test benches are still being added._
 
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:

@@ -23,38 +23,36 @@ module sqrt_int_tb();
     always #(CLK_PERIOD / 2) clk = ~clk;
 
     initial begin
+        $monitor("\t%d:\tsqrt(%d) =%d (rem =%d) (V=%b)", $time, rad, root, rem, valid);
+    end
+
+    initial begin
                 clk = 1;
 
         #100    rad = 8'b00000000;  // 0
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                rad = 8'b00000001;  // 1
+        #50     rad = 8'b00000001;  // 1
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                rad = 8'b01111001;  // 121
+        #50     rad = 8'b01111001;  // 121
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                rad = 8'b01010001;  // 81
+        #50     rad = 8'b01010001;  // 81
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                rad = 8'b01011010;  // 90
+        #50     rad = 8'b01011010;  // 90
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                rad = 8'b11111111;  // 255
+        #50     rad = 8'b11111111;  // 255
                 start = 1;
         #10     start = 0;
-        #40     $display("\t%d:\tsqrt(%d) =%d (rem =%d)", $time, rad, root, rem);
 
-                $finish;
+        #50     $finish;
     end
 endmodule
