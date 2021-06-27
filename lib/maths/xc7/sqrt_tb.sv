@@ -43,6 +43,6 @@ module sqrt_tb();
         #120    rad = 16'b0000_0010_0000_0000;  // 2.0
                 start = 1;
         #10     start = 0;
-            #120    $finish;
+        #120    $finish;
     end
 endmodule
