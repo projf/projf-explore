@@ -25,26 +25,24 @@ module sqrt_tb();
     always #(CLK_PERIOD / 2) clk = ~clk;
 
     initial begin
+        $monitor("\t%d:\tsqrt(%f) = %b (%f) (rem = %b) (V=%b)",
+                    $time, $itor(rad*SF), root, $itor(root*SF), rem, valid);
+    end
+
+    initial begin
                 clk = 1;
 
         #100    rad = 16'b1110_1000_1001_0000;  // 232.56250000
                 start = 1;
         #10     start = 0;
-        #120    $display("\t%d:\tsqrt(%f) = %b (%f) (rem = %b)",
-                    $time, $itor(rad)*SF, root, $itor(root)*SF, rem);
 
-                rad = 16'b0000_0000_0100_0000;  // 0.25
+        #120    rad = 16'b0000_0000_0100_0000;  // 0.25
                 start = 1;
         #10     start = 0;
-        #120    $display("\t%d:\tsqrt(%f) = %b (%f) (rem = %b)",
-                    $time, $itor(rad)*SF, root, $itor(root)*SF, rem);
 
-                rad = 16'b0000_0010_0000_0000;  // 2.0
+        #120    rad = 16'b0000_0010_0000_0000;  // 2.0
                 start = 1;
         #10     start = 0;
-        #120    $display("\t%d:\tsqrt(%f) = %b (%f) (rem = %b)",
-                    $time, $itor(rad)*SF, root, $itor(root)*SF, rem);
-
-        $finish;
+            #120    $finish;
     end
 endmodule
