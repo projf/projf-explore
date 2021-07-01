@@ -56,4 +56,4 @@ Porting to other architectures should be straightforward.
 
 ### SystemVerilog
 
-We use a few choice features from SystemVerilog to make Verilog a little more pleasant. If you’re familiar with Verilog, you’ll have no trouble. All the designs are tested with Yosys and Vivado.
+We’ll use a few choice features from SystemVerilog to make Verilog a little more pleasant. If you’re familiar with Verilog, you’ll have no trouble. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado
