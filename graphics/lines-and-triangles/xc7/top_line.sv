@@ -27,18 +27,19 @@ module top_line (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -49,7 +50,7 @@ module top_line (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
@@ -74,7 +75,7 @@ module top_line (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -90,8 +91,7 @@ module top_line (
     );
 
     // draw line in framebuffer
-    logic signed [CORDW-1:0] lx0, lx1;  // line coords (horizontal)
-    logic signed [CORDW-1:0] ly0, ly1;  // line coords (vertical)
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -99,8 +99,8 @@ module top_line (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                lx0 <=  40; ly0 <=   0;
-                lx1 <= 279; ly1 <= 239;
+                vx0 <=  70; vy0 <=   0;
+                vx1 <= 249; vy1 <= 179;
                 fb_cidx <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
@@ -119,13 +119,16 @@ module top_line (
         .rst(1'b0),
         .start(draw_start),
         .oe(1'b1),
-        .x0(lx0),
-        .y0(ly0),
-        .x1(lx1),
-        .y1(ly1),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

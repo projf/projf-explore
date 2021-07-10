@@ -27,7 +27,7 @@ series, start by reading [FPGA Graphics](https://projectf.io/posts/fpga-graphics
 * **Life on Screen**: [Designs](graphics/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles**: [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
 * **2D Shapes**: [Designs](graphics/2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
-* **Simple 3D**: _coming soon_
+* **Animated Shapes**: [Designs](animated-shapes) - [Blog](https://projectf.io/posts/animated-shapes/)
 
 ## Hello
 

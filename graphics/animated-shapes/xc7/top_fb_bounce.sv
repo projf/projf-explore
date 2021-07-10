@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Cube (Arty Pmod VGA)
+// Project F: Animated Shapes - Top FB Bounce (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_cube (
+module top_fb_bounce (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -57,12 +57,12 @@ module top_cube (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
+    logic fb_we, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -82,6 +82,9 @@ module top_cube (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .bgidx(4'b0),
+        .clear(1),  // enable clearing of buffer before drawing
+        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -90,10 +93,33 @@ module top_cube (
         .blue(fb_blue)
     );
 
-    // draw cube in framebuffer
-    localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;    // line identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
+    // animate square coordinates
+    localparam Q1_SIZE = 80;
+    logic [CORDW-1:0] q1x, q1y;  // position (top left of square)
+    logic q1dx, q1dy;            // direction: 0 is right/down
+    logic [CORDW-1:0] q1s = 1;   // speed in pixels/frame
+    always_ff @(posedge clk_100m) begin
+        if (frame_sys) begin
+            if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
+                q1dx <= 1;
+                q1x <= q1x - q1s;
+            end else if (q1x < q1s) begin  // left edge
+                q1dx <= 0;
+                q1x <= q1x + q1s;
+            end else q1x <= (q1dx) ? q1x - q1s : q1x + q1s;
+
+            if (q1y >= FB_HEIGHT - (Q1_SIZE + q1s)) begin  // bottom edge
+                q1dy <= 1;
+                q1y <= q1y - q1s;
+            end else if (q1y < q1s) begin  // top edge
+                q1dy <= 0;
+                q1y <= q1y + q1s;
+            end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
+        end
+    end
+
+    // draw square in framebuffer
+    logic [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -101,80 +127,34 @@ module top_cube (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                draw_start <= 1;
-                state <= DRAW;
-                fb_cidx <= 4'h8;  // red
-                case (line_id)
-                    4'd0: begin
-                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
-                    end
-                    4'd1: begin
-                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
-                    end
-                    4'd2: begin
-                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
-                    end
-                    4'd3: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd4: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
-                    end
-                    4'd5: begin
-                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
-                    end
-                    4'd6: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd7: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
-                    end
-                    4'd8: begin
-                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
-                    end
-                    default: begin  // should never occur
-                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
-                    end
-                endcase
+                if (fb_wready) begin
+                    draw_start <= 1;
+                    state <= DRAW;
+                    rx0 <= q1x;
+                    ry0 <= q1y;
+                    rx1 <= q1x + Q1_SIZE;
+                    ry1 <= q1y + Q1_SIZE;
+                    fb_cidx <= 4'hB;  // green
+                end
             end
             DRAW: begin
                 draw_start <= 0;
-                if (draw_done) begin
-                    if (line_id == LINE_CNT-1) begin
-                        state <= DONE;
-                    end else begin
-                        line_id <= line_id + 1;
-                        state <= INIT;
-                    end
-                end
+                if (draw_done) state <= DONE;
             end
-            DONE: state <= DONE;
+            DONE: state <= IDLE;
             default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
-        if (frame_sys) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
-    end
-
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(draw_oe),
-        .x0(vx0),
-        .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
+        .oe(1'b1),
+        .x0(rx0),
+        .y0(ry0),
+        .x1(rx1),
+        .y1(ry1),
         .x(fbx),
         .y(fby),
         .drawing,

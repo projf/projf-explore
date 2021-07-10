@@ -29,15 +29,14 @@ module top_triangles (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
         .de,
@@ -47,7 +46,7 @@ module top_triangles (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 160;
-    localparam FB_HEIGHT  = 120;
+    localparam FB_HEIGHT  = 90;
     localparam FB_CIDXW   = 2;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 4;
@@ -72,7 +71,7 @@ module top_triangles (
         .clk_pix(clk_pix),
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -89,8 +88,8 @@ module top_triangles (
 
     // draw triangles in framebuffer
     localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // shape coords
+    logic [1:0] shape_id;    // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -102,27 +101,27 @@ module top_triangles (
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        tx0 <=  10; ty0 <=  30;
-                        tx1 <=  30; ty1 <=  90;
-                        tx2 <=  55; ty2 <=  45;
+                        vx0 <=  30; vy0 <=  10;
+                        vx1 <= 140; vy1 <=  40;
+                        vx2 <=  80; vy2 <=  82;
                         fb_cidx <= 2'h1;  // orange
                     end
                     2'd1: begin
-                        tx0 <=  35; ty0 <= 100;
-                        tx1 <= 120; ty1 <=  50;
-                        tx2 <=  85; ty2 <=  5;
+                        vx0 <=  35; vy0 <=  80;
+                        vx1 <= 110; vy1 <=  45;
+                        vx2 <=  85; vy2 <=   5;
                         fb_cidx <= 2'h2;  // green
                     end
                     2'd2: begin
-                        tx0 <=  30; ty0 <=  15;
-                        tx1 <= 150; ty1 <=  40;
-                        tx2 <=  80; ty2 <= 110;
+                        vx0 <=  11; vy0 <=  17;
+                        vx1 <=  31; vy1 <=  75;
+                        vx2 <=  48; vy2 <=  48;
                         fb_cidx <= 2'h3;  // blue
                     end
                     default: begin  // should never occur
-                        tx0 <=   10; ty0 <=   10;
-                        tx1 <=   10; ty1 <=   30;
-                        tx2 <=   20; ty2 <=   20;
+                        vx0 <=   10; vy0 <=   10;
+                        vx1 <=   10; vy1 <=   30;
+                        vx2 <=   20; vy2 <=   20;
                         fb_cidx <= 2'h1;  // orange
                     end
                 endcase
@@ -162,15 +161,18 @@ module top_triangles (
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
         .oe(draw_oe),
-        .x0(tx0),
-        .y0(ty0),
-        .x1(tx1),
-        .y1(ty1),
-        .x2(tx2),
-        .y2(ty2),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

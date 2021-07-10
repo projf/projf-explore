@@ -155,6 +155,9 @@ module top_rectangles (
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

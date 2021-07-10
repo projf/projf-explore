@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Cube (Arty Pmod VGA)
+// Project F: 2D Shapes - Top Filled Cube (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_cube (
+module top_cube_fill (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -90,10 +90,10 @@ module top_cube (
         .blue(fb_blue)
     );
 
-    // draw cube in framebuffer
-    localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;    // line identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
+    // draw triangles in framebuffer
+    localparam SHAPE_CNT=6;  // number of shapes to draw
+    logic [2:0] shape_id;    // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -103,47 +103,58 @@ module top_cube (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                fb_cidx <= 4'h8;  // red
-                case (line_id)
-                    4'd0: begin
-                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
+                case (shape_id)
+                    3'd0: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <= 230; vy1 <=  60;
+                        vx2 <= 230; vy2 <= 160;
+                        fb_cidx <= 4'h9;  // orange
                     end
-                    4'd1: begin
-                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
+                    3'd1: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <= 230; vy1 <= 160;
+                        vx2 <= 130; vy2 <= 160;
+                        fb_cidx <= 4'hA;  // yellow
                     end
-                    4'd2: begin
-                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
+                    3'd2: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <=  90; vy1 <= 120;
+                        vx2 <= 130; vy2 <= 160;
+                        fb_cidx <= 4'h2;  // dark purple
                     end
-                    4'd3: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
+                    3'd3: begin
+                        vx0 <=  90; vy0 <=  20;
+                        vx1 <= 130; vy1 <=  60;
+                        vx2 <=  90; vy2 <= 120;
+                        fb_cidx <= 4'hE;  // pink
                     end
-                    4'd4: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
+                    3'd4: begin
+                        vx0 <=  90; vy0 <=  20;
+                        vx1 <= 190; vy1 <=  20;
+                        vx2 <= 130; vy2 <=  60;
+                        fb_cidx <= 4'h1;  // dark blue
                     end
-                    4'd5: begin
-                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
-                    end
-                    4'd6: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd7: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
-                    end
-                    4'd8: begin
-                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
+                    3'd5: begin
+                        vx0 <= 190; vy0 <=  20;
+                        vx1 <= 130; vy1 <=  60;
+                        vx2 <= 230; vy2 <=  60;
+                        fb_cidx <= 4'hC;  // blue
                     end
                     default: begin  // should never occur
-                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
+                        vx0 <=   10; vy0 <=   10;
+                        vx1 <=   10; vy1 <=   30;
+                        vx2 <=   20; vy2 <=   20;
+                        fb_cidx <= 4'h7;  // white
                     end
                 endcase
             end
             DRAW: begin
                 draw_start <= 0;
                 if (draw_done) begin
-                    if (line_id == LINE_CNT-1) begin
+                    if (shape_id == SHAPE_CNT-1) begin
                         state <= DONE;
                     end else begin
-                        line_id <= line_id + 1;
+                        shape_id <= shape_id + 1;
                         state <= INIT;
                     end
                 end
@@ -153,28 +164,17 @@ module top_cube (
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
-        if (frame_sys) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
-    end
-
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(draw_oe),
+        .oe(1'b1),
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
         .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
         .x(fbx),
         .y(fby),
         .drawing,

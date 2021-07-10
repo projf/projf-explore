@@ -15,7 +15,7 @@ module draw_rectangle_fill_tb ();
     localparam CORDW = 8;
     logic [CORDW-1:0] x, y;
     logic [CORDW-1:0] x0, y0, x1, y1;
-    logic start, oe, drawing, done;
+    logic start, oe, drawing, complete, done;
     draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_fill_inst (
         .clk,
         .rst,
@@ -28,6 +28,7 @@ module draw_rectangle_fill_tb ();
         .x,
         .y,
         .drawing,
+        .complete,
         .done
     );
 

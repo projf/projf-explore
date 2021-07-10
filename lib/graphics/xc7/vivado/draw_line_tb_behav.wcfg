@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1000001fs"></ZoomEndTime>
-      <Cursor1Time time="1000fs"></Cursor1Time>
+      <ZoomEndTime time="1292fs"></ZoomEndTime>
+      <Cursor1Time time="1fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="78"></NameColumnWidth>
+      <NameColumnWidth column_width="74"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="16" />
+   <WVObjectSize size="17" />
    <wvobject fp_name="/draw_line_tb/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -40,53 +40,57 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
+   <wvobject fp_name="/draw_line_tb/draw_line_inst/complete" type="logic">
+      <obj_property name="ElementShortName">complete</obj_property>
+      <obj_property name="ObjectShortName">complete</obj_property>
+   </wvobject>
    <wvobject fp_name="/draw_line_tb/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/x0" type="array">
-      <obj_property name="ElementShortName">x0[7:0]</obj_property>
-      <obj_property name="ObjectShortName">x0[7:0]</obj_property>
+      <obj_property name="ElementShortName">x0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/y0" type="array">
-      <obj_property name="ElementShortName">y0[7:0]</obj_property>
-      <obj_property name="ObjectShortName">y0[7:0]</obj_property>
+      <obj_property name="ElementShortName">y0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y0[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/x1" type="array">
-      <obj_property name="ElementShortName">x1[7:0]</obj_property>
-      <obj_property name="ObjectShortName">x1[7:0]</obj_property>
+      <obj_property name="ElementShortName">x1[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x1[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/y1" type="array">
-      <obj_property name="ElementShortName">y1[7:0]</obj_property>
-      <obj_property name="ObjectShortName">y1[7:0]</obj_property>
+      <obj_property name="ElementShortName">y1[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y1[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/dx" type="array">
-      <obj_property name="ElementShortName">dx[8:0]</obj_property>
-      <obj_property name="ObjectShortName">dx[8:0]</obj_property>
+      <obj_property name="ElementShortName">dx[9:0]</obj_property>
+      <obj_property name="ObjectShortName">dx[9:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/dy" type="array">
-      <obj_property name="ElementShortName">dy[8:0]</obj_property>
-      <obj_property name="ObjectShortName">dy[8:0]</obj_property>
+      <obj_property name="ElementShortName">dy[9:0]</obj_property>
+      <obj_property name="ObjectShortName">dy[9:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/err" type="array">
-      <obj_property name="ElementShortName">err[8:0]</obj_property>
-      <obj_property name="ObjectShortName">err[8:0]</obj_property>
+      <obj_property name="ElementShortName">err[9:0]</obj_property>
+      <obj_property name="ObjectShortName">err[9:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/x" type="array">
-      <obj_property name="ElementShortName">x[7:0]</obj_property>
-      <obj_property name="ObjectShortName">x[7:0]</obj_property>
+      <obj_property name="ElementShortName">x[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/y" type="array">
-      <obj_property name="ElementShortName">y[7:0]</obj_property>
-      <obj_property name="ObjectShortName">y[7:0]</obj_property>
+      <obj_property name="ElementShortName">y[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_tb/draw_line_inst/state" type="array">

@@ -156,6 +156,9 @@ module top_fb_bounce_v1 (
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

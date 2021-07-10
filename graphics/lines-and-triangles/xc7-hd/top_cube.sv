@@ -32,14 +32,15 @@ module top_cube (
 
     // display timings
     localparam CORDW = 16;
-    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .hsync,
         .vsync,
         .de,
@@ -53,10 +54,10 @@ module top_cube (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 3;
+    localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
@@ -78,7 +79,7 @@ module top_cube (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
+        .de,
         .frame,
         .line,
         .we(fb_we),
@@ -95,8 +96,8 @@ module top_cube (
 
     // draw cube in framebuffer
     localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;  // line identifier
-    logic signed [CORDW-1:0] lx0, ly0, lx1, ly1;  // line coords
+    logic [3:0] line_id;    // line identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -109,34 +110,34 @@ module top_cube (
                 fb_cidx <= 4'h8;  // red
                 case (line_id)
                     4'd0: begin
-                        lx0 <= 130; ly0 <=  90; lx1 <= 230; ly1 <=  90;
+                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
                     end
                     4'd1: begin
-                        lx0 <= 230; ly0 <=  90; lx1 <= 230; ly1 <= 190;
+                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
                     end
                     4'd2: begin
-                        lx0 <= 230; ly0 <= 190; lx1 <= 130; ly1 <= 190;
+                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
                     end
                     4'd3: begin
-                        lx0 <= 130; ly0 <= 190; lx1 <= 130; ly1 <=  90;
+                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
                     end
                     4'd4: begin
-                        lx0 <= 130; ly0 <= 190; lx1 <=  90; ly1 <= 150;
+                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
                     end
                     4'd5: begin
-                        lx0 <=  90; ly0 <= 150; lx1 <=  90; ly1 <=  50;
+                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
                     end
                     4'd6: begin
-                        lx0 <=  90; ly0 <=  50; lx1 <= 130; ly1 <=  90;
+                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
                     end
                     4'd7: begin
-                        lx0 <=  90; ly0 <=  50; lx1 <= 190; ly1 <=  50;
+                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
                     end
                     4'd8: begin
-                        lx0 <= 190; ly0 <=  50; lx1 <= 230; ly1 <=  90;
+                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
                     end
                     default: begin  // should never occur
-                        lx0 <=   0; ly0 <=   0; lx1 <=   0; ly1 <=   0;
+                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
                     end
                 endcase
             end
@@ -174,13 +175,16 @@ module top_cube (
         .rst(1'b0),
         .start(draw_start),
         .oe(draw_oe),
-        .x0(lx0),
-        .y0(ly0),
-        .x1(lx1),
-        .y1(ly1),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

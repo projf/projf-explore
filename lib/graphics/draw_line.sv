@@ -10,27 +10,26 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
     input  wire logic oe,              // output enable
-    input  wire logic signed [CORDW-1:0] x0,  // point 0 - horizontal position
-    input  wire logic signed [CORDW-1:0] y0,  // point 0 - vertical position
-    input  wire logic signed [CORDW-1:0] x1,  // point 1 - horizontal position
-    input  wire logic signed [CORDW-1:0] y1,  // point 1 - vertical position
-    output      logic signed [CORDW-1:0] x,   // horizontal drawing position
-    output      logic signed [CORDW-1:0] y,   // vertical drawing position
+    input  wire logic signed [CORDW-1:0] x0, y0,  // point 0
+    input  wire logic signed [CORDW-1:0] x1, y1,  // point 1
+    output      logic signed [CORDW-1:0] x,  y,   // drawing position
     output      logic drawing,         // line is drawing
-    output      logic done             // line complete (high for one tick)
+    output      logic complete,        // line complete (remains high)
+    output      logic done             // line done (high for one tick)
     );
 
     // line properties
-    logic right, swap;  // drawing direction
-    logic signed [CORDW-1:0] xa, ya;  // starting point
-    logic signed [CORDW-1:0] xb, yb;  // ending point
+    logic swap;   // swap points to ensure y1 >= y0
+    logic right;  // drawing direction
+    logic signed [CORDW-1:0] xa, ya;  // start point
+    logic signed [CORDW-1:0] xb, yb;  // end point
+    logic signed [CORDW-1:0] x_end, y_end;  // register end point
     always_comb begin
         swap = (y0 > y1);  // swap points if y0 is below y1
         xa = swap ? x1 : x0;
         xb = swap ? x0 : x1;
         ya = swap ? y1 : y0;
         yb = swap ? y0 : y1;
-        right = (xa < xb);  // draw right to left?
     end
 
     // error values
@@ -48,15 +47,16 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
         if (in_progress && oe) drawing = 1;
     end
 
-    enum {IDLE, INIT, DRAW} state;
+    enum {IDLE, INIT_0, INIT_1, DRAW} state;
     always_ff @(posedge clk) begin
         case (state)
             DRAW: begin
                 if (oe) begin
-                    if (x == xb && y == yb) begin
-                        in_progress <= 0;
-                        done <= 1;
+                    if (x == x_end && y == y_end) begin
                         state <= IDLE;
+                        in_progress <= 0;
+                        complete <= 1;
+                        done <= 1;
                     end else begin
                         if (movx) begin
                             x <= right ? x + 1 : x - 1;
@@ -68,33 +68,41 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
                         end
                         if (movx && movy) begin
                             x <= right ? x + 1 : x - 1;
-                            y <= y + 1;  // always down
+                            y <= y + 1;
                             err <= err + dy + dx;
                         end
                     end
                 end
             end
-            INIT: begin
+            INIT_0: begin
+                state <= INIT_1;
+                dx <= right ? xb - xa : xa - xb;  // dx = abs(xb - xa)
+                dy <= ya - yb;  // dy = -abs(yb - ya)
+            end
+            INIT_1: begin
+                state <= DRAW;
                 err <= dx + dy;
                 x <= xa;
                 y <= ya;
+                x_end <= xb;
+                y_end <= yb;
                 in_progress <= 1;
-                state <= DRAW;
             end
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    dx <= right ? xb - xa : xa - xb;  // dx = abs(xb - xa)
-                    dy <= ya - yb;  // dy = -abs(yb - ya)
-                    state <= INIT;
+                    state <= INIT_0;
+                    right <= (xa < xb);  // draw right to left?
+                    complete <= 0;
                 end
             end
         endcase
 
         if (rst) begin
-            in_progress <= 0;
-            done <= 0;
             state <= IDLE;
+            in_progress <= 0;
+            complete <= 0;
+            done <= 0;
         end
     end
 endmodule

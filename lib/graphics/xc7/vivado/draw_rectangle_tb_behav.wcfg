@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="603892fs"></ZoomEndTime>
-      <Cursor1Time time="1000000fs"></Cursor1Time>
+      <ZoomEndTime time="785fs"></ZoomEndTime>
+      <Cursor1Time time="1000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="101"></NameColumnWidth>
+      <NameColumnWidth column_width="97"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="15" />
    <wvobject fp_name="/draw_rectangle_tb/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
@@ -69,6 +69,10 @@
    <wvobject fp_name="/draw_rectangle_tb/drawing" type="logic">
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_rectangle_tb/complete" type="logic">
+      <obj_property name="ElementShortName">complete</obj_property>
+      <obj_property name="ObjectShortName">complete</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_rectangle_tb/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>

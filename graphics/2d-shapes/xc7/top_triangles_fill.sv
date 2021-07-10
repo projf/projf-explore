@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Top FB Bounce v1 (Arty Pmod VGA)
+// Project F: 2D Shapes - Top Filled Triangles (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_fb_bounce_v1 (
+module top_triangles_fill (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -27,18 +27,19 @@ module top_fb_bounce_v1 (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -47,14 +48,18 @@ module top_fb_bounce_v1 (
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
+    logic line_sys;  // start of new line in system clock domain
+    xd xd_line (.clk_i(clk_pix), .clk_o(clk_100m),
+                 .rst_i(1'b0), .rst_o(1'b0), .i(line), .o(line_sys));
+
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -74,7 +79,7 @@ module top_fb_bounce_v1 (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -89,33 +94,10 @@ module top_fb_bounce_v1 (
         .blue(fb_blue)
     );
 
-    // square coordinates
-    localparam Q1_SIZE = 80;
-    logic [CORDW-1:0] q1x, q1y;  // position (top left)
-    logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
-    always_ff @(posedge clk_100m) begin
-        if (frame_sys) begin
-            if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
-                q1dx <= 1;
-                q1x <= q1x - q1s;
-            end else if (q1x < q1s) begin  // left edge
-                q1dx <= 0;
-                q1x <= q1x + q1s;
-            end else q1x <= (q1dx) ? q1x - q1s : q1x + q1s;
-
-            if (q1y >= FB_HEIGHT - (Q1_SIZE + q1s)) begin  // bottom edge
-                q1dy <= 1;
-                q1y <= q1y - q1s;
-            end else if (q1y < q1s) begin  // top edge
-                q1dy <= 0;
-                q1y <= q1y + q1s;
-            end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
-        end
-    end
-
-    // draw square in framebuffer
-    logic [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    // draw triangles in framebuffer
+    localparam SHAPE_CNT=3;  // number of shapes to draw
+    logic [1:0] shape_id;    // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -125,33 +107,78 @@ module top_fb_bounce_v1 (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                rx0 <= q1x;
-                ry0 <= q1y;
-                rx1 <= q1x + Q1_SIZE;
-                ry1 <= q1y + Q1_SIZE;
-                fb_cidx <= fb_cidx + 1;
+                case (shape_id)
+                    2'd0: begin
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        fb_cidx <= 4'h9;  // orange
+                    end
+                    2'd1: begin
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
+                        fb_cidx <= 4'hC;  // blue
+                    end
+                    2'd2: begin
+                        vx0 <=  22; vy0 <=  35;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
+                        fb_cidx <= 4'h2;  // dark purple
+                    end
+                    default: begin  // should never occur
+                        vx0 <=   10; vy0 <=   10;
+                        vx1 <=   10; vy1 <=   30;
+                        vx2 <=   20; vy2 <=   20;
+                        fb_cidx <= 4'h7;  // white
+                    end
+                endcase
             end
             DRAW: begin
                 draw_start <= 0;
-                if (draw_done) state <= DONE;
+                if (draw_done) begin
+                    if (shape_id == SHAPE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        shape_id <= shape_id + 1;
+                        state <= INIT;
+                    end
+                end
             end
-            DONE: state <= IDLE;
+            DONE: state <= DONE;
             default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
-    draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
+    // control drawing output enable - wait 300 frames, then 1 pixel/line
+    localparam DRAW_WAIT = 300;
+    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
+    logic draw_oe;
+    always_ff @(posedge clk_100m) begin
+        draw_oe <= 0;
+        if (frame_sys && cnt_draw_wait != DRAW_WAIT-1) begin
+            cnt_draw_wait <= cnt_draw_wait + 1;
+        end
+        if (line_sys && cnt_draw_wait == DRAW_WAIT-1) draw_oe <= 1;
+    end
+
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
-        .x0(rx0),
-        .y0(ry0),
-        .x1(rx1),
-        .y1(ry1),
+        .oe(draw_oe),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

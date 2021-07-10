@@ -27,18 +27,19 @@ module top_rectangles (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -49,7 +50,7 @@ module top_rectangles (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
@@ -74,7 +75,7 @@ module top_rectangles (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -91,8 +92,8 @@ module top_rectangles (
 
     // draw rectangles in framebuffer
     localparam SHAPE_CNT=15;  // number of shapes to draw
-    logic [3:0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    logic [3:0] shape_id;     // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -103,10 +104,10 @@ module top_rectangles (
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                rx0 <=  80 + shape_id;
-                ry0 <=  60 + shape_id;
-                rx1 <= 240 - shape_id;
-                ry1 <= 180 - shape_id;
+                vx0 <=  80 + shape_id;
+                vy0 <=  30 + shape_id;
+                vx1 <= 240 - shape_id;
+                vy1 <= 150 - shape_id;
                 /* verilator lint_on WIDTH */
                 fb_cidx <= shape_id + 1;  // skip 1st colour (black)
             end
@@ -144,13 +145,16 @@ module top_rectangles (
         .rst(1'b0),
         .start(draw_start),
         .oe(draw_oe),
-        .x0(rx0),
-        .y0(ry0),
-        .x1(rx1),
-        .y1(ry1),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

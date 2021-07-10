@@ -10,13 +10,11 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic rst,             // reset
     input  wire logic start,           // start rectangle drawing
     input  wire logic oe,              // output enable
-    input  wire logic signed [CORDW-1:0] x0,  // vertex 0 - horizontal position
-    input  wire logic signed [CORDW-1:0] y0,  // vertex 0 - vertical position
-    input  wire logic signed [CORDW-1:0] x1,  // vertex 2 - horizontal position
-    input  wire logic signed [CORDW-1:0] y1,  // vertex 2 - vertical position
-    output      logic signed [CORDW-1:0] x,   // horizontal drawing position
-    output      logic signed [CORDW-1:0] y,   // vertical drawing position
+    input  wire logic signed [CORDW-1:0] x0, y0,  // vertex 0
+    input  wire logic signed [CORDW-1:0] x1, y1,  // vertex 2
+    output      logic signed [CORDW-1:0] x,  y,   // drawing position
     output      logic drawing,         // rectangle is drawing
+    output      logic complete,        // rectangle complete (remains high)
     output      logic done             // rectangle complete (high for one tick)
     );
 
@@ -32,6 +30,8 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
     always_ff @(posedge clk) begin
         case (state)
             INIT: begin  // register coordinates
+                state <= DRAW;
+                line_start <= 1;
                 if (line_id == 2'd0) begin  // (x0,y0) (x1,y0)
                     lx0 <= x0; ly0 <= y0;
                     lx1 <= x1; ly1 <= y0;
@@ -45,35 +45,36 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
                     lx0 <= x0; ly0 <= y1;
                     lx1 <= x0; ly1 <= y0;
                 end
-                state <= DRAW;
-                line_start <= 1;
             end
             DRAW: begin
                 line_start <= 0;
                 if (line_done) begin
                     if (line_id == 3) begin  // final line
-                        done <= 1;
                         state <= IDLE;
+                        complete <= 1;
+                        done <= 1;
                     end else begin
-                        line_id <= line_id + 1;
                         state <= INIT;
+                        line_id <= line_id + 1;
                     end
                 end
             end
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    line_id <= 0;
                     state <= INIT;
+                    line_id <= 0;
+                    complete <= 0;
                 end
             end
         endcase
 
         if (rst) begin
+            state <= IDLE;
             line_id <= 0;
             line_start <= 0;
+            complete <= 0;
             done <= 0;
-            state <= IDLE;
         end
     end
 
@@ -89,6 +90,9 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
         .x,
         .y,
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(line_done)
     );
 endmodule

@@ -27,18 +27,19 @@ module top_triangles (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -49,7 +50,7 @@ module top_triangles (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
@@ -74,7 +75,7 @@ module top_triangles (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -91,8 +92,8 @@ module top_triangles (
 
     // draw triangles in framebuffer
     localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] tx0, ty0, tx1, ty1, tx2, ty2;  // shape coords
+    logic [1:0] shape_id;    // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -104,27 +105,27 @@ module top_triangles (
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        tx0 <=  20; ty0 <=  60;
-                        tx1 <=  60; ty1 <= 180;
-                        tx2 <= 110; ty2 <=  90;
-                        fb_cidx <= 4'h2;  // dark purple
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        fb_cidx <= 4'h9;  // orange
                     end
                     2'd1: begin
-                        tx0 <=  70; ty0 <= 200;
-                        tx1 <= 240; ty1 <= 100;
-                        tx2 <= 170; ty2 <=  10;
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
                         fb_cidx <= 4'hC;  // blue
                     end
                     2'd2: begin
-                        tx0 <=  60; ty0 <=  30;
-                        tx1 <= 300; ty1 <=  80;
-                        tx2 <= 160; ty2 <= 220;
-                        fb_cidx <= 4'h9;  // orange
+                        vx0 <=  22; vy0 <=  35;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
+                        fb_cidx <= 4'h2;  // dark purple
                     end
                     default: begin  // should never occur
-                        tx0 <=   10; ty0 <=   10;
-                        tx1 <=   10; ty1 <=   30;
-                        tx2 <=   20; ty2 <=   20;
+                        vx0 <=   10; vy0 <=   10;
+                        vx1 <=   10; vy1 <=   30;
+                        vx2 <=   20; vy2 <=   20;
                         fb_cidx <= 4'h7;  // white
                     end
                 endcase
@@ -163,15 +164,18 @@ module top_triangles (
         .rst(1'b0),
         .start(draw_start),
         .oe(draw_oe),
-        .x0(tx0),
-        .y0(ty0),
-        .x1(tx1),
-        .y1(ty1),
-        .x2(tx2),
-        .y2(ty2),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Top FB Bounce (Arty Pmod VGA)
+// Project F: Animated Shapes - Top FB Bounce v1 (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_fb_bounce (
+module top_fb_bounce_v1 (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -27,18 +27,19 @@ module top_fb_bounce (
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic frame, line;
     display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -49,19 +50,19 @@ module top_fb_bounce (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
 
-    logic fb_we, fb_wready;
+    logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_db #(
+    framebuffer #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -74,16 +75,13 @@ module top_fb_bounce (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'b0),
-        .clear(1),  // enable clearing of buffer before drawing
-        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -92,11 +90,11 @@ module top_fb_bounce (
         .blue(fb_blue)
     );
 
-    // animate square coordinates
+    // square coordinates
     localparam Q1_SIZE = 80;
-    logic [CORDW-1:0] q1x, q1y;  // position (top left of square)
+    logic [CORDW-1:0] q1x, q1y;  // position (top left)
     logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 1;   // speed in pixels/frame
+    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
             if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
@@ -126,15 +124,13 @@ module top_fb_bounce (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                if (fb_wready) begin
-                    draw_start <= 1;
-                    state <= DRAW;
-                    rx0 <= q1x;
-                    ry0 <= q1y;
-                    rx1 <= q1x + Q1_SIZE;
-                    ry1 <= q1y + Q1_SIZE;
-                    fb_cidx <= 4'hB;  // green
-                end
+                draw_start <= 1;
+                state <= DRAW;
+                rx0 <= q1x;
+                ry0 <= q1y;
+                rx1 <= q1x + Q1_SIZE;
+                ry1 <= q1y + Q1_SIZE;
+                fb_cidx <= fb_cidx + 1;
             end
             DRAW: begin
                 draw_start <= 0;
@@ -157,6 +153,9 @@ module top_fb_bounce (
         .x(fbx),
         .y(fby),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

@@ -10,13 +10,11 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic rst,             // reset
     input  wire logic start,           // start rectangle drawing
     input  wire logic oe,              // output enable
-    input  wire logic signed [CORDW-1:0] x0,  // vertex 0 - horizontal position
-    input  wire logic signed [CORDW-1:0] y0,  // vertex 0 - vertical position
-    input  wire logic signed [CORDW-1:0] x1,  // vertex 2 - horizontal position
-    input  wire logic signed [CORDW-1:0] y1,  // vertex 2 - vertical position
-    output      logic signed [CORDW-1:0] x,   // horizontal drawing position
-    output      logic signed [CORDW-1:0] y,   // vertical drawing position
+    input  wire logic signed [CORDW-1:0] x0, y0,  // vertex 0
+    input  wire logic signed [CORDW-1:0] x1, y1,  // vertex 2
+    output      logic signed [CORDW-1:0] x,  y,   // drawing position
     output      logic drawing,         // rectangle is drawing
+    output      logic complete,        // rectangle complete (remains high)
     output      logic done             // rectangle complete (high for one tick)
     );
 
@@ -32,61 +30,62 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
         y1s = (y0 > y1) ? y0 : y1;  // last line
     end
 
-    // line coordinates - horizontal lines, so only one y-value
-    logic signed [CORDW-1:0] lx0, lx1, ly;
+    // horizontal line coordinates
+    logic signed [CORDW-1:0] lx0, lx1;
 
     enum {IDLE, INIT, DRAW} state;
     always_ff @(posedge clk) begin
         case (state)
             INIT: begin  // register coordinates
+                state <= DRAW;
+                line_start <= 1;
                 // x-coordinates don't change for a given filled rectangle
                 lx0 <= (x0 > x1) ? x1 : x0;  // draw left-to-right
                 lx1 <= (x0 > x1) ? x0 : x1;
-                ly <= y0s + line_id;  // vertical position
-                state <= DRAW;
-                line_start <= 1;
+                y <= y0s + line_id;  // vertical position
             end
             DRAW: begin
                 line_start <= 0;
                 if (line_done) begin
-                    if (ly == y1s) begin
-                        done <= 1;
+                    if (y == y1s) begin
                         state <= IDLE;
+                        done <= 1;
                     end else begin
-                        line_id <= line_id + 1;
                         state <= INIT;
+                        line_id <= line_id + 1;
                     end
                 end
             end
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    line_id <= 0;
                     state <= INIT;
+                    line_id <= 0;
                 end
             end
         endcase
 
         if (rst) begin
+            state <= IDLE;
             line_id <= 0;
             line_start <= 0;
+            complete <= 0;
             done <= 0;
-            state <= IDLE;
         end
     end
 
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    draw_line_1d #(.CORDW(CORDW)) draw_line_1d_inst (
         .clk,
         .rst,
         .start(line_start),
         .oe,
         .x0(lx0),
-        .y0(ly),
         .x1(lx1),
-        .y1(ly),
-        .x,
-        .y,
+        .x(x),
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .complete(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(line_done)
     );
 endmodule

@@ -42,6 +42,8 @@ make -C ./obj_dir -f Vtop_bounce.mk
 ./obj_dir/Vtop_bounce
 ```
 
+_Note: all three designs use [simple_display_timings_480p.sv](../simple_display_timings_480p.sv) from the main [FPGA Graphics](../) folder._
+
 ## Installing Dependencies
 
 To build the simulations, you need:

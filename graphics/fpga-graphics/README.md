@@ -77,7 +77,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Verilator SDL Simulation
 
-Verilator creates C++ simulations of Verilog designs, while SDL produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. See the [Verilator README](verilator/README.md) for installation and build instructions.
+Verilator creates C++ simulations of Verilog designs, while SDL produces cross-platform graphics applications. By combining the two, we can visually simulate graphical designs. See the [Verilator README](verilator/README.md) for instructions.
 
 ## Linting
 
