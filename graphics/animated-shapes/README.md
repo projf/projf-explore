@@ -1,6 +1,6 @@
 # Animated Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon).
 
 These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script to see which modules are used.
 
