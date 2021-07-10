@@ -14,6 +14,6 @@ series, start by reading [FPGA Graphics](https://projectf.io/posts/fpga-graphics
 * **Life on Screen**: [Designs](life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles**: [Designs](lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
 * **2D Shapes**: [Designs](2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
-* **Animated Shapes**: [Designs](animated-shapes) - [Blog](https://projectf.io/posts/animated-shapes/)
+* **Animated Shapes**: _coming soon_
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).
