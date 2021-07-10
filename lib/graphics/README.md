@@ -21,7 +21,7 @@ The following blog posts document and make use of these graphics designs:
 
 * [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) - drawing lines and triangles with a framebuffer
 * [2D Shapes](https://projectf.io/posts/fpga-shapes/) - filled shapes and drawing pictures
-* [Animated Shapes](https://projectf.io/posts/animated-shapes/) - animating shapes
+* Animated Shapes - animating shapes (coming soon)
 
 ## Graphics Interface
 
