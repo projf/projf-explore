@@ -12,10 +12,10 @@ const int H_RES = 640;
 const int V_RES = 480;
 
 typedef struct Pixel {  // for SDL texture
+    uint8_t a;  // transparency
     uint8_t b;  // blue
     uint8_t g;  // green
     uint8_t r;  // red
-    uint8_t a;  // transparency
 } Pixel;
 
 int main(int argc, char* argv[]) {
@@ -45,16 +45,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_ARGB8888,
+    sdl_texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888,
         SDL_TEXTUREACCESS_TARGET, H_RES, V_RES);
     if (!sdl_texture) {
         printf("Texture creation failed: %s\n", SDL_GetError());
         return 1;
-    }
-
-    Uint32 windowPixelFormat = SDL_GetWindowPixelFormat(sdl_window);
-    if (windowPixelFormat != SDL_PIXELFORMAT_ARGB8888) {
-        printf("Window pixel format differs from render pixel format: %s\n", SDL_GetPixelFormatName(windowPixelFormat));
     }
 
     // initialize Verilog module
