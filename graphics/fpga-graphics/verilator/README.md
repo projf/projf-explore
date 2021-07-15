@@ -4,7 +4,7 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 
 If you're new to graphics simulations check out **[Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/)**.
 
-[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. For these single-threaded designs, you can expect around one frame per second on a modern PC.
+[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. For these single-threaded designs, you can expect around 60 frames per second on a modern PC, with optimizations enabled.
 
 ![](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
 
@@ -21,7 +21,7 @@ cd projf-explore/graphics/fpga-graphics/verilator
 ### Top Square
 
 ```bash
-verilator -I../ -cc top_square.sv --exe main_square.cpp -LDFLAGS "`sdl2-config --libs`"
+verilator -I../ -cc top_square.sv --exe main_square.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 make -C ./obj_dir -f Vtop_square.mk
 ./obj_dir/Vtop_square
 ```
@@ -29,7 +29,7 @@ make -C ./obj_dir -f Vtop_square.mk
 ### Top Beam
 
 ```bash
-verilator -I../ -cc top_beam.sv --exe main_beam.cpp -LDFLAGS "`sdl2-config --libs`"
+verilator -I../ -cc top_beam.sv --exe main_beam.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 make -C ./obj_dir -f Vtop_beam.mk
 ./obj_dir/Vtop_beam
 ```
@@ -37,7 +37,7 @@ make -C ./obj_dir -f Vtop_beam.mk
 ### Top Bounce
 
 ```bash
-verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -LDFLAGS "`sdl2-config --libs`"
+verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 make -C ./obj_dir -f Vtop_bounce.mk
 ./obj_dir/Vtop_bounce
 ```
