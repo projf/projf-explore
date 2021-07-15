@@ -18,31 +18,7 @@ Then navigate to the Verilator directory:
 cd projf-explore/graphics/fpga-graphics/verilator
 ```
 
-### Build All With CMake
-
-Build a `Debug` configuration, with optimizations disabled:
-
-```bash
-cmake -S . -B build
-cmake --build build
-```
-
-But for best performance use the `Release` or `MinSizeRel` configuration to build with optimizations:
-
-```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=MinSizeRel
-cmake --build build
-```
-
-Run one of the executables:
-
-```bash
- ./build/top
- ./build/beam
- ./build/bounce
-```
-
-### Build Top Square Without CMake
+### Top Square
 
 ```bash
 verilator -I../ -cc top_square.sv --exe main_square.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
@@ -50,7 +26,7 @@ make -C ./obj_dir -f Vtop_square.mk
 ./obj_dir/Vtop_square
 ```
 
-### Build Top Beam Without CMake
+### Top Beam
 
 ```bash
 verilator -I../ -cc top_beam.sv --exe main_beam.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
@@ -58,7 +34,7 @@ make -C ./obj_dir -f Vtop_beam.mk
 ./obj_dir/Vtop_beam
 ```
 
-### Build Top Bounce Without CMake
+### Top Bounce
 
 ```bash
 verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
@@ -75,7 +51,6 @@ To build the simulations, you need:
 1. C++ Toolchain
 2. Verilator
 3. SDL
-4. CMake
 
 The simulations should work on any modern platform, but I've confined my instructions to Linux and macOS. Windows installation depends on your choice of compiler, but the sims should work fine there too. For advice on SDL development on Windows, see [Lazy Foo' - Setting up SDL on Windows](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/windows/index.php).
 
@@ -90,11 +65,11 @@ apt update
 apt install build-essential
 ```
 
-Install packages for Verilator, the dev version of SDL, and CMake:
+Install packages for Verilator and the dev version of SDL:
 
 ```bash
 apt update
-apt install verilator libsdl2-dev cmake
+apt install verilator libsdl2-dev
 ```
 
 That's it!
@@ -110,7 +85,7 @@ Install the [Homebrew](https://brew.sh/) package manager.
 With Homebrew installed, you can run:
 
 ```bash
-brew install verilator sdl2 cmake
+brew install verilator sdl2
 ```
 
 And you're ready to go.
