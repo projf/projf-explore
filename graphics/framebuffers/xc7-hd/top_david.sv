@@ -151,9 +151,9 @@ module top_david (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= {fb_red,fb_red};
-        dvi_green <= {fb_green,fb_green};
-        dvi_blue  <= {fb_blue,fb_blue};
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

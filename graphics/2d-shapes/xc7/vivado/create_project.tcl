@@ -54,7 +54,7 @@ set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_triangles_fill" -objects $fs_design_obj
+set_property -name "top" -value "top_rectangles" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
@@ -107,7 +107,7 @@ set sim_sources [list \
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "draw_triangle_fill_tb" -objects $fs_sim_obj
+set_property -name "top" -value "draw_rectangle_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

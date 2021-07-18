@@ -1,4 +1,4 @@
-// Project F: 2D Shapes - Top Tunnel (Nexys Video)
+// Project F: Animated Shapes - Top Tunnel (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -32,14 +32,15 @@ module top_tunnel (
 
     // display timings
     localparam CORDW = 16;
-    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .hsync,
         .vsync,
         .de,
@@ -53,10 +54,10 @@ module top_tunnel (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 3;
+    localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
 
@@ -78,7 +79,7 @@ module top_tunnel (
         .clk_pix(clk_pix),
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
+        .de,
         .frame,
         .line,
         .we(fb_we),
@@ -116,7 +117,7 @@ module top_tunnel (
 
     // draw squares in framebuffer
     localparam SHAPE_CNT=7;  // number of shapes to draw
-    logic [3:0] shape_id;  // shape identifier
+    logic [3:0] shape_id;    // shape identifier
     logic [CORDW-1:0] dx0, dy0, dx1, dy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -133,49 +134,49 @@ module top_tunnel (
                             dx0 <=  40 - cnt_anim * 12;
                             dy0 <=   0 - cnt_anim * 12;
                             dx1 <= 279 + cnt_anim * 12;
-                            dy1 <= 279 + cnt_anim * 12;
+                            dy1 <= 249 + cnt_anim * 12;
                             fb_cidx <= colr_offs;
                         end
                         4'd1: begin  // 8 pixels per anim step
                             dx0 <=  80 - cnt_anim * 8;
-                            dy0 <=  40 - cnt_anim * 8;
+                            dy0 <=  10 - cnt_anim * 8;
                             dx1 <= 239 + cnt_anim * 8;
-                            dy1 <= 199 + cnt_anim * 8;
+                            dy1 <= 169 + cnt_anim * 8;
                             fb_cidx <= colr_offs + 1;
                         end
                         4'd2: begin  // 5 pixels per anim step
                             dx0 <= 105 - cnt_anim * 5;
-                            dy0 <=  65 - cnt_anim * 5;
+                            dy0 <=  35 - cnt_anim * 5;
                             dx1 <= 214 + cnt_anim * 5;
-                            dy1 <= 174 + cnt_anim * 5;
+                            dy1 <= 144 + cnt_anim * 5;
                             fb_cidx <= colr_offs + 2;
                         end
                         4'd3: begin  // 4 pixels per anim step
                             dx0 <= 125 - cnt_anim * 4;
-                            dy0 <=  85 - cnt_anim * 4;
+                            dy0 <=  55 - cnt_anim * 4;
                             dx1 <= 194 + cnt_anim * 4;
-                            dy1 <= 154 + cnt_anim * 4;
+                            dy1 <= 124 + cnt_anim * 4;
                             fb_cidx <= colr_offs + 3;
                         end
                         4'd4: begin  // 3 pixels per anim step
                             dx0 <= 140 - cnt_anim * 3;
-                            dy0 <= 100 - cnt_anim * 3;
+                            dy0 <=  70 - cnt_anim * 3;
                             dx1 <= 179 + cnt_anim * 3;
-                            dy1 <= 139 + cnt_anim * 3;
+                            dy1 <= 109 + cnt_anim * 3;
                             fb_cidx <= colr_offs + 4;
                         end
                         4'd5: begin  // 2 pixels per anim step
                             dx0 <= 150 - cnt_anim * 2;
-                            dy0 <= 110 - cnt_anim * 2;
+                            dy0 <=  80 - cnt_anim * 2;
                             dx1 <= 169 + cnt_anim * 2;
-                            dy1 <= 129 + cnt_anim * 2;
+                            dy1 <=  99 + cnt_anim * 2;
                             fb_cidx <= colr_offs + 5;
                         end
                         4'd6: begin  // 1 pixel per anim step
                             dx0 <= 155 - cnt_anim * 1;
-                            dy0 <= 115 - cnt_anim * 1;
+                            dy0 <=  85 - cnt_anim * 1;
                             dx1 <= 164 + cnt_anim * 1;
-                            dy1 <= 124 + cnt_anim * 1;
+                            dy1 <=  94 + cnt_anim * 1;
                             fb_cidx <= colr_offs + 6;
                         end
                         default: begin  // should never occur
@@ -241,9 +242,9 @@ module top_tunnel (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= {fb_red,fb_red};
-        dvi_green <= {fb_green,fb_green};
-        dvi_blue  <= {fb_blue,fb_blue};
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

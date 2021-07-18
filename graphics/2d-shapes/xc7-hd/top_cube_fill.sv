@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Triangles (Nexys Video)
+// Project F: 2D Shapes - Top Filled Cube (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_triangles (
+module top_cube_fill (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -95,8 +95,8 @@ module top_triangles (
     );
 
     // draw triangles in framebuffer
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;    // shape identifier
+    localparam SHAPE_CNT=6;  // number of shapes to draw
+    logic [2:0] shape_id;    // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -108,23 +108,41 @@ module top_triangles (
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
-                    2'd0: begin
-                        vx0 <=  60; vy0 <=  20;
-                        vx1 <= 280; vy1 <=  80;
-                        vx2 <= 160; vy2 <= 164;
+                    3'd0: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <= 230; vy1 <=  60;
+                        vx2 <= 230; vy2 <= 160;
                         fb_cidx <= 4'h9;  // orange
                     end
-                    2'd1: begin
-                        vx0 <=  70; vy0 <= 160;
-                        vx1 <= 220; vy1 <=  90;
-                        vx2 <= 170; vy2 <=  10;
-                        fb_cidx <= 4'hC;  // blue
+                    3'd1: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <= 230; vy1 <= 160;
+                        vx2 <= 130; vy2 <= 160;
+                        fb_cidx <= 4'hA;  // yellow
                     end
-                    2'd2: begin
-                        vx0 <=  22; vy0 <=  35;
-                        vx1 <=  62; vy1 <= 150;
-                        vx2 <=  98; vy2 <=  96;
+                    3'd2: begin
+                        vx0 <= 130; vy0 <=  60;
+                        vx1 <=  90; vy1 <= 120;
+                        vx2 <= 130; vy2 <= 160;
                         fb_cidx <= 4'h2;  // dark purple
+                    end
+                    3'd3: begin
+                        vx0 <=  90; vy0 <=  20;
+                        vx1 <= 130; vy1 <=  60;
+                        vx2 <=  90; vy2 <= 120;
+                        fb_cidx <= 4'hE;  // pink
+                    end
+                    3'd4: begin
+                        vx0 <=  90; vy0 <=  20;
+                        vx1 <= 190; vy1 <=  20;
+                        vx2 <= 130; vy2 <=  60;
+                        fb_cidx <= 4'h1;  // dark blue
+                    end
+                    3'd5: begin
+                        vx0 <= 190; vy0 <=  20;
+                        vx1 <= 130; vy1 <=  60;
+                        vx2 <= 230; vy2 <=  60;
+                        fb_cidx <= 4'hC;  // blue
                     end
                     default: begin  // should never occur
                         vx0 <=   10; vy0 <=   10;
@@ -150,24 +168,11 @@ module top_triangles (
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
-    logic draw_oe;
-    always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
-        if (frame_sys) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
-        end
-    end
-
-    draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(draw_oe),
+        .oe(1'b1),
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
@@ -179,7 +184,7 @@ module top_triangles (
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
         .complete(),
-        /* verilator lint_off PINCONNECTEMPTY */
+        /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );
 

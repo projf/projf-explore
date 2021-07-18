@@ -32,14 +32,15 @@ module top_rectangles_fill (
 
     // display timings
     localparam CORDW = 16;
-    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .hsync,
         .vsync,
         .de,
@@ -53,10 +54,10 @@ module top_rectangles_fill (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 3;
+    localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
@@ -78,7 +79,7 @@ module top_rectangles_fill (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
+        .de,
         .frame,
         .line,
         .we(fb_we),
@@ -95,8 +96,8 @@ module top_rectangles_fill (
 
     // draw filled rectangles in framebuffer
     localparam SHAPE_CNT=15;  // number of shapes to draw
-    logic [3:0] shape_id;  // shape identifier
-    logic [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
+    logic [3:0] shape_id;     // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -107,10 +108,10 @@ module top_rectangles_fill (
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                rx0 <=  80 + 4 * shape_id;
-                ry0 <=  60 + 4 * shape_id;
-                rx1 <= 160 + 4 * shape_id;
-                ry1 <= 140 + 4 * shape_id;
+                vx0 <=  80 + 4 * shape_id;
+                vy0 <=  20 + 4 * shape_id;
+                vx1 <= 160 + 4 * shape_id;
+                vy1 <= 100 + 4 * shape_id;
                 /* verilator lint_on WIDTH */
                 fb_cidx <= shape_id + 1;  // skip 1st colour (black)
             end
@@ -135,10 +136,10 @@ module top_rectangles_fill (
         .rst(1'b0),
         .start(draw_start),
         .oe(1'b1),
-        .x0(rx0),
-        .y0(ry0),
-        .x1(rx1),
-        .y1(ry1),
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
         .x(fbx),
         .y(fby),
         .drawing,
@@ -166,9 +167,9 @@ module top_rectangles_fill (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= {fb_red,fb_red};
-        dvi_green <= {fb_green,fb_green};
-        dvi_blue  <= {fb_blue,fb_blue};
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Top FB Bounce v1 (Nexys Video)
+// Project F: Animated Shapes - Top FB Bounce (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_fb_bounce_v1 (
+module top_fb_bounce (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -32,14 +32,15 @@ module top_fb_bounce_v1 (
 
     // display timings
     localparam CORDW = 16;
-    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
     display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
-        .sx,
-        .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        .sy(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .hsync,
         .vsync,
         .de,
@@ -53,19 +54,19 @@ module top_fb_bounce_v1 (
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 240;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 3;
+    localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
+    logic fb_we, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -78,13 +79,16 @@ module top_fb_bounce_v1 (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de(sy >= 0 && sx >= 160 && sx < 1120),  // 4:3
+        .de,
         .frame,
         .line,
         .we(fb_we),
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .bgidx(4'b0),
+        .clear(1),  // enable clearing of buffer before drawing
+        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -93,11 +97,11 @@ module top_fb_bounce_v1 (
         .blue(fb_blue)
     );
 
-    // square coordinates
+    // animate square coordinates
     localparam Q1_SIZE = 80;
-    logic [CORDW-1:0] q1x, q1y;  // position (top left)
+    logic [CORDW-1:0] q1x, q1y;  // position (top left of square)
     logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
+    logic [CORDW-1:0] q1s = 1;   // speed in pixels/frame
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
             if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
@@ -127,13 +131,15 @@ module top_fb_bounce_v1 (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                draw_start <= 1;
-                state <= DRAW;
-                rx0 <= q1x;
-                ry0 <= q1y;
-                rx1 <= q1x + Q1_SIZE;
-                ry1 <= q1y + Q1_SIZE;
-                fb_cidx <= fb_cidx + 1;
+                if (fb_wready) begin
+                    draw_start <= 1;
+                    state <= DRAW;
+                    rx0 <= q1x;
+                    ry0 <= q1y;
+                    rx1 <= q1x + Q1_SIZE;
+                    ry1 <= q1y + Q1_SIZE;
+                    fb_cidx <= 4'hB;  // green
+                end
             end
             DRAW: begin
                 draw_start <= 0;
@@ -180,9 +186,9 @@ module top_fb_bounce_v1 (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= {fb_red,fb_red};
-        dvi_green <= {fb_green,fb_green};
-        dvi_blue  <= {fb_blue,fb_blue};
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

@@ -1,8 +1,8 @@
-# Project F: 2D Shapes - Create Vivado Project (Nexys Video)
+# Project F: Animated Shapes - Create Vivado Project
 # (C)2021 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
-puts "INFO: Project F - 2D Shapes Project Creation Script"
+puts "INFO: Project F - Animated Shapes Project Creation Script"
 
 # If the FPGA board/part isn't set use Nexys Video
 if {! [info exists fpga_part]} {
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "2d-shapes-hd"
+set _xil_proj_name_ "animated-shapes-hd"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]
@@ -43,17 +43,16 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7-hd/top_castle.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_cube_fill.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_rectangles.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_rectangles_fill.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_triangles_fill.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_fb_bounce.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_fb_bounce_v1.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_tunnel.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
-set_property -name "top" -value "top_rectangles" -objects $fs_design_obj
+# Set top module for design sources
+set_property -name "top" -value "top_tunnel" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
@@ -64,6 +63,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/display_timings_720p.sv"] \
   [file normalize "${lib_dir}/display/display_timings_1080p.sv"] \
   [file normalize "${lib_dir}/display/framebuffer.sv"] \
+  [file normalize "${lib_dir}/display/framebuffer_db.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
@@ -82,8 +82,10 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${lib_dir}/res/test/test_box_db_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/16_colr_8bit_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/tunnel_16_colr_4bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
@@ -101,19 +103,14 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${lib_dir}/graphics/xc7/draw_line_1d_tb.sv"] \
-  [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_tb.sv"] \
-  [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_fill_tb.sv"] \
-  [file normalize "${lib_dir}/graphics/xc7/draw_triangle_fill_tb.sv"] \
-  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_line_1d_tb_behav.wcfg"] \
-  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_tb_behav.wcfg"] \
-  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_fill_tb_behav.wcfg"] \
-  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_triangle_fill_tb_behav.wcfg"]
+  [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
+  [file normalize "${lib_dir}/display/xc7/framebuffer_db_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_db_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "draw_rectangle_tb" -objects $fs_sim_obj
+set_property -name "top" -value "framebuffer_db_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
