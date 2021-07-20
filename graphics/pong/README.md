@@ -12,14 +12,14 @@ You can build projects for iCEBreaker using the included [makefile](ice40/Makefi
 
 For example, to build `top_pong`; clone the projf-explore git repo, then:
 
-```bash
+```shell
 cd projf-explore/graphics/pong/ice40
 make top_pong
 ```
 
 After the build completes you'll have a bin file, such as `top_pong.bin`. Use the bin file to program your board:
 
-```bash
+```shell
 iceprog top_pong.bin
 ```
 

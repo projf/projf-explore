@@ -12,14 +12,14 @@ You can build projects for iCEBreaker using the included [makefile](ice40/Makefi
 
 For example, to build `top_life`; clone the projf-explore git repo, then:
 
-```bash
+```shell
 cd projf-explore/graphics/life-on-screen/ice40
 make top_life
 ```
 
 After the build completes you'll have a bin file, such as `top_life.bin`. Use the bin file to program your board:
 
-```bash
+```shell
 iceprog top_life.bin
 ```
 

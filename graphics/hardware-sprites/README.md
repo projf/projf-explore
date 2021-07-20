@@ -12,14 +12,14 @@ You can build projects for iCEBreaker using the included [makefile](ice40/Makefi
 
 For example, to build `top_hedgehog`; clone the projf-explore git repo, then:
 
-```bash
+```shell
 cd projf-explore/graphics/hardware-sprites/ice40
 make top_hedgehog
 ```
 
 After the build completes you'll have a bin file, such as `top_hedgehog.bin`. Use the bin file to program your board:
 
-```bash
+```shell
 iceprog top_hedgehog.bin
 ```
 
