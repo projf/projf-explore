@@ -6,7 +6,7 @@ If you're new to graphics simulations check out **[Verilog Simulation with Veril
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs you can reach 60 frames per second on a modern PC.
 
-![](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
+![Bounce simulated on Linux](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
 
 ## Build & Run
 
