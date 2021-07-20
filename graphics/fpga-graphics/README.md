@@ -12,14 +12,14 @@ You can build projects for iCEBreaker using the included [makefile](ice40/Makefi
 
 For example, to build `top_bounce`; clone the projf-explore git repo, then:
 
-```bash
+```shell
 cd projf-explore/graphics/fpga-graphics/ice40
 make top_bounce
 ```
 
 After the build completes you'll have a bin file, such as `top_bounce.bin`. Use the bin file to program your board:
 
-```bash
+```shell
 iceprog top_bounce.bin
 ```
 
@@ -83,7 +83,7 @@ Verilator creates C++ simulations of Verilog designs, while SDL produces cross-p
 
 If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs:
 
-```bash
+```shell
 $ ./fpga-graphics/lint.sh
 ## Linting top modules in ./fpga-graphics/xc7
 ##   Checking ./fpga-graphics/xc7/top_beam.sv

@@ -14,7 +14,7 @@ If this is the first time you've used Verilator and SDL, you need to [install de
 
 Then navigate to the Verilator directory:
 
-```bash
+```shell
 cd projf-explore/graphics/fpga-graphics/verilator
 ```
 
@@ -22,7 +22,7 @@ Then run Verilator and make for the project of interest:
 
 ### Square
 
-```bash
+```shell
 verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
@@ -31,13 +31,13 @@ make -C ./obj_dir -f Vtop_square.mk
 
 You can then run the simulation executable from `obj_dir`:
 
-```bash
+```shell
 ./obj_dir/square
 ```
 
 ### Beam
 
-```bash
+```shell
 verilator -I../ -cc top_beam.sv --exe main_beam.cpp -o beam \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
@@ -48,7 +48,7 @@ make -C ./obj_dir -f Vtop_beam.mk
 
 ### Bounce
 
-```bash
+```shell
 verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -o bounce \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
@@ -75,14 +75,14 @@ For Debian and Ubuntu-based distros, you can use the following. Other distros wi
 
 Install a C++ toolchain via 'build-essential':
 
-```bash
+```shell
 apt update
 apt install build-essential
 ```
 
 Install packages for Verilator and the dev version of SDL:
 
-```bash
+```shell
 apt update
 apt install verilator libsdl2-dev
 ```
@@ -99,7 +99,7 @@ Install the [Homebrew](https://brew.sh/) package manager.
 
 With Homebrew installed, you can run:
 
-```bash
+```shell
 brew install verilator sdl2
 ```
 
