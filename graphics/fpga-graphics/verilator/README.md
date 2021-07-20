@@ -18,30 +18,42 @@ Then navigate to the Verilator directory:
 cd projf-explore/graphics/fpga-graphics/verilator
 ```
 
-### Top Square
+Then run Verilator and make for the project of interest:
+
+### Square
 
 ```bash
 verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_square.mk
+```
+
+You can then run the simulation executable from `obj_dir`:
+
+```bash
 ./obj_dir/square
 ```
 
-### Top Beam
+### Beam
 
 ```bash
 verilator -I../ -cc top_beam.sv --exe main_beam.cpp -o beam \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_beam.mk
+
 ./obj_dir/beam
 ```
 
-### Top Bounce
+### Bounce
 
 ```bash
 verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -o bounce \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_bounce.mk
+
 ./obj_dir/bounce
 ```
 
