@@ -32,14 +32,15 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-    sdl_window = SDL_CreateWindow("Top Beam", SDL_WINDOWPOS_CENTERED,
+    sdl_window = SDL_CreateWindow("Beam", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, H_RES, V_RES, SDL_WINDOW_SHOWN);
     if (!sdl_window) {
         printf("Window creation failed: %s\n", SDL_GetError());
         return 1;
     }
 
-    sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    sdl_renderer = SDL_CreateRenderer(sdl_window, -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!sdl_renderer) {
         printf("Renderer creation failed: %s\n", SDL_GetError());
         return 1;

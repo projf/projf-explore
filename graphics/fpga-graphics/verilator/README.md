@@ -4,7 +4,7 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 
 If you're new to graphics simulations check out **[Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/)**.
 
-[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. For these single-threaded designs, you can expect around 60 frames per second on a modern PC, with optimizations enabled.
+[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs you can reach 60 frames per second on a modern PC.
 
 ![](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
 
@@ -18,28 +18,43 @@ Then navigate to the Verilator directory:
 cd projf-explore/graphics/fpga-graphics/verilator
 ```
 
-### Top Square
+Then run Verilator and make for the project of interest:
+
+### Square
 
 ```bash
-verilator -I../ -cc top_square.sv --exe main_square.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_square.mk
-./obj_dir/Vtop_square
 ```
 
-### Top Beam
+You can then run the simulation executable from `obj_dir`:
 
 ```bash
-verilator -I../ -cc top_beam.sv --exe main_beam.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+./obj_dir/square
+```
+
+### Beam
+
+```bash
+verilator -I../ -cc top_beam.sv --exe main_beam.cpp -o beam \
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_beam.mk
-./obj_dir/Vtop_beam
+
+./obj_dir/beam
 ```
 
-### Top Bounce
+### Bounce
 
 ```bash
-verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -o bounce \
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
+
 make -C ./obj_dir -f Vtop_bounce.mk
-./obj_dir/Vtop_bounce
+
+./obj_dir/bounce
 ```
 
 _Note: all three designs use [simple_display_timings_480p.sv](../simple_display_timings_480p.sv) from the main [FPGA Graphics](../) folder._
