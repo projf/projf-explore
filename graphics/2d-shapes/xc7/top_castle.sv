@@ -250,11 +250,34 @@ module top_castle (
         endcase
     end
 
+    // drawing and done apply to either shape
+    always_comb begin
+        drawing = drawing_tri || drawing_rect;
+        draw_done = draw_done_tri || draw_done_rect;
+    end
+
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  =  20;  // draw this many pixels per frame
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
+    logic draw_oe;
+    always_ff @(posedge clk_100m) begin
+        if (frame_sys) begin
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
+        end
+        if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+            draw_oe <= 1;
+            cnt_pix_frame <= cnt_pix_frame + 1;
+        end else draw_oe <= 0;
+    end
+
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start_tri),
-        .oe(1'b1),
+        .oe(draw_oe),
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
@@ -274,7 +297,7 @@ module top_castle (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start_rect),
-        .oe(1'b1),
+        .oe(draw_oe),
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
@@ -290,9 +313,7 @@ module top_castle (
 
     // write to framebuffer when drawing
     always_ff @(posedge clk_100m) begin
-        drawing <= drawing_tri || drawing_rect;
         fb_we <= drawing;
-        draw_done <= draw_done_tri || draw_done_rect;
         fbx <= drawing_tri ? fbx_tri : fbx_rect;
         fby <= drawing_tri ? fby_tri : fby_rect;
     end

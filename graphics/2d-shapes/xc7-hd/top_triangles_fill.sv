@@ -52,10 +52,6 @@ module top_triangles_fill (
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
-    logic line_sys;  // start of new line in system clock domain
-    xd xd_line (.clk_i(clk_pix), .clk_o(clk_100m),
-                 .rst_i(1'b0), .rst_o(1'b0), .i(line), .o(line_sys));
-
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 180;
@@ -154,16 +150,21 @@ module top_triangles_fill (
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/line
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  =  50;  // draw this many pixels per frame
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_oe;
     always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
-        if (frame_sys && cnt_draw_wait != DRAW_WAIT-1) begin
-            cnt_draw_wait <= cnt_draw_wait + 1;
+        if (frame_sys) begin
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
         end
-        if (line_sys && cnt_draw_wait == DRAW_WAIT-1) draw_oe <= 1;
+        if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+            draw_oe <= 1;
+            cnt_pix_frame <= cnt_pix_frame + 1;
+        end else draw_oe <= 0;
     end
 
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
