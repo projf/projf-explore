@@ -143,16 +143,16 @@ module top_triangles (
         if (!clk_locked) state <= IDLE;
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;
-    always_ff @(posedge clk_pix) begin
+    always_ff @(posedge clk_100m) begin
         draw_oe <= 0;
-        if (frame) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
+        if (frame_sys) begin  // one cycle per frame
+            if (cnt_frame_wait != FRAME_WAIT-1) begin
+                cnt_frame_wait <= cnt_frame_wait + 1;
+            end else draw_oe <= 1;  // enable drawing output
         end
     end
 
