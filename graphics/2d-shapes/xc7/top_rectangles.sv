@@ -91,8 +91,8 @@ module top_rectangles (
     );
 
     // draw rectangles in framebuffer
-    localparam SHAPE_CNT=15;  // number of shapes to draw
-    logic [3:0] shape_id;     // shape identifier
+    localparam SHAPE_CNT=63;  // number of shapes to draw
+    logic [5:0] shape_id;     // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -104,12 +104,12 @@ module top_rectangles (
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                vx0 <=  80 + shape_id;
-                vy0 <=  30 + shape_id;
-                vx1 <= 240 - shape_id;
-                vy1 <= 150 - shape_id;
+                vx0 <=  60 + shape_id;
+                vy0 <=  15 + shape_id;
+                vx1 <= 260 - shape_id;
+                vy1 <= 165 - shape_id;
                 /* verilator lint_on WIDTH */
-                fb_cidx <= shape_id + 1;  // skip 1st colour (black)
+                fb_cidx <= shape_id[3:0];  // use lowest four bits for colour
             end
             DRAW: begin
                 draw_start <= 0;
@@ -127,17 +127,21 @@ module top_rectangles (
         endcase
     end
 
-    // control drawing output enable - wait 300 frames, then 1 pixel/frame
-    localparam DRAW_WAIT = 300;
-    logic [$clog2(DRAW_WAIT)-1:0] cnt_draw_wait;
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  = 200;  // draw this many pixels per frame
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_oe;
     always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
         if (frame_sys) begin
-            if (cnt_draw_wait != DRAW_WAIT-1) begin
-                cnt_draw_wait <= cnt_draw_wait + 1;
-            end else draw_oe <= 1;
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
         end
+        if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+            draw_oe <= 1;
+            cnt_pix_frame <= cnt_pix_frame + 1;
+        end else draw_oe <= 0;
     end
 
     draw_rectangle #(.CORDW(CORDW)) draw_rectangle_inst (
