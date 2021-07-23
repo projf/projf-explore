@@ -48,7 +48,7 @@ Maths & Algorithms is our next topic. Stay tuned for this series in 2021.
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
 
-* **XC7** - Xilinx Series 7 FPGAs, such as Spartan-7 and Arty-7
+* **XC7** - Xilinx Series 7 FPGAs, such as Spartan-7 and Artix-7
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
 
 Porting to other architectures should be straightforward.
