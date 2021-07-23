@@ -37,9 +37,9 @@ relaunch_sim
 run all
 ```
 
-### Other Xilinx Series 7 Boards
+### Other Xilinx 7 Series Boards
 
-It's straightforward to adapt the project for other Xilinx Series 7 boards:
+It's straightforward to adapt the project for other Xilinx 7 Series boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`

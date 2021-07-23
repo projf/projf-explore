@@ -28,6 +28,7 @@ series, start by reading [FPGA Graphics](https://projectf.io/posts/fpga-graphics
 * **Lines and Triangles**: [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
 * **2D Shapes**: [Designs](graphics/2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
 * **Animated Shapes**: _coming soon_
+
 ## Hello
 
 A three-part introduction to FPGA development with Verilog; currently available for two boards: the Arty A7 and Nexys Video.
@@ -48,7 +49,7 @@ Maths & Algorithms is our next topic. Stay tuned for this series in 2021.
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
 
-* **XC7** - Xilinx Series 7 FPGAs, such as Spartan-7 and Artix-7
+* **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
 
 Porting to other architectures should be straightforward.

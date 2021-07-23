@@ -42,9 +42,9 @@ You can then build `top_pong` etc. as you would for any Vivado project.
 
 NB. You can safely ignore Vivado warnings about unused button constraints when building top_pong_v1 to v3: `No port matched btn_` and `set_property expects at least one object`.
 
-### Other Xilinx Series 7 Boards
+### Other Xilinx 7 Series Boards
 
-It's straightforward to adapt the project for other Xilinx Series 7 boards:
+It's straightforward to adapt the project for other Xilinx 7 Series boards:
 
 1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
 2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
