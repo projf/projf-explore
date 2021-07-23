@@ -1,4 +1,4 @@
-## Project F: 2D Shapes - Nexys Video Board Constraints
+## Project F: Animated Shapes - Nexys Video Board Constraints
 ## (C)2021 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 

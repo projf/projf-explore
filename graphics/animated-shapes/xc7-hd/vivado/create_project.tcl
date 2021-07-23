@@ -43,6 +43,7 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
+  [file normalize "${origin_dir}/xc7-hd/top_cube_pieces.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_fb_bounce.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_fb_bounce_v1.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_tunnel.sv"] \
@@ -72,7 +73,6 @@ set design_sources [list \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
-  [file normalize "${lib_dir}/graphics/draw_rectangle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \

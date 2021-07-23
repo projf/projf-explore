@@ -86,7 +86,7 @@ module top_fb_bounce (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'b0),
+        .bgidx(4'h0),
         .clear(1),  // enable clearing of buffer before drawing
         .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */

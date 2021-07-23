@@ -66,7 +66,6 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
-  [file normalize "${lib_dir}/graphics/draw_rectangle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
