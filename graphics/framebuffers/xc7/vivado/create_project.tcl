@@ -62,7 +62,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer.sv"] \
+  [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/maths/lfsr.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
@@ -102,9 +102,9 @@ set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/xd_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
-  [file normalize "${lib_dir}/display/xc7/framebuffer_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_tb_behav.wcfg" ] \
+  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources

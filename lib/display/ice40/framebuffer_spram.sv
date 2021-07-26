@@ -28,6 +28,7 @@ module framebuffer_spram #(
     input  wire logic signed [CORDW-1:0] x,  // horizontal pixel coordinate
     input  wire logic signed [CORDW-1:0] y,  // vertical pixel coordinate
     input  wire logic [CIDXW-1:0] cidx,   // framebuffer colour index
+    output      logic [1:0] busy,         // memory is busy: {clearing,reading}
     output      logic clip,               // pixel coordinate outside buffer
     output      logic [CHANW-1:0] red,    // colour output to display (clk_pix)
     output      logic [CHANW-1:0] green,  //     "    "    "    "    "

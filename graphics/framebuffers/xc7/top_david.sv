@@ -56,12 +56,12 @@ module top_david (
     localparam FB_IMAGE   = "david.mem";
     localparam FB_PALETTE = "david_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -83,6 +83,7 @@ module top_david (
         .cidx(fb_cidx),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .red(fb_red),
         .green(fb_green),
