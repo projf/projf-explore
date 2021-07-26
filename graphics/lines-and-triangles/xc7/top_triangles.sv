@@ -57,12 +57,13 @@ module top_triangles (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic [1:0] fb_busy;  // framebuffer memory is busy
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -85,6 +86,7 @@ module top_triangles (
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -151,7 +153,7 @@ module top_triangles (
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;
     always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
+        if (fb_busy == 0) draw_oe <= 0;  // don't disable OE until after FB is available
         if (frame_sys) begin  // one cycle per frame
             if (cnt_frame_wait != FRAME_WAIT-1) begin
                 cnt_frame_wait <= cnt_frame_wait + 1;

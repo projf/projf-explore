@@ -1,4 +1,4 @@
-// Project F Library - Framebuffer in iCE40 SPRAM (Indexed Colour)
+// Project F Library - Framebuffer in BRAM (Indexed Colour)
 // (C)2021 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -7,7 +7,7 @@
 
 // NB. Signals are in clk_sys domain unless indicated
 
-module framebuffer_spram #(
+module framebuffer_bram #(
     parameter CORDW=16,      // signed coordinate width (bits)
     parameter WIDTH=160,     // width of framebuffer in pixels
     parameter HEIGHT=120,    // height of framebuffer in pixels
@@ -28,6 +28,7 @@ module framebuffer_spram #(
     input  wire logic signed [CORDW-1:0] x,  // horizontal pixel coordinate
     input  wire logic signed [CORDW-1:0] y,  // vertical pixel coordinate
     input  wire logic [CIDXW-1:0] cidx,   // framebuffer colour index
+    output      logic [1:0] busy,         // memory is busy: {clearing,reading}
     output      logic clip,               // pixel coordinate outside buffer
     output      logic [CHANW-1:0] red,    // colour output to display (clk_pix)
     output      logic [CHANW-1:0] green,  //     "    "    "    "    "
@@ -38,10 +39,10 @@ module framebuffer_spram #(
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
                  .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
 
-    // framebuffer (FB)
+    // framebuffer (FB) - single buffer
     localparam FB_PIXELS = WIDTH * HEIGHT;
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
-    localparam FB_DEPTH  = 2**FB_ADDRW;
+    localparam FB_DEPTH  = FB_PIXELS;  
     localparam FB_DATAW  = CIDXW;
 
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
@@ -69,15 +70,23 @@ module framebuffer_spram #(
         fb_cidx_write <= cidx_in_p1;
     end
 
-    // framebuffer memory (SPRAN)
-    logic [11:0] discard;
-    spram spram_inst (
-        .clk(clk_sys),
-        .we({4{fb_we}}),
-        .addr(fb_we ? fb_addr_write : fb_addr_read),
-        .data_in({12'b0,fb_cidx_write}),
-        .data_out({discard,fb_cidx_read})
+    // framebuffer memory (BRAM)
+    bram_sdp #(
+        .WIDTH(FB_DATAW),
+        .DEPTH(FB_DEPTH),
+        .INIT_F(F_IMAGE)
+    ) bram_inst (
+        .clk_write(clk_sys),
+        .clk_read(clk_sys),
+        .we(fb_we),
+        .addr_write(fb_addr_write),
+        .addr_read(fb_addr_read),
+        .data_in(fb_cidx_write),
+        .data_out(fb_cidx_read)
     );
+
+    // never busy: separate read and write port and no need to initialize locations
+    always_ff @(posedge clk_sys) busy <= 2'b00;
 
     // linebuffer (LB)
     localparam LB_SCALE = SCALE;  // scale (horizontal and vertical)
