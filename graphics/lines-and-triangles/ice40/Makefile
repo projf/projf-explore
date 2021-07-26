@@ -21,7 +21,7 @@ ADD_SRC += ${PATH_LIB}/graphics/draw_triangle.sv
 ADD_SRC += ${PATH_LIB}/maths/lfsr.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
 ADD_SRC += ${PATH_LIB}/memory/ice40/bram_sdp.sv
-ADD_SRC += ${PATH_LIB}/memory/ice40/spram.sv
+ADD_SRC += ${PATH_LIB}/memory/ice40/spram_nibble.sv
 
 top_triangles_spram: top_triangles_spram.rpt top_triangles_spram.bin
 top_triangles: top_triangles.rpt top_triangles.bin

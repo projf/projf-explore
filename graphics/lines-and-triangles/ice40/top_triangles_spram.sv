@@ -45,11 +45,11 @@ module top_triangles_spram (
     );
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 160;
-    localparam FB_HEIGHT  = 90;
+    localparam FB_WIDTH   = 320;
+    localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
@@ -81,6 +81,7 @@ module top_triangles_spram (
         .cidx(fb_cidx),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .red(fb_red),
         .green(fb_green),
@@ -122,21 +123,21 @@ module top_triangles_spram (
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        vx0 <=  30; vy0 <=  10;
-                        vx1 <= 140; vy1 <=  40;
-                        vx2 <=  80; vy2 <=  82;
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
                         fb_cidx <= 4'h9;  // orange
                     end
                     2'd1: begin
-                        vx0 <=  35; vy0 <=  80;
-                        vx1 <= 110; vy1 <=  45;
-                        vx2 <=  85; vy2 <=   5;
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
                         fb_cidx <= 4'hC;  // blue
                     end
                     2'd2: begin
-                        vx0 <=  11; vy0 <=  17;
-                        vx1 <=  31; vy1 <=  75;
-                        vx2 <=  48; vy2 <=  48;
+                        vx0 <=  22; vy0 <=  35;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
                         fb_cidx <= 4'h2;  // dark purple
                     end
                     default: begin  // should never occur

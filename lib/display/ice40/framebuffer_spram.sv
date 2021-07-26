@@ -71,13 +71,12 @@ module framebuffer_spram #(
     end
 
     // framebuffer memory (SPRAN)
-    logic [11:0] discard;
-    spram spram_inst (
+    spram_nibble spram_inst (
         .clk(clk_sys),
-        .we({4{fb_we}}),
+        .we(fb_we),
         .addr(fb_we ? fb_addr_write : fb_addr_read),
-        .data_in({12'b0,fb_cidx_write}),
-        .data_out({discard,fb_cidx_read})
+        .data_in(fb_cidx_write),
+        .data_out(fb_cidx_read)
     );
 
     // linebuffer (LB)
