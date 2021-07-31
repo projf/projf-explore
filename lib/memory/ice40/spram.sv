@@ -20,16 +20,16 @@ module spram #(
     output     logic [WIDTH-1:0] data_out
     );
 
-	SB_SPRAM256KA spram_inst (
-		.ADDRESS(addr),
-		.DATAIN(data_in),
-		.MASKWREN(we),
-		.WREN(|we),
-		.CHIPSELECT(1'b1),
-		.CLOCK(clk),
-		.STANDBY(1'b0),
-		.SLEEP(1'b0),
-		.POWEROFF(1'b1),
-		.DATAOUT(data_out)
-	);
+    SB_SPRAM256KA spram_inst (
+        .ADDRESS(addr),
+        .DATAIN(data_in),
+        .MASKWREN(we),
+        .WREN(|we),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(data_out)
+    );
 endmodule
