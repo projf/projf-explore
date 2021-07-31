@@ -64,7 +64,7 @@ module top_line (
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
     logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
-    logic [1:0] fb_busy;  // framebuffer memory is busy
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
     framebuffer_bram #(
@@ -124,7 +124,7 @@ module top_line (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(fb_busy == 2'b0),  // draw when FB is available
+        .oe(!fb_busy),  // draw when FB is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),

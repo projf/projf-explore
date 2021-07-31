@@ -59,7 +59,7 @@ module framebuffer_bram_tb();
     logic fb_clip;  // clipping occured
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
     logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
-    logic [1:0] fb_busy;  // framebuffer memory is busy
+    logic fb_busy;  // framebuffer memory is busy
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
     // determine when framebuffer is active for display
