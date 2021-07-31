@@ -45,21 +45,21 @@ module top_triangles (
     );
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 160;
-    localparam FB_HEIGHT  = 90;
-    localparam FB_CIDXW   = 2;
+    localparam FB_WIDTH   = 320;
+    localparam FB_HEIGHT  = 180;
+    localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "../res/palette/4_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
-    logic fb_we;  // write enable
-    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic fb_we;
+    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;
     logic fb_busy;  // when framebuffer is busy it cannot accept writes
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_bram #(
+    framebuffer_spram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -94,37 +94,59 @@ module top_triangles (
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
+    // clear FB before use (contents are not initialized)
+    logic signed [CORDW-1:0] fbx_clear, fby_clear;  // framebuffer clearing coordinates
+    logic clearing;  // high when we're clearing
+
     // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
+    enum {IDLE, CLEAR, INIT, DRAW, DONE} state;
     always_ff @(posedge clk_pix) begin
         case (state)
+            CLEAR: begin  // we need to initialize SPRAM values to zero
+                fb_cidx <= 4'h0;  // black
+                if (!fb_busy) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
+                        clearing <= 0;
+                        state <= INIT;
+                    end else begin  // iterate over all pixels
+                        if (clearing == 1) begin
+                            if (fbx_clear == FB_WIDTH-1) begin
+                                fbx_clear <= 0;
+                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                            end else begin
+                                fbx_clear <= fbx_clear + 1;
+                            end
+                        end else clearing <= 1;
+                    end
+                end
+            end
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        vx0 <=  30; vy0 <=  10;
-                        vx1 <= 140; vy1 <=  40;
-                        vx2 <=  80; vy2 <=  82;
-                        fb_cidx <= 2'h1;  // orange
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        fb_cidx <= 4'h9;  // orange
                     end
                     2'd1: begin
-                        vx0 <=  35; vy0 <=  80;
-                        vx1 <= 110; vy1 <=  45;
-                        vx2 <=  85; vy2 <=   5;
-                        fb_cidx <= 2'h2;  // green
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
+                        fb_cidx <= 4'hC;  // blue
                     end
                     2'd2: begin
-                        vx0 <=  11; vy0 <=  17;
-                        vx1 <=  31; vy1 <=  75;
-                        vx2 <=  48; vy2 <=  48;
-                        fb_cidx <= 2'h3;  // blue
+                        vx0 <=  22; vy0 <=  35;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
+                        fb_cidx <= 4'h2;  // dark purple
                     end
                     default: begin  // should never occur
                         vx0 <=   10; vy0 <=   10;
                         vx1 <=   10; vy1 <=   30;
                         vx2 <=   20; vy2 <=   20;
-                        fb_cidx <= 2'h1;  // orange
+                        fb_cidx <= 4'h7;  // white
                     end
                 endcase
             end
@@ -140,7 +162,7 @@ module top_triangles (
                 end
             end
             DONE: state <= DONE;
-            default: if (frame) state <= INIT;  // IDLE
+            default: if (frame) state <= CLEAR;  // IDLE
         endcase
         if (!clk_locked) state <= IDLE;
     end
@@ -158,6 +180,7 @@ module top_triangles (
         end
     end
 
+    logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
     draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
@@ -169,8 +192,8 @@ module top_triangles (
         .y1(vy1),
         .x2(vx2),
         .y2(vy2),
-        .x(fbx),
-        .y(fby),
+        .x(fbx_draw),
+        .y(fby_draw),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
         .complete(),
@@ -178,8 +201,12 @@ module top_triangles (
         .done(draw_done)
     );
 
-    // write to framebuffer when drawing
-    always_comb fb_we = drawing;
+    // write to framebuffer when drawing or clearing
+    always_comb begin
+        fb_we = drawing || clearing;
+        fbx = clearing ? fbx_clear : fbx_draw;
+        fby = clearing ? fby_clear : fby_draw;
+    end
 
     // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
