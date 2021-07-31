@@ -66,7 +66,7 @@ module framebuffer_spram #(
         we_in_p1 <= we;
         cidx_in_p1 <= cidx;  // draw colour
         clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
-        fb_we <= (clip) ? 0 : we_in_p1;  // write enable if not clipped
+        fb_we <= (busy || clip) ? 0 : we_in_p1;  // write if not busy nor clipped
         fb_cidx_write <= cidx_in_p1;
     end
 
@@ -84,15 +84,31 @@ module framebuffer_spram #(
     localparam LB_LEN   = WIDTH;  // line length matches framebuffer
     localparam LB_BPC   = CHANW;  // bits per colour channel
 
-    // Load data from FB into LB
-    // NB. Assumes LB enable latency (LAT) is long enough for write completion
     logic lb_data_req;  // LB requesting data
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
+
+    // LB enable (not corrected for latency)
+    logic lb_en_in, lb_en_out;
+    always_comb lb_en_in  = cnt_h < LB_LEN;
+    always_comb lb_en_out = de;
+
+    // LB enable in: address calc and CLUT reg add three cycles of latency
+    localparam LAT = 3;  // write latency
+    logic [LAT-1:0] lb_en_in_sr;
+    always_ff @(posedge clk_sys) begin
+        lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
+        if (rst_sys) lb_en_in_sr <= 0;
+    end
+
+    // Load data from FB into LB (SPRAM requires extra cycle to complete reads & writes)
+    localparam EXTRA_BUSY = 1;
+    logic [$clog2(EXTRA_BUSY+1)-1:0] cnt_busy;
     always_ff @(posedge clk_sys) begin
         if (fb_addr_read < FB_PIXELS-1) begin
             if (lb_data_req) begin
-                cnt_h <= 0;  // start new line
-                busy <= 1;   // busy with linebuffer read
+                cnt_h <= 0;     // start new line
+                busy <= 1;      // busy with linebuffer read
+                cnt_busy <= 0;  // counter for extra busy cycles
             end else if (cnt_h < LB_LEN) begin  // advance to start of next line
                 cnt_h <= cnt_h + 1;
                 fb_addr_read <= fb_addr_read + 1;
@@ -107,20 +123,8 @@ module framebuffer_spram #(
             busy <= 0;
             cnt_h <= LB_LEN;  // don't start reading after reset
         end
-        if (lb_en_in_sr[1] == 0 && lb_en_in_sr[0] == 1) busy <= 0;  // LB read is done
-    end
-
-    // LB enable (not corrected for latency)
-    logic lb_en_in, lb_en_out;
-    always_comb lb_en_in  = cnt_h < LB_LEN;
-    always_comb lb_en_out = de;
-
-    // LB enable in: address calc and CLUT reg add three cycles of latency
-    localparam LAT = 3;  // write latency
-    logic [LAT-1:0] lb_en_in_sr;
-    always_ff @(posedge clk_sys) begin
-        lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
-        if (rst_sys) lb_en_in_sr <= 0;
+        if (cnt_busy == EXTRA_BUSY) busy <= 0;  // LB read done: match write latency LAT
+        else if (lb_en_in_sr == 3'b100) cnt_busy <= cnt_busy + 1;
     end
 
     // LB colour channels

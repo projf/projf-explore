@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="56977177fs"></ZoomEndTime>
-      <Cursor1Time time="100100000fs"></Cursor1Time>
+      <ZoomEndTime time="1426001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="138"></NameColumnWidth>
+      <NameColumnWidth column_width="130"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="41" />
+   <WVObjectSize size="50" />
    <wvobject type="divider" fp_name="divider729">
       <obj_property name="label">Output</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -27,6 +27,20 @@
    <wvobject fp_name="/framebuffer_bram_tb/clk_25m" type="logic">
       <obj_property name="ElementShortName">clk_25m</obj_property>
       <obj_property name="ObjectShortName">clk_25m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/clk_100m" type="logic">
+      <obj_property name="ElementShortName">clk_100m</obj_property>
+      <obj_property name="ObjectShortName">clk_100m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/sx" type="array">
+      <obj_property name="ElementShortName">sx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/sy" type="array">
+      <obj_property name="ElementShortName">sy[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_tb/disp_hsync" type="logic">
       <obj_property name="ElementShortName">disp_hsync</obj_property>
@@ -56,9 +70,25 @@
       <obj_property name="label">Framebuffer</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/busy" type="array">
-      <obj_property name="ElementShortName">busy[1:0]</obj_property>
-      <obj_property name="ObjectShortName">busy[1:0]</obj_property>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/de" type="logic">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_tb/fb_inst/clip" type="logic">
       <obj_property name="ElementShortName">clip</obj_property>
@@ -75,6 +105,14 @@
    <wvobject fp_name="/framebuffer_bram_tb/fb_inst/blue" type="array">
       <obj_property name="ElementShortName">blue[3:0]</obj_property>
       <obj_property name="ObjectShortName">blue[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/fb_we" type="logic">
+      <obj_property name="ElementShortName">fb_we</obj_property>
+      <obj_property name="ObjectShortName">fb_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_tb/fb_inst/lb_en_in_sr" type="array">
+      <obj_property name="ElementShortName">lb_en_in_sr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">lb_en_in_sr[2:0]</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider844">
       <obj_property name="label">Linebuffer</obj_property>

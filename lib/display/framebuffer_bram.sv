@@ -39,10 +39,10 @@ module framebuffer_bram #(
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
                  .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
 
-    // framebuffer (FB) - single buffer
+    // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
-    localparam FB_DEPTH  = FB_PIXELS;  
+    localparam FB_DEPTH  = 2**FB_ADDRW;
     localparam FB_DATAW  = CIDXW;
 
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
@@ -66,7 +66,7 @@ module framebuffer_bram #(
         we_in_p1 <= we;
         cidx_in_p1 <= cidx;  // draw colour
         clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
-        fb_we <= (clip) ? 0 : we_in_p1;  // write enable if not clipped
+        fb_we <= (busy || clip) ? 0 : we_in_p1;  // write if not busy nor clipped
         fb_cidx_write <= cidx_in_p1;
     end
 
@@ -85,32 +85,13 @@ module framebuffer_bram #(
         .data_out(fb_cidx_read)
     );
 
-    // never busy: separate read and write port and no need to clear memory
-    always_ff @(posedge clk_sys) busy <= 1'b0;
-
     // linebuffer (LB)
     localparam LB_SCALE = SCALE;  // scale (horizontal and vertical)
     localparam LB_LEN   = WIDTH;  // line length matches framebuffer
     localparam LB_BPC   = CHANW;  // bits per colour channel
 
-    // Load data from FB into LB
     logic lb_data_req;  // LB requesting data
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
-    always_ff @(posedge clk_sys) begin
-        if (fb_addr_read < FB_PIXELS-1) begin
-            if (lb_data_req) begin
-                cnt_h <= 0;  // start new line
-            end else if (cnt_h < LB_LEN) begin  // advance to start of next line
-                cnt_h <= cnt_h + 1;
-                fb_addr_read <= fb_addr_read + 1;
-            end
-        end else cnt_h <= LB_LEN;
-        if (frame_sys) fb_addr_read <= 0;  // new frame
-        if (rst_sys) begin
-            fb_addr_read <= 0;
-            cnt_h <= LB_LEN;  // don't start reading after reset
-        end
-    end
 
     // LB enable (not corrected for latency)
     logic lb_en_in, lb_en_out;
@@ -123,6 +104,29 @@ module framebuffer_bram #(
     always_ff @(posedge clk_sys) begin
         lb_en_in_sr <= {lb_en_in, lb_en_in_sr[LAT-1:1]};
         if (rst_sys) lb_en_in_sr <= 0;
+    end
+
+    // Load data from FB into LB
+    always_ff @(posedge clk_sys) begin
+        if (fb_addr_read < FB_PIXELS-1) begin
+            if (lb_data_req) begin
+                cnt_h <= 0;  // start new line
+                // busy <= 1;   // never busy as separate read and write port
+            end else if (cnt_h < LB_LEN) begin  // advance to start of next line
+                cnt_h <= cnt_h + 1;
+                fb_addr_read <= fb_addr_read + 1;
+            end
+        end else cnt_h <= LB_LEN;
+        if (frame_sys) begin
+            fb_addr_read <= 0;  // new frame
+            busy <= 0;  // LB reads don't cross frame boundary
+        end
+        if (rst_sys) begin
+            fb_addr_read <= 0;
+            busy <= 0;
+            cnt_h <= LB_LEN;  // don't start reading after reset
+        end
+        if (lb_en_in_sr == 3'b100) busy <= 0;  // LB read done: match write latency LAT
     end
 
     // LB colour channels

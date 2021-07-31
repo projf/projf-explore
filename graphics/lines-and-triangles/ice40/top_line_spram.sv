@@ -102,18 +102,20 @@ module top_line_spram (
         case (state)
             CLEAR: begin  // we need to initialize SPRAM values to zero
                 fb_cidx <= 4'h0;  // black
-                if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
-                    clearing <= 0;
-                    state <= INIT;
-                end else begin  // iterate over all pixels
-                    if (clearing == 1) begin
-                        if (fbx_clear == FB_WIDTH-1) begin
-                            fbx_clear <= 0;
-                            fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
-                        end else begin
-                            fbx_clear <= fbx_clear + 1;
-                        end
-                    end else clearing <= 1;
+                if (!fb_busy) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
+                        clearing <= 0;
+                        state <= INIT;
+                    end else begin  // iterate over all pixels
+                        if (clearing == 1) begin
+                            if (fbx_clear == FB_WIDTH-1) begin
+                                fbx_clear <= 0;
+                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                            end else begin
+                                fbx_clear <= fbx_clear + 1;
+                            end
+                        end else clearing <= 1;
+                    end
                 end
             end
             INIT: begin  // register coordinates and colour

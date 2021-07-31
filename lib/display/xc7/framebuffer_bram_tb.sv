@@ -114,7 +114,7 @@ module framebuffer_bram_tb();
                     fby <= 4;  // draw in the middle(ish)
                     state <= DRAW;
                 end
-            default: state <= DONE;  // done forever!
+            default: state <= IDLE;  // draw every frame
         endcase
 
         if (rst_sys) begin
