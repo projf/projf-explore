@@ -79,31 +79,35 @@ module framebuffer_spram #(
         .data_out(fb_cidx_read)
     );
 
-    // need to set busy: for now it's always false
-    always_ff @(posedge clk_sys) busy <= 1'b0;
-
     // linebuffer (LB)
     localparam LB_SCALE = SCALE;  // scale (horizontal and vertical)
     localparam LB_LEN   = WIDTH;  // line length matches framebuffer
     localparam LB_BPC   = CHANW;  // bits per colour channel
 
     // Load data from FB into LB
+    // NB. Assumes LB enable latency (LAT) is long enough for write completion
     logic lb_data_req;  // LB requesting data
     logic [$clog2(LB_LEN+1)-1:0] cnt_h;  // count pixels in line to read
     always_ff @(posedge clk_sys) begin
         if (fb_addr_read < FB_PIXELS-1) begin
             if (lb_data_req) begin
                 cnt_h <= 0;  // start new line
+                busy <= 1;   // busy with linebuffer read
             end else if (cnt_h < LB_LEN) begin  // advance to start of next line
                 cnt_h <= cnt_h + 1;
                 fb_addr_read <= fb_addr_read + 1;
             end
         end else cnt_h <= LB_LEN;
-        if (frame_sys) fb_addr_read <= 0;  // new frame
+        if (frame_sys) begin
+            fb_addr_read <= 0;  // new frame
+            busy <= 0;  // LB reads don't cross frame boundary
+        end
         if (rst_sys) begin
             fb_addr_read <= 0;
+            busy <= 0;
             cnt_h <= LB_LEN;  // don't start reading after reset
         end
+        if (lb_en_in_sr[1] == 0 && lb_en_in_sr[0] == 1) busy <= 0;  // LB read is done
     end
 
     // LB enable (not corrected for latency)
