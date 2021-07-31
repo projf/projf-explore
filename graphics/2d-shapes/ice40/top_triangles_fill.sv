@@ -53,10 +53,10 @@ module top_triangles_fill (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
-
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
     framebuffer_spram #(
@@ -81,8 +81,8 @@ module top_triangles_fill (
         .cidx(fb_cidx),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
-        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -104,18 +104,20 @@ module top_triangles_fill (
         case (state)
             CLEAR: begin  // we need to initialize SPRAM values to zero
                 fb_cidx <= 4'h0;  // black
-                if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
-                    clearing <= 0;
-                    state <= INIT;
-                end else begin  // iterate over all pixels
-                    if (clearing == 1) begin
-                        if (fbx_clear == FB_WIDTH-1) begin
-                            fbx_clear <= 0;
-                            fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
-                        end else begin
-                            fbx_clear <= fbx_clear + 1;
-                        end
-                    end else clearing <= 1;
+                if (!fb_busy) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
+                        clearing <= 0;
+                        state <= INIT;
+                    end else begin  // iterate over all pixels
+                        if (clearing == 1) begin
+                            if (fbx_clear == FB_WIDTH-1) begin
+                                fbx_clear <= 0;
+                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                            end else begin
+                                fbx_clear <= fbx_clear + 1;
+                            end
+                        end else clearing <= 1;
+                    end
                 end
             end
             INIT: begin  // register coordinates and colour
@@ -170,16 +172,19 @@ module top_triangles_fill (
     localparam PIX_FRAME  =  50;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
-    logic draw_oe;
+    logic draw_req;
     always_ff @(posedge clk_pix) begin
+        draw_req <= 0;
         if (frame) begin
             if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
             cnt_pix_frame <= 0;  // reset pixel counter every frame
         end
-        if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
-            draw_oe <= 1;
-            cnt_pix_frame <= cnt_pix_frame + 1;
-        end else draw_oe <= 0;
+        if (!fb_busy) begin
+            if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+                draw_req <= 1;
+                cnt_pix_frame <= cnt_pix_frame + 1;
+            end
+        end
     end
 
     logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
@@ -187,7 +192,7 @@ module top_triangles_fill (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
-        .oe(draw_oe),
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
