@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Line (Nexys Video)
+// Project F: Lines and Triangles - Top Latency Check (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_line (
+module top_latency_check (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -96,7 +96,9 @@ module top_line (
         .blue(fb_blue)
     );
 
-    // draw line in framebuffer
+    // draw cube in framebuffer
+    localparam LINE_CNT=4;  // number of lines to draw
+    logic [2:0] line_id;    // line identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -105,15 +107,41 @@ module top_line (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                vx0 <=  70; vy0 <=   0;
-                vx1 <= 249; vy1 <= 179;
-                fb_cidx <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
+                case (line_id)
+                    3'd0: begin
+                        fb_cidx <= 4'h8;  // red
+                        vx0 <=   0; vy0 <=   0; vx1 <= 319; vy1 <=   0;
+                    end
+                    3'd1: begin
+                        fb_cidx <= 4'hA;  // yellow
+                        vx0 <= 319; vy0 <=   0; vx1 <= 319; vy1 <= 179;
+                    end
+                    3'd2: begin
+                        fb_cidx <= 4'hB;  // green
+                        vx0 <= 319; vy0 <= 179; vx1 <=   0; vy1 <= 179;
+                    end
+                    3'd3: begin
+                        fb_cidx <= 4'hC;  // blue
+                        vx0 <=   0; vy0 <= 179; vx1 <=   0; vy1 <=   0;
+                    end
+                    default: begin  // should never occur
+                        fb_cidx <= 4'h0;  // black
+                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
+                    end
+                endcase
             end
             DRAW: begin
                 draw_start <= 0;
-                if (draw_done) state <= DONE;
+                if (draw_done) begin
+                    if (line_id == LINE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        line_id <= line_id + 1;
+                        state <= INIT;
+                    end
+                end
             end
             DONE: state <= DONE;
             default: if (frame_sys) state <= INIT;  // IDLE

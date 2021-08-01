@@ -57,12 +57,13 @@ module top_line (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -85,6 +86,7 @@ module top_line (
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -118,7 +120,7 @@ module top_line (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when FB is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),

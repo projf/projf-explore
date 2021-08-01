@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Cube (iCEBreaker 12-bit DVI Pmod)
+// Project F: Lines and Triangles - Top Latency Check (iCEBreaker 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_cube (
+module top_latency_check (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button (active high)
     output      logic dvi_clk,      // DVI pixel clock
@@ -89,8 +89,8 @@ module top_cube (
     );
 
     // draw cube in framebuffer
-    localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;    // line identifier
+    localparam LINE_CNT=4;  // number of lines to draw
+    logic [2:0] line_id;    // line identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -123,36 +123,25 @@ module top_cube (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                fb_cidx <= 4'h8;  // red
                 case (line_id)
-                    4'd0: begin
-                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
+                    3'd0: begin
+                        fb_cidx <= 4'h8;  // red
+                        vx0 <=   0; vy0 <=   0; vx1 <= 319; vy1 <=   0;
                     end
-                    4'd1: begin
-                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
+                    3'd1: begin
+                        fb_cidx <= 4'hA;  // yellow
+                        vx0 <= 319; vy0 <=   0; vx1 <= 319; vy1 <= 179;
                     end
-                    4'd2: begin
-                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
+                    3'd2: begin
+                        fb_cidx <= 4'hB;  // green
+                        vx0 <= 319; vy0 <= 179; vx1 <=   0; vy1 <= 179;
                     end
-                    4'd3: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd4: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
-                    end
-                    4'd5: begin
-                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
-                    end
-                    4'd6: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd7: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
-                    end
-                    4'd8: begin
-                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
+                    3'd3: begin
+                        fb_cidx <= 4'hC;  // blue
+                        vx0 <=   0; vy0 <= 179; vx1 <=   0; vy1 <=   0;
                     end
                     default: begin  // should never occur
+                        fb_cidx <= 4'h0;  // black
                         vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
                     end
                 endcase
@@ -174,25 +163,12 @@ module top_cube (
         if (!clk_locked) state <= IDLE;
     end
 
-    // control drawing speed with output enable
-    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
-    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_req;  // draw requested
-    always_ff @(posedge clk_pix) begin
-        if (!fb_busy) draw_req <= 0;  // disable after FB available, so 1 pix per frame
-        if (frame) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_req <= 1;  // request drawing
-        end
-    end
-
     logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
     draw_line #(.CORDW(CORDW)) draw_line_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
-        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
+        .oe(!fb_busy),  // draw when FB is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),

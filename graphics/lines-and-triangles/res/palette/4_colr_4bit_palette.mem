@@ -1,8 +1,0 @@
-// Project F: Lines and Triangles - 4 Colour Palette
-// Four colours from PICO-8 Palette with 4 bits per channel
-// Learn more at https://projectf.io
-
-000  // 0 - black
-FA0  // 1 - orange
-0E3  // 2 - green
-3BF  // 3 - blue

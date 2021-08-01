@@ -1,49 +1,45 @@
-// Project F: Lines and Triangles - Top Line (Nexys Video)
+// Project F: Lines and Triangles - Top Latency Check (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_line (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst,          // reset button (active low)
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+module top_latency_check (
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // generate pixel clocks
-    logic clk_pix;                  // pixel clock
-    logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
-    logic clk_pix_locked;           // pixel clock locked?
-    clock_gen_720p clock_pix_inst (
-        .clk_100m,
-        .rst(!btn_rst),             // reset button is active low
-        .clk_pix,
-        .clk_pix_5x,
-        .clk_pix_locked
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_locked;
+    clock_gen_480p clock_pix_inst (
+       .clk(clk_100m),
+       .rst(!btn_rst),  // reset button is active low
+       .clk_pix,
+       .clk_locked
     );
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    logic frame, line;
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .rst(!clk_locked),  // wait for pixel clock lock
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -57,7 +53,7 @@ module top_line (
     localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
@@ -80,7 +76,7 @@ module top_line (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -96,7 +92,9 @@ module top_line (
         .blue(fb_blue)
     );
 
-    // draw line in framebuffer
+    // draw cube in framebuffer
+    localparam LINE_CNT=4;  // number of lines to draw
+    logic [2:0] line_id;    // line identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -105,15 +103,41 @@ module top_line (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                vx0 <=  70; vy0 <=   0;
-                vx1 <= 249; vy1 <= 179;
-                fb_cidx <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
+                case (line_id)
+                    3'd0: begin
+                        fb_cidx <= 4'h8;  // red
+                        vx0 <=   0; vy0 <=   0; vx1 <= 319; vy1 <=   0;
+                    end
+                    3'd1: begin
+                        fb_cidx <= 4'hA;  // yellow
+                        vx0 <= 319; vy0 <=   0; vx1 <= 319; vy1 <= 179;
+                    end
+                    3'd2: begin
+                        fb_cidx <= 4'hB;  // green
+                        vx0 <= 319; vy0 <= 179; vx1 <=   0; vy1 <= 179;
+                    end
+                    3'd3: begin
+                        fb_cidx <= 4'hC;  // blue
+                        vx0 <=   0; vy0 <= 179; vx1 <=   0; vy1 <=   0;
+                    end
+                    default: begin  // should never occur
+                        fb_cidx <= 4'h0;  // black
+                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
+                    end
+                endcase
             end
             DRAW: begin
                 draw_start <= 0;
-                if (draw_done) state <= DONE;
+                if (draw_done) begin
+                    if (line_id == LINE_CNT-1) begin
+                        state <= DONE;
+                    end else begin
+                        line_id <= line_id + 1;
+                        state <= INIT;
+                    end
+                end
             end
             DONE: state <= DONE;
             default: if (frame_sys) state <= INIT;  // IDLE
@@ -142,51 +166,18 @@ module top_line (
     always_comb fb_we = drawing;
 
     // reading from FB takes one cycle: delay display signals to match
-    logic hsync_p1, vsync_p1, de_p1;
+    logic hsync_p1, vsync_p1;
     always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
-        de_p1 <= de;
     end
 
-    // DVI signals
-    logic [7:0] dvi_red, dvi_green, dvi_blue;
-    logic dvi_hsync, dvi_vsync, dvi_de;
+    // VGA output
     always_ff @(posedge clk_pix) begin
-        dvi_hsync <= hsync_p1;
-        dvi_vsync <= vsync_p1;
-        dvi_de    <= de_p1;
-        dvi_red   <= {2{fb_red}};
-        dvi_green <= {2{fb_green}};
-        dvi_blue  <= {2{fb_blue}};
+        vga_hsync <= hsync_p1;
+        vga_vsync <= vsync_p1;
+        vga_r <= fb_red;
+        vga_g <= fb_green;
+        vga_b <= fb_blue;
     end
-
-    // TMDS encoding and serialization
-    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
-    dvi_generator dvi_out (
-        .clk_pix,
-        .clk_pix_5x,
-        .rst(!clk_pix_locked),
-        .de(dvi_de),
-        .data_in_ch0(dvi_blue),
-        .data_in_ch1(dvi_green),
-        .data_in_ch2(dvi_red),
-        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
-        .ctrl_in_ch1(2'b00),
-        .ctrl_in_ch2(2'b00),
-        .tmds_ch0_serial,
-        .tmds_ch1_serial,
-        .tmds_ch2_serial,
-        .tmds_clk_serial
-    );
-
-    // TMDS output pins
-    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
-        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
-    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
-        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
-    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
-        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
-    tmds_out tmds_clk (.tmds(tmds_clk_serial),
-        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 endmodule

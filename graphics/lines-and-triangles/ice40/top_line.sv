@@ -45,20 +45,21 @@ module top_line (
     );
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 160;
-    localparam FB_HEIGHT  = 90;
-    localparam FB_CIDXW   = 2;
+    localparam FB_WIDTH   = 320;
+    localparam FB_HEIGHT  = 180;
+    localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "../res/palette/4_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_spram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -81,6 +82,7 @@ module top_line (
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -90,14 +92,36 @@ module top_line (
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
+    // clear FB before use (contents are not initialized)
+    logic signed [CORDW-1:0] fbx_clear, fby_clear;  // framebuffer clearing coordinates
+    logic clearing;  // high when we're clearing
+
     // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
+    enum {IDLE, CLEAR, INIT, DRAW, DONE} state;
     always_ff @(posedge clk_pix) begin
         case (state)
+            CLEAR: begin  // we need to initialize SPRAM values to zero
+                fb_cidx <= 4'h0;  // black
+                if (!fb_busy) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
+                        clearing <= 0;
+                        state <= INIT;
+                    end else begin  // iterate over all pixels
+                        if (clearing == 1) begin
+                            if (fbx_clear == FB_WIDTH-1) begin
+                                fbx_clear <= 0;
+                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                            end else begin
+                                fbx_clear <= fbx_clear + 1;
+                            end
+                        end else clearing <= 1;
+                    end
+                end
+            end
             INIT: begin  // register coordinates and colour
-                vx0 <=  35; vy0 <=   0;
-                vx1 <= 124; vy1 <=  89;
-                fb_cidx <= 2'h1;  // orange
+                vx0 <=  70; vy0 <=   0;
+                vx1 <= 249; vy1 <= 179;
+                fb_cidx <= 4'h9;  // orange
                 draw_start <= 1;
                 state <= DRAW;
             end
@@ -106,22 +130,23 @@ module top_line (
                 if (draw_done) state <= DONE;
             end
             DONE: state <= DONE;
-            default: if (frame) state <= INIT;  // IDLE
+            default: if (frame) state <= CLEAR;  // IDLE
         endcase
         if (!clk_locked) state <= IDLE;
     end
 
+    logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
     draw_line #(.CORDW(CORDW)) draw_line_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when FB is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
         .y1(vy1),
-        .x(fbx),
-        .y(fby),
+        .x(fbx_draw),
+        .y(fby_draw),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
         .complete(),
@@ -129,8 +154,12 @@ module top_line (
         .done(draw_done)
     );
 
-    // write to framebuffer when drawing
-    always_comb fb_we = drawing;
+    // write to framebuffer when drawing or clearing
+    always_comb begin
+        fb_we = drawing || clearing;
+        fbx = clearing ? fbx_clear : fbx_draw;
+        fby = clearing ? fby_clear : fby_draw;
+    end
 
     // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;

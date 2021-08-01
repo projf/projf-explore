@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Cube (iCEBreaker 12-bit DVI Pmod)
+// Project F: 2D Shapes - Top Filled Triangles (iCEBreaker 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_cube (
+module top_triangles_fill (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button (active high)
     output      logic dvi_clk,      // DVI pixel clock
@@ -88,10 +88,10 @@ module top_cube (
         .blue(fb_blue)
     );
 
-    // draw cube in framebuffer
-    localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;    // line identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
+    // draw triangles in framebuffer
+    localparam SHAPE_CNT=3;  // number of shapes to draw
+    logic [1:0] shape_id;    // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // clear FB before use (contents are not initialized)
@@ -123,47 +123,40 @@ module top_cube (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                fb_cidx <= 4'h8;  // red
-                case (line_id)
-                    4'd0: begin
-                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
+                case (shape_id)
+                    2'd0: begin
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        fb_cidx <= 4'h9;  // orange
                     end
-                    4'd1: begin
-                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
+                    2'd1: begin
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
+                        fb_cidx <= 4'hC;  // blue
                     end
-                    4'd2: begin
-                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
-                    end
-                    4'd3: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd4: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
-                    end
-                    4'd5: begin
-                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
-                    end
-                    4'd6: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
-                    end
-                    4'd7: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
-                    end
-                    4'd8: begin
-                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
+                    2'd2: begin
+                        vx0 <=  22; vy0 <=  35;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
+                        fb_cidx <= 4'h2;  // dark purple
                     end
                     default: begin  // should never occur
-                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
+                        vx0 <=   10; vy0 <=   10;
+                        vx1 <=   10; vy1 <=   30;
+                        vx2 <=   20; vy2 <=   20;
+                        fb_cidx <= 4'h7;  // white
                     end
                 endcase
             end
             DRAW: begin
                 draw_start <= 0;
                 if (draw_done) begin
-                    if (line_id == LINE_CNT-1) begin
+                    if (shape_id == SHAPE_CNT-1) begin
                         state <= DONE;
                     end else begin
-                        line_id <= line_id + 1;
+                        shape_id <= shape_id + 1;
                         state <= INIT;
                     end
                 end
@@ -176,19 +169,26 @@ module top_cube (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  =  50;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_req;  // draw requested
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
+    logic draw_req;
     always_ff @(posedge clk_pix) begin
-        if (!fb_busy) draw_req <= 0;  // disable after FB available, so 1 pix per frame
-        if (frame) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_req <= 1;  // request drawing
+        draw_req <= 0;
+        if (frame) begin
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
+        end
+        if (!fb_busy) begin
+            if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+                draw_req <= 1;
+                cnt_pix_frame <= cnt_pix_frame + 1;
+            end
         end
     end
 
     logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
@@ -197,6 +197,8 @@ module top_cube (
         .y0(vy0),
         .x1(vx1),
         .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
         .x(fbx_draw),
         .y(fby_draw),
         .drawing,

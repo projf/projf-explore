@@ -57,12 +57,13 @@ module top_triangles (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -85,6 +86,7 @@ module top_triangles (
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -149,13 +151,13 @@ module top_triangles (
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_oe;
+    logic draw_req;  // draw requested
     always_ff @(posedge clk_100m) begin
-        draw_oe <= 0;
-        if (frame_sys) begin  // one cycle per frame
+        if (!fb_busy) draw_req <= 0;  // disable after FB available, so 1 pix per frame
+        if (frame_sys) begin  // once per frame
             if (cnt_frame_wait != FRAME_WAIT-1) begin
                 cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_oe <= 1;  // enable drawing output
+            end else draw_req <= 1;  // request drawing
         end
     end
 
@@ -163,7 +165,7 @@ module top_triangles (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(draw_oe),
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
