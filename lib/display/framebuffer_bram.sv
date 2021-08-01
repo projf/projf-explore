@@ -9,8 +9,8 @@
 
 module framebuffer_bram #(
     parameter CORDW=16,      // signed coordinate width (bits)
-    parameter WIDTH=160,     // width of framebuffer in pixels
-    parameter HEIGHT=120,    // height of framebuffer in pixels
+    parameter WIDTH=320,     // width of framebuffer in pixels
+    parameter HEIGHT=180,    // height of framebuffer in pixels
     parameter CIDXW=4,       // colour index data width: 4=16, 8=256 colours
     parameter CHANW=4,       // width of RGB colour channels (4 or 8 bit)
     parameter SCALE=4,       // display output scaling factor (>=1)
@@ -42,7 +42,7 @@ module framebuffer_bram #(
     // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
-    localparam FB_DEPTH  = 2**FB_ADDRW;
+    localparam FB_DEPTH  = FB_PIXELS;
     localparam FB_DATAW  = CIDXW;
 
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
@@ -98,7 +98,7 @@ module framebuffer_bram #(
     always_comb lb_en_in  = cnt_h < LB_LEN;
     always_comb lb_en_out = de;
 
-    // LB enable in: address calc and CLUT reg add three cycles of latency
+    // LB enable in: BRAM, address calc, and CLUT reg add three cycles of latency
     localparam LAT = 3;  // write latency
     logic [LAT-1:0] lb_en_in_sr;
     always_ff @(posedge clk_sys) begin
@@ -126,7 +126,7 @@ module framebuffer_bram #(
             busy <= 0;
             cnt_h <= LB_LEN;  // don't start reading after reset
         end
-        if (lb_en_in_sr == 3'b100) busy <= 0;  // LB read done: match write latency LAT
+        if (lb_en_in_sr == 3'b100) busy <= 0;  // LB read done: match latency `LAT`
     end
 
     // LB colour channels

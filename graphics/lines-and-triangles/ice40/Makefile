@@ -26,6 +26,7 @@ ADD_SRC += ${PATH_LIB}/memory/ice40/spram_nibble.sv
 top_triangles: top_triangles.rpt top_triangles.bin
 top_line: top_line.rpt top_line.bin
 top_cube: top_cube.rpt top_cube.bin
+top_latency_check: top_latency_check.rpt top_latency_check.bin
 
 %.json: %.sv $(ADD_SRC)
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
@@ -42,6 +43,6 @@ top_cube: top_cube.rpt top_cube.bin
 clean:
 	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
 
-all: top_triangles top_cube top_line
+all: top_triangles top_cube top_line top_latency_check
 
 .PHONY: all clean
