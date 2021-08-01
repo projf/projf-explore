@@ -25,6 +25,10 @@ iceprog top_triangles.bin
 
 If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
+### Known Issue with Framebuffer
+
+There's currently a minor issue with clearing the SPRAM before drawing: one pixel remains uncleared. I'm planning to implement clearing within the SPRAM version of the framebuffer and tackle this issue then.
+
 ### Problems Building
 
 If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
