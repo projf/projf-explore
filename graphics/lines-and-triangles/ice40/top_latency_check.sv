@@ -112,7 +112,7 @@ module top_latency_check (
                         if (clearing == 1) begin
                             if (fbx_clear == FB_WIDTH-1) begin
                                 fbx_clear <= 0;
-                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                                fby_clear <= fby_clear + 1;
                             end else begin
                                 fbx_clear <= fbx_clear + 1;
                             end
@@ -183,10 +183,10 @@ module top_latency_check (
     );
 
     // write to framebuffer when drawing or clearing
-    always_comb begin
-        fb_we = drawing || clearing;
-        fbx = clearing ? fbx_clear : fbx_draw;
-        fby = clearing ? fby_clear : fby_draw;
+    always_ff @(posedge clk_pix) begin
+        fb_we <= drawing || clearing;
+        fbx <= clearing ? fbx_clear : fbx_draw;
+        fby <= clearing ? fby_clear : fby_draw;
     end
 
     // reading from FB takes one cycle: delay display signals to match

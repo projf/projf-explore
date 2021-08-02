@@ -1,4 +1,4 @@
-// Project F: 2D Shapes - Top Castle (Arty Pmod VGA)
+// Project F: 2D Shapes - Top Castle (iCEBreaker 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -6,21 +6,23 @@
 `timescale 1ns / 1ps
 
 module top_castle (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button (active high)
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
     // generate pixel clock
     logic clk_pix;
     logic clk_locked;
     clock_gen_480p clock_pix_inst (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+       .clk(clk_12m),
+       .rst(btn_rst),
        .clk_pix,
        .clk_locked
     );
@@ -42,10 +44,6 @@ module top_castle (
         .line
     );
 
-    logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
-                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
-
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 180;
@@ -53,7 +51,7 @@ module top_castle (
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
@@ -61,7 +59,7 @@ module top_castle (
     logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer_bram #(
+    framebuffer_spram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -70,8 +68,8 @@ module top_castle (
         .F_IMAGE(FB_IMAGE),
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
-        .clk_sys(clk_100m),
-        .clk_pix,
+        .clk_sys(clk_pix),
+        .clk_pix(clk_pix),
         .rst_sys(1'b0),
         .rst_pix(1'b0),
         .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
@@ -100,11 +98,33 @@ module top_castle (
     logic draw_start_tri, drawing_tri, draw_done_tri;  // drawing tri
     logic draw_start_rect, drawing_rect, draw_done_rect;  // drawing rect
 
+    // clear FB before use (contents are not initialized)
+    logic signed [CORDW-1:0] fbx_clear, fby_clear;  // framebuffer clearing coordinates
+    logic clearing;  // high when we're clearing
+
     // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
-    always_ff @(posedge clk_100m) begin
+    enum {IDLE, CLEAR, INIT, DRAW, DONE} state;
+    always_ff @(posedge clk_pix) begin
         case (state)
-            INIT: begin  // register coordinates and colour
+            CLEAR: begin  // we need to initialize SPRAM values to zero
+                fb_cidx <= 4'h0;  // black
+                if (!fb_busy) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
+                        clearing <= 0;
+                        state <= INIT;
+                    end else begin  // iterate over all pixels
+                        if (clearing == 1) begin
+                            if (fbx_clear == FB_WIDTH-1) begin
+                                fbx_clear <= 0;
+                                fby_clear <= fby_clear + 1;
+                            end else begin
+                                fbx_clear <= fbx_clear + 1;
+                            end
+                        end else clearing <= 1;
+                    end
+                end
+            end
+INIT: begin  // register coordinates and colour
                 state <= DRAW;
                 case (shape_id)
                     5'd0: begin  // main building
@@ -248,8 +268,9 @@ module top_castle (
                 end
             end
             DONE: state <= DONE;
-            default: if (frame_sys) state <= INIT;  // IDLE
+            default: if (frame) state <= CLEAR;  // IDLE
         endcase
+        if (!clk_locked) state <= IDLE;
     end
 
     // drawing and done apply to either shape
@@ -264,9 +285,9 @@ module top_castle (
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_req;
-    always_ff @(posedge clk_100m) begin
+    always_ff @(posedge clk_pix) begin
         draw_req <= 0;
-        if (frame_sys) begin
+        if (frame) begin
             if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
             cnt_pix_frame <= 0;  // reset pixel counter every frame
         end
@@ -279,8 +300,8 @@ module top_castle (
     end
 
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
-        .clk(clk_100m),
-        .rst(1'b0),
+        .clk(clk_pix),
+        .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start_tri),
         .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
@@ -299,8 +320,8 @@ module top_castle (
     );
 
     draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
-        .clk(clk_100m),
-        .rst(1'b0),
+        .clk(clk_pix),
+        .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start_rect),
         .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
@@ -317,17 +338,18 @@ module top_castle (
     );
 
     // write to framebuffer when drawing
-    always_ff @(posedge clk_100m) begin
-        fb_we <= drawing;
-        fbx <= drawing_tri ? fbx_tri : fbx_rect;
-        fby <= drawing_tri ? fby_tri : fby_rect;
+    always_ff @(posedge clk_pix) begin
+        fb_we <= drawing || clearing;
+        fbx <= clearing ? fbx_clear : drawing_tri ? fbx_tri : fbx_rect;
+        fby <= clearing ? fby_clear : drawing_tri ? fby_tri : fby_rect;
     end
 
     // reading from FB takes one cycle: delay display signals to match
-    logic hsync_p1, vsync_p1;
+    logic hsync_p1, vsync_p1, de_p1;
     always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
+        de_p1 <= de;
     end
 
     // background colour (sy ignores 16:9 letterbox)
@@ -350,12 +372,28 @@ module top_castle (
     logic show_bg;
     always_comb show_bg = (de && {fb_red,fb_green,fb_blue} == 0);
 
-    // VGA output
-    always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync_p1;
-        vga_vsync <= vsync_p1;
-        vga_r <= show_bg ? bg_colr[11:8] : fb_red;
-        vga_g <= show_bg ? bg_colr[7:4]  : fb_green;
-        vga_b <= show_bg ? bg_colr[3:0]  : fb_blue;
-    end
+    // Output DVI clock: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
+
+    // Output DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync_p1, vsync_p1, de_p1, 
+            show_bg ? bg_colr[11:8] : fb_red, 
+            show_bg ? bg_colr[7:4]  : fb_green,
+            show_bg ? bg_colr[3:0]  : fb_blue}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 endmodule
