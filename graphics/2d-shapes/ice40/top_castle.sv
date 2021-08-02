@@ -124,7 +124,7 @@ module top_castle (
                     end
                 end
             end
-INIT: begin  // register coordinates and colour
+            INIT: begin  // register coordinates and colour
                 state <= DRAW;
                 case (shape_id)
                     5'd0: begin  // main building
