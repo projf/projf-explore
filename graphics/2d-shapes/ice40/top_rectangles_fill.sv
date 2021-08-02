@@ -187,7 +187,6 @@ module top_rectangles_fill (
         .done(draw_done)
     );
 
-
     // write to framebuffer when drawing or clearing
     always_ff @(posedge clk_pix) begin
         fb_we <= drawing || clearing;
