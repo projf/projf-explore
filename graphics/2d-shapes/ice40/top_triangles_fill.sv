@@ -53,11 +53,11 @@ module top_triangles_fill (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
     logic fb_busy;  // when framebuffer is busy it cannot accept writes
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
     framebuffer_spram #(
         .WIDTH(FB_WIDTH),
@@ -90,7 +90,7 @@ module top_triangles_fill (
 
     // draw triangles in framebuffer
     localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;    // shape identifier
+    logic [$clog2(SHAPE_CNT+1)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -112,7 +112,7 @@ module top_triangles_fill (
                         if (clearing == 1) begin
                             if (fbx_clear == FB_WIDTH-1) begin
                                 fbx_clear <= 0;
-                                fby_clear <= (fby_clear == FB_HEIGHT-1) ? 0 : fby_clear + 1;
+                                fby_clear <= fby_clear + 1;
                             end else begin
                                 fbx_clear <= fbx_clear + 1;
                             end
@@ -209,10 +209,10 @@ module top_triangles_fill (
     );
 
     // write to framebuffer when drawing or clearing
-    always_comb begin
-        fb_we = drawing || clearing;
-        fbx = clearing ? fbx_clear : fbx_draw;
-        fby = clearing ? fby_clear : fby_draw;
+    always_ff @(posedge clk_pix) begin
+        fb_we <= drawing || clearing;
+        fbx <= clearing ? fbx_clear : fbx_draw;
+        fby <= clearing ? fby_clear : fby_draw;
     end
 
     // reading from FB takes one cycle: delay display signals to match

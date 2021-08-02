@@ -62,12 +62,13 @@ module top_castle (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -90,6 +91,7 @@ module top_castle (
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
@@ -97,7 +99,7 @@ module top_castle (
 
     // draw shapes in framebuffer
     localparam SHAPE_CNT=19;  // number of shapes to draw
-    logic [4:0] shape_id;     // shape identifier
+    logic [$clog2(SHAPE_CNT+1)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic signed [CORDW-1:0] fbx_tri, fby_tri;    // tri framebuffer coordinates
     logic signed [CORDW-1:0] fbx_rect, fby_rect;  // rect framebuffer coordinates
@@ -268,23 +270,26 @@ module top_castle (
     localparam PIX_FRAME  =  20;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
-    logic draw_oe;
+    logic draw_req;
     always_ff @(posedge clk_100m) begin
+        draw_req <= 0;
         if (frame_sys) begin
             if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
             cnt_pix_frame <= 0;  // reset pixel counter every frame
         end
-        if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
-            draw_oe <= 1;
-            cnt_pix_frame <= cnt_pix_frame + 1;
-        end else draw_oe <= 0;
+        if (!fb_busy) begin
+            if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+                draw_req <= 1;
+                cnt_pix_frame <= cnt_pix_frame + 1;
+            end
+        end
     end
 
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start_tri),
-        .oe(draw_oe),
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
@@ -304,7 +309,7 @@ module top_castle (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start_rect),
-        .oe(draw_oe),
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),

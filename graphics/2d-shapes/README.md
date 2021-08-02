@@ -6,7 +6,26 @@ These designs make use of Project F [common modules](../common/), such as clock 
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are not available yet. Have you tried the [other designs](../README.md) in this series?
+You can build projects for iCEBreaker using the included [makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
+
+For example, to build `top_castle`; clone the projf-explore git repo, then:
+
+```shell
+cd projf-explore/graphics/2d-shapes/ice40
+make top_castle
+```
+
+After the build completes you'll have a bin file, such as `top_castle.bin`. Use the bin file to program your board:
+
+```shell
+iceprog top_castle.bin
+```
+
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
+
+### Known Issue with Framebuffer
+
+There's currently a minor issue with clearing the SPRAM before drawing: one pixel remains uncleared. I'm planning to implement clearing within the SPRAM version of the framebuffer and tackle this issue then.
 
 ## Xilinx Vivado Build
 
@@ -17,7 +36,7 @@ cd projf-explore/2d-shapes/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_triangles_fill` as you would for any Vivado project.
+You can then build `top_castle` as you would for any Vivado project.
 
 ### Simulation
 

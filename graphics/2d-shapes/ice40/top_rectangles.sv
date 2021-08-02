@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Top Triangles (iCEBreaker 12-bit DVI Pmod)
+// Project F: 2D Shapes - Top Rectangles (iCEBreaker 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_triangles (
+module top_rectangles (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button (active high)
     output      logic dvi_clk,      // DVI pixel clock
@@ -53,11 +53,11 @@ module top_triangles (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "../res/palette/16_colr_4bit_palette.mem";
 
-    logic fb_we;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
     logic fb_busy;  // when framebuffer is busy it cannot accept writes
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
     framebuffer_spram #(
         .WIDTH(FB_WIDTH),
@@ -88,10 +88,10 @@ module top_triangles (
         .blue(fb_blue)
     );
 
-    // draw triangles in framebuffer
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;    // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
+    // draw rectangles in framebuffer
+    localparam SHAPE_CNT=64;  // number of shapes to draw
+    logic [$clog2(SHAPE_CNT+1):0] shape_id;  // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // clear FB before use (contents are not initialized)
@@ -105,7 +105,7 @@ module top_triangles (
             CLEAR: begin  // we need to initialize SPRAM values to zero
                 fb_cidx <= 4'h0;  // black
                 if (!fb_busy) begin
-                    if (fby_clear == FB_HEIGHT && fbx_clear == 0) begin
+                    if (fby_clear == FB_HEIGHT-1 && fbx_clear == FB_WIDTH-1) begin
                         clearing <= 0;
                         state <= INIT;
                     end else begin  // iterate over all pixels
@@ -123,32 +123,13 @@ module top_triangles (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                case (shape_id)
-                    2'd0: begin
-                        vx0 <=  60; vy0 <=  20;
-                        vx1 <= 280; vy1 <=  80;
-                        vx2 <= 160; vy2 <= 164;
-                        fb_cidx <= 4'h9;  // orange
-                    end
-                    2'd1: begin
-                        vx0 <=  70; vy0 <= 160;
-                        vx1 <= 220; vy1 <=  90;
-                        vx2 <= 170; vy2 <=  10;
-                        fb_cidx <= 4'hC;  // blue
-                    end
-                    2'd2: begin
-                        vx0 <=  22; vy0 <=  35;
-                        vx1 <=  62; vy1 <= 150;
-                        vx2 <=  98; vy2 <=  96;
-                        fb_cidx <= 4'h2;  // dark purple
-                    end
-                    default: begin  // should never occur
-                        vx0 <=   10; vy0 <=   10;
-                        vx1 <=   10; vy1 <=   30;
-                        vx2 <=   20; vy2 <=   20;
-                        fb_cidx <= 4'h7;  // white
-                    end
-                endcase
+                /* verilator lint_off WIDTH */
+                vx0 <=  60 + shape_id;
+                vy0 <=  15 + shape_id;
+                vx1 <= 260 - shape_id;
+                vy1 <= 165 - shape_id;
+                /* verilator lint_on WIDTH */
+                fb_cidx <= shape_id[3:0];  // use lowest four bits for colour
             end
             DRAW: begin
                 draw_start <= 0;
@@ -169,19 +150,26 @@ module top_triangles (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  = 200;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_req;  // draw requested
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
+    logic draw_req;
     always_ff @(posedge clk_pix) begin
-        if (!fb_busy) draw_req <= 0;  // disable after FB available, so 1 pix per frame
-        if (frame) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_req <= 1;  // request drawing
+        draw_req <= 0;
+        if (frame) begin
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
+        end
+        if (!fb_busy) begin
+            if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+                draw_req <= 1;
+                cnt_pix_frame <= cnt_pix_frame + 1;
+            end
         end
     end
 
     logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
-    draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
+    draw_rectangle #(.CORDW(CORDW)) draw_rectangle_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
@@ -190,8 +178,6 @@ module top_triangles (
         .y0(vy0),
         .x1(vx1),
         .y1(vy1),
-        .x2(vx2),
-        .y2(vy2),
         .x(fbx_draw),
         .y(fby_draw),
         .drawing,
