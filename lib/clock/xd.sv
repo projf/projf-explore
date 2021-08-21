@@ -1,4 +1,4 @@
-// Project F Library - Cross Domain Pulse
+// Project F Library - Clock Domain Crossing (CDC) with Pulse
 // (C)2021 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 

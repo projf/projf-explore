@@ -1,8 +1,10 @@
 # Verilog Library from Project F
 
-The Library includes handy Verilog designs from across Project F.
+The Project F Library includes handy Verilog designs for everyone. You can freely build on these [MIT licensed](../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-You can learn the [background to the Library](https://projectf.io/posts/verilog-library-announcement/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
+Discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/), follow [@WillFlux](https://twitter.com/WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
+
+## Library Areas
 
 * [clock](clock) - clock generation (PLL) and domain crossing
 * [display](display) - display timings, framebuffer, DVI/HDMI output
@@ -23,6 +25,16 @@ support for vendor primitives. We currently support two FPGA architectures:
 
 Porting to other architectures should be straightforward.
 
-We use a few choice features of SystemVerilog to make Verilog more pleasant. I believe these features are helpful, especially for beginners. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+## SystemVerilog?
+
+We use a few simple features of SystemVerilog to make Verilog more pleasant:
+
+* `logic` type to avoid deciding between `wire` and `reg` all the time
+* `always_comb` and `always_ff` to make intent clear and catch mistakes
+* `$clog2` to calculate vector widths (e.g. for addresses)
+* `enum` to make finite state machines simpler to work with
+* Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
+
+I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).

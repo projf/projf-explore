@@ -1,7 +1,8 @@
 # Graphics - Verilog Library
 
-Verilog graphics designs used across Project F.  
-Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
+Graphics Verilog designs from Project F, including line and shape drawing. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. See the [Library](../) for other helpful Verilog modules or discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
+
+Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://twitter.com/WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
 
 ## Verilog Modules
 
@@ -12,8 +13,9 @@ Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https:/
 * [draw_triangle](draw_triangle.sv) - Draw a triangle outline
 * [draw_triangle_fill](draw_triangle_fill.sv) - Draw a filled triangle
 
-You can find Vivado test benches in the [xc7](xc7) directory.    
-For modules to drive a display, see [display](../display/); for other library modules, see the [Library](../) root.
+Locate Vivado test benches in the [xc7](xc7) directory.  
+For modules to drive a display, see [display](../display/).  
+Find other modules in the [Library](../).
 
 ## Blog Posts
 
@@ -23,7 +25,7 @@ The following blog posts document and make use of these graphics designs:
 * [2D Shapes](https://projectf.io/posts/fpga-shapes/) - filled shapes and drawing pictures
 * Animated Shapes - animating shapes (coming soon)
 
-## Graphics Interface
+## Graphics Modules Interface
 
 These graphic modules share a similar interface:
 
@@ -44,3 +46,7 @@ The default coordinate width is 16-bits for a range from -32,768 to 32,767.
 
 Drawing order or direction may differ from the order coordinates are given;
 for example, drawing doesn't necesserily begin from `(x0,y0)`.
+
+## SystemVerilog?
+
+These modules use a little SystemVerilog to make Verilog more pleasant, see the main [Library README](../README.md#systemverilog) for details.
