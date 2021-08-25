@@ -63,8 +63,8 @@ set design_sources [list \
   [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/display_timings_720p.sv"] \
   [file normalize "${lib_dir}/display/display_timings_1080p.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer_db.sv"] \
+  [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
+  [file normalize "${lib_dir}/display/framebuffer_bram_db.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
@@ -104,13 +104,13 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
-  [file normalize "${lib_dir}/display/xc7/framebuffer_db_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_db_tb_behav.wcfg" ] \
+  [file normalize "${lib_dir}/display/xc7/framebuffer_bram_db_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_db_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "framebuffer_db_tb" -objects $fs_sim_obj
+set_property -name "top" -value "framebuffer_bram_db_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

@@ -300,7 +300,7 @@ module top_castle (
         .y(fby_tri),
         .drawing(drawing_tri),
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done_tri)
     );
@@ -318,7 +318,7 @@ module top_castle (
         .y(fby_rect),
         .drawing(drawing_rect),
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done_rect)
     );

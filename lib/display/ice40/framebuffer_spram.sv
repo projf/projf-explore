@@ -9,12 +9,14 @@
 
 module framebuffer_spram #(
     parameter CORDW=16,      // signed coordinate width (bits)
-    parameter WIDTH=160,     // width of framebuffer in pixels
-    parameter HEIGHT=120,    // height of framebuffer in pixels
+    parameter WIDTH=320,     // width of framebuffer in pixels
+    parameter HEIGHT=180,    // height of framebuffer in pixels
     parameter CIDXW=4,       // colour index data width: 4=16, 8=256 colours
     parameter CHANW=4,       // width of RGB colour channels (4 or 8 bit)
     parameter SCALE=4,       // display output scaling factor (>=1)
-    parameter F_IMAGE="",    // image file to load into framebuffer
+    /* verilator lint_off UNUSED */
+    parameter F_IMAGE="",    // image file to load into framebuffer (no support on SPRAM)
+    /* verilator lint_on UNUSED */
     parameter F_PALETTE=""   // palette file to load into CLUT
     ) (
     input  wire logic clk_sys,    // system clock
@@ -28,7 +30,7 @@ module framebuffer_spram #(
     input  wire logic signed [CORDW-1:0] x,  // horizontal pixel coordinate
     input  wire logic signed [CORDW-1:0] y,  // vertical pixel coordinate
     input  wire logic [CIDXW-1:0] cidx,   // framebuffer colour index
-    output      logic busy,               // busy with clearing or display out
+    output      logic busy,               // busy with reading for display output
     output      logic clip,               // pixel coordinate outside buffer
     output      logic [CHANW-1:0] red,    // colour output to display (clk_pix)
     output      logic [CHANW-1:0] green,  //     "    "    "    "    "
@@ -42,20 +44,20 @@ module framebuffer_spram #(
     // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;
     localparam FB_ADDRW  = $clog2(FB_PIXELS);
-    localparam FB_DEPTH  = FB_PIXELS;
     localparam FB_DATAW  = CIDXW;
+    localparam FB_DUALPORT = 0;  // separate read and write ports?
 
     logic [FB_ADDRW-1:0] fb_addr_read, fb_addr_write;
     logic [FB_DATAW-1:0] fb_cidx_read, fb_cidx_read_p1;
 
-    // calculate write address from pixel coordinates (two stage: mul then add)
+    // calculate write address from pixel coordinates (two stages: mul then add)
     logic signed [CORDW-1:0] x_add;     // pixel position on line
     logic [FB_ADDRW-1:0] fb_addr_line;  // address of line for writing
     always_ff @(posedge clk_sys) begin
         /* verilator lint_off WIDTH */
-        fb_addr_line <= WIDTH * y;  // write address 1st stage
+        fb_addr_line <= WIDTH * y;  // write address 1st stage (y could be negative)
         x_add <= x;  // save x for write address 2nd stage
-        fb_addr_write <= fb_addr_line + x_add;
+        fb_addr_write <= fb_addr_line + x_add;  // clipping is checked later
         /* verilator lint_on WIDTH */
     end
 
@@ -63,14 +65,16 @@ module framebuffer_spram #(
     logic fb_we, we_in_p1;
     logic [FB_DATAW-1:0] fb_cidx_write, cidx_in_p1;
     always_ff @(posedge clk_sys) begin
+        // first stage
         we_in_p1 <= we;
         cidx_in_p1 <= cidx;  // draw colour
         clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
-        fb_we <= (busy || clip) ? 0 : we_in_p1;  // write if not busy nor clipped
+        // second stage
+        fb_we <= (busy || clip) ? 0 : we_in_p1;  // write if neither busy nor clipped
         fb_cidx_write <= cidx_in_p1;
     end
 
-    // framebuffer memory (SPRAN)
+    // framebuffer memory (SPRAM) - fixed width and depth
     spram_nibble spram_inst (
         .clk(clk_sys),
         .we(fb_we),
@@ -104,8 +108,8 @@ module framebuffer_spram #(
     always_ff @(posedge clk_sys) begin
         if (fb_addr_read < FB_PIXELS-1) begin
             if (lb_data_req) begin
-                cnt_h <= 0;     // start new line
-                busy <= 1;      // busy with linebuffer read
+                cnt_h <= 0;  // start new line
+                if (!FB_DUALPORT) busy <= 1;    // set busy flag if not dual port
             end else if (cnt_h < LB_LEN) begin  // advance to start of next line
                 cnt_h <= cnt_h + 1;
                 fb_addr_read <= fb_addr_read + 1;

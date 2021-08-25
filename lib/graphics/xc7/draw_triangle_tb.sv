@@ -15,7 +15,7 @@ module draw_triangle_tb ();
     localparam CORDW = 9;  // -256 to +255
     logic signed [CORDW-1:0] x, y;
     logic signed [CORDW-1:0] x0, y0, x1, y1, x2, y2;;
-    logic start, oe, drawing, complete, done;
+    logic start, oe, drawing, busy, done;
     draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
         .clk,
         .rst,
@@ -30,7 +30,7 @@ module draw_triangle_tb ();
         .x,
         .y,
         .drawing,
-        .complete,
+        .busy,
         .done
     );
 

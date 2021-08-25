@@ -13,9 +13,9 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic signed [CORDW-1:0] x0, y0,  // point 0
     input  wire logic signed [CORDW-1:0] x1, y1,  // point 1
     output      logic signed [CORDW-1:0] x,  y,   // drawing position
-    output      logic drawing,         // line is drawing
-    output      logic complete,        // line complete (remains high)
-    output      logic done             // line done (high for one tick)
+    output      logic drawing,         // actively drawing
+    output      logic busy,            // drawing request in progress
+    output      logic done             // drawing is complete (high for one tick)
     );
 
     // line properties
@@ -41,21 +41,17 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
         movy = (2*err <= dx);
     end
 
-    logic in_progress = 0;  // calculation in progress (but only output if oe)
-    always_comb begin
-        drawing = 0;
-        if (in_progress && oe) drawing = 1;
-    end
-
+    // draw state machine
     enum {IDLE, INIT_0, INIT_1, DRAW} state;
+    always_comb drawing = (state == DRAW && oe);
+
     always_ff @(posedge clk) begin
         case (state)
             DRAW: begin
                 if (oe) begin
                     if (x == x_end && y == y_end) begin
                         state <= IDLE;
-                        in_progress <= 0;
-                        complete <= 1;
+                        busy <= 0;
                         done <= 1;
                     end else begin
                         if (movx) begin
@@ -86,22 +82,20 @@ module draw_line #(parameter CORDW=16) (  // signed coordinate width
                 y <= ya;
                 x_end <= xb;
                 y_end <= yb;
-                in_progress <= 1;
             end
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
                     state <= INIT_0;
                     right <= (xa < xb);  // draw right to left?
-                    complete <= 0;
+                    busy <= 1;
                 end
             end
         endcase
 
         if (rst) begin
             state <= IDLE;
-            in_progress <= 0;
-            complete <= 0;
+            busy <= 0;
             done <= 0;
         end
     end

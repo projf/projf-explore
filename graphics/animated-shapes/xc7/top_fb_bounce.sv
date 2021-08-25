@@ -56,13 +56,14 @@ module top_fb_bounce (
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_BGIDX   = 4'h1;  // background colour index
 
-    logic fb_we, fb_wready;
+    logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_db #(
+    framebuffer_bram_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -82,8 +83,9 @@ module top_fb_bounce (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'h0),
-        .clear(1),  // enable clearing of buffer before drawing
+        .bgidx(FB_BGIDX),
+        .clear(1'b1),  // enable clearing of buffer before drawing
+        .busy(fb_busy),
         .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
@@ -150,7 +152,7 @@ module top_fb_bounce (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when framebuffer isn't busy
         .x0(rx0),
         .y0(ry0),
         .x1(rx1),
@@ -159,7 +161,7 @@ module top_fb_bounce (
         .y(fby),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );

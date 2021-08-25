@@ -86,9 +86,9 @@
       <obj_property name="ElementShortName">line_done</obj_property>
       <obj_property name="ObjectShortName">line_done</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_tb/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_tb/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_tb/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>

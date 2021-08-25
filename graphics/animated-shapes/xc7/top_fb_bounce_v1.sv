@@ -60,9 +60,10 @@ module top_fb_bounce_v1 (
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -82,6 +83,7 @@ module top_fb_bounce_v1 (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .busy(fb_busy),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -145,7 +147,7 @@ module top_fb_bounce_v1 (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when framebuffer isn't busy
         .x0(rx0),
         .y0(ry0),
         .x1(rx1),
@@ -154,7 +156,7 @@ module top_fb_bounce_v1 (
         .y(fby),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );

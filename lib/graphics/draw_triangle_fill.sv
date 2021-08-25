@@ -14,9 +14,9 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic signed [CORDW-1:0] x1, y1,  // vertex 1
     input  wire logic signed [CORDW-1:0] x2, y2,  // vertex 2
     output      logic signed [CORDW-1:0] x,  y,   // drawing position
-    output      logic drawing,         // triangle is drawing
-    output      logic complete,        // triangle complete (remains high)
-    output      logic done             // triangle complete (high for one tick)
+    output      logic drawing,         // actively drawing
+    output      logic busy,            // drawing request in progress
+    output      logic done             // drawing is complete (high for one tick)
     );
 
     // sorted input vertices
@@ -37,13 +37,14 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
     // line control signals
     logic oe_a, oe_b, oe_h;
     logic drawing_h;
-    logic complete_a, complete_b, complete_h;
+    logic busy_a, busy_b, busy_h;
     logic b_edge;  // which B edge are we drawing?
     logic right;   // whether lines are drawn to the right
 
     // pipeline completion signals to match coordinates
-    logic complete_p1, done_p1;
+    logic busy_p1, done_p1;
 
+    // draw state machine
     enum {IDLE, SORT_0, SORT_1, SORT_2, INIT_A, INIT_B0, INIT_B1, INIT_H,
             START_A, START_B, START_H, EDGE, H_LINE, DONE} state;
     always_ff @(posedge clk) begin
@@ -114,7 +115,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
             START_A: state <= START_B;
             START_B: state <= EDGE;
             EDGE: begin
-                if ((ya != prev_y || complete_a) && (yb != prev_y || complete_b)) begin
+                if ((ya != prev_y || !busy_a) && (yb != prev_y || !busy_b)) begin
                     state <= START_H;
                     x0h <= right ? prev_xa : prev_xb;
                     x1h <= right ? prev_xb : prev_xa;
@@ -122,24 +123,24 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
             end
             START_H: state <= H_LINE;
             H_LINE: begin
-                if (complete_h) begin
+                if (!busy_h) begin
                     prev_y <= yb;  // safe to update previous values once h-line done
                     prev_xa <= xa;
                     prev_xb <= xb;
-                    if (complete_b) begin
-                        state <= (!complete_a && b_edge == 0) ? INIT_B1 : DONE;
+                    if (!busy_b) begin
+                        state <= (busy_a && b_edge == 0) ? INIT_B1 : DONE;
                     end else state <= EDGE;
                 end
             end
             DONE: begin
                 state <= IDLE;
                 done_p1 <= 1;
-                complete_p1 <= 1;
+                busy_p1 <= 0;
             end
             default: begin  // IDLE
                 if (start) begin
                     state <= SORT_0;
-                    complete_p1 <= 0;
+                    busy_p1 <= 1;
                 end
                 done_p1 <= 0;
             end
@@ -147,7 +148,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
 
         if (rst) begin
             state <= IDLE;
-            complete_p1 <= 0;
+            busy_p1 <= 0;
             done_p1 <= 0;
             b_edge <= 0;
         end
@@ -164,7 +165,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
         x <= xh;
         y <= prev_y;
         drawing <= drawing_h;
-        complete <= complete_p1;
+        busy <= busy_p1;
         done <= done_p1;
     end
 
@@ -181,7 +182,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
         .y(ya),
         /* verilator lint_off PINCONNECTEMPTY */
         .drawing(),
-        .complete(complete_a),
+        .busy(busy_a),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -199,7 +200,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
         .y(yb),
         /* verilator lint_off PINCONNECTEMPTY */
         .drawing(),
-        .complete(complete_b),
+        .busy(busy_b),
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
@@ -213,7 +214,7 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
         .x1(x1h),
         .x(xh),
         .drawing(drawing_h),
-        .complete(complete_h),
+        .busy(busy_h),
         /* verilator lint_off PINCONNECTEMPTY */
         .done()
         /* verilator lint_on PINCONNECTEMPTY */

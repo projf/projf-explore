@@ -181,7 +181,7 @@ module top_cube_fill (
         .y(fby),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );

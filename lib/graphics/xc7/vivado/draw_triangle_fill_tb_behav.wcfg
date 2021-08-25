@@ -139,9 +139,9 @@
       <obj_property name="ElementShortName">oe</obj_property>
       <obj_property name="ObjectShortName">oe</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
@@ -201,9 +201,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
@@ -259,9 +259,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
@@ -317,9 +317,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
@@ -407,9 +407,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
@@ -482,9 +482,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>

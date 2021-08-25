@@ -13,9 +13,9 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic signed [CORDW-1:0] x0, y0,  // vertex 0
     input  wire logic signed [CORDW-1:0] x1, y1,  // vertex 2
     output      logic signed [CORDW-1:0] x,  y,   // drawing position
-    output      logic drawing,         // rectangle is drawing
-    output      logic complete,        // rectangle complete (remains high)
-    output      logic done             // rectangle complete (high for one tick)
+    output      logic drawing,         // actively drawing
+    output      logic busy,            // drawing request in progress
+    output      logic done             // drawing is complete (high for one tick)
     );
 
     logic [1:0] line_id;  // current line (0, 1, 2, or 3)
@@ -26,6 +26,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
     logic signed [CORDW-1:0] lx0, ly0;  // point 0 position
     logic signed [CORDW-1:0] lx1, ly1;  // point 1 position
 
+    // draw state machine
     enum {IDLE, INIT, DRAW} state;
     always_ff @(posedge clk) begin
         case (state)
@@ -51,7 +52,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
                 if (line_done) begin
                     if (line_id == 3) begin  // final line
                         state <= IDLE;
-                        complete <= 1;
+                        busy <= 0;
                         done <= 1;
                     end else begin
                         state <= INIT;
@@ -64,7 +65,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
                 if (start) begin
                     state <= INIT;
                     line_id <= 0;
-                    complete <= 0;
+                    busy <= 1;
                 end
             end
         endcase
@@ -73,7 +74,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
             state <= IDLE;
             line_id <= 0;
             line_start <= 0;
-            complete <= 0;
+            busy <= 0;
             done <= 0;
         end
     end
@@ -91,7 +92,7 @@ module draw_rectangle #(parameter CORDW=16) (  // signed coordinate width
         .y,
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(line_done)
     );

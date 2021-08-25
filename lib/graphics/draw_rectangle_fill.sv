@@ -13,9 +13,9 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic signed [CORDW-1:0] x0, y0,  // vertex 0
     input  wire logic signed [CORDW-1:0] x1, y1,  // vertex 2
     output      logic signed [CORDW-1:0] x,  y,   // drawing position
-    output      logic drawing,         // rectangle is drawing
-    output      logic complete,        // rectangle complete (remains high)
-    output      logic done             // rectangle complete (high for one tick)
+    output      logic drawing,         // actively drawing
+    output      logic busy,            // drawing request in progress
+    output      logic done             // drawing is complete (high for one tick)
     );
 
     // filled rectangle has as many lines as it is tall abs(y1-y0)
@@ -33,6 +33,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
     // horizontal line coordinates
     logic signed [CORDW-1:0] lx0, lx1;
 
+    // draw state machine
     enum {IDLE, INIT, DRAW} state;
     always_ff @(posedge clk) begin
         case (state)
@@ -49,6 +50,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
                 if (line_done) begin
                     if (y == y1s) begin
                         state <= IDLE;
+                        busy <= 0;
                         done <= 1;
                     end else begin
                         state <= INIT;
@@ -61,6 +63,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
                 if (start) begin
                     state <= INIT;
                     line_id <= 0;
+                    busy <= 1;
                 end
             end
         endcase
@@ -69,7 +72,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
             state <= IDLE;
             line_id <= 0;
             line_start <= 0;
-            complete <= 0;
+            busy <= 0;
             done <= 0;
         end
     end
@@ -84,7 +87,7 @@ module draw_rectangle_fill #(parameter CORDW=16) (  // signed coordinate width
         .x(x),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(line_done)
     );

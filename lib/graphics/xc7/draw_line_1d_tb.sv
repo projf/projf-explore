@@ -15,7 +15,7 @@ module draw_line_1d_tb ();
     localparam CORDW = 9;  // -256 to +255
     logic signed [CORDW-1:0] x;
     logic signed [CORDW-1:0] x0, x1;
-    logic start, oe, drawing, complete, done;
+    logic start, oe, drawing, busy, done;
     draw_line_1d #(.CORDW(CORDW)) draw_line_1d_inst (
         .clk,
         .rst,
@@ -25,7 +25,7 @@ module draw_line_1d_tb ();
         .x1,
         .x,
         .drawing,
-        .complete,
+        .busy,
         .done
     );
 

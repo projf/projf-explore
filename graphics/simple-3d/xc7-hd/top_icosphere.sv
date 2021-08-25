@@ -65,7 +65,7 @@ module top_icosphere (
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),

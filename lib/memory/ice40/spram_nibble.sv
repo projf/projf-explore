@@ -10,7 +10,6 @@
 module spram_nibble #(
     localparam WIDTH=4,      // fixed data width: 4 bits
     localparam DEPTH=65536,  // fixed depth: 64K
-    localparam INIT_F="",    // not supported by SPRAM
     localparam ADDRW=$clog2(DEPTH)
     ) (
     input wire logic clk,

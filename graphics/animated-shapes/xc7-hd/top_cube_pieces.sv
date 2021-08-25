@@ -61,12 +61,12 @@ module top_cube_pieces (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
-    logic fb_we, fb_wready;
+    logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_db #(
+    framebuffer_bram_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -87,7 +87,8 @@ module top_cube_pieces (
         .y(fby),
         .cidx(fb_cidx),
         .bgidx(4'h0),
-        .clear(1),  // enable clearing of buffer before drawing
+        .clear(1'b1),  // enable clearing of buffer before drawing
+        .busy(fb_busy),
         .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
@@ -210,7 +211,7 @@ module top_cube_pieces (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when framebuffer isn't busy
         .x0(vx0),
         .y0(vy0),
         .x1(vx1),
@@ -221,7 +222,7 @@ module top_cube_pieces (
         .y(fby),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );

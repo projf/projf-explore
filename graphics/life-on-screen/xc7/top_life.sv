@@ -79,9 +79,12 @@ module top_life (
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
+    /* verilator lint_off UNUSED */
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
+    /* verilator lint_on UNUSED */
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -101,6 +104,7 @@ module top_life (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
+        .busy(fb_busy),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */

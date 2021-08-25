@@ -57,12 +57,12 @@ module top_tunnel (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
 
-    logic fb_we, fb_wready;
+    logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_db #(
+    framebuffer_bram_db #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -82,8 +82,9 @@ module top_tunnel (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(0),
-        .clear(0),  // tunnel doesn't need clearing
+        .bgidx(4'h0),
+        .clear(1'b0),  // tunnel doesn't need clearing
+        .busy(fb_busy),
         .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
@@ -206,7 +207,7 @@ module top_tunnel (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(1'b1),
+        .oe(!fb_busy),  // draw when framebuffer isn't busy
         .x0(dx0),
         .y0(dy0),
         .x1(dx1),
@@ -215,7 +216,7 @@ module top_tunnel (
         .y(fby),
         .drawing,
         /* verilator lint_off PINCONNECTEMPTY */
-        .complete(),
+        .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
         .done(draw_done)
     );

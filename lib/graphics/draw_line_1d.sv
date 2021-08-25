@@ -13,26 +13,22 @@ module draw_line_1d #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic signed [CORDW-1:0] x0,  // point 0
     input  wire logic signed [CORDW-1:0] x1,  // point 1
     output      logic signed [CORDW-1:0] x,   // drawing position
-    output      logic drawing,         // line is drawing
-    output      logic complete,        // line complete (remains high)
-    output      logic done             // line done (high for one tick)
+    output      logic drawing,         // actively drawing
+    output      logic busy,            // drawing request in progress
+    output      logic done             // drawing is complete (high for one tick)
     );
 
-    logic in_progress = 0;  // calculation in progress (but only output if oe)
-    always_comb begin
-        drawing = 0;
-        if (in_progress && oe) drawing = 1;
-    end
-
+    // draw state machine
     enum {IDLE, DRAW} state;
+    always_comb drawing = (state == DRAW && oe);
+
     always_ff @(posedge clk) begin
         case (state)
             DRAW: begin
                 if (oe) begin
                     if (x == x1) begin
                         state <= IDLE;
-                        in_progress <= 0;
-                        complete <= 1;
+                        busy <= 0;
                         done <= 1;
                     end else begin
                         x <= x + 1;
@@ -44,16 +40,14 @@ module draw_line_1d #(parameter CORDW=16) (  // signed coordinate width
                 if (start) begin
                     state <= DRAW;
                     x <= x0;
-                    in_progress <= 1;
-                    complete <= 0;
+                    busy <= 1;
                 end
             end
         endcase
 
         if (rst) begin
             state <= IDLE;
-            in_progress <= 0;
-            complete <= 0;
+            busy <= 0;
             done <= 0;
         end
     end

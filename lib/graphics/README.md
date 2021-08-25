@@ -38,11 +38,11 @@ These graphic modules share a similar interface:
 * `input: (x2,y2)` - vertex 2 (used by triangles)
 * `output: (x,y)` - output drawing coordinate
 * `output: drawing` - graphics are being drawn at `(x,y)`
-* `output: complete` - drawing is complete (remains high)
+* `output: busy` - drawing request in progress
 * `output: done` - drawing is complete (high for one tick)
 
-Coordinates signed with width in bits set by parameter `CORDW`.  
-The default coordinate width is 16-bits for a range from -32,768 to 32,767.
+Graphics coordinates are signed, with a width in bits set by parameter `CORDW`.  
+The default coordinate width is 16 bits for a range from -32,768 to 32,767.
 
 Drawing order or direction may differ from the order coordinates are given;
 for example, drawing doesn't necesserily begin from `(x0,y0)`.

@@ -8,9 +8,8 @@
 // iCE40 SPRAM is documented in Lattice TN-02022: iCE40 SPRAM Usage Guide
 
 module spram #(
-    localparam WIDTH=16,     // fixed data width: 16-bits
+    localparam WIDTH=16,     // fixed data width: 16 bits
     localparam DEPTH=16384,  // fixed depth: 16K 
-    localparam INIT_F="",    // not supported by SPRAM
     localparam ADDRW=$clog2(DEPTH)
     ) (
     input wire logic clk,

@@ -58,7 +58,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer.sv"] \
+  [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \

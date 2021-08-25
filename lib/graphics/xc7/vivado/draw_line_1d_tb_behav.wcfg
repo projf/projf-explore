@@ -52,9 +52,9 @@
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_line_1d_tb/draw_line_1d_inst/complete" type="logic">
-      <obj_property name="ElementShortName">complete</obj_property>
-      <obj_property name="ObjectShortName">complete</obj_property>
+   <wvobject fp_name="/draw_line_1d_tb/draw_line_1d_inst/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_line_1d_tb/draw_line_1d_inst/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
