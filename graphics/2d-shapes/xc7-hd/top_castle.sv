@@ -99,7 +99,7 @@ module top_castle (
 
     // draw shapes in framebuffer
     localparam SHAPE_CNT=19;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT+1)-1:0] shape_id;  // shape identifier
+    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic signed [CORDW-1:0] fbx_tri, fby_tri;    // tri framebuffer coordinates
     logic signed [CORDW-1:0] fbx_rect, fby_rect;  // rect framebuffer coordinates

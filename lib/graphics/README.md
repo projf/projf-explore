@@ -6,6 +6,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
+* [draw_circle](draw_circle.sv) - Draw a circle outline
 * [draw_line](draw_line.sv) - Bresenham’s line algorithm
 * [draw_line_1d.sv](draw_line_1d.sv) - Draw straight line (left to right only)
 * [draw_rectangle](draw_rectangle.sv) - Draw a rectangle outline
@@ -36,6 +37,7 @@ These graphic modules share a similar interface:
 * `input: (x0,y0)` - vertex 0
 * `input: (x1,y1)` - vertex 1
 * `input: (x2,y2)` - vertex 2 (used by triangles)
+* `input: r0` - radius (used by circles)
 * `output: (x,y)` - output drawing coordinate
 * `output: drawing` - graphics are being drawn at `(x,y)`
 * `output: busy` - drawing request in progress

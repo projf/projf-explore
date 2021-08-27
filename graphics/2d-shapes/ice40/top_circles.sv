@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Top Rectangles (iCEBreaker 12-bit DVI Pmod)
+// Project F: 2D Shapes - Top Circles (iCEBreaker 12-bit DVI Pmod)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_rectangles (
+module top_circles (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button (active high)
     output      logic dvi_clk,      // DVI pixel clock
@@ -88,10 +88,10 @@ module top_rectangles (
         .blue(fb_blue)
     );
 
-    // draw rectangles in framebuffer
-    localparam SHAPE_CNT=64;  // number of shapes to draw
+    // draw circles in framebuffer
+    localparam SHAPE_CNT=8;  // number of shapes to draw
     logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
+    logic signed [CORDW-1:0] vx0, vy0, vr0;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // clear FB before use (contents are not initialized)
@@ -123,13 +123,10 @@ module top_rectangles (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                /* verilator lint_off WIDTH */
-                vx0 <=  60 + shape_id;
-                vy0 <=  15 + shape_id;
-                vx1 <= 260 - shape_id;
-                vy1 <= 165 - shape_id;
-                /* verilator lint_on WIDTH */
-                fb_cidx <= shape_id[3:0];  // use lowest four bits for colour
+                vx0 <= 160;
+                vy0 <=  90;
+                vr0 <=  80 - 4 * shape_id;
+                fb_cidx <= 4'hC;  // blue
             end
             DRAW: begin
                 draw_start <= 0;
@@ -150,7 +147,7 @@ module top_rectangles (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
-    localparam PIX_FRAME  = 200;  // draw this many pixels per frame
+    localparam PIX_FRAME  =  30;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_req;
@@ -169,15 +166,14 @@ module top_rectangles (
     end
 
     logic signed [CORDW-1:0] fbx_draw, fby_draw;  // framebuffer drawing coordinates
-    draw_rectangle #(.CORDW(CORDW)) draw_rectangle_inst (
+    draw_circle #(.CORDW(CORDW)) draw_circle_inst (
         .clk(clk_pix),
         .rst(!clk_locked),  // must be reset for draw with Yosys
         .start(draw_start),
         .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
+        .r0(vr0),
         .x(fbx_draw),
         .y(fby_draw),
         .drawing,

@@ -90,7 +90,7 @@ module top_cube_fill (
 
     // draw triangles in framebuffer
     localparam SHAPE_CNT=6;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT+1)-1:0] shape_id;  // shape identifier
+    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 

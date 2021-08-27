@@ -90,7 +90,7 @@ module top_rectangles_fill (
 
     // draw filled rectangles in framebuffer
     localparam SHAPE_CNT=15;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT+1)-1:0] shape_id;  // shape identifier
+    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 

@@ -2,6 +2,9 @@
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
+// Based on algorithm from The Beauty of Bresenham's Algorithm by Alois Zingl
+// http://members.chello.at/~easyfilter/bresenham.html
+
 `default_nettype none
 `timescale 1ns / 1ps
 

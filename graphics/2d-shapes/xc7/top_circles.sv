@@ -1,49 +1,45 @@
-// Project F: 2D Shapes - Top Filled Rectangles (Nexys Video)
+// Project F: 2D Shapes - Top Circles (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_rectangles_fill (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst,          // reset button (active low)
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+module top_circles (
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst,      // reset button (active low)
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // generate pixel clocks
-    logic clk_pix;                  // pixel clock
-    logic clk_pix_5x;               // 5x pixel clock for 10:1 DDR SerDes
-    logic clk_pix_locked;           // pixel clock locked?
-    clock_gen_720p clock_pix_inst (
-        .clk_100m,
-        .rst(!btn_rst),             // reset button is active low
-        .clk_pix,
-        .clk_pix_5x,
-        .clk_pix_locked
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_locked;
+    clock_gen_480p clock_pix_inst (
+       .clk(clk_100m),
+       .rst(!btn_rst),  // reset button is active low
+       .clk_pix,
+       .clk_locked
     );
 
     // display timings
     localparam CORDW = 16;
+    logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    logic frame, line;
+    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
-        /* verilator lint_off PINCONNECTEMPTY */
-        .sx(),
-        .sy(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .rst(!clk_locked),  // wait for pixel clock lock
+        .sx,
+        .sy,
         .hsync,
         .vsync,
-        .de,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .de(),
+        /* verilator lint_off PINCONNECTEMPTY */
         .frame,
         .line
     );
@@ -57,7 +53,7 @@ module top_rectangles_fill (
     localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
@@ -80,7 +76,7 @@ module top_rectangles_fill (
         .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
-        .de,
+        .de(sy >= 60 && sy < 420 && sx >= 0),  // 16:9 letterbox
         .frame,
         .line,
         .we(fb_we),
@@ -96,10 +92,10 @@ module top_rectangles_fill (
         .blue(fb_blue)
     );
 
-    // draw filled rectangles in framebuffer
-    localparam SHAPE_CNT=15;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
+    // draw circles in framebuffer
+    localparam SHAPE_CNT=8;  // number of shapes to draw
+    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vr0;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -109,13 +105,10 @@ module top_rectangles_fill (
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                /* verilator lint_off WIDTH */
-                vx0 <=  80 + 4 * shape_id;
-                vy0 <=  20 + 4 * shape_id;
-                vx1 <= 160 + 4 * shape_id;
-                vy1 <= 100 + 4 * shape_id;
-                /* verilator lint_on WIDTH */
-                fb_cidx <= shape_id + 1;  // skip 1st colour (black)
+                vx0 <= 160;
+                vy0 <=  90;
+                vr0 <=  80 - 4 * shape_id;
+                fb_cidx <= 4'hC;  // blue
             end
             DRAW: begin
                 draw_start <= 0;
@@ -135,7 +128,7 @@ module top_rectangles_fill (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
-    localparam PIX_FRAME  = 200;  // draw this many pixels per frame
+    localparam PIX_FRAME  =  30;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_req;
@@ -153,15 +146,14 @@ module top_rectangles_fill (
         end
     end
 
-    draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
+    draw_circle #(.CORDW(CORDW)) draw_circle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
         .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
+        .r0(vr0),
         .x(fbx),
         .y(fby),
         .drawing,
@@ -175,51 +167,18 @@ module top_rectangles_fill (
     always_comb fb_we = drawing;
 
     // reading from FB takes one cycle: delay display signals to match
-    logic hsync_p1, vsync_p1, de_p1;
+    logic hsync_p1, vsync_p1;
     always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;
         vsync_p1 <= vsync;
-        de_p1 <= de;
     end
 
-    // DVI signals
-    logic [7:0] dvi_red, dvi_green, dvi_blue;
-    logic dvi_hsync, dvi_vsync, dvi_de;
+    // VGA output
     always_ff @(posedge clk_pix) begin
-        dvi_hsync <= hsync_p1;
-        dvi_vsync <= vsync_p1;
-        dvi_de    <= de_p1;
-        dvi_red   <= {2{fb_red}};
-        dvi_green <= {2{fb_green}};
-        dvi_blue  <= {2{fb_blue}};
+        vga_hsync <= hsync_p1;
+        vga_vsync <= vsync_p1;
+        vga_r <= fb_red;
+        vga_g <= fb_green;
+        vga_b <= fb_blue;
     end
-
-    // TMDS encoding and serialization
-    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
-    dvi_generator dvi_out (
-        .clk_pix,
-        .clk_pix_5x,
-        .rst(!clk_pix_locked),
-        .de(dvi_de),
-        .data_in_ch0(dvi_blue),
-        .data_in_ch1(dvi_green),
-        .data_in_ch2(dvi_red),
-        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
-        .ctrl_in_ch1(2'b00),
-        .ctrl_in_ch2(2'b00),
-        .tmds_ch0_serial,
-        .tmds_ch1_serial,
-        .tmds_ch2_serial,
-        .tmds_clk_serial
-    );
-
-    // TMDS output pins
-    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
-        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
-    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
-        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
-    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
-        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
-    tmds_out tmds_clk (.tmds(tmds_clk_serial),
-        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 endmodule

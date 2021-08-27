@@ -15,6 +15,7 @@ ADD_SRC += ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
 ADD_SRC += ${PATH_LIB}/display/display_timings_480p.sv
 ADD_SRC += ${PATH_LIB}/display/ice40/framebuffer_spram.sv
 ADD_SRC += ${PATH_LIB}/display/linebuffer.sv
+ADD_SRC += ${PATH_LIB}/graphics/draw_circle.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_line_1d.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_rectangle.sv
@@ -30,6 +31,7 @@ top_rectangles: top_rectangles.rpt top_rectangles.bin
 top_rectangles_fill: top_rectangles_fill.rpt top_rectangles_fill.bin
 top_triangles_fill: top_triangles_fill.rpt top_triangles_fill.bin
 top_cube_fill: top_cube_fill.rpt top_cube_fill.bin
+top_circles: top_circles.rpt top_circles.bin
 
 %.json: %.sv $(ADD_SRC)
 	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
@@ -46,6 +48,6 @@ top_cube_fill: top_cube_fill.rpt top_cube_fill.bin
 clean:
 	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
 
-all: top_castle top_rectangles top_rectangles_fill top_triangles_fill top_cube_fill
+all: top_castle top_circles top_rectangles top_rectangles_fill top_triangles_fill top_cube_fill
 
 .PHONY: all clean

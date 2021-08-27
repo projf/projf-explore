@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="draw_circle_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="draw_circle_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="2470000fs"></ZoomStartTime>
+      <ZoomEndTime time="31630001fs"></ZoomEndTime>
+      <Cursor1Time time="25860000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="104"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="31" />
+   <wvobject fp_name="/draw_circle_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/x" type="array">
+      <obj_property name="ElementShortName">x[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/y" type="array">
+      <obj_property name="ElementShortName">y[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/x0" type="array">
+      <obj_property name="ElementShortName">x0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/y0" type="array">
+      <obj_property name="ElementShortName">y0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/r0" type="array">
+      <obj_property name="ElementShortName">r0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">r0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/oe" type="logic">
+      <obj_property name="ElementShortName">oe</obj_property>
+      <obj_property name="ObjectShortName">oe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/drawing" type="logic">
+      <obj_property name="ElementShortName">drawing</obj_property>
+      <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider162">
+      <obj_property name="label">circle</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/oe" type="logic">
+      <obj_property name="ElementShortName">oe</obj_property>
+      <obj_property name="ObjectShortName">oe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/x0" type="array">
+      <obj_property name="ElementShortName">x0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/y0" type="array">
+      <obj_property name="ElementShortName">y0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/r0" type="array">
+      <obj_property name="ElementShortName">r0[8:0]</obj_property>
+      <obj_property name="ObjectShortName">r0[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/x" type="array">
+      <obj_property name="ElementShortName">x[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/y" type="array">
+      <obj_property name="ElementShortName">y[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/drawing" type="logic">
+      <obj_property name="ElementShortName">drawing</obj_property>
+      <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/xa" type="array">
+      <obj_property name="ElementShortName">xa[8:0]</obj_property>
+      <obj_property name="ObjectShortName">xa[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/ya" type="array">
+      <obj_property name="ElementShortName">ya[8:0]</obj_property>
+      <obj_property name="ObjectShortName">ya[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/err" type="array">
+      <obj_property name="ElementShortName">err[10:0]</obj_property>
+      <obj_property name="ObjectShortName">err[10:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/err_tmp" type="array">
+      <obj_property name="ElementShortName">err_tmp[10:0]</obj_property>
+      <obj_property name="ObjectShortName">err_tmp[10:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/quadrant" type="array">
+      <obj_property name="ElementShortName">quadrant[1:0]</obj_property>
+      <obj_property name="ObjectShortName">quadrant[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_circle_tb/draw_circle_inst/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+</wave_config>

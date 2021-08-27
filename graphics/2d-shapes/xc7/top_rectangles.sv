@@ -94,7 +94,7 @@ module top_rectangles (
 
     // draw rectangles in framebuffer
     localparam SHAPE_CNT=64;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT+1):0] shape_id;  // shape identifier
+    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
@@ -116,7 +116,9 @@ module top_rectangles (
             DRAW: begin
                 draw_start <= 0;
                 if (draw_done) begin
+                    /* verilator lint_off WIDTH */
                     if (shape_id == SHAPE_CNT-1) begin
+                    /* verilator lint_on WIDTH */
                         state <= DONE;
                     end else begin
                         shape_id <= shape_id + 1;
