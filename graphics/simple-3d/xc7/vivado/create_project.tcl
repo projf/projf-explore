@@ -72,9 +72,9 @@ set design_sources [list \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
-# Memory design sources
+# Memory design sources (sine table is in lib AND origin dir!)
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/maths/sine_table_64x8.mem"] \
+  [file normalize "${lib_dir}/maths/res/sine_table_64x8.mem"] \
   [file normalize "${origin_dir}/res/models/cube.mem"] \
   [file normalize "${origin_dir}/res/models/icosphere.mem"] \
   [file normalize "${origin_dir}/res/models/monkey.mem"] \
