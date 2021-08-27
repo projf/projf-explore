@@ -128,7 +128,6 @@ module top_teleport (
                 if (fb_wready) begin
                     draw_start <= 1;
                     state <= DRAW;
-                    /* verilator lint_off WIDTH */
                     case (shape_id)
                         4'd0: begin  // 12 pixels per anim step
                             dx0 <=  40 - (cnt_anim * 12);
@@ -185,7 +184,6 @@ module top_teleport (
                             fb_cidx <= 4'h7;  // white
                         end
                     endcase
-                    /* verilator lint_on WIDTH */
                 end
             end
             DRAW: begin
