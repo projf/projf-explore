@@ -9,7 +9,7 @@ Included Demos:
 * `top_triangles_fill` - three filled triangles
 * `top_cube_fill` - 3D cube formed from six filled triangles
 * `top_circles` - concentric circle outlines
-* `top_castle` - Castle: simple picture drawn from filled shapes
+* `top_castle` - simple castle picture drawn from filled shapes
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
