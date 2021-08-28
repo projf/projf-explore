@@ -10,6 +10,8 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
+Learn more about these demos from the **Animated Shapes** (coming soon) blog post, or read on for build instructions.
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

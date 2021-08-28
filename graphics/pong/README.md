@@ -10,6 +10,8 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_pong_v4` - add player control with push buttons
 * `top_pong` - completed pong game
 
+Learn more about these demos from the [Pong](https://projectf.io/posts/fpga-pong/) blog post, or read on for build instructions.
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

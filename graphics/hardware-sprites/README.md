@@ -10,6 +10,8 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_sprite_hedgehog_v1` - move colourful hedgehog sprite across screen
 * `top_sprite_hedgehog` - animate hedgehog sprite across landscape
 
+Learn more about these demos from the [Hardware Sprites](https://projectf.io/posts/hardware-sprites/) blog post, or read on for build instructions.
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build
