@@ -1,6 +1,6 @@
 # 2D Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 Included demos for iCEBreaker and Arty FPGA boards:
 
