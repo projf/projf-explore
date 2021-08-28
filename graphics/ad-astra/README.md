@@ -1,8 +1,8 @@
 # Ad Astra
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
-Included Demos:
+Included demos for iCEBreaker and Arty FPGA boards:
 
 * `top_lfsr` - simple background using a linear feedback register (LFSR)
 * `top_starfield` - layered starfields using multiple LFSRs
@@ -20,7 +20,9 @@ The included fonts are distributed under different licences: see the individual 
 
 ## iCEBreaker Build
 
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
+
+You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
 
 For example, to build `top_greet`; clone the projf-explore git repo, then:
 
@@ -29,7 +31,7 @@ cd projf-explore/graphics/ad-astra/ice40
 make top_greet
 ```
 
-After the build completes you'll have a bin file, such as `top_greet.bin`. Use the bin file to program your board:
+After the build completes, you'll have a bin file, such as `top_greet.bin`. Use the bin file to program your board:
 
 ```shell
 iceprog top_greet.bin

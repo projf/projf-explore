@@ -1,8 +1,8 @@
 # Lines and Triangles
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
-Included Demos:
+Included demos for iCEBreaker and Arty FPGA boards:
 
 * `top_line` - draw diagonal line with Bresenham’s line algorithm
 * `top_cube` - draw cube outline from multiple lines
@@ -12,7 +12,9 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
+
+You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
 
 For example, to build `top_triangles`; clone the projf-explore git repo, then:
 
@@ -21,7 +23,7 @@ cd projf-explore/graphics/lines-and-triangles/ice40
 make top_triangles
 ```
 
-After the build completes you'll have a bin file, such as `top_triangles.bin`. Use the bin file to program your board:
+After the build completes, you'll have a bin file, such as `top_triangles.bin`. Use the bin file to program your board:
 
 ```shell
 iceprog top_triangles.bin
@@ -33,9 +35,9 @@ If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` wit
 
 There's currently a minor issue with clearing the SPRAM before drawing: one pixel remains uncleared. I'm planning to implement clearing within the SPRAM version of the framebuffer and tackle this issue then.
 
-## Xilinx Vivado Build
+## Arty Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/graphics/lines-and-triangles/xc7/vivado

@@ -1,8 +1,8 @@
 # Animated Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon).
+This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon). New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
-Included Demos:
+Included demos for iCEBreaker and Arty FPGA boards:
 
 * `top_sb_bounce` - persistent bouncing square in single buffer
 * `top_db_bounce` - bouncing square in double buffer
@@ -16,9 +16,9 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 Designs for iCEBreaker are not available yet. Have you tried the [other designs](../README.md) in this series?
 
-## Xilinx Vivado Build
+## Arty Build
 
-To create a Vivado project for the **Digilent Arty** (original or A7-35T); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/animated-shapes/xc7/vivado

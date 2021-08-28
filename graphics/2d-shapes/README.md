@@ -1,8 +1,8 @@
 # 2D Shapes
 
-This folder contains FPGA designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
-Included SystemVerilog demos for iCEBreaker and Arty boards:
+Included demos for iCEBreaker and Arty FPGA boards:
 
 * `top_rectangles` - nested rectangle outlines
 * `top_rectangles_fill` - staggered filled rectangles
@@ -19,7 +19,7 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
 
-You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
+You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
 
 For example, to build `top_castle`; clone the projf-explore git repo, then:
 
@@ -28,7 +28,7 @@ cd projf-explore/graphics/2d-shapes/ice40
 make top_castle
 ```
 
-After the build completes you'll have a bin file, such as `top_castle.bin`. Use the bin file to program your board:
+After the build completes, you'll have a bin file, such as `top_castle.bin`. Use the bin file to program your board:
 
 ```shell
 iceprog top_castle.bin
