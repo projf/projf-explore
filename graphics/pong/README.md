@@ -2,6 +2,14 @@
 
 This folder contains designs to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**.
 
+Included Demos:
+
+* `top_pong_v1` - bounce square ball around the screen
+* `top_pong_v2` - add paddles
+* `top_pong_v3` - add paddle collision
+* `top_pong_v4` - add player control with push buttons
+* `top_pong` - completed pong game
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

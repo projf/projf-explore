@@ -2,6 +2,14 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon).
 
+Included Demos:
+
+* `top_sb_bounce` - persistent bouncing square in single buffer
+* `top_db_bounce` - bouncing square in double buffer
+* `top_cube_pieces` - breaking a cube into triangle
+* `top_rotate` - rotating triangles with trigonometry
+* `top_teleport` - teleport in style
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build
@@ -17,7 +25,7 @@ cd projf-explore/animated-shapes/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_tunnel` as you would for any Vivado project.
+You can then build `top_telport`, `top_cube_pieces` etc. as you would for any Vivado project.
 
 ### Other Xilinx 7 Series Boards
 

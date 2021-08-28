@@ -2,6 +2,14 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**.
 
+Included Demos:
+
+* `top_line` - draw and display horizontal line in block ram
+* `top_david_v1` - load monochrome image of Michelangelo's David into block ram
+* `top_david_v2` - fizzle fade 16 colour image of David
+* `top_david_v3` - crudely scale image of David to fullscreen
+* `top_david` - use line and framebuffer modules to efficiently scale David
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

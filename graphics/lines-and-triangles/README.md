@@ -2,6 +2,12 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**.
 
+Included Demos:
+
+* `top_line` - draw diagonal line with Bresenham’s line algorithm
+* `top_cube` - draw cube outline from multiple lines
+* `top_triangles` - draw triangle outlines
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

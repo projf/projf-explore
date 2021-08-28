@@ -2,6 +2,16 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**.
 
+Included Demos:
+
+* `top_lfsr` - simple background using a linear feedback register (LFSR)
+* `top_starfield` - layered starfields using multiple LFSRs
+* `top_space_f` - 'F' character overlaid on starfield using sprite
+* `top_hello_en` - multiple sprites spell "Hello" on starfield
+* `top_hello_jp` - multiple sprites spell "こんにちは" on starfield
+* `top_greet_v1` - greetings to open source hardware projects
+* `top_greet` - greetings to open source hardware projects with copper colours
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 The included fonts are distributed under different licences: see the individual font files for details.

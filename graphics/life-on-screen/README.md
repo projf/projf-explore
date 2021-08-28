@@ -2,6 +2,10 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**.
 
+Included Demos:
+
+* `top_life` - Conway's Game of Life
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

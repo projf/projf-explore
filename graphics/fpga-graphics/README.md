@@ -2,6 +2,12 @@
 
 This folder contains designs to accompany the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
+Included Demos:
+
+* `top_square` - static coloured square
+* `top_beam` - animated square
+* `top_bounce` - bouncing red, green, and blue squares overlap
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build

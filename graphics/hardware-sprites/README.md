@@ -2,6 +2,14 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**.
 
+Included Demos:
+
+* `top_sprite_v1` - display 'F' character using simple sprite
+* `top_sprite_v2` - scale up 'F' character sprite
+* `top_sprite_v2a` - move basic flying saucer sprite across screen
+* `top_sprite_hedgehog_v1` - move colourful hedgehog sprite across screen
+* `top_sprite_hedgehog` - animate hedgehog sprite across landscape
+
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build
