@@ -45,7 +45,8 @@ set fs_design_obj [get_filesets sources_1]
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_cube_pieces.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_fb_bounce.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_fb_bounce_v1.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_fb_bounce_sb.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_rotate.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_teleport.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
