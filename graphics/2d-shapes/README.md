@@ -1,6 +1,6 @@
 # 2D Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/). 
 
 Included demos for iCEBreaker and Arty FPGA boards:
 
