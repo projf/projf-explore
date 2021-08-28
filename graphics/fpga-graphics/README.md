@@ -2,13 +2,11 @@
 
 This folder contains designs to accompany the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
-These designs make use of [clock generation](../../lib/clock) from the [Project F library](../../lib/).
-
-Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see all the files used in these designs.
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build
 
-You can build projects for iCEBreaker using the included [makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
+You can build projects for iCEBreaker using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). If you don't already have these tools, you can get pre-built binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you'd rather build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/). Once you have a working toolchain, you're ready to build Project F designs.
 
 For example, to build `top_bounce`; clone the projf-explore git repo, then:
 
@@ -77,7 +75,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Verilator SDL Simulation
 
-Verilator creates C++ simulations of Verilog designs, while SDL produces cross-platform graphics applications. By combining the two, we can visually simulate graphical designs. See the [Verilator README](verilator/README.md) for instructions.
+You can simulate these design on your PC using Verilator and SDL. See the [Verilator README](verilator/README.md) and blog introduction: [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 ## Linting
 
@@ -96,3 +94,7 @@ $ ./fpga-graphics/lint.sh
 ```
 
 You can learn more about this from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
+
+## SystemVerilog?
+
+These designs use a little SystemVerilog to make Verilog more pleasant. See the [Library README](../../lib/README.md#systemverilog) for details of SV features used.

@@ -2,7 +2,7 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon).
 
-These designs make use of Project F [common modules](../common/), such as clock generation and display timings. Check the Vivado [create_project.tcl](xc7/vivado/create_project.tcl) script to see which modules are used.
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
 ## iCEBreaker Build
 
@@ -39,3 +39,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 ## Linting
 
 If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs. Learn more from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
+
+## SystemVerilog?
+
+These designs use a little SystemVerilog to make Verilog more pleasant. See the [Library README](../../lib/README.md#systemverilog) for details of SV features used.
