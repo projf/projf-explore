@@ -1,8 +1,8 @@
 # 2D Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**.
+This folder contains FPGA designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](/posts/fpga-graphics/).
 
-Included Demos:
+Included SystemVerilog demos for iCEBreaker and Arty boards:
 
 * `top_rectangles` - nested rectangle outlines
 * `top_rectangles_fill` - staggered filled rectangles
@@ -10,6 +10,8 @@ Included Demos:
 * `top_cube_fill` - 3D cube formed from six filled triangles
 * `top_circles` - concentric circle outlines
 * `top_castle` - simple castle picture drawn from filled shapes
+
+Learn more about these demos from the [2D Shapes](https://projectf.io/posts/fpga-shapes/) blog post.
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
