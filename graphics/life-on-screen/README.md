@@ -1,6 +1,6 @@
 # Life on Screen
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. New to graphics on FPGA? Check out our introductory post: [FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 Included demos for iCEBreaker and Arty FPGA boards:
 
@@ -9,6 +9,8 @@ Included demos for iCEBreaker and Arty FPGA boards:
 Learn more about these demos from the [Life on Screen](https://projectf.io/posts/life-on-screen/) blog post, or read on for build instructions.
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
+
+New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ## iCEBreaker Build
 
