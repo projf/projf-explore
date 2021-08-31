@@ -133,8 +133,7 @@ module top_rotate (
 
     // draw triangles in framebuffer
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
-    logic signed [CORDW-1:0] offs_x, offs_y;  // offset
-
+    logic signed [CORDW-1:0] offs_x, offs_y;  // offset (translate position)
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
