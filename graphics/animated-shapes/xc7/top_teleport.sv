@@ -1,11 +1,11 @@
-// Project F: Animated Shapes - Top Tunnel (Arty Pmod VGA)
+// Project F: Animated Shapes - Top Teleport (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_tunnel (
+module top_teleport (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
@@ -55,7 +55,7 @@ module top_tunnel (
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "teleport_16_colr_4bit_palette.mem";
 
     logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -83,7 +83,7 @@ module top_tunnel (
         .y(fby),
         .cidx(fb_cidx),
         .bgidx(4'h0),
-        .clear(1'b0),  // tunnel doesn't need clearing
+        .clear(1'b0),  // teleport doesn't need clearing
         .busy(fb_busy),
         .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
@@ -96,14 +96,16 @@ module top_tunnel (
 
     // animation steps
     localparam ANIM_CNT=5;    // five different frames in animation
-    localparam ANIM_SPEED=5;  // display each animation step five times (12 FPS)
+    localparam ANIM_SPEED=4;  // display each animation step four times (15 FPS)
     logic [$clog2(ANIM_CNT)-1:0] cnt_anim;
     logic [$clog2(ANIM_SPEED)-1:0] cnt_anim_speed;
     logic [FB_CIDXW-1:0] colr_offs;  // colour offset
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
+            /* verilator lint_off WIDTH */
             if (cnt_anim_speed == ANIM_SPEED-1) begin
                 if (cnt_anim == ANIM_CNT-1) begin
+            /* verilator lint_on WIDTH */
                     cnt_anim <= 0;
                     colr_offs <= colr_offs + 1;
                 end else cnt_anim <= cnt_anim + 1;
@@ -127,53 +129,53 @@ module top_tunnel (
                     draw_start <= 1;
                     state <= DRAW;
                     case (shape_id)
-                        4'd0: begin
-                            dx0 <=  40 - cnt_anim * 12;
-                            dy0 <=   0 - cnt_anim * 12;
-                            dx1 <= 279 + cnt_anim * 12;
-                            dy1 <= 249 + cnt_anim * 12;
+                        4'd0: begin  // 12 pixels per anim step
+                            dx0 <=  40 - (cnt_anim * 12);
+                            dy0 <=   0 - (cnt_anim * 12);
+                            dx1 <= 279 + (cnt_anim * 12);
+                            dy1 <= 249 + (cnt_anim * 12);
                             fb_cidx <= colr_offs;
                         end
                         4'd1: begin  // 8 pixels per anim step
-                            dx0 <=  80 - cnt_anim * 8;
-                            dy0 <=  10 - cnt_anim * 8;
-                            dx1 <= 239 + cnt_anim * 8;
-                            dy1 <= 169 + cnt_anim * 8;
+                            dx0 <=  80 - (cnt_anim * 8);
+                            dy0 <=  10 - (cnt_anim * 8);
+                            dx1 <= 239 + (cnt_anim * 8);
+                            dy1 <= 169 + (cnt_anim * 8);
                             fb_cidx <= colr_offs + 1;
                         end
                         4'd2: begin  // 5 pixels per anim step
-                            dx0 <= 105 - cnt_anim * 5;
-                            dy0 <=  35 - cnt_anim * 5;
-                            dx1 <= 214 + cnt_anim * 5;
-                            dy1 <= 144 + cnt_anim * 5;
+                            dx0 <= 105 - (cnt_anim * 5);
+                            dy0 <=  35 - (cnt_anim * 5);
+                            dx1 <= 214 + (cnt_anim * 5);
+                            dy1 <= 144 + (cnt_anim * 5);
                             fb_cidx <= colr_offs + 2;
                         end
                         4'd3: begin  // 4 pixels per anim step
-                            dx0 <= 125 - cnt_anim * 4;
-                            dy0 <=  55 - cnt_anim * 4;
-                            dx1 <= 194 + cnt_anim * 4;
-                            dy1 <= 124 + cnt_anim * 4;
+                            dx0 <= 125 - (cnt_anim * 4);
+                            dy0 <=  55 - (cnt_anim * 4);
+                            dx1 <= 194 + (cnt_anim * 4);
+                            dy1 <= 124 + (cnt_anim * 4);
                             fb_cidx <= colr_offs + 3;
                         end
                         4'd4: begin  // 3 pixels per anim step
-                            dx0 <= 140 - cnt_anim * 3;
-                            dy0 <=  70 - cnt_anim * 3;
-                            dx1 <= 179 + cnt_anim * 3;
-                            dy1 <= 109 + cnt_anim * 3;
+                            dx0 <= 140 - (cnt_anim * 3);
+                            dy0 <=  70 - (cnt_anim * 3);
+                            dx1 <= 179 + (cnt_anim * 3);
+                            dy1 <= 109 + (cnt_anim * 3);
                             fb_cidx <= colr_offs + 4;
                         end
                         4'd5: begin  // 2 pixels per anim step
-                            dx0 <= 150 - cnt_anim * 2;
-                            dy0 <=  80 - cnt_anim * 2;
-                            dx1 <= 169 + cnt_anim * 2;
-                            dy1 <=  99 + cnt_anim * 2;
+                            dx0 <= 150 - (cnt_anim * 2);
+                            dy0 <=  80 - (cnt_anim * 2);
+                            dx1 <= 169 + (cnt_anim * 2);
+                            dy1 <=  99 + (cnt_anim * 2);
                             fb_cidx <= colr_offs + 5;
                         end
                         4'd6: begin  // 1 pixel per anim step
-                            dx0 <= 155 - cnt_anim * 1;
-                            dy0 <=  85 - cnt_anim * 1;
-                            dx1 <= 164 + cnt_anim * 1;
-                            dy1 <=  94 + cnt_anim * 1;
+                            dx0 <= 155 - (cnt_anim * 1);
+                            dy0 <=  85 - (cnt_anim * 1);
+                            dx1 <= 164 + (cnt_anim * 1);
+                            dy1 <=  94 + (cnt_anim * 1);
                             fb_cidx <= colr_offs + 6;
                         end
                         default: begin  // should never occur

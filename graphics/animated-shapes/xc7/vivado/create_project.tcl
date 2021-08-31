@@ -44,16 +44,17 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_cube_pieces.sv"] \
-  [file normalize "${origin_dir}/xc7/top_fb_bounce.sv"] \
-  [file normalize "${origin_dir}/xc7/top_fb_bounce_v1.sv"] \
-  [file normalize "${origin_dir}/xc7/top_tunnel.sv"] \
+  [file normalize "${origin_dir}/xc7/top_sb_bounce.sv"] \
+  [file normalize "${origin_dir}/xc7/top_db_bounce.sv"] \
+  [file normalize "${origin_dir}/xc7/top_rotate.sv"] \
+  [file normalize "${origin_dir}/xc7/top_teleport.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_tunnel" -objects $fs_design_obj
+set_property -name "top" -value "top_teleport" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
@@ -64,21 +65,25 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_bram_db.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
+  [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
+  [file normalize "${lib_dir}/maths/sine_table.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${origin_dir}/rotate_xy.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${lib_dir}/maths/res/sine_table_64x8.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_db_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/tunnel_16_colr_4bit_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/teleport_16_colr_4bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
@@ -99,6 +104,8 @@ set sim_sources [list \
   [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_db_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_db_tb_behav.wcfg" ] \
+  [file normalize "${origin_dir}/xc7/rotate_xy_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/rotate_xy_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

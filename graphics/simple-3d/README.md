@@ -1,5 +1,5 @@
 # Simple 3D
 
-These designs are in draft and the blog is not available yet.
+These designs are in draft and will appear in a later blog series.
 
-Have you tried the [other designs](../README.md) in this series?
+In the meantime, try our other [FPGA graphics designs](../README.md).

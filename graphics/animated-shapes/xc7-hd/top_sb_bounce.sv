@@ -1,11 +1,11 @@
-// Project F: Animated Shapes - Top Tunnel (Nexys Video)
+// Project F: Animated Shapes - Top Single Buffer Bounce (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_tunnel (
+module top_sb_bounce (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -61,12 +61,13 @@ module top_tunnel (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
 
-    logic fb_we, fb_busy, fb_wready;
+    logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
     logic [FB_CIDXW-1:0] fb_cidx;
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
     logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
 
-    framebuffer_bram_db #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -76,7 +77,7 @@ module top_tunnel (
         .F_PALETTE(FB_PALETTE)
     ) fb_inst (
         .clk_sys(clk_100m),
-        .clk_pix(clk_pix),
+        .clk_pix,
         .rst_sys(1'b0),
         .rst_pix(1'b0),
         .de,
@@ -86,10 +87,7 @@ module top_tunnel (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'h0),
-        .clear(1'b0),  // tunnel doesn't need clearing
         .busy(fb_busy),
-        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -98,112 +96,54 @@ module top_tunnel (
         .blue(fb_blue)
     );
 
-    // animation steps
-    localparam ANIM_CNT=5;    // five different frames in animation
-    localparam ANIM_SPEED=5;  // display each animation step five times (12 FPS)
-    logic [$clog2(ANIM_CNT)-1:0] cnt_anim;
-    logic [$clog2(ANIM_SPEED)-1:0] cnt_anim_speed;
-    logic [FB_CIDXW-1:0] colr_offs;  // colour offset
+    // square coordinates
+    localparam Q1_SIZE = 80;
+    logic [CORDW-1:0] q1x, q1y;  // position (top left)
+    logic q1dx, q1dy;            // direction: 0 is right/down
+    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
-            if (cnt_anim_speed == ANIM_SPEED-1) begin
-                if (cnt_anim == ANIM_CNT-1) begin
-                    cnt_anim <= 0;
-                    colr_offs <= colr_offs + 1;
-                end else cnt_anim <= cnt_anim + 1;
-                cnt_anim_speed <= 0;
-            end else cnt_anim_speed <= cnt_anim_speed + 1;
+            if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
+                q1dx <= 1;
+                q1x <= q1x - q1s;
+            end else if (q1x < q1s) begin  // left edge
+                q1dx <= 0;
+                q1x <= q1x + q1s;
+            end else q1x <= (q1dx) ? q1x - q1s : q1x + q1s;
+
+            if (q1y >= FB_HEIGHT - (Q1_SIZE + q1s)) begin  // bottom edge
+                q1dy <= 1;
+                q1y <= q1y - q1s;
+            end else if (q1y < q1s) begin  // top edge
+                q1dy <= 0;
+                q1y <= q1y + q1s;
+            end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
         end
     end
 
-    // draw squares in framebuffer
-    localparam SHAPE_CNT=7;  // number of shapes to draw
-    logic [3:0] shape_id;    // shape identifier
-    logic [CORDW-1:0] dx0, dy0, dx1, dy1;  // shape coords
+    // draw square in framebuffer
+    logic [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
-    enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
+    enum {IDLE, INIT, DRAW, DONE} state;
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                if (fb_wready) begin
-                    draw_start <= 1;
-                    state <= DRAW;
-                    case (shape_id)
-                        4'd0: begin
-                            dx0 <=  40 - cnt_anim * 12;
-                            dy0 <=   0 - cnt_anim * 12;
-                            dx1 <= 279 + cnt_anim * 12;
-                            dy1 <= 249 + cnt_anim * 12;
-                            fb_cidx <= colr_offs;
-                        end
-                        4'd1: begin  // 8 pixels per anim step
-                            dx0 <=  80 - cnt_anim * 8;
-                            dy0 <=  10 - cnt_anim * 8;
-                            dx1 <= 239 + cnt_anim * 8;
-                            dy1 <= 169 + cnt_anim * 8;
-                            fb_cidx <= colr_offs + 1;
-                        end
-                        4'd2: begin  // 5 pixels per anim step
-                            dx0 <= 105 - cnt_anim * 5;
-                            dy0 <=  35 - cnt_anim * 5;
-                            dx1 <= 214 + cnt_anim * 5;
-                            dy1 <= 144 + cnt_anim * 5;
-                            fb_cidx <= colr_offs + 2;
-                        end
-                        4'd3: begin  // 4 pixels per anim step
-                            dx0 <= 125 - cnt_anim * 4;
-                            dy0 <=  55 - cnt_anim * 4;
-                            dx1 <= 194 + cnt_anim * 4;
-                            dy1 <= 124 + cnt_anim * 4;
-                            fb_cidx <= colr_offs + 3;
-                        end
-                        4'd4: begin  // 3 pixels per anim step
-                            dx0 <= 140 - cnt_anim * 3;
-                            dy0 <=  70 - cnt_anim * 3;
-                            dx1 <= 179 + cnt_anim * 3;
-                            dy1 <= 109 + cnt_anim * 3;
-                            fb_cidx <= colr_offs + 4;
-                        end
-                        4'd5: begin  // 2 pixels per anim step
-                            dx0 <= 150 - cnt_anim * 2;
-                            dy0 <=  80 - cnt_anim * 2;
-                            dx1 <= 169 + cnt_anim * 2;
-                            dy1 <=  99 + cnt_anim * 2;
-                            fb_cidx <= colr_offs + 5;
-                        end
-                        4'd6: begin  // 1 pixel per anim step
-                            dx0 <= 155 - cnt_anim * 1;
-                            dy0 <=  85 - cnt_anim * 1;
-                            dx1 <= 164 + cnt_anim * 1;
-                            dy1 <=  94 + cnt_anim * 1;
-                            fb_cidx <= colr_offs + 6;
-                        end
-                        default: begin  // should never occur
-                            dx0 <=  10; dy0 <=  10;
-                            dx1 <=  20; dy1 <=  20;
-                            fb_cidx <= 4'h7;  // white
-                        end
-                    endcase
-                end
+                draw_start <= 1;
+                state <= DRAW;
+                rx0 <= q1x;
+                ry0 <= q1y;
+                rx1 <= q1x + Q1_SIZE;
+                ry1 <= q1y + Q1_SIZE;
+                fb_cidx <= fb_cidx + 1;
             end
             DRAW: begin
                 draw_start <= 0;
-                if (draw_done) begin
-                    if (shape_id == SHAPE_CNT-1) begin
-                        state <= DONE;
-                    end else begin
-                        shape_id <= shape_id + 1;
-                        state <= INIT;
-                    end
-                end
+                if (draw_done) state <= DONE;
             end
             DONE: state <= IDLE;
-            default: if (frame_sys) begin  // IDLE
-                state <= INIT;
-                shape_id <= 0;
-            end
+            default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
@@ -212,10 +152,10 @@ module top_tunnel (
         .rst(1'b0),
         .start(draw_start),
         .oe(!fb_busy),  // draw when framebuffer isn't busy
-        .x0(dx0),
-        .y0(dy0),
-        .x1(dx1),
-        .y1(dy1),
+        .x0(rx0),
+        .y0(ry0),
+        .x1(rx1),
+        .y1(ry1),
         .x(fbx),
         .y(fby),
         .drawing,
@@ -228,7 +168,7 @@ module top_tunnel (
     // write to framebuffer when drawing
     always_comb fb_we = drawing;
 
-// reading from FB takes one cycle: delay display signals to match
+    // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
     always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;

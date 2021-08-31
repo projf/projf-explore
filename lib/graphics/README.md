@@ -23,8 +23,8 @@ Find other modules in the [Library](../).
 The following blog posts document and make use of these graphics designs:
 
 * [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) - drawing lines and triangles with a framebuffer
-* [2D Shapes](https://projectf.io/posts/fpga-shapes/) - filled shapes and drawing pictures
-* Animated Shapes - animating shapes (coming soon)
+* [2D Shapes](https://projectf.io/posts/fpga-shapes/) - circles, filled shapes, and drawing pictures
+* [Animated Shapes](/posts/animated-shapes/) - animation and double-buffering
 
 ## Graphics Modules Interface
 

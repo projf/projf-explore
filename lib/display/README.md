@@ -12,9 +12,10 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
   * [display_timings_1080p.sv](display_timings_1080p.sv) - 1920x1080 60 Hz (1080p)
 * Framebuffer
   * [framebuffer_bram.sv](framebuffer_bram.sv) - framebuffer backed by block RAM (works with XC7 and iCE40)
+  * [framebuffer_db_bram.sv](framebuffer_db_bram.sv) - double-buffered framebuffer backed by block RAM (recommended for XC7)
   * [ice40/framebuffer_spram.sv](ice40/framebuffer_spram.sv) - framebuffer backed by SPRAM (works with iCE40)
-  * [linebuffer.sv](linebuffer.sv) - line buffer used by the framebuffer for performance and clock isolation
-  * _more modules will be added here once updated double-buffering designs are complete_
+  * `ice40/framebuffer_db_spram.sv` - double-buffered framebuffer backed by SPRAM (coming soon)
+  * [linebuffer.sv](linebuffer.sv) - line buffer used by the framebuffer designs for performance and clock isolation
 * Signal Encoding
   * [tmds_encoder_dvi.sv](tmds_encoder_dvi.sv) - TMDS encoder for DVI (HDMI compatible, but no audio)
   * [xc7/dvi_generator.sv](xc7/dvi_generator.sv) - generates a DVI signal on Xilinx 7 Series
@@ -27,9 +28,10 @@ Find other modules in the [Library](../).
 
 ## Blog Posts
 
-The [FPGA Graphics](https://projectf.io/posts/fpga-graphics/) series makes extensive use of these display modules.
-
-See the [Framebuffers](https://projectf.io/posts/framebuffers/) post for examples of frame and linebuffers in action.
+* The [FPGA Graphics](https://projectf.io/posts/fpga-graphics/) series makes extensive use of these display modules
+* [Framebuffers](https://projectf.io/posts/framebuffers/) has examples of framebuffers and linebuffers
+* [Animated Shapes](https://projectf.io/posts/animated-shapes/) has examples of double-buffering
+* [Video Timings: VGA, SVGA, 720p, 1080p](https://projectf.io/posts/video-timings-vga-720p-1080p/) has all the gory details on video timings
 
 ## SystemVerilog?
 

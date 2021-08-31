@@ -1,11 +1,11 @@
-// Project F: Animated Shapes - Top FB Bounce (Nexys Video)
+// Project F: Animated Shapes - Top Double Buffer Bounce (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_fb_bounce (
+module top_db_bounce (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+

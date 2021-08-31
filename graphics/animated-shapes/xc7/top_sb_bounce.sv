@@ -1,11 +1,11 @@
-// Project F: Animated Shapes - Top FB Bounce v1 (Arty Pmod VGA)
+// Project F: Animated Shapes - Top Single Buffer Bounce (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_fb_bounce_v1 (
+module top_sb_bounce (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst,      // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
