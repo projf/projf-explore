@@ -144,10 +144,10 @@ module top_rotate (
             INIT: begin  // register coordinates and colour
                 if (fb_wready) begin
                     state <= ROT_INIT;
-                    vx0 <=   0; vy0 <= -60;
-                    vx1 <= -40; vy1 <=  20;
-                    vx2 <= 100; vy2 <=  80;
-                    offs_x <= 140; offs_y <= 80;
+                    vx0 <=   0; vy0 <= -40;
+                    vx1 <= -30; vy1 <=  20;
+                    vx2 <=  45; vy2 <=  70;
+                    offs_x <= 160; offs_y <= 90;
                     fb_cidx <= 4'h9;  // orange
                 end
             end
