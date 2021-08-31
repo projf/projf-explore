@@ -1,6 +1,6 @@
 # Animated Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **Animated Shapes** (coming soon). You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 Included demos for iCEBreaker and Arty FPGA boards:
 
@@ -10,7 +10,7 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
-Learn more about these demos from the **Animated Shapes** (coming soon) blog post, or read on for build instructions.
+Learn more about these demos from the [Animated Shapes](https://projectf.io/posts/animated-shapes/) blog post, or read on for build instructions.
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
 
