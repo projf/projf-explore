@@ -252,7 +252,7 @@ module top_castle (
         endcase
     end
 
-    // drawing and done apply to either shape
+    // drawing and done apply to all drawing types
     always_comb begin
         drawing = drawing_tri || drawing_rect;
         draw_done = draw_done_tri || draw_done_rect;

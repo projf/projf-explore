@@ -39,7 +39,6 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
     logic drawing_h;
     logic busy_a, busy_b, busy_h;
     logic b_edge;  // which B edge are we drawing?
-    logic right;   // whether lines are drawn to the right
 
     // pipeline completion signals to match coordinates
     logic busy_p1, done_p1;
@@ -92,7 +91,6 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
                 y1a <= y2s;
                 prev_xa <= x0s;
                 prev_xb <= x0s;
-                right <= (x1s >= x0s);  // drawing to the right
             end
             INIT_B0: begin
                 state <= START_A;
@@ -117,8 +115,8 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
             EDGE: begin
                 if ((ya != prev_y || !busy_a) && (yb != prev_y || !busy_b)) begin
                     state <= START_H;
-                    x0h <= right ? prev_xa : prev_xb;
-                    x1h <= right ? prev_xb : prev_xa;
+                    x0h <= (prev_xa > prev_xb) ? prev_xb : prev_xa;  // always draw...
+                    x1h <= (prev_xa > prev_xb) ? prev_xa : prev_xb;  // left to right
                 end
             end
             START_H: state <= H_LINE;
