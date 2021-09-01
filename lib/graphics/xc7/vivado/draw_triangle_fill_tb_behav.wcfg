@@ -12,108 +12,140 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="590223fs"></ZoomEndTime>
-      <Cursor1Time time="300000fs"></Cursor1Time>
+      <ZoomEndTime time="1000001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="149"></NameColumnWidth>
+      <NameColumnWidth column_width="141"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="107" />
-   <wvobject fp_name="/draw_triangle_fill_tb/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/clk" type="logic">
+   <WVObjectSize size="88" />
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/drawing" type="logic">
-      <obj_property name="ElementShortName">drawing</obj_property>
-      <obj_property name="ObjectShortName">drawing</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/x" type="array">
-      <obj_property name="ElementShortName">x[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/y" type="array">
-      <obj_property name="ElementShortName">y[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/oe" type="logic">
+      <obj_property name="ElementShortName">oe</obj_property>
+      <obj_property name="ObjectShortName">oe</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/x0" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x0" type="array">
       <obj_property name="ElementShortName">x0[8:0]</obj_property>
       <obj_property name="ObjectShortName">x0[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/y0" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y0" type="array">
       <obj_property name="ElementShortName">y0[8:0]</obj_property>
       <obj_property name="ObjectShortName">y0[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/x1" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x1" type="array">
       <obj_property name="ElementShortName">x1[8:0]</obj_property>
       <obj_property name="ObjectShortName">x1[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/y1" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y1" type="array">
       <obj_property name="ElementShortName">y1[8:0]</obj_property>
       <obj_property name="ObjectShortName">y1[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/x2" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x2" type="array">
       <obj_property name="ElementShortName">x2[8:0]</obj_property>
       <obj_property name="ObjectShortName">x2[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/y2" type="array">
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y2" type="array">
       <obj_property name="ElementShortName">y2[8:0]</obj_property>
       <obj_property name="ObjectShortName">y2[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x" type="array">
+      <obj_property name="ElementShortName">x[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y" type="array">
+      <obj_property name="ElementShortName">y[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/drawing" type="logic">
+      <obj_property name="ElementShortName">drawing</obj_property>
+      <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider230">
+      <obj_property name="label">Internal</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="BkColor">#DCDCDC</obj_property>
+   </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x0s" type="array">
       <obj_property name="ElementShortName">x0s[8:0]</obj_property>
       <obj_property name="ObjectShortName">x0s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y0s" type="array">
       <obj_property name="ElementShortName">y0s[8:0]</obj_property>
       <obj_property name="ObjectShortName">y0s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x1s" type="array">
       <obj_property name="ElementShortName">x1s[8:0]</obj_property>
       <obj_property name="ObjectShortName">x1s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y1s" type="array">
       <obj_property name="ElementShortName">y1s[8:0]</obj_property>
       <obj_property name="ObjectShortName">y1s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x2s" type="array">
       <obj_property name="ElementShortName">x2s[8:0]</obj_property>
       <obj_property name="ObjectShortName">x2s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y2s" type="array">
       <obj_property name="ElementShortName">y2s[8:0]</obj_property>
       <obj_property name="ObjectShortName">y2s[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x0a" type="array">
+      <obj_property name="ElementShortName">x0a[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0a[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y0a" type="array">
+      <obj_property name="ElementShortName">y0a[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y0a[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x1a" type="array">
+      <obj_property name="ElementShortName">x1a[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x1a[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y1a" type="array">
+      <obj_property name="ElementShortName">y1a[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y1a[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/xa" type="array">
       <obj_property name="ElementShortName">xa[8:0]</obj_property>
       <obj_property name="ObjectShortName">xa[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/prev_xa" type="array">
-      <obj_property name="ElementShortName">prev_xa[8:0]</obj_property>
-      <obj_property name="ObjectShortName">prev_xa[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/xb" type="array">
-      <obj_property name="ElementShortName">xb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">xb[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/prev_xb" type="array">
-      <obj_property name="ElementShortName">prev_xb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">prev_xb[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/ya" type="array">
@@ -121,9 +153,49 @@
       <obj_property name="ObjectShortName">ya[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x0b" type="array">
+      <obj_property name="ElementShortName">x0b[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0b[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y0b" type="array">
+      <obj_property name="ElementShortName">y0b[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y0b[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x1b" type="array">
+      <obj_property name="ElementShortName">x1b[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x1b[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/y1b" type="array">
+      <obj_property name="ElementShortName">y1b[8:0]</obj_property>
+      <obj_property name="ObjectShortName">y1b[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/xb" type="array">
+      <obj_property name="ElementShortName">xb[8:0]</obj_property>
+      <obj_property name="ObjectShortName">xb[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/yb" type="array">
       <obj_property name="ElementShortName">yb[8:0]</obj_property>
       <obj_property name="ObjectShortName">yb[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x0h" type="array">
+      <obj_property name="ElementShortName">x0h[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x0h[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/x1h" type="array">
+      <obj_property name="ElementShortName">x1h[8:0]</obj_property>
+      <obj_property name="ObjectShortName">x1h[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/xh" type="array">
+      <obj_property name="ElementShortName">xh[8:0]</obj_property>
+      <obj_property name="ObjectShortName">xh[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/prev_y" type="array">
@@ -131,25 +203,59 @@
       <obj_property name="ObjectShortName">prev_y[8:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/prev_xa" type="array">
+      <obj_property name="ElementShortName">prev_xa[8:0]</obj_property>
+      <obj_property name="ObjectShortName">prev_xa[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/oe" type="logic">
-      <obj_property name="ElementShortName">oe</obj_property>
-      <obj_property name="ObjectShortName">oe</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/prev_xb" type="array">
+      <obj_property name="ElementShortName">prev_xb[8:0]</obj_property>
+      <obj_property name="ObjectShortName">prev_xb[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/busy" type="logic">
-      <obj_property name="ElementShortName">busy</obj_property>
-      <obj_property name="ObjectShortName">busy</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/oe_a" type="logic">
+      <obj_property name="ElementShortName">oe_a</obj_property>
+      <obj_property name="ObjectShortName">oe_a</obj_property>
    </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/done" type="logic">
-      <obj_property name="ElementShortName">done</obj_property>
-      <obj_property name="ObjectShortName">done</obj_property>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/oe_b" type="logic">
+      <obj_property name="ElementShortName">oe_b</obj_property>
+      <obj_property name="ObjectShortName">oe_b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/oe_h" type="logic">
+      <obj_property name="ElementShortName">oe_h</obj_property>
+      <obj_property name="ObjectShortName">oe_h</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/drawing_h" type="logic">
+      <obj_property name="ElementShortName">drawing_h</obj_property>
+      <obj_property name="ObjectShortName">drawing_h</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/busy_a" type="logic">
+      <obj_property name="ElementShortName">busy_a</obj_property>
+      <obj_property name="ObjectShortName">busy_a</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/busy_b" type="logic">
+      <obj_property name="ElementShortName">busy_b</obj_property>
+      <obj_property name="ObjectShortName">busy_b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/busy_h" type="logic">
+      <obj_property name="ElementShortName">busy_h</obj_property>
+      <obj_property name="ObjectShortName">busy_h</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/b_edge" type="logic">
       <obj_property name="ElementShortName">b_edge</obj_property>
       <obj_property name="ObjectShortName">b_edge</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/right" type="logic">
+      <obj_property name="ElementShortName">right</obj_property>
+      <obj_property name="ObjectShortName">right</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/busy_p1" type="logic">
+      <obj_property name="ElementShortName">busy_p1</obj_property>
+      <obj_property name="ObjectShortName">busy_p1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/done_p1" type="logic">
+      <obj_property name="ElementShortName">done_p1</obj_property>
+      <obj_property name="ObjectShortName">done_p1</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/state" type="array">
       <obj_property name="ElementShortName">state[31:0]</obj_property>
@@ -271,186 +377,6 @@
       <obj_property name="ElementShortName">state[31:0]</obj_property>
       <obj_property name="ObjectShortName">state[31:0]</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider453">
-      <obj_property name="label">Edge A</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/oe" type="logic">
-      <obj_property name="ElementShortName">oe</obj_property>
-      <obj_property name="ObjectShortName">oe</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/x0" type="array">
-      <obj_property name="ElementShortName">x0[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x0[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/y0" type="array">
-      <obj_property name="ElementShortName">y0[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y0[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/x1" type="array">
-      <obj_property name="ElementShortName">x1[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x1[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/y1" type="array">
-      <obj_property name="ElementShortName">y1[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y1[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/x" type="array">
-      <obj_property name="ElementShortName">x[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/y" type="array">
-      <obj_property name="ElementShortName">y[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/drawing" type="logic">
-      <obj_property name="ElementShortName">drawing</obj_property>
-      <obj_property name="ObjectShortName">drawing</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/busy" type="logic">
-      <obj_property name="ElementShortName">busy</obj_property>
-      <obj_property name="ObjectShortName">busy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/done" type="logic">
-      <obj_property name="ElementShortName">done</obj_property>
-      <obj_property name="ObjectShortName">done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/right" type="logic">
-      <obj_property name="ElementShortName">right</obj_property>
-      <obj_property name="ObjectShortName">right</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/swap" type="logic">
-      <obj_property name="ElementShortName">swap</obj_property>
-      <obj_property name="ObjectShortName">swap</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/xa" type="array">
-      <obj_property name="ElementShortName">xa[8:0]</obj_property>
-      <obj_property name="ObjectShortName">xa[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/ya" type="array">
-      <obj_property name="ElementShortName">ya[8:0]</obj_property>
-      <obj_property name="ObjectShortName">ya[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/xb" type="array">
-      <obj_property name="ElementShortName">xb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">xb[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/yb" type="array">
-      <obj_property name="ElementShortName">yb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">yb[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_a/state" type="array">
-      <obj_property name="ElementShortName">state[31:0]</obj_property>
-      <obj_property name="ObjectShortName">state[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="divider" fp_name="divider480">
-      <obj_property name="label">Edge B</obj_property>
-      <obj_property name="DisplayName">label</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/oe" type="logic">
-      <obj_property name="ElementShortName">oe</obj_property>
-      <obj_property name="ObjectShortName">oe</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/x0" type="array">
-      <obj_property name="ElementShortName">x0[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x0[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/y0" type="array">
-      <obj_property name="ElementShortName">y0[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y0[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/x1" type="array">
-      <obj_property name="ElementShortName">x1[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x1[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/y1" type="array">
-      <obj_property name="ElementShortName">y1[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y1[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/x" type="array">
-      <obj_property name="ElementShortName">x[8:0]</obj_property>
-      <obj_property name="ObjectShortName">x[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/y" type="array">
-      <obj_property name="ElementShortName">y[8:0]</obj_property>
-      <obj_property name="ObjectShortName">y[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/drawing" type="logic">
-      <obj_property name="ElementShortName">drawing</obj_property>
-      <obj_property name="ObjectShortName">drawing</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/busy" type="logic">
-      <obj_property name="ElementShortName">busy</obj_property>
-      <obj_property name="ObjectShortName">busy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/done" type="logic">
-      <obj_property name="ElementShortName">done</obj_property>
-      <obj_property name="ObjectShortName">done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/right" type="logic">
-      <obj_property name="ElementShortName">right</obj_property>
-      <obj_property name="ObjectShortName">right</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/swap" type="logic">
-      <obj_property name="ElementShortName">swap</obj_property>
-      <obj_property name="ObjectShortName">swap</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/xa" type="array">
-      <obj_property name="ElementShortName">xa[8:0]</obj_property>
-      <obj_property name="ObjectShortName">xa[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/ya" type="array">
-      <obj_property name="ElementShortName">ya[8:0]</obj_property>
-      <obj_property name="ObjectShortName">ya[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/xb" type="array">
-      <obj_property name="ElementShortName">xb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">xb[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/yb" type="array">
-      <obj_property name="ElementShortName">yb[8:0]</obj_property>
-      <obj_property name="ObjectShortName">yb[8:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_edge_b/state" type="array">
-      <obj_property name="ElementShortName">state[31:0]</obj_property>
-      <obj_property name="ObjectShortName">state[31:0]</obj_property>
-   </wvobject>
    <wvobject type="divider" fp_name="divider480">
       <obj_property name="label">H Draw</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -489,10 +415,6 @@
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
    </wvobject>
    <wvobject fp_name="/draw_triangle_fill_tb/draw_triangle_inst/draw_h_line/state" type="array">
       <obj_property name="ElementShortName">state[31:0]</obj_property>
