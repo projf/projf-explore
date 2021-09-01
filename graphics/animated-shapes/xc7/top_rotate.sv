@@ -115,8 +115,8 @@ module top_rotate (
 
     // set angle using buttons
     always_ff @(posedge clk_100m) begin
-        if (sig_inc) angle <= angle + 1;
-        if (sig_dec) angle <= angle - 1;
+        if (sig_inc) angle <= angle + 2;
+        if (sig_dec) angle <= angle - 2;
     end
 
     rotate_xy #(.CORDW(CORDW), .ANGLEW(ANGLEW)) rotate_xy_inst (
@@ -134,10 +134,14 @@ module top_rotate (
     // draw triangles in framebuffer
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic signed [CORDW-1:0] offs_x, offs_y;  // offset (translate position)
-    logic draw_start, drawing, draw_done;  // drawing signals
+    logic signed [CORDW-1:0] fbx_fill, fby_fill;  // fill coordinates
+    logic signed [CORDW-1:0] fbx_outline, fby_outline;  // outline coordinates
+    logic drawing, draw_done;  // drawing signals
+    logic draw_start_fill, drawing_fill, draw_done_fill;  // drawing fill
+    logic draw_start_outline, drawing_outline, draw_done_outline;  // drawing outline
 
     // draw state machine
-    enum {IDLE, INIT, ROT_INIT, ROT_0, ROT_1, ROT_2, DRAW, DONE} state;
+    enum {IDLE, INIT, ROT_INIT, ROT_0, ROT_1, ROT_2, FILL, OUTLINE, DONE} state;
     always_ff @(posedge clk_100m) begin
         rot_start <= 0;
         case (state)
@@ -182,22 +186,36 @@ module top_rotate (
                 // save rotated (tx2,ty2) with translate
                 vx2 <= rot_x + offs_x;
                 vy2 <= rot_y + offs_y;
-                draw_start <= 1;
-                state <= DRAW;
+                draw_start_fill <= 1;
+                state <= FILL;
             end
-            DRAW: begin
-                draw_start <= 0;
-                if (draw_done) state <= DONE;
+            FILL: begin
+                draw_start_fill <= 0;
+                if (draw_done_fill) begin
+                    state <= OUTLINE;
+                    draw_start_outline <= 1;
+                    fb_cidx <= 4'h8;  // red
+                end
+            end
+            OUTLINE: begin
+                draw_start_outline <= 0;
+                if (draw_done_outline) state <= DONE;
             end
             DONE: state <= IDLE;
             default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
-    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
+    // drawing and done apply to all drawing types
+    always_comb begin
+        drawing = drawing_fill || drawing_outline;
+        draw_done = draw_done_fill || draw_done_outline;
+    end
+
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_fill_inst (
         .clk(clk_100m),
         .rst(1'b0),
-        .start(draw_start),
+        .start(draw_start_fill),
         .oe(!fb_busy),  // draw when framebuffer is available
         .x0(vx0),
         .y0(vy0),
@@ -205,17 +223,41 @@ module top_rotate (
         .y1(vy1),
         .x2(vx2),
         .y2(vy2),
-        .x(fbx),
-        .y(fby),
-        .drawing,
+        .x(fbx_fill),
+        .y(fby_fill),
+        .drawing(drawing_fill),
         /* verilator lint_off PINCONNECTEMPTY */
         .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
-        .done(draw_done)
+        .done(draw_done_fill)
+    );
+
+    draw_triangle#(.CORDW(CORDW)) draw_triangle_inst (
+        .clk(clk_100m),
+        .rst(1'b0),
+        .start(draw_start_outline),
+        .oe(!fb_busy),  // draw when framebuffer is available
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
+        .x(fbx_outline),
+        .y(fby_outline),
+        .drawing(drawing_outline),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .busy(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .done(draw_done_outline)
     );
 
     // write to framebuffer when drawing
-    always_comb fb_we = drawing;
+    always_ff @(posedge clk_100m) begin
+        fb_we <= drawing;
+        fbx <= drawing_fill ? fbx_fill : fbx_outline;
+        fby <= drawing_fill ? fby_fill : fby_outline;
+    end
 
     // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1;
