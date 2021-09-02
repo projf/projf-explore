@@ -1,6 +1,6 @@
 # 2D Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. These designs draw circles, rectangles, and filled shapes in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. These SystemVerilog designs draw circles, rectangles, and filled shapes in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 File layout:
 
@@ -24,7 +24,7 @@ Learn more about the designs and demos from the [2D Shapes](https://projectf.io/
 
 ![](../../doc/img/2d-shapes.png?raw=true "")
 
-_Castle drawn by a Artix-7 FPGA using the top_castle demo._
+_Castle drawn by an Artix-7 FPGA using the top_castle demo._
 
 ## iCEBreaker Build
 

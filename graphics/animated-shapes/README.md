@@ -1,6 +1,6 @@
 # Animated Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. These designs animate shapes using a double-buffered framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. These SystemVerilog designs animate shapes using a double-buffered framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 File layout:
 
@@ -23,7 +23,7 @@ Learn more about the designs and demos from the [Animated Shapes](https://projec
 
 ![](../../doc/img/animated-shapes.png?raw=true "")
 
-_Bouncing square drawn by a Artix-7 FPGA using the top_sb_bounce demo._
+_Bouncing square drawn by an Artix-7 FPGA using the top_sb_bounce demo._
 
 ## iCEBreaker Build
 

@@ -1,6 +1,6 @@
 # Lines and Triangles
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. These designs draw lines and triangles in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. These SystemVerilog designs draw lines and triangles in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 File layout:
 
@@ -21,7 +21,7 @@ Learn more about the designs and demos from the [Lines and Triangles](https://pr
 
 ![](../../doc/img/lines-and-triangles.jpg?raw=true "")
 
-_Cube drawn by a Artix-7 FPGA using the top_cube demo._
+_Cube drawn by an Artix-7 FPGA using the top_cube demo._
 
 ## iCEBreaker Build
 
