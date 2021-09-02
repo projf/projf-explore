@@ -1,8 +1,8 @@
 # Exploring FPGAs with Project F
 
-Project F brings FPGAs to life with exciting and accessible [open-source](LICENSE) designs you can learn from and build on.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and enable your own projects. Our main projects are the _Verilog Library_ and _FPGA Graphics_ tutorial series; read on to learn more.
 
-Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://twitter.com/WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
+Get an introduction with [About Project F](https://projectf.io/about/), follow [@WillFlux](https://twitter.com/WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat). Take a peek into the future with our [roadmap](ROADMAP.md). 
 
 ![](doc/img/fpga-ad-astra.png?raw=true "")
 
@@ -49,10 +49,10 @@ Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
-  * Uses: `BUFG`, `MMCME2_BASE`
-  * TMDS (HDMI) uses: `OBUFDS`, `OSERDES2`
+  * `BUFG`, `MMCME2_BASE`
+  * HDMI support: `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
-  * Uses: `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
+  * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
 
 We also infer block ram (BRAM), see [lib/memory](lib/memory).
 
