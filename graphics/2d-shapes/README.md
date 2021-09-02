@@ -1,8 +1,17 @@
 # 2D Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. These designs draw circles, rectangles, and filled shapes in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-Included demos for iCEBreaker and Arty FPGA boards:
+File layout:
+
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `res` - resources: colour palettes
+
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
+
+Included demos:
 
 * `top_rectangles` - nested rectangle outlines
 * `top_rectangles_fill` - staggered filled rectangles
@@ -11,11 +20,7 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_circles` - concentric circle outlines
 * `top_castle` - simple castle picture drawn from filled shapes
 
-Learn more about the designs and demos from the [2D Shapes](https://projectf.io/posts/fpga-shapes/) blog post, or read on for build instructions.
-
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
-
-New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [2D Shapes](https://projectf.io/posts/fpga-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/2d-shapes.png?raw=true "")
 

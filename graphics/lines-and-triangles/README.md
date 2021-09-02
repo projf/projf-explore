@@ -1,18 +1,23 @@
 # Lines and Triangles
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. These designs draw lines and triangles in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-Included demos for iCEBreaker and Arty FPGA boards:
+File layout:
 
-* `top_line` - draw diagonal line with Bresenham’s line algorithm
-* `top_cube` - draw cube outline from multiple lines
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `res` - resources: colour palettes
+
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
+
+Included demos:
+
+* `top_line` - draw a diagonal line with Bresenham’s line algorithm
+* `top_cube` - draw a cube outline from multiple lines
 * `top_triangles` - draw triangle outlines
 
-Learn more about the designs and demos from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions.
-
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
-
-New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/lines-and-triangles.jpg?raw=true "")
 

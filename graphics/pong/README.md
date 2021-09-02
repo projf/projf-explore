@@ -1,14 +1,14 @@
 # Pong
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder contains SystemVerilog designs to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**. These designs race the beam to create the arcade classic. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-Directory layout:
+File layout:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
 Included demos:
 
