@@ -1,4 +1,4 @@
-# Exploring FPGAs with Project F
+# Project F - FPGA Development
 
 Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and enable your own projects. Our main projects are the _Verilog Library_ and _FPGA Graphics_ tutorial series; read on to learn more.
 
