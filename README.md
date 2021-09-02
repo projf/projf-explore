@@ -43,7 +43,7 @@ Maths & Algorithms is our next topic. Stay tuned for this series in 2021.
 
 ## Requirements
 
-### FPGA
+### FPGA Architecture
 
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:

@@ -17,6 +17,8 @@ Discover the [background to the Library](https://projectf.io/posts/verilog-libra
 
 _NB. Documentation and test benches are still being added._
 
+### FPGA Architecture
+
 Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
 
