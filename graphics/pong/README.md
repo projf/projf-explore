@@ -18,7 +18,7 @@ Included demos:
 * `top_pong_v4` - add player control with push buttons
 * `top_pong` - completed pong game
 
-Learn more about these demos from the [Pong](https://projectf.io/posts/fpga-pong/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Pong](https://projectf.io/posts/fpga-pong/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ## iCEBreaker Build
 

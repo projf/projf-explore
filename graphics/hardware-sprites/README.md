@@ -19,7 +19,7 @@ Included demos:
 * `top_sprite_hedgehog_v1` - move colourful hedgehog sprite across screen
 * `top_sprite_hedgehog` - animate hedgehog sprite across landscape
 
-Learn more about these demos from the [Hardware Sprites](https://projectf.io/posts/hardware-sprites/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Hardware Sprites](https://projectf.io/posts/hardware-sprites/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ## iCEBreaker Build
 
