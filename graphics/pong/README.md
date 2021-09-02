@@ -2,7 +2,15 @@
 
 This folder contains SystemVerilog designs to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-Included demos for iCEBreaker and Arty FPGA boards:
+Directory layout:
+
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
+
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
+
+Included demos:
 
 * `top_pong_v1` - bounce square ball around the screen
 * `top_pong_v2` - add paddles
@@ -10,11 +18,7 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_pong_v4` - add player control with push buttons
 * `top_pong` - completed pong game
 
-Learn more about these demos from the [Pong](https://projectf.io/posts/fpga-pong/) blog post, or read on for build instructions.
-
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
-
-New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about these demos from the [Pong](https://projectf.io/posts/fpga-pong/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ## iCEBreaker Build
 
