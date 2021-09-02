@@ -16,6 +16,10 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
+![](../../doc/img/animated-shapes.png?raw=true "")
+
+_Bouncing square drawn by a Artix-7 FPGA using the top_castle demo._
+
 ## iCEBreaker Build
 
 Designs for iCEBreaker are not available yet. Have you tried the [other designs](../README.md) in this series?

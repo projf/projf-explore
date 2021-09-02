@@ -14,6 +14,10 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
+![](../../doc/img/lines-and-triangles.jpg?raw=true "")
+
+_Cube drawn by a Artix-7 FPGA using the top_cube demo._
+
 ## iCEBreaker Build
 
 You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
