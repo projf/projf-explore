@@ -13,13 +13,13 @@ I will complete the [FPGA Graphics](graphics/) series ([blog](https://projectf.i
 
 ### Maths & Algorithms Series
 
-We plan to begin the next major blog series, covering Maths & Algorithms. The first part is due to cover the representation of numbers in Verilog. This series will incorporate existing designs for division, and square root etc.
+I plan to begin the next major blog series, covering Maths & Algorithms. The first part is due to cover the representation of numbers in Verilog. This series will incorporate existing designs for division, and square root etc.
 
 ### Module & Signal Naming
 
 Project F module and signal naming aren't as consistent and straightforward as theys could be. Renaming things can be painful for users, but it's better done now while the project has relatively few forks.
 
-We plan to make the following module name changes:
+I plan to make the following module name changes:
 
 * `clock_gen_NNN.sv` to `clock_NNN.sv`
 * `display_timings_NNN.sv` to `display_NNN.sv`
@@ -27,7 +27,7 @@ We plan to make the following module name changes:
 
 Where `NNN` is `480p`, `720p` etc. Xilinx `clock_480p` will also gain support for 5x clocks to match other display clocks.
 
-We plan to standardise on the following signal names for memory/storage signals:
+I plan to standardise on the following signal names for memory/storage signals:
 
 * `addr` - single-port address
 * `addr_write` - write address
