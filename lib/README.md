@@ -21,7 +21,12 @@ Our designs seek to be vendor-neutral, but some functionality requires
 support for vendor primitives. We currently support two FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
+  * Uses: `BUFG`, `MMCME2_BASE`
+  * TMDS (HDMI) uses: `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
+  * Uses: `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
+
+We also infer block ram (BRAM), see [memory](memory).
 
 Porting to other architectures should be straightforward.
 
