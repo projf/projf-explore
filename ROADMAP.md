@@ -1,8 +1,9 @@
 # Project F Roadmap
 
-This page summarises the plans for Project F over the next few months and in the longer term. Follow [@WillFlux](https://twitter.com/WillFlux) for updates and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
+This page summarises the plans for Project F over the next few months and in the longer term.  
+Follow [@WillFlux](https://twitter.com/WillFlux) for updates and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
 
-See [About Project F](https://projectf.io/about/) and the [README](README.md) for an introduction to Project F.
+See [About Project F](https://projectf.io/about/) and the repo [README](README.md) for an introduction to Project F.
 
 ## During 2021
 
