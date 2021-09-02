@@ -2,7 +2,7 @@
 // Learn more at https://projectf.io
 
 // Unscii was created by Viznut. These glyphs are in the Public Domain.
-// For more information visit http://pelulamu.net/unscii/
+// For more information visit http://viznut.fi/unscii/
 
 // Covers a subset of Basic Latin: U+0020 - U+005F (64 code points)
 // Requires 64 x 8 x 8 = 4,096 bits (512 bytes)

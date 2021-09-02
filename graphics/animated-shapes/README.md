@@ -1,8 +1,17 @@
 # Animated Shapes
 
-This folder contains SystemVerilog designs to accompany the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. These SystemVerilog designs animate shapes using a double-buffered framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-Included demos for iCEBreaker and Arty FPGA boards:
+File layout:
+
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `res` - resources: colour palettes
+
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
+
+Included demos:
 
 * `top_sb_bounce` - persistent bouncing square in single buffer
 * `top_db_bounce` - bouncing square in double buffer
@@ -10,11 +19,11 @@ Included demos for iCEBreaker and Arty FPGA boards:
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
-Learn more about these demos from the [Animated Shapes](https://projectf.io/posts/animated-shapes/) blog post, or read on for build instructions.
+Learn more about the designs and demos from the [Animated Shapes](https://projectf.io/posts/animated-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the included modules.
+![](../../doc/img/animated-shapes.png?raw=true "")
 
-New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+_Bouncing square drawn by an Artix-7 FPGA using the top_sb_bounce demo._
 
 ## iCEBreaker Build
 
