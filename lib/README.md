@@ -36,7 +36,7 @@ Porting to other architectures should be straightforward.
 
 We use a few simple features of SystemVerilog to make Verilog more pleasant:
 
-* `logic` type to avoid deciding between `wire` and `reg` all the time
+* `logic` type is safer and less work than using `wire` and `reg`
 * `always_comb` and `always_ff` to make intent clear and catch mistakes
 * `$clog2` to calculate vector widths (e.g. for addresses)
 * `enum` to make finite state machines simpler to work with
