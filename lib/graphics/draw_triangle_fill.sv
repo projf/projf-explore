@@ -77,8 +77,8 @@ module draw_triangle_fill #(parameter CORDW=16) (  // signed coordinate width
             SORT_2: begin
                 state <= INIT_A;
                 if (y1s > y2s) begin
-                    x1s <= x2;
-                    y1s <= y2;
+                    x1s <= x2s;
+                    y1s <= y2s;
                     x2s <= x1s;
                     y2s <= y1s;
                 end
