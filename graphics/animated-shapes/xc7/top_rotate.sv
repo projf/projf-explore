@@ -1,4 +1,4 @@
-// Project F: Animated Shapes - Top Rotate (Arty Pmod VGA)
+// Project F: Animated Shapes - Top Rotate Demo (Arty Pmod VGA)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -136,8 +136,8 @@ module top_rotate (
     logic signed [CORDW-1:0] offs_x, offs_y;  // offset (translate position)
     logic signed [CORDW-1:0] fbx_fill, fby_fill;  // fill coordinates
     logic signed [CORDW-1:0] fbx_outline, fby_outline;  // outline coordinates
-    logic drawing, draw_done;  // drawing signals
-    logic draw_start_fill, drawing_fill, draw_done_fill;  // drawing fill
+    logic drawing;  // common drawing signal
+    logic draw_start_fill, drawing_fill, draw_done_fill;  // drawing filled shape
     logic draw_start_outline, drawing_outline, draw_done_outline;  // drawing outline
 
     // draw state machine
@@ -206,11 +206,8 @@ module top_rotate (
         endcase
     end
 
-    // drawing and done apply to all drawing types
-    always_comb begin
-        drawing = drawing_fill || drawing_outline;
-        draw_done = draw_done_fill || draw_done_outline;
-    end
+    // drawing applies to all drawing types
+    always_comb drawing = drawing_fill || drawing_outline;
 
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_fill_inst (
         .clk(clk_100m),

@@ -4,7 +4,7 @@ This folder accompanies the Project F blog post: **[Animated Shapes](https://pro
 
 File layout:
 
-* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards (available autumn 2021)
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `res` - resources: colour palettes
@@ -15,7 +15,7 @@ Included demos:
 
 * `top_sb_bounce` - persistent bouncing square in single buffer
 * `top_db_bounce` - bouncing square in double buffer
-* `top_cube_pieces` - breaking a cube into triangle
+* `top_cube_pieces` - breaking a cube into triangles
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
