@@ -78,11 +78,13 @@ set design_sources [list \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${origin_dir}/rotate_xy.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${lib_dir}/maths/res/sine_table_64x8.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_db_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
@@ -107,6 +109,8 @@ set sim_sources [list \
   [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_db_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_db_tb_behav.wcfg" ] \
+  [file normalize "${origin_dir}/xc7/rotate_xy_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/rotate_xy_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

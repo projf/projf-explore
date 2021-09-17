@@ -1,13 +1,15 @@
-// Project F: Animated Shapes - Top Double Buffer Bounce (Nexys Video)
+// Project F: Animated Shapes - Top Rotate Demo (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_db_bounce (
+module top_rotate (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
+    input  wire logic btn_inc,          // increase button (RIGHT)
+    input  wire logic btn_dec,          // decrease button (LEFT)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
     output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
     output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
@@ -51,6 +53,15 @@ module top_db_bounce (
     logic frame_sys;  // start of new frame in system clock domain
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
+
+    // debounce buttons
+    logic sig_inc, sig_dec;
+    /* verilator lint_off PINCONNECTEMPTY */
+    debounce deb_inc
+        (.clk(clk_100m), .in(btn_inc), .out(), .ondn(), .onup(sig_inc));
+    debounce deb_dec
+        (.clk(clk_100m), .in(btn_dec), .out(), .ondn(), .onup(sig_dec));
+    /* verilator lint_on PINCONNECTEMPTY */
 
     // framebuffer (FB)
     localparam FB_WIDTH   = 320;
@@ -99,79 +110,155 @@ module top_db_bounce (
         .blue(fb_blue)
     );
 
-    // animate square coordinates
-    localparam Q1_SIZE = 80;
-    logic [CORDW-1:0] q1x, q1y;  // position (top left of square)
-    logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 1;   // speed in pixels/frame
-    always_ff @(posedge clk_100m) begin
-        if (frame_sys) begin
-            if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
-                q1dx <= 1;
-                q1x <= q1x - q1s;
-            end else if (q1x < q1s) begin  // left edge
-                q1dx <= 0;
-                q1x <= q1x + q1s;
-            end else q1x <= (q1dx) ? q1x - q1s : q1x + q1s;
+    // shape rotation
+    localparam ANGLEW=8;  // angle width in bits
+    logic [ANGLEW-1:0] angle;
+    logic [CORDW-1:0] rot_xi, rot_yi;
+    logic [CORDW-1:0] rot_x, rot_y;
+    logic rot_start, rot_done;
 
-            if (q1y >= FB_HEIGHT - (Q1_SIZE + q1s)) begin  // bottom edge
-                q1dy <= 1;
-                q1y <= q1y - q1s;
-            end else if (q1y < q1s) begin  // top edge
-                q1dy <= 0;
-                q1y <= q1y + q1s;
-            end else q1y <= (q1dy) ? q1y - q1s : q1y + q1s;
-        end
+    // set angle using buttons
+    always_ff @(posedge clk_100m) begin
+        if (sig_inc) angle <= angle + 2;
+        if (sig_dec) angle <= angle - 2;
     end
 
-    // draw square in framebuffer
-    logic [CORDW-1:0] rx0, ry0, rx1, ry1;  // shape coords
-    logic draw_start, drawing, draw_done;  // drawing signals
+    rotate_xy #(.CORDW(CORDW), .ANGLEW(ANGLEW)) rotate_xy_inst (
+        .clk(clk_100m),     // clock
+        .rst(1'b0),         // reset
+        .start(rot_start),  // start rotation
+        .angle,             // rotation angle
+        .xi(rot_xi),        // x coord in
+        .yi(rot_yi),        // y coord in
+        .x(rot_x),          // rotated x coord
+        .y(rot_y),          // rotated y coord
+        .done(rot_done)     // rotation complete (high for one tick)
+    );
+
+    // draw triangles in framebuffer
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
+    logic signed [CORDW-1:0] offs_x, offs_y;  // offset (translate position)
+    logic signed [CORDW-1:0] fbx_fill, fby_fill;  // fill coordinates
+    logic signed [CORDW-1:0] fbx_outline, fby_outline;  // outline coordinates
+    logic drawing;  // common drawing signal
+    logic draw_start_fill, drawing_fill, draw_done_fill;  // drawing filled shape
+    logic draw_start_outline, drawing_outline, draw_done_outline;  // drawing outline
 
     // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
+    enum {IDLE, INIT, ROT_INIT, ROT_0, ROT_1, ROT_2, FILL, OUTLINE, DONE} state;
     always_ff @(posedge clk_100m) begin
+        rot_start <= 0;
         case (state)
             INIT: begin  // register coordinates and colour
                 if (fb_wready) begin
-                    draw_start <= 1;
-                    state <= DRAW;
-                    rx0 <= q1x;
-                    ry0 <= q1y;
-                    rx1 <= q1x + Q1_SIZE;
-                    ry1 <= q1y + Q1_SIZE;
-                    fb_cidx <= 4'hB;  // green
+                    state <= ROT_INIT;
+                    vx0 <=   0; vy0 <= -40;
+                    vx1 <= -30; vy1 <=  20;
+                    vx2 <=  45; vy2 <=  70;
+                    offs_x <= 160; offs_y <= 90;
+                    fb_cidx <= 4'h9;  // orange
                 end
             end
-            DRAW: begin
-                draw_start <= 0;
-                if (draw_done) state <= DONE;
+            ROT_INIT: begin
+                // rotation coords (tx0,ty0)
+                rot_xi <= vx0;
+                rot_yi <= vy0;
+                rot_start <= 1;
+                state <= ROT_0;
+            end
+            ROT_0: if (rot_done) begin
+                // save rotated (tx0,ty0) with translate
+                vx0 <= rot_x + offs_x;
+                vy0 <= rot_y + offs_y;
+                // rotation coords (tx1,ty1)
+                rot_xi <= vx1;
+                rot_yi <= vy1;
+                rot_start <= 1;
+                state <= ROT_1;
+            end
+            ROT_1: if (rot_done) begin
+                // save rotated (tx1,ty1) with translate
+                vx1 <= rot_x + offs_x;
+                vy1 <= rot_y + offs_y;
+                // rotation coords (tx2,ty2)
+                rot_xi <= vx2;
+                rot_yi <= vy2;
+                rot_start <= 1;
+                state <= ROT_2;
+            end
+            ROT_2: if (rot_done) begin
+                // save rotated (tx2,ty2) with translate
+                vx2 <= rot_x + offs_x;
+                vy2 <= rot_y + offs_y;
+                draw_start_fill <= 1;
+                state <= FILL;
+            end
+            FILL: begin
+                draw_start_fill <= 0;
+                if (draw_done_fill) begin
+                    state <= OUTLINE;
+                    draw_start_outline <= 1;
+                    fb_cidx <= 4'h8;  // red
+                end
+            end
+            OUTLINE: begin
+                draw_start_outline <= 0;
+                if (draw_done_outline) state <= DONE;
             end
             DONE: state <= IDLE;
             default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
-    draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
+    // drawing applies to all drawing types
+    always_comb drawing = drawing_fill || drawing_outline;
+
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_fill_inst (
         .clk(clk_100m),
         .rst(1'b0),
-        .start(draw_start),
-        .oe(!fb_busy),  // draw when framebuffer isn't busy
-        .x0(rx0),
-        .y0(ry0),
-        .x1(rx1),
-        .y1(ry1),
-        .x(fbx),
-        .y(fby),
-        .drawing,
+        .start(draw_start_fill),
+        .oe(!fb_busy),  // draw when framebuffer is available
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
+        .x(fbx_fill),
+        .y(fby_fill),
+        .drawing(drawing_fill),
         /* verilator lint_off PINCONNECTEMPTY */
         .busy(),
         /* verilator lint_on PINCONNECTEMPTY */
-        .done(draw_done)
+        .done(draw_done_fill)
+    );
+
+    draw_triangle#(.CORDW(CORDW)) draw_triangle_inst (
+        .clk(clk_100m),
+        .rst(1'b0),
+        .start(draw_start_outline),
+        .oe(!fb_busy),  // draw when framebuffer is available
+        .x0(vx0),
+        .y0(vy0),
+        .x1(vx1),
+        .y1(vy1),
+        .x2(vx2),
+        .y2(vy2),
+        .x(fbx_outline),
+        .y(fby_outline),
+        .drawing(drawing_outline),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .busy(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .done(draw_done_outline)
     );
 
     // write to framebuffer when drawing
-    always_comb fb_we = drawing;
+    always_ff @(posedge clk_100m) begin
+        fb_we <= drawing;
+        fbx <= drawing_fill ? fbx_fill : fbx_outline;
+        fby <= drawing_fill ? fby_fill : fby_outline;
+    end
 
     // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
