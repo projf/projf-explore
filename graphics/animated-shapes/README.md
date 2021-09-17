@@ -15,7 +15,7 @@ Included demos:
 
 * `top_sb_bounce` - persistent bouncing square in single buffer
 * `top_db_bounce` - bouncing square in double buffer
-* `top_cube_pieces` - breaking a cube into triangle
+* `top_cube_pieces` - breaking a cube into triangles
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
