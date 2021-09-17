@@ -71,6 +71,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
+  [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
