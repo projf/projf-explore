@@ -8,8 +8,8 @@
 module top_rotate (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
-    input  wire logic btn_inc,          // increase button (RIGHT)
-    input  wire logic btn_dec,          // decrease button (LEFT)
+    input  wire logic btn_inc,          // increase button (BTNR)
+    input  wire logic btn_dec,          // decrease button (BTNL)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
     output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
     output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+

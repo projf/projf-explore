@@ -17,8 +17,8 @@ set_clock_groups -name SysPixel -asynchronous \
 
 ## Buttons (note IOSTANDARD is NOT the same for all buttons)
 set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst}];
-set_property -dict {PACKAGE_PIN D14 IOSTANDARD LVCMOS12} [get_ports {btn_inc}];  # RIGHT
-set_property -dict {PACKAGE_PIN C22 IOSTANDARD LVCMOS12} [get_ports {btn_dec}];  # LEFT
+set_property -dict {PACKAGE_PIN D14 IOSTANDARD LVCMOS12} [get_ports {btn_inc}];  # BTNR
+set_property -dict {PACKAGE_PIN C22 IOSTANDARD LVCMOS12} [get_ports {btn_dec}];  # BTNL
 
 ## HDMI Source
 set_property -dict {PACKAGE_PIN T1  IOSTANDARD TMDS_33} [get_ports {hdmi_tx_clk_p}];

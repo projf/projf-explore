@@ -78,6 +78,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
+  [file normalize "${lib_dir}/maths/sine_table.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
   [file normalize "${origin_dir}/rotate_xy.sv"] \
