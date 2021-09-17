@@ -4,7 +4,7 @@ This folder accompanies the Project F blog post: **[Animated Shapes](https://pro
 
 File layout:
 
-* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards (available autumn 2021)
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `res` - resources: colour palettes
