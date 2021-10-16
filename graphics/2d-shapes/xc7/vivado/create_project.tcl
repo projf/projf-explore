@@ -46,6 +46,7 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_castle.sv"] \
   [file normalize "${origin_dir}/xc7/top_circles.sv"] \
   [file normalize "${origin_dir}/xc7/top_cube_fill.sv"] \
+  [file normalize "${origin_dir}/xc7/top_rainbow.sv"] \
   [file normalize "${origin_dir}/xc7/top_rectangles.sv"] \
   [file normalize "${origin_dir}/xc7/top_rectangles_fill.sv"] \
   [file normalize "${origin_dir}/xc7/top_triangles_fill.sv"] \
@@ -66,6 +67,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/graphics/draw_circle.sv"] \
+  [file normalize "${lib_dir}/graphics/draw_circle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle.sv"] \

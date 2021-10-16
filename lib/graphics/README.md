@@ -6,13 +6,14 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
-* [draw_circle](draw_circle.sv) - Draw a circle outline
-* [draw_line](draw_line.sv) - Bresenham’s line algorithm
+* [draw_circle](draw_circle.sv) - Draw circle outline
+* [draw_circle_fill](draw_circle_fill.sv) - Draw filled circle
+* [draw_line](draw_line.sv) - Bresenham's line algorithm
 * [draw_line_1d.sv](draw_line_1d.sv) - Draw straight line (left to right only)
-* [draw_rectangle](draw_rectangle.sv) - Draw a rectangle outline
-* [draw_rectangle_fill](draw_rectangle_fill.sv) - Draw a filled rectangle
-* [draw_triangle](draw_triangle.sv) - Draw a triangle outline
-* [draw_triangle_fill](draw_triangle_fill.sv) - Draw a filled triangle
+* [draw_rectangle](draw_rectangle.sv) - Draw rectangle outline
+* [draw_rectangle_fill](draw_rectangle_fill.sv) - Draw filled rectangle
+* [draw_triangle](draw_triangle.sv) - Draw triangle outline
+* [draw_triangle_fill](draw_triangle_fill.sv) - Draw filled triangle
 
 Locate Vivado test benches in the [xc7](xc7) directory.  
 For modules to drive a display, see [display](../display/).  

@@ -1,4 +1,4 @@
-// Project F Library - Draw Circle
+// Project F Library - Draw Filled Circle
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -8,7 +8,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module draw_circle #(parameter CORDW=16) (  // signed coordinate width
+module draw_circle_fill #(parameter CORDW=16) (  // signed coordinate width
     input  wire logic clk,             // clock
     input  wire logic rst,             // reset
     input  wire logic start,           // start line drawing
@@ -24,11 +24,14 @@ module draw_circle #(parameter CORDW=16) (  // signed coordinate width
     // internal variables
     logic signed [CORDW-1:0] xa, ya;  // position relative to circle centre point
     logic signed [CORDW+1:0] err, err_tmp;  // error values (4x as wide as coords)
-    logic [1:0] quadrant;  // circle quadrant
 
     // draw state machine
-    enum {IDLE, CALC_Y, CALC_X, DRAW} state;
-    always_ff @(posedge clk) drawing <= (state == DRAW && oe);  // 1 cycle delay in draw
+    enum {IDLE, CALC_Y, CALC_X, CORDS_DOWN, LINE_DOWN, CORDS_UP, LINE_UP} state;
+ 
+    // horizontal line coordinates
+    logic signed [CORDW-1:0] lx0, lx1;
+    logic line_start;  // start drawing line
+    logic line_done;   // finished drawing current line?
 
     always_ff @(posedge clk) begin
         case (state)
@@ -49,7 +52,7 @@ module draw_circle #(parameter CORDW=16) (  // signed coordinate width
                 end
             end
             CALC_X: begin
-                state <= DRAW;
+                state <= CORDS_DOWN;
                 /* verilator lint_off WIDTH */
                 if (err_tmp > xa || err > ya) begin
                     xa <= xa + 1;
@@ -57,39 +60,34 @@ module draw_circle #(parameter CORDW=16) (  // signed coordinate width
                 end
                 /* verilator lint_on WIDTH */
             end
-            DRAW: begin
-                if (oe) begin
-                    case (quadrant)
-                        2'b00: begin  //   I Quadrant (+x +y)
-                            x <= x0 - xa;
-                            y <= y0 + ya;
-                        end
-                        2'b01: begin  //  II Quadrant (-x +y)
-                            x <= x0 + xa;
-                            y <= y0 + ya;
-                        end
-                        2'b10: begin  // III Quadrant (-x -y)
-                            x <= x0 + xa;
-                            y <= y0 - ya;
-                        end
-                        2'b11: begin  //  IV Quadrant (+x -y)
-                            state <= CALC_Y;
-                            x <= x0 - xa;
-                            y <= y0 - ya;
-                        end
-                    endcase
-                    quadrant <= quadrant + 1;  // next quadrant
-                end
+            CORDS_DOWN: begin
+                state <= LINE_DOWN;
+                y   <= y0 + ya;  // horizontal line (common y-value)
+                lx0 <= x0 + xa;  // draw left-to-right
+                lx1 <= x0 - xa;
+                line_start <= 1;
+            end
+            LINE_DOWN: begin
+                if (line_done) state <= CORDS_UP;
+                line_start <= 0;
+            end
+            CORDS_UP: begin
+                state <= LINE_UP;
+                y <= y0 - ya;  // lx0 and lx1 are the same as CORDS_DOWN
+                line_start <= 1;
+            end
+            LINE_UP: begin
+                if (line_done) state <= CALC_Y;
+                line_start <= 0;
             end
             default: begin  // IDLE
                 done <= 0;
                 if (start) begin
-                    state <= DRAW;
+                    state <= CORDS_DOWN;
                     busy <= 1;
                     xa <= -r0;
                     ya <= 0;
                     err <= 2 - (2 * r0);
-                    quadrant <= 0;
                 end
             end
         endcase
@@ -100,4 +98,19 @@ module draw_circle #(parameter CORDW=16) (  // signed coordinate width
             done <= 0;
         end
     end
+
+    draw_line_1d #(.CORDW(CORDW)) draw_line_1d_inst (
+        .clk,
+        .rst,
+        .start(line_start),
+        .oe,
+        .x0(lx0),
+        .x1(lx1),
+        .x(x),
+        .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .busy(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .done(line_done)
+    );
 endmodule
