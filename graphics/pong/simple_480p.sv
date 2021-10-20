@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Simple 640x480p60 Display Timings
+// Project F: Pong - Simple 640x480p60 Display
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module simple_display_timings_480p (
+module simple_480p (
     input  wire logic clk_pix,   // pixel clock
     input  wire logic rst,       // reset
     output      logic [9:0] sx,  // horizontal screen position

@@ -12,7 +12,7 @@ PCF = icebreaker.pcf
 PATH_LIB = ../../../lib
 ADD_SRC  = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv 
 ADD_SRC += ${PATH_LIB}/essential/debounce.sv
-ADD_SRC += ../simple_display_timings_480p.sv
+ADD_SRC += ../simple_480p.sv
 
 top_pong: top_pong.rpt top_pong.bin
 top_pong_v1: top_pong_v1.rpt top_pong_v1.bin

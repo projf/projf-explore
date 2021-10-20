@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Simple 1920x1080p60 Display Timings
+// Project F: Pong - Simple 1280x720p60 Display
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module simple_display_timings_1080p (
+module simple_720p (
     input  wire logic clk_pix,   // pixel clock
     input  wire logic rst,       // reset
     output      logic [11:0] sx, // horizontal screen position
@@ -16,16 +16,16 @@ module simple_display_timings_1080p (
     );
 
     // horizontal timings
-    parameter HA_END = 1919;          // end of active pixels
-    parameter HS_STA = HA_END + 88;   // sync starts after front porch
-    parameter HS_END = HS_STA + 44;   // sync ends
-    parameter LINE   = 2199;          // last pixel on line (after back porch)
+    parameter HA_END = 1279;          // end of active pixels
+    parameter HS_STA = HA_END + 110;  // sync starts after front porch
+    parameter HS_END = HS_STA + 40;   // sync ends
+    parameter LINE   = 1649;          // last pixel on line (after back porch)
 
     // vertical timings
-    parameter VA_END = 1079;          // end of active pixels
-    parameter VS_STA = VA_END + 4;    // sync starts after front porch
+    parameter VA_END = 719;           // end of active pixels
+    parameter VS_STA = VA_END + 5;    // sync starts after front porch
     parameter VS_END = VS_STA + 5;    // sync ends
-    parameter SCREEN = 1124;          // last line on screen (after back porch)
+    parameter SCREEN = 749;           // last line on screen (after back porch)
 
     always_comb begin
         hsync = (sx >= HS_STA && sx < HS_END);  // positive polarity

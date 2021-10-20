@@ -1,11 +1,11 @@
-// Project F: Pong - Simple 1920x1080p60 Display Timings
+// Project F: FPGA Graphics - Simple 1920x1080p60 Display
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module simple_display_timings_1080p (
+module simple_1080p (
     input  wire logic clk_pix,   // pixel clock
     input  wire logic rst,       // reset
     output      logic [11:0] sx, // horizontal screen position

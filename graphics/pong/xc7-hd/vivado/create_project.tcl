@@ -66,8 +66,8 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_720p.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_1080p.sv"] \
+  [file normalize "${origin_dir}/simple_720p.sv"] \
+  [file normalize "${origin_dir}/simple_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

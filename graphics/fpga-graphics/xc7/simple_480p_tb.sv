@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Simple 640x480p60 Test Bench (XC7)
+// Project F: FPGA Graphics - Simple 640x480p60 Display Test Bench (XC7)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module simple_display_timings_480p_tb();
+module simple_480p_tb();
 
     parameter CLK_PERIOD = 10;  // 10 ns == 100 MHz
     parameter CORDW = 10;  // screen coordinate width in bits
@@ -23,10 +23,10 @@ module simple_display_timings_480p_tb();
        .clk_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    simple_display_timings_480p display_timings_inst (
+    simple_480p display_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,

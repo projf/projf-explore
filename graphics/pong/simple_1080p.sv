@@ -1,35 +1,35 @@
-// Project F: Pong - Simple 640x480p60 Display Timings
+// Project F: Pong - Simple 1920x1080p60 Display
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module simple_display_timings_480p (
+module simple_1080p (
     input  wire logic clk_pix,   // pixel clock
     input  wire logic rst,       // reset
-    output      logic [9:0] sx,  // horizontal screen position
-    output      logic [9:0] sy,  // vertical screen position
+    output      logic [11:0] sx, // horizontal screen position
+    output      logic [11:0] sy, // vertical screen position
     output      logic hsync,     // horizontal sync
     output      logic vsync,     // vertical sync
     output      logic de         // data enable (low in blanking interval)
     );
 
     // horizontal timings
-    parameter HA_END = 639;           // end of active pixels
-    parameter HS_STA = HA_END + 16;   // sync starts after front porch
-    parameter HS_END = HS_STA + 96;   // sync ends
-    parameter LINE   = 799;           // last pixel on line (after back porch)
+    parameter HA_END = 1919;          // end of active pixels
+    parameter HS_STA = HA_END + 88;   // sync starts after front porch
+    parameter HS_END = HS_STA + 44;   // sync ends
+    parameter LINE   = 2199;          // last pixel on line (after back porch)
 
     // vertical timings
-    parameter VA_END = 479;           // end of active pixels
-    parameter VS_STA = VA_END + 10;   // sync starts after front porch
-    parameter VS_END = VS_STA + 2;    // sync ends
-    parameter SCREEN = 524;           // last line on screen (after back porch)
+    parameter VA_END = 1079;          // end of active pixels
+    parameter VS_STA = VA_END + 4;    // sync starts after front porch
+    parameter VS_END = VS_STA + 5;    // sync ends
+    parameter SCREEN = 1124;          // last line on screen (after back porch)
 
     always_comb begin
-        hsync = ~(sx >= HS_STA && sx < HS_END);  // invert: negative polarity
-        vsync = ~(sy >= VS_STA && sy < VS_END);  // invert: negative polarity
+        hsync = (sx >= HS_STA && sx < HS_END);  // positive polarity
+        vsync = (sy >= VS_STA && sy < VS_END);  // positive polarity
         de = (sx <= HA_END && sy <= VA_END);
     end
 

@@ -30,11 +30,11 @@ module top_square (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    simple_display_timings_720p display_timings_inst (
+    simple_720p display_inst (
         .clk_pix,
         .rst(!clk_pix_locked),  // wait for pixel clock lock
         .sx,

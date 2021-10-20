@@ -1,24 +1,25 @@
-# FPGA Graphics Verilator SDL Simulations
+# Simulations for Intro to FPGA Graphics 
 
-This folder contains Verilator simulations to accompany the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**. There are separate instructions for building _FPGA Graphics_ for [FPGA dev boards](../README.md) (iCEBreaker and Arty).
+This folder contains Verilator simulations to accompany the Project F blog post: **[Intro to FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 
-If you're new to graphics simulations check out **[Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/)**.
+[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
-[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate your design without needing an FPGA. Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs you can reach 60 frames per second on a modern PC.
+If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).  
+If you have a dev board, see the [Intro to FPGA Graphics README](../README.md) for build instructions.
 
 ![Bounce simulated on Linux](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
 
 ## Build & Run
 
-If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies)!
+If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
 
-Then navigate to the Verilator directory:
+Once you have Verilator and SDL installed, change to the correct directory:
 
 ```shell
-cd projf-explore/graphics/fpga-graphics/verilator
+cd projf-explore/graphics/fpga-graphics/sim
 ```
 
-Then run Verilator and make for the project of interest:
+Then run Verilator and Make for the project of interest (Square, Beam, or Bounce):
 
 ### Square
 
@@ -57,7 +58,7 @@ make -C ./obj_dir -f Vtop_bounce.mk
 ./obj_dir/bounce
 ```
 
-_Note: all three designs use [simple_display_timings_480p.sv](../simple_display_timings_480p.sv) from the main [FPGA Graphics](../) folder._
+_Note: all three designs use [simple_480p.sv](../simple_480p.sv) from the main [FPGA Graphics](../) folder._
 
 ## Installing Dependencies
 

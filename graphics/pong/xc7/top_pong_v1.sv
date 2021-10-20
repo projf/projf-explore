@@ -25,11 +25,11 @@ module top_pong_v1 (
        .clk_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 10;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    simple_display_timings_480p display_timings_inst (
+    simple_480p display_inst (
         .clk_pix,
         .rst(!clk_locked),  // wait for clock lock
         .sx,
@@ -40,10 +40,12 @@ module top_pong_v1 (
     );
 
     // size of screen with and without blanking
+    /* verilator lint_off UNUSED */
     localparam H_RES_FULL = 800;
     localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
+    localparam H_RES      = 640;
+    localparam V_RES      = 480;
+    /* verilator lint_on UNUSED */
 
     logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == V_RES && sx == 0);

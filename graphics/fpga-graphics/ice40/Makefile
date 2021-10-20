@@ -11,7 +11,7 @@ PCF = icebreaker.pcf
 # included modules
 PATH_LIB = ../../../lib
 ADD_SRC = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
-ADD_SRC += ../simple_display_timings_480p.sv
+ADD_SRC += ../simple_480p.sv
 
 top_bounce: top_bounce.rpt top_bounce.bin
 top_beam: top_beam.rpt top_beam.bin

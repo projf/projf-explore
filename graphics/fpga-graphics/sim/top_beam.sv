@@ -16,8 +16,8 @@ module top_beam #(parameter CORDW=10) (  // coordinate width
     output      logic [7:0] sdl_b      // 8-bit blue
     );
 
-    // display timings
-    simple_display_timings_480p display_timings_inst (
+    // display sync signals and coordinates
+    simple_480p display_inst (
         .clk_pix,
         .rst,
         .sx,

@@ -63,8 +63,8 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_720p.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_1080p.sv"] \
+  [file normalize "${origin_dir}/simple_720p.sv"] \
+  [file normalize "${origin_dir}/simple_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -80,15 +80,15 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_720p_tb.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_display_timings_1080p_tb.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/vivado/simple_display_timings_720p_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7-hd/vivado/simple_display_timings_1080p_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7-hd/simple_720p_tb.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/simple_1080p_tb.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/vivado/simple_720p_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7-hd/vivado/simple_1080p_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "simple_display_timings_720p_tb" -objects $fs_sim_obj
+set_property -name "top" -value "simple_720p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

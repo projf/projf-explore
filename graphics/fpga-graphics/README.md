@@ -1,13 +1,13 @@
-# FPGA Graphics
+# Intro to FPGA Graphics
 
-This folder accompanies the Project F blog post: **[FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**. These SystemVerilog designs introduce you to displays and demonstrate how to draw your first FPGA graphics. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Intro to FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**. These SystemVerilog designs introduce you to displays and demonstrate how to draw your first FPGA graphics. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
 File layout:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
-* `verilator` - simulation of designs with Verilator and LibSDL; see [Verilator README](verilator/README.md)
+* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
@@ -61,14 +61,14 @@ You can then build `top_bounce`, `top_beam`, or `top_square` as you would for an
 
 ### Behavioural Simulation
 
-This design includes test benches for the `clock_gen_480p` and `simple_display_timings_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
+This design includes test benches for the `clock_gen_480p` and `simple_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
 
 ```tcl
 launch_simulation
 run all
 ```
 
-By default the `simple_display_timings_480p` test bench is simulated, but you can switch to the `clock_gen_480p` test bench with:
+By default the `simple_480p` test bench is simulated, but you can switch to the `clock_gen_480p` test bench with:
 
 ```tcl
 set fs_sim_obj [get_filesets sim_1]
@@ -96,7 +96,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Verilator SDL Simulation
 
-You can simulate these design on your PC using Verilator and SDL. See the [Verilator README](verilator/README.md) and blog introduction: [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
+You can simulate these design on your PC using Verilator and SDL. See the [Simulation README](sim/README.md) and blog introduction to [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 ## Linting
 
