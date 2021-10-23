@@ -92,11 +92,14 @@ module top_castle (
     localparam SHAPE_CNT=19;  // number of shapes to draw
     logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
-    logic signed [CORDW-1:0] fbx_tri, fby_tri;    // tri framebuffer coordinates
-    logic signed [CORDW-1:0] fbx_rect, fby_rect;  // rect framebuffer coordinates
+    logic signed [CORDW-1:0] vr0;  // circle radius
+    logic signed [CORDW-1:0] fbx_tri,    fby_tri;     // triangle framebuffer coords
+    logic signed [CORDW-1:0] fbx_rect,   fby_rect;    // rectangle framebuffer coords
+    logic signed [CORDW-1:0] fbx_circle, fby_circle;  // circle framebuffer coords
     logic drawing, draw_done;  // combined drawing signals
-    logic draw_start_tri, drawing_tri, draw_done_tri;  // drawing tri
-    logic draw_start_rect, drawing_rect, draw_done_rect;  // drawing rect
+    logic draw_start_tri, drawing_tri, draw_done_tri;           // drawing triangle
+    logic draw_start_rect, drawing_rect, draw_done_rect;        // drawing rectangle
+    logic draw_start_circle, drawing_circle, draw_done_circle;  // drawing circle
 
     // clear FB before use (contents are not initialized)
     logic signed [CORDW-1:0] fbx_clear, fby_clear;  // framebuffer clearing coordinates
@@ -135,116 +138,114 @@ module top_castle (
                     end
                     5'd1: begin  // drawbridge
                         draw_start_rect <= 1;
-                        vx0 <= 110; vy0 <=  90;
+                        vx0 <= 110; vy0 <= 100;
                         vx1 <= 140; vy1 <= 120;
                         fb_cidx <= 4'h4;  // brown
                     end
-                    5'd2: begin  // arch left
-                        draw_start_tri <= 1;
-                        vx0 <= 110; vy0 <=  90;
-                        vx1 <= 120; vy1 <=  90;
-                        vx2 <= 110; vy2 <= 100;
-                        fb_cidx <= 4'h5;  // dark grey
+                    5'd2: begin  // drawbridge arch
+                        draw_start_circle <= 1;
+                        vx0 <= 125; vy0 <= 100;
+                        vr0 <=  15;
+                        fb_cidx <= 4'h4;  // brown
                     end
-                    5'd3: begin  // arch right
-                        draw_start_tri <= 1;
-                        vx0 <= 130; vy0 <=  90;
-                        vx1 <= 140; vy1 <=  90;
-                        vx2 <= 140; vy2 <= 100;
-                        fb_cidx <= 4'h5;  // dark grey
-                    end
-                    5'd4: begin  // left tower
+                    5'd3: begin  // left tower
                         draw_start_rect <= 1;
                         vx0 <=  40; vy0 <=  45;
                         vx1 <=  60; vy1 <= 120;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd5: begin  // middle tower
+                    5'd4: begin  // middle tower
                         draw_start_rect <= 1;
                         vx0 <= 110; vy0 <=  40;
                         vx1 <= 140; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd6: begin  // right tower
+                    5'd5: begin  // right tower
                         draw_start_rect <= 1;
                         vx0 <= 190; vy0 <=  45;
                         vx1 <= 210; vy1 <= 120;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd7: begin  // left roof
+                    5'd6: begin  // left roof
                         draw_start_tri <= 1;
                         vx0 <=  50; vy0 <=  30;
                         vx1 <=  65; vy1 <=  45;
                         vx2 <=  35; vy2 <=  45;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
-                    5'd8: begin  // middle roof
+                    5'd7: begin  // middle roof
                         draw_start_tri <= 1;
                         vx0 <= 125; vy0 <=  20;
                         vx1 <= 145; vy1 <=  40;
                         vx2 <= 105; vy2 <=  40;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
-                    5'd9: begin  // right roof
+                    5'd8: begin  // right roof
                         draw_start_tri <= 1;
                         vx0 <= 200; vy0 <=  30;
                         vx1 <= 215; vy1 <=  45;
                         vx2 <= 185; vy2 <=  45;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
-                    5'd10: begin  // left window
+                    5'd9: begin  // left window
                         draw_start_rect <= 1;
                         vx0 <=  46; vy0 <=  50;
                         vx1 <=  54; vy1 <=  65;
                         fb_cidx <= 4'h1;  // dark blue
                     end
-                    5'd11: begin  // middle window
+                    5'd10: begin  // middle window
                         draw_start_rect <= 1;
                         vx0 <= 120; vy0 <=  45;
                         vx1 <= 130; vy1 <=  65;
                         fb_cidx <= 4'h1;  // dark blue
                     end
-                    5'd12: begin  // right window
+                    5'd11: begin  // right window
                         draw_start_rect <= 1;
                         vx0 <= 196; vy0 <=  50;
                         vx1 <= 204; vy1 <=  65;
                         fb_cidx <= 4'h1;  // dark blue
                     end
-                    5'd13: begin  // battlement 1
+                    5'd12: begin  // battlement 1
                         draw_start_rect <= 1;
                         vx0 <=  63; vy0 <=  62;
                         vx1 <=  72; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd14: begin  // battlement 2
+                    5'd13: begin  // battlement 2
                         draw_start_rect <= 1;
                         vx0 <=   80; vy0 <=  62;
                         vx1 <=   89; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd15: begin  // battlement 3
+                    5'd14: begin  // battlement 3
                         draw_start_rect <= 1;
                         vx0 <=  97; vy0 <=  62;
                         vx1 <= 106; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd16: begin  // battlement 4
+                    5'd15: begin  // battlement 4
                         draw_start_rect <= 1;
                         vx0 <= 144; vy0 <=  62;
                         vx1 <= 153; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd17: begin  // battlement 5
+                    5'd16: begin  // battlement 5
                         draw_start_rect <= 1;
                         vx0 <= 161; vy0 <=  62;
                         vx1 <= 170; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
                     end
-                    5'd18: begin  // battlement 6
+                    5'd17: begin  // battlement 6
                         draw_start_rect <= 1;
                         vx0 <= 178; vy0 <=  62;
                         vx1 <= 187; vy1 <=  70;
                         fb_cidx <= 4'h5;  // dark grey
+                    end
+                    5'd18: begin  // Sun
+                        draw_start_circle <= 1;
+                        vx0 <= 275; vy0 <=  38;
+                        vr0 <= 20;
+                        fb_cidx <= 4'h9;  // orange
                     end
                     default: begin  // should never occur
                         draw_start_tri <= 1;
@@ -256,8 +257,9 @@ module top_castle (
                 endcase
             end
             DRAW: begin
-                draw_start_rect <= 0;
-                draw_start_tri <= 0;
+                draw_start_tri    <= 0;
+                draw_start_rect   <= 0;
+                draw_start_circle <= 0;
                 if (draw_done) begin
                     if (shape_id == SHAPE_CNT-1) begin
                         state <= DONE;
@@ -275,8 +277,8 @@ module top_castle (
 
     // drawing and done apply to either shape
     always_comb begin
-        drawing = drawing_tri || drawing_rect;
-        draw_done = draw_done_tri || draw_done_rect;
+        drawing   = drawing_tri   || drawing_rect   || drawing_circle;
+        draw_done = draw_done_tri || draw_done_rect || draw_done_circle;
     end
 
     // control drawing speed with output enable
@@ -337,11 +339,33 @@ module top_castle (
         .done(draw_done_rect)
     );
 
+    draw_circle_fill #(.CORDW(CORDW)) draw_circle_inst (
+        .clk(clk_pix),
+        .rst(!clk_locked),  // must be reset for draw with Yosys
+        .start(draw_start_circle),
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
+        .x0(vx0),
+        .y0(vy0),
+        .r0(vr0),
+        .x(fbx_circle),
+        .y(fby_circle),
+        .drawing(drawing_circle),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .busy(),
+        /* verilator lint_on PINCONNECTEMPTY */
+        .done(draw_done_circle)
+    );
+
     // write to framebuffer when drawing
     always_ff @(posedge clk_pix) begin
         fb_we <= drawing || clearing;
-        fbx <= clearing ? fbx_clear : drawing_tri ? fbx_tri : fbx_rect;
-        fby <= clearing ? fby_clear : drawing_tri ? fby_tri : fby_rect;
+        if (clearing) begin
+            fbx <= fbx_clear;
+            fby <= fby_clear;
+        end else begin
+            fbx <= drawing_tri ? fbx_tri : (drawing_rect ? fbx_rect : fbx_circle);
+            fby <= drawing_tri ? fby_tri : (drawing_rect ? fby_rect : fby_circle);
+        end
     end
 
     // reading from FB takes one cycle: delay display signals to match
