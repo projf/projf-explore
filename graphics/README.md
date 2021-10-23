@@ -18,7 +18,7 @@ For other designs from Project F, see the main [README](../README.md) or visit [
 
 ![](../doc/img/2d-shapes.jpg?raw=true "")
 
-_Castle generated using a design from [2D Shapes](2d-shapes) on an iCEBreaker FPGA board._
+_Castle scene generated using a design from [2D Shapes](2d-shapes) on an iCEBreaker FPGA board._
 
 ### About Project F
 
