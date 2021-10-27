@@ -21,7 +21,7 @@ typedef struct Pixel {  // for SDL texture
 int main(int argc, char* argv[]) {
     Verilated::commandArgs(argc, argv);
 
-    if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL init failed.\n");
         return 1;
     }
