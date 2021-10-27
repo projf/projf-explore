@@ -96,7 +96,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Verilator SDL Simulation
 
-You can simulate these design on your PC using Verilator and SDL. See the [Simulation README](sim/README.md) and blog introduction to [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
+You can simulate these designs on your PC using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions. If you're new to Verilator sims, check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 ## Linting
 
