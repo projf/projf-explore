@@ -63,7 +63,7 @@ You can then build `top_hedgehog`, `top_sprite_v2` etc. as you would for any Viv
 
 ### Simulation
 
-This design includes test benches for the sprite modules. You can run the current top test bench simulation from the GUI under the "Flow" menu or from the TCL console with:
+This design includes test benches for the sprite modules. You can run the current top test bench simulation from the GUI under the "Flow" menu or from the Tcl console with:
 
 ```tcl
 launch_simulation
