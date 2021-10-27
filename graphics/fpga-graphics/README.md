@@ -17,7 +17,7 @@ Included demos:
 * `top_beam` - animated square
 * `top_bounce` - bouncing red, green, and blue squares overlap
 
-Learn more about the designs and demos from the [FPGA Graphics](https://projectf.io/posts/fpga-graphics/) blog post, or read on for build instructions.
+Learn more about the designs and demos from the [Intro to FPGA Graphics](https://projectf.io/posts/fpga-graphics/), or read on for build instructions.
 
 ![](../../doc/img/fpga-graphics.jpg?raw=true "")
 
@@ -96,7 +96,7 @@ Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
 ## Verilator SDL Simulation
 
-You can simulate these design on your PC using Verilator and SDL. See the [Simulation README](sim/README.md) and blog introduction to [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
+You can simulate these designs on your PC using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions. If you're new to Verilator sims, check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 ## Linting
 

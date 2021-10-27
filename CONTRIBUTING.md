@@ -18,7 +18,7 @@ Avoid vendor-specific IP. We want our designs to work on as many FPGAs as possib
 
 Designs must be written in SystemVerilog and follow the style of existing modules. Familiarise yourself with a few modules from the library before submitting changes.
 
-We write designs in SystemVerilog, but using only a few beneficial SV features for simplicity and compatibility. See [SystemVerilog Features](README.md#systemverilog) for what's allowed.
+SystemVerilog has many valuable additions over older Verilog standards, but we restrict ourselves to simple, widely-supported SV features. See [SystemVerilog Features](README.md#systemverilog) for what's currently allowed.
 
 ### Linting
 
