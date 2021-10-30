@@ -14,6 +14,7 @@ Discover the [background to the Library](https://projectf.io/posts/verilog-libra
 * [memory](memory) - roms and ram designs, including BRAM
 * [null](null) - null modules for linting
 * [res](res) - resource files for testing
+* [uart](uart) - UART (serial) transmitter/receiver
 
 _NB. Documentation and test benches are still being added._
 
