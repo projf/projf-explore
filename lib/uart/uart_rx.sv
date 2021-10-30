@@ -8,10 +8,10 @@
 module uart_rx (
     input  wire logic clk,
     input  wire logic rst,
-    input  wire logic stb_sample,       // over-sampling baud strobe
-    input  wire logic data_in,          // serial data in
-    output      logic [7:0] data_out,   // data recevived
-    output      logic rx_done           // data receive complete
+    input  wire logic stb_sample,      // over-sampling baud strobe
+    input  wire logic data_in,         // serial data in
+    output      logic [7:0] data_out,  // data recevived
+    output      logic rx_done          // data receive complete
     );
 
     // sync serial data_in to combat metastability

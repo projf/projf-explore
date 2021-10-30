@@ -14,8 +14,8 @@ module uart_baud #(
     ) (
     input  wire logic clk,
     input  wire logic rst,
-    output      logic stb_baud,     // baud strobe
-    output      logic stb_sample    // over-sampling baud strobe
+    output      logic stb_baud,   // baud strobe
+    output      logic stb_sample  // over-sampling baud strobe
     );
 
     logic [CNT_W+3:0] cnt;

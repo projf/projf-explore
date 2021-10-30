@@ -8,12 +8,12 @@
 module uart_tx (
     input  wire logic clk,
     input  wire logic rst,
-    input  wire logic stb_baud,         // baud strobe
-    input  wire logic tx_start,         // start transmission
-    input  wire logic [7:0] data_in,    // data to transmit
-    output      logic data_out,         // serial data out
-    output      logic tx_busy,          // busy with transmission
-    output      logic tx_next           // ready for next data in
+    input  wire logic stb_baud,       // baud strobe
+    input  wire logic tx_start,       // start transmission
+    input  wire logic [7:0] data_in,  // data to transmit
+    output      logic data_out,       // serial data out
+    output      logic tx_busy,        // busy with transmission
+    output      logic tx_next         // ready for next data in
     );
 
     enum {IDLE, START, DATA, STOP} state, state_next;
