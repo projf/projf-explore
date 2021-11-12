@@ -30,14 +30,14 @@ module top_sprite_v1 (
         .clk_pix_locked
     );
 
-    // display timings
-    localparam CORDW = 16;
+    // display sync signals and coordinates
+    localparam CORDW = 16;  // screen coordinate width in bits
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),  // wait for clock lock
         .sx,
         .sy,
         .hsync,

@@ -27,14 +27,14 @@ module top_hedgehog (
        .clk_locked
     );
 
-    // display timings
-    localparam CORDW = 16;
+    // display sync signals and coordinates
+    localparam CORDW = 16;  // screen coordinate width in bits
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
+    display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for pixel clock lock
+        .rst(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
         .hsync,

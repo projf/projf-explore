@@ -60,7 +60,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
-  [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
+  [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \
   [file normalize "${origin_dir}/sprite.sv"] \
@@ -94,15 +94,15 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${lib_dir}/display/xc7/display_timings_480p_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/display_timings_480p_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/display/xc7/display_480p_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/display_480p_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/sprite_v1_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_v2_tb.sv"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "display_timings_480p_tb" -objects $fs_sim_obj
+set_property -name "top" -value "display_480p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

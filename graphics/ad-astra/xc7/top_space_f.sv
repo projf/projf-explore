@@ -25,14 +25,14 @@ module top_space_f (
        .clk_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, line;
-    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
+    display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for pixel clock lock
+        .rst(!clk_locked),
         .sx,
         .sy,
         .hsync,
@@ -73,7 +73,7 @@ module top_space_f (
     localparam SPR_Y = 112;
 
     // signal to start sprite drawing
-    logic spr_start; 
+    logic spr_start;
     always_comb spr_start = (line && sy == SPR_Y);
 
     // subtract 0x20 from code points as font starts at U+0020

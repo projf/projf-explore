@@ -27,13 +27,13 @@ module top_starfields (
        .clk_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de;
-display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
+    display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for pixel clock lock
+        .rst(!clk_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
