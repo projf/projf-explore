@@ -7,9 +7,9 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 ## Verilog Modules
 
 * Display Signal Generation
-  * [display_timings_480p.sv](display_timings_480p.sv) - 640x480 60 Hz using traditional VGA timings
-  * [display_timings_720p.sv](display_timings_720p.sv) - 1280x720 60 Hz (720p)
-  * [display_timings_1080p.sv](display_timings_1080p.sv) - 1920x1080 60 Hz (1080p)
+  * [display_480p.sv](display_480p.sv) - 640x480 60Hz using traditional VGA timings
+  * [display_720p.sv](display_720p.sv) - 1280x720 60Hz (720p)
+  * [display_1080p.sv](display_1080p.sv) - 1920x1080 60Hz (1080p)
 * Framebuffer
   * [framebuffer_bram.sv](framebuffer_bram.sv) - framebuffer backed by block RAM (works with XC7 and iCE40)
   * [framebuffer_db_bram.sv](framebuffer_db_bram.sv) - double-buffered framebuffer backed by block RAM (recommended for XC7)

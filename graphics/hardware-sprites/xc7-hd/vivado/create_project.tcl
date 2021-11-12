@@ -60,8 +60,8 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_720p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_1080p.sv"] \
-  [file normalize "${lib_dir}/display/display_timings_720p.sv"] \
-  [file normalize "${lib_dir}/display/display_timings_1080p.sv"] \
+  [file normalize "${lib_dir}/display/display_720p.sv"] \
+  [file normalize "${lib_dir}/display/display_1080p.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \

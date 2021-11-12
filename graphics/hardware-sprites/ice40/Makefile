@@ -11,7 +11,7 @@ PCF = icebreaker.pcf
 # included modules
 PATH_LIB = ../../../lib
 ADD_SRC  = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
-ADD_SRC += ${PATH_LIB}/display/display_timings_480p.sv
+ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_sync.sv
 ADD_SRC += ../sprite_v1.sv ../sprite_v2.sv ../sprite.sv
