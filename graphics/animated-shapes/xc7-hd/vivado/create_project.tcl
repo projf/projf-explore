@@ -90,7 +90,7 @@ set mem_design_sources [list \
   [file normalize "${lib_dir}/maths/res/sine_table_64x8.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_db_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
+  [file normalize "${origin_dir}/res/palette/16_colr_8bit_palette.mem"] \
   [file normalize "${origin_dir}/res/palette/teleport_16_colr_4bit_palette.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources

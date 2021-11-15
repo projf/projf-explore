@@ -57,10 +57,10 @@ module top_castle (
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 4;
+    localparam FB_CHANW   = 8;
     localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
 
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
@@ -357,7 +357,7 @@ module top_castle (
         de_p1 <= de;
     end
 
-    // background colour
+    // background colour (4-bit per channel, so double in DVI signals, below)
     logic [11:0] bg_colr;
     always_ff @(posedge clk_pix) begin
         if (line) begin
@@ -382,9 +382,9 @@ module top_castle (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= show_bg ? {2{bg_colr[11:8]}} : {2{fb_red}};
-        dvi_green <= show_bg ? {2{bg_colr[7:4]}}  : {2{fb_green}};
-        dvi_blue  <= show_bg ? {2{bg_colr[3:0]}}  : {2{fb_blue}};
+        dvi_red   <= show_bg ? {2{bg_colr[11:8]}} : fb_red;
+        dvi_green <= show_bg ? {2{bg_colr[7:4]}}  : fb_green;
+        dvi_blue  <= show_bg ? {2{bg_colr[3:0]}}  : fb_blue;
     end
 
     // TMDS encoding and serialization
