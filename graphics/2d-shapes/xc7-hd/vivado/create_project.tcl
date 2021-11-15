@@ -44,7 +44,9 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_castle.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_circles.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_cube_fill.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_rainbow.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_rectangles.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_rectangles_fill.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_triangles_fill.sv"] \
@@ -70,6 +72,8 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
+  [file normalize "${lib_dir}/graphics/draw_circle.sv"] \
+  [file normalize "${lib_dir}/graphics/draw_circle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle.sv"] \
@@ -101,10 +105,12 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${lib_dir}/graphics/xc7/draw_circle_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/draw_line_1d_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/draw_rectangle_fill_tb.sv"] \
   [file normalize "${lib_dir}/graphics/xc7/draw_triangle_fill_tb.sv"] \
+  [file normalize "${lib_dir}/graphics/xc7/vivado/draw_circle_tb_behav.wcfg"] \
   [file normalize "${lib_dir}/graphics/xc7/vivado/draw_line_1d_tb_behav.wcfg"] \
   [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_tb_behav.wcfg"] \
   [file normalize "${lib_dir}/graphics/xc7/vivado/draw_rectangle_fill_tb_behav.wcfg"] \
