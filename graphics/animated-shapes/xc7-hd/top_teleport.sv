@@ -230,7 +230,7 @@ module top_teleport (
     // write to framebuffer when drawing
     always_comb fb_we = drawing;
 
-// reading from FB takes one cycle: delay display signals to match
+    // reading from FB takes one cycle: delay display signals to match
     logic hsync_p1, vsync_p1, de_p1;
     always_ff @(posedge clk_pix) begin
         hsync_p1 <= hsync;

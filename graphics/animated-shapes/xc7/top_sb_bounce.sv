@@ -55,7 +55,7 @@ module top_sb_bounce (
     localparam FB_CHANW   = 4;
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "tunnel_16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "teleport_16_colr_4bit_palette.mem";
 
     logic fb_we;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates

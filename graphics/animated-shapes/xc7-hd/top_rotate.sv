@@ -67,10 +67,10 @@ module top_rotate (
     localparam FB_WIDTH   = 320;
     localparam FB_HEIGHT  = 180;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 4;
+    localparam FB_CHANW   = 8;
     localparam FB_SCALE   = 4;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
     localparam FB_BGIDX   = 4'h1;  // background colour index
 
     logic fb_we, fb_busy, fb_wready;
@@ -275,9 +275,9 @@ module top_rotate (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= {2{fb_red}};
-        dvi_green <= {2{fb_green}};
-        dvi_blue  <= {2{fb_blue}};
+        dvi_red   <= fb_red;
+        dvi_green <= fb_green;
+        dvi_blue  <= fb_blue;
     end
 
     // TMDS encoding and serialization

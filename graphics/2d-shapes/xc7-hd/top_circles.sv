@@ -1,11 +1,11 @@
-// Project F: Animated Shapes - Top Cube Pieces (Nexys Video)
+// Project F: 2D Shapes - Top Circles (Nexys Video)
 // (C)2021 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_cube_pieces (
+module top_circles (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst,          // reset button (active low)
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -61,12 +61,13 @@ module top_cube_pieces (
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_8bit_palette.mem";
 
-    logic fb_we, fb_busy, fb_wready;
-    logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
-    logic [FB_CIDXW-1:0] fb_cidx;
-    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display
+    logic fb_we;  // write enable
+    logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
+    logic [FB_CIDXW-1:0] fb_cidx;  // draw colour index
+    logic fb_busy;  // when framebuffer is busy it cannot accept writes
+    logic [FB_CHANW-1:0] fb_red, fb_green, fb_blue;  // colours for display output
 
-    framebuffer_bram_db #(
+    framebuffer_bram #(
         .WIDTH(FB_WIDTH),
         .HEIGHT(FB_HEIGHT),
         .CIDXW(FB_CIDXW),
@@ -86,52 +87,19 @@ module top_cube_pieces (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'h0),
-        .clear(1'b1),  // enable clearing of buffer before drawing
-        .busy(fb_busy),
-        .wready(fb_wready),
         /* verilator lint_off PINCONNECTEMPTY */
         .clip(),
         /* verilator lint_on PINCONNECTEMPTY */
+        .busy(fb_busy),
         .red(fb_red),
         .green(fb_green),
         .blue(fb_blue)
     );
 
-    // animate triangle coordinates
-    localparam MAX_OFFS   = 32;  // maximum pixels to move
-    localparam ANIM_SPEED =  1;  // pixel to move per frame
-    localparam FRAME_WAIT = 60;  // frames to pause between change of direction
-    logic [CORDW-1:0] offs;      // animation offset
-    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic dir;  // direction: 1 is increasing offset
-    enum {START, MOVE, WAIT} anim_state;
-    always_ff @(posedge clk_100m) begin
-        if (frame_sys) begin
-            case (anim_state)
-                MOVE: begin
-                    offs <= (dir == 1) ? offs + ANIM_SPEED : offs - ANIM_SPEED;
-                    if ((dir == 1 && offs >= MAX_OFFS-ANIM_SPEED) ||
-                        (dir == 0 && offs <= ANIM_SPEED)) begin
-                        cnt_frame_wait <= 0;
-                        anim_state <= WAIT;
-                    end
-                end
-                WAIT: begin
-                    if (cnt_frame_wait == FRAME_WAIT-1) begin
-                        anim_state <= MOVE;
-                        dir <= ~dir;  // change direction
-                    end else cnt_frame_wait <= cnt_frame_wait + 1;
-                end
-                default: anim_state <= WAIT;  // START
-            endcase
-        end
-    end
-
-    // draw triangles in framebuffer
-    localparam SHAPE_CNT=6;  // number of shapes to draw
-    logic [2:0] shape_id;    // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
+    // draw circles in framebuffer
+    localparam SHAPE_CNT=8;  // number of shapes to draw
+    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vr0;  // shape coords
     logic draw_start, drawing, draw_done;  // drawing signals
 
     // draw state machine
@@ -139,54 +107,12 @@ module top_cube_pieces (
     always_ff @(posedge clk_100m) begin
         case (state)
             INIT: begin  // register coordinates and colour
-                if (fb_wready) begin
-                    draw_start <= 1;
-                    state <= DRAW;
-                    case (shape_id)
-                        3'd0: begin  // moves in from right
-                            vx0 <= 130 + offs; vy0 <=  60;
-                            vx1 <= 230 + offs; vy1 <=  60;
-                            vx2 <= 230 + offs; vy2 <= 160;
-                            fb_cidx <= (offs == 0) ? 4'h9 : 4'hA;  // orange or yellow
-                        end
-                        3'd1: begin  // moves in from bottom-right
-                            vx0 <= 130 + offs; vy0 <=  60 + offs;
-                            vx1 <= 230 + offs; vy1 <= 160 + offs;
-                            vx2 <= 130 + offs; vy2 <= 160 + offs;
-                            fb_cidx <= (offs == 0) ? 4'h9 : 4'hA;  // orange or yellow
-                        end
-                        3'd2: begin  // moves in from bottom-left
-                            vx0 <= 130 - offs; vy0 <=  60 + offs;
-                            vx1 <=  90 - offs; vy1 <= 120 + offs;
-                            vx2 <= 130 - offs; vy2 <= 160 + offs;
-                            fb_cidx <= (offs == 0) ? 4'h2 : 4'hD;  // dark purple or indigo
-                        end
-                        3'd3: begin  // moves in from left
-                            vx0 <=  90 - offs; vy0 <=  20;
-                            vx1 <= 130 - offs; vy1 <=  60;
-                            vx2 <=  90 - offs; vy2 <= 120;
-                            fb_cidx <= (offs == 0) ? 4'h2 : 4'hD;  // dark purple or indigo
-                        end
-                        3'd4: begin  // moves in from top
-                            vx0 <=  90; vy0 <=  20 - offs;
-                            vx1 <= 190; vy1 <=  20 - offs;
-                            vx2 <= 130; vy2 <=  60 - offs;
-                            fb_cidx <= (offs == 0) ? 4'h1 : 4'hC;  // dark blue or blue
-                        end
-                        3'd5: begin  // moves in from top-right
-                            vx0 <= 190 + offs; vy0 <=  20 - offs;
-                            vx1 <= 130 + offs; vy1 <=  60 - offs;
-                            vx2 <= 230 + offs; vy2 <=  60 - offs;
-                            fb_cidx <= (offs == 0) ? 4'h1 : 4'hC;  // dark blue or blue
-                        end
-                        default: begin  // should never occur
-                            vx0 <=   10; vy0 <=   10;
-                            vx1 <=   10; vy1 <=   30;
-                            vx2 <=   20; vy2 <=   20;
-                            fb_cidx <= 4'h7;  // white
-                        end
-                    endcase
-                end
+                draw_start <= 1;
+                state <= DRAW;
+                vx0 <= 160;
+                vy0 <=  90;
+                vr0 <=  80 - 4 * shape_id;
+                fb_cidx <= 4'hC;  // blue
             end
             DRAW: begin
                 draw_start <= 0;
@@ -199,25 +125,39 @@ module top_cube_pieces (
                     end
                 end
             end
-            DONE: state <= IDLE;  // idle ready for the next frame
-            default: if (frame_sys) begin  // IDLE
-                shape_id <= 0;
-                state <= INIT;
-            end
+            DONE: state <= DONE;
+            default: if (frame_sys) state <= INIT;  // IDLE
         endcase
     end
 
-    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
+    localparam PIX_FRAME  =  30;  // draw this many pixels per frame
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
+    logic draw_req;
+    always_ff @(posedge clk_100m) begin
+        draw_req <= 0;
+        if (frame_sys) begin
+            if (cnt_frame_wait != FRAME_WAIT-1) cnt_frame_wait <= cnt_frame_wait + 1;
+            cnt_pix_frame <= 0;  // reset pixel counter every frame
+        end
+        if (!fb_busy) begin
+            if (cnt_frame_wait == FRAME_WAIT-1 && cnt_pix_frame != PIX_FRAME-1) begin
+                draw_req <= 1;
+                cnt_pix_frame <= cnt_pix_frame + 1;
+            end
+        end
+    end
+
+    draw_circle #(.CORDW(CORDW)) draw_circle_inst (
         .clk(clk_100m),
         .rst(1'b0),
         .start(draw_start),
-        .oe(!fb_busy),  // draw when framebuffer isn't busy
+        .oe(draw_req && !fb_busy),  // draw if requested when framebuffer is available
         .x0(vx0),
         .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
-        .x2(vx2),
-        .y2(vy2),
+        .r0(vr0),
         .x(fbx),
         .y(fby),
         .drawing,
