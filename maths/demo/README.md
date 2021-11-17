@@ -7,13 +7,13 @@ _Demos under construction. Please be patient._
 File layout:
 
 * `xc7-hd` - designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 
 The following directories will be added as the designs are created:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `res` - resources: colour palettes
-* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 

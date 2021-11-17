@@ -31,13 +31,13 @@ module top_graphing (
     );
 
     // display sync signals and coordinates
-    localparam CORDW = 16;  // screen coordinate width in bits
+    localparam CORDW = 16;
     logic hsync, vsync;
     logic [CORDW-1:0] sx, sy;
     logic de;
     display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for clock lock
+        .rst(!clk_pix_locked),
         .sx,
         .sy,
         .hsync,
