@@ -30,13 +30,13 @@ module top_rectangles (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,13 +53,13 @@ module top_rectangles (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 8;
-    localparam FB_SCALE   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
@@ -110,10 +110,10 @@ module top_rectangles (
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                vx0 <=  60 + shape_id;
-                vy0 <=  15 + shape_id;
-                vx1 <= 260 - shape_id;
-                vy1 <= 165 - shape_id;
+                vx0 <= 120 + shape_id;
+                vy0 <=  30 + shape_id;
+                vx1 <= 520 - shape_id;
+                vy1 <= 330 - shape_id;
                 /* verilator lint_on WIDTH */
                 fb_cidx <= shape_id[3:0];  // use lowest four bits for colour
             end
@@ -137,7 +137,7 @@ module top_rectangles (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
-    localparam PIX_FRAME  = 200;  // draw this many pixels per frame
+    localparam PIX_FRAME  = 400;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_req;
@@ -191,9 +191,9 @@ module top_rectangles (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= fb_red;
-        dvi_green <= fb_green;
-        dvi_blue  <= fb_blue;
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

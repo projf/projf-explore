@@ -30,13 +30,13 @@ module top_db_bounce (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,13 +53,13 @@ module top_db_bounce (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 8;
-    localparam FB_SCALE   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
     localparam FB_BGIDX   = 4'h1;  // background colour index
 
     logic fb_we, fb_busy, fb_wready;
@@ -100,10 +100,10 @@ module top_db_bounce (
     );
 
     // animate square coordinates
-    localparam Q1_SIZE = 80;
+    localparam Q1_SIZE = 160;
     logic [CORDW-1:0] q1x, q1y;  // position (top left of square)
     logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 1;   // speed in pixels/frame
+    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
             if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
@@ -188,9 +188,9 @@ module top_db_bounce (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= fb_red;
-        dvi_green <= fb_green;
-        dvi_blue  <= fb_blue;
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

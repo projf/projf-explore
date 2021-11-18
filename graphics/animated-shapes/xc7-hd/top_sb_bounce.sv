@@ -30,13 +30,13 @@ module top_sb_bounce (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,11 +53,12 @@ module top_sb_bounce (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    // framebuffer (FB)
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "teleport_16_colr_4bit_palette.mem";
 
@@ -97,10 +98,10 @@ module top_sb_bounce (
     );
 
     // square coordinates
-    localparam Q1_SIZE = 80;
+    localparam Q1_SIZE = 160;
     logic [CORDW-1:0] q1x, q1y;  // position (top left)
     logic q1dx, q1dy;            // direction: 0 is right/down
-    logic [CORDW-1:0] q1s = 2;   // speed in pixels/frame
+    logic [CORDW-1:0] q1s = 4;   // speed in pixels/frame
     always_ff @(posedge clk_100m) begin
         if (frame_sys) begin
             if (q1x >= FB_WIDTH - (Q1_SIZE + q1s)) begin  // right edge
