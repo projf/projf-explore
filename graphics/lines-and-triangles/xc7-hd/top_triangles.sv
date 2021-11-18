@@ -30,13 +30,13 @@ module top_triangles (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,13 +53,13 @@ module top_triangles (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 8;
-    localparam FB_SCALE   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
@@ -111,27 +111,27 @@ module top_triangles (
                 state <= DRAW;
                 case (shape_id)
                     2'd0: begin
-                        vx0 <=  60; vy0 <=  20;
-                        vx1 <= 280; vy1 <=  80;
-                        vx2 <= 160; vy2 <= 164;
+                        vx0 <= 120; vy0 <=  40;
+                        vx1 <= 560; vy1 <= 160;
+                        vx2 <= 320; vy2 <= 328;
                         fb_cidx <= 4'h9;  // orange
                     end
                     2'd1: begin
-                        vx0 <=  70; vy0 <= 160;
-                        vx1 <= 220; vy1 <=  90;
-                        vx2 <= 170; vy2 <=  10;
+                        vx0 <= 140; vy0 <= 320;
+                        vx1 <= 440; vy1 <= 180;
+                        vx2 <= 340; vy2 <=  20;
                         fb_cidx <= 4'hC;  // blue
                     end
                     2'd2: begin
-                        vx0 <=  22; vy0 <=  35;
-                        vx1 <=  62; vy1 <= 150;
-                        vx2 <=  98; vy2 <=  96;
+                        vx0 <=  44; vy0 <=  70;
+                        vx1 <= 124; vy1 <= 300;
+                        vx2 <= 196; vy2 <= 192;
                         fb_cidx <= 4'h2;  // dark purple
                     end
                     default: begin  // should never occur
-                        vx0 <=   10; vy0 <=   10;
-                        vx1 <=   10; vy1 <=   30;
-                        vx2 <=   20; vy2 <=   20;
+                        vx0 <=   20; vy0 <=   20;
+                        vx1 <=   40; vy1 <=   60;
+                        vx2 <=   40; vy2 <=   40;
                         fb_cidx <= 4'h7;  // white
                     end
                 endcase
@@ -203,9 +203,9 @@ module top_triangles (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= fb_red;
-        dvi_green <= fb_green;
-        dvi_blue  <= fb_blue;
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

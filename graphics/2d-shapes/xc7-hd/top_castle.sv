@@ -30,14 +30,14 @@ module top_castle (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         /* verilator lint_on PINCONNECTEMPTY */
@@ -54,13 +54,13 @@ module top_castle (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 8;
-    localparam FB_SCALE   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
     logic fb_we;  // write enable
     logic signed [CORDW-1:0] fbx, fby;  // draw coordinates
@@ -119,126 +119,126 @@ module top_castle (
                 case (shape_id)
                     5'd0: begin  // main building
                         draw_start_rect <= 1;
-                        vx0 <=  60; vy0 <=  70;
-                        vx1 <= 190; vy1 <= 120;
+                        vx0 <= 120; vy0 <= 140;
+                        vx1 <= 380; vy1 <= 240;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd1: begin  // drawbridge
                         draw_start_rect <= 1;
-                        vx0 <= 110; vy0 <= 100;
-                        vx1 <= 140; vy1 <= 120;
+                        vx0 <= 220; vy0 <= 200;
+                        vx1 <= 280; vy1 <= 240;
                         fb_cidx <= 4'h4;  // brown
                     end
                     5'd2: begin  // drawbridge arch
                         draw_start_circle <= 1;
-                        vx0 <= 125; vy0 <= 100;
-                        vr0 <=  15;
+                        vx0 <= 250; vy0 <= 200;
+                        vr0 <=  30;
                         fb_cidx <= 4'h4;  // brown
                     end
                     5'd3: begin  // left tower
                         draw_start_rect <= 1;
-                        vx0 <=  40; vy0 <=  45;
-                        vx1 <=  60; vy1 <= 120;
+                        vx0 <=  80; vy0 <=  90;
+                        vx1 <= 120; vy1 <= 240;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd4: begin  // middle tower
                         draw_start_rect <= 1;
-                        vx0 <= 110; vy0 <=  40;
-                        vx1 <= 140; vy1 <=  70;
+                        vx0 <= 220; vy0 <=  80;
+                        vx1 <= 280; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd5: begin  // right tower
                         draw_start_rect <= 1;
-                        vx0 <= 190; vy0 <=  45;
-                        vx1 <= 210; vy1 <= 120;
+                        vx0 <= 380; vy0 <=  90;
+                        vx1 <= 420; vy1 <= 240;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd6: begin  // left roof
                         draw_start_tri <= 1;
-                        vx0 <=  50; vy0 <=  30;
-                        vx1 <=  65; vy1 <=  45;
-                        vx2 <=  35; vy2 <=  45;
+                        vx0 <= 100; vy0 <=  60;
+                        vx1 <= 130; vy1 <=  90;
+                        vx2 <=  70; vy2 <=  90;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
                     5'd7: begin  // middle roof
                         draw_start_tri <= 1;
-                        vx0 <= 125; vy0 <=  20;
-                        vx1 <= 145; vy1 <=  40;
-                        vx2 <= 105; vy2 <=  40;
+                        vx0 <= 250; vy0 <=  40;
+                        vx1 <= 290; vy1 <=  80;
+                        vx2 <= 210; vy2 <=  80;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
                     5'd8: begin  // right roof
                         draw_start_tri <= 1;
-                        vx0 <= 200; vy0 <=  30;
-                        vx1 <= 215; vy1 <=  45;
-                        vx2 <= 185; vy2 <=  45;
+                        vx0 <= 400; vy0 <=  60;
+                        vx1 <= 430; vy1 <=  90;
+                        vx2 <= 370; vy2 <=  90;
                         fb_cidx <= 4'h2;  // dark-purple
                     end
                     5'd9: begin  // left window
                         draw_start_rect <= 1;
-                        vx0 <=  46; vy0 <=  50;
-                        vx1 <=  54; vy1 <=  65;
+                        vx0 <=  92; vy0 <= 100;
+                        vx1 <= 104; vy1 <= 130;
                         fb_cidx <= 4'h1;  // dark blue
                     end
                     5'd10: begin  // middle window
                         draw_start_rect <= 1;
-                        vx0 <= 120; vy0 <=  45;
-                        vx1 <= 130; vy1 <=  65;
+                        vx0 <= 240; vy0 <=  90;
+                        vx1 <= 260; vy1 <= 130;
                         fb_cidx <= 4'h1;  // dark blue
                     end
                     5'd11: begin  // right window
                         draw_start_rect <= 1;
-                        vx0 <= 196; vy0 <=  50;
-                        vx1 <= 204; vy1 <=  65;
+                        vx0 <= 392; vy0 <= 100;
+                        vx1 <= 408; vy1 <= 130;
                         fb_cidx <= 4'h1;  // dark blue
                     end
                     5'd12: begin  // battlement 1
                         draw_start_rect <= 1;
-                        vx0 <=  63; vy0 <=  62;
-                        vx1 <=  72; vy1 <=  70;
+                        vx0 <= 126; vy0 <= 124;
+                        vx1 <= 144; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd13: begin  // battlement 2
                         draw_start_rect <= 1;
-                        vx0 <=   80; vy0 <=  62;
-                        vx1 <=   89; vy1 <=  70;
+                        vx0 <=  160; vy0 <= 124;
+                        vx1 <=  178; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd14: begin  // battlement 3
                         draw_start_rect <= 1;
-                        vx0 <=  97; vy0 <=  62;
-                        vx1 <= 106; vy1 <=  70;
+                        vx0 <= 194; vy0 <= 124;
+                        vx1 <= 212; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd15: begin  // battlement 4
                         draw_start_rect <= 1;
-                        vx0 <= 144; vy0 <=  62;
-                        vx1 <= 153; vy1 <=  70;
+                        vx0 <= 288; vy0 <= 124;
+                        vx1 <= 306; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd16: begin  // battlement 5
                         draw_start_rect <= 1;
-                        vx0 <= 161; vy0 <=  62;
-                        vx1 <= 170; vy1 <=  70;
+                        vx0 <= 322; vy0 <= 124;
+                        vx1 <= 340; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd17: begin  // battlement 6
                         draw_start_rect <= 1;
-                        vx0 <= 178; vy0 <=  62;
-                        vx1 <= 187; vy1 <=  70;
+                        vx0 <= 356; vy0 <= 124;
+                        vx1 <= 374; vy1 <= 140;
                         fb_cidx <= 4'h5;  // dark grey
                     end
                     5'd18: begin  // Sun
                         draw_start_circle <= 1;
-                        vx0 <= 275; vy0 <=  38;
-                        vr0 <= 20;
+                        vx0 <= 550; vy0 <=  76;
+                        vr0 <= 40;
                         fb_cidx <= 4'h9;  // orange
                     end
                     default: begin  // should never occur
                         draw_start_tri <= 1;
-                        vx0 <=   10; vy0 <=   10;
-                        vx1 <=   10; vy1 <=   30;
-                        vx2 <=   20; vy2 <=   20;
+                        vx0 <=   20; vy0 <=   20;
+                        vx1 <=   20; vy1 <=   60;
+                        vx2 <=   40; vy2 <=   40;
                         fb_cidx <= 4'h7;  // white
                     end
                 endcase
@@ -269,7 +269,7 @@ module top_castle (
 
     // control drawing speed with output enable
     localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
-    localparam PIX_FRAME  =  20;  // draw this many pixels per frame
+    localparam PIX_FRAME  =  80;  // draw this many pixels per frame
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic [$clog2(PIX_FRAME)-1:0] cnt_pix_frame;
     logic draw_req;
@@ -357,7 +357,7 @@ module top_castle (
         de_p1 <= de;
     end
 
-    // background colour (4-bit per channel, so double in DVI signals, below)
+    // background colour (720p coordinates)
     logic [11:0] bg_colr;
     always_ff @(posedge clk_pix) begin
         if (line) begin
@@ -368,7 +368,7 @@ module top_castle (
             else if (sy == 360) bg_colr <= 12'h27D;
             else if (sy == 410) bg_colr <= 12'h29E;
             else if (sy == 450) bg_colr <= 12'h2BF;
-            else if (sy == 484) bg_colr <= 12'h260;  // below castle (4x pix)
+            else if (sy == 482) bg_colr <= 12'h260;  // below castle (2x pix)
         end
     end
 
@@ -382,9 +382,9 @@ module top_castle (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= show_bg ? {2{bg_colr[11:8]}} : fb_red;
-        dvi_green <= show_bg ? {2{bg_colr[7:4]}}  : fb_green;
-        dvi_blue  <= show_bg ? {2{bg_colr[3:0]}}  : fb_blue;
+        dvi_red   <= show_bg ? {2{bg_colr[11:8]}} : {2{fb_red}};
+        dvi_green <= show_bg ? {2{bg_colr[7:4]}}  : {2{fb_green}};
+        dvi_blue  <= show_bg ? {2{bg_colr[3:0]}}  : {2{fb_blue}};
     end
 
     // TMDS encoding and serialization

@@ -30,13 +30,13 @@ module top_teleport (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,11 +53,11 @@ module top_teleport (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_SCALE   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "teleport_16_colr_4bit_palette.mem";
 
@@ -133,58 +133,58 @@ module top_teleport (
                     draw_start <= 1;
                     state <= DRAW;
                     case (shape_id)
-                        4'd0: begin  // 12 pixels per anim step
-                            dx0 <=  40 - (cnt_anim * 12);
-                            dy0 <=   0 - (cnt_anim * 12);
-                            dx1 <= 279 + (cnt_anim * 12);
-                            dy1 <= 249 + (cnt_anim * 12);
+                        4'd0: begin  // 24 pixels per anim step
+                            dx0 <=  80 - (cnt_anim * 24);
+                            dy0 <=   0 - (cnt_anim * 24);
+                            dx1 <= 558 + (cnt_anim * 24);
+                            dy1 <= 498 + (cnt_anim * 24);
                             fb_cidx <= colr_offs;
                         end
-                        4'd1: begin  // 8 pixels per anim step
-                            dx0 <=  80 - (cnt_anim * 8);
-                            dy0 <=  10 - (cnt_anim * 8);
-                            dx1 <= 239 + (cnt_anim * 8);
-                            dy1 <= 169 + (cnt_anim * 8);
+                        4'd1: begin  // 16 pixels per anim step
+                            dx0 <= 160 - (cnt_anim * 16);
+                            dy0 <=  20 - (cnt_anim * 16);
+                            dx1 <= 478 + (cnt_anim * 16);
+                            dy1 <= 338 + (cnt_anim * 16);
                             fb_cidx <= colr_offs + 1;
                         end
-                        4'd2: begin  // 5 pixels per anim step
-                            dx0 <= 105 - (cnt_anim * 5);
-                            dy0 <=  35 - (cnt_anim * 5);
-                            dx1 <= 214 + (cnt_anim * 5);
-                            dy1 <= 144 + (cnt_anim * 5);
+                        4'd2: begin  // 10 pixels per anim step
+                            dx0 <= 210 - (cnt_anim * 10);
+                            dy0 <=  70 - (cnt_anim * 10);
+                            dx1 <= 428 + (cnt_anim * 10);
+                            dy1 <= 288 + (cnt_anim * 10);
                             fb_cidx <= colr_offs + 2;
                         end
-                        4'd3: begin  // 4 pixels per anim step
-                            dx0 <= 125 - (cnt_anim * 4);
-                            dy0 <=  55 - (cnt_anim * 4);
-                            dx1 <= 194 + (cnt_anim * 4);
-                            dy1 <= 124 + (cnt_anim * 4);
+                        4'd3: begin  // 8 pixels per anim step
+                            dx0 <= 250 - (cnt_anim * 8);
+                            dy0 <= 110 - (cnt_anim * 8);
+                            dx1 <= 388 + (cnt_anim * 8);
+                            dy1 <= 248 + (cnt_anim * 8);
                             fb_cidx <= colr_offs + 3;
                         end
-                        4'd4: begin  // 3 pixels per anim step
-                            dx0 <= 140 - (cnt_anim * 3);
-                            dy0 <=  70 - (cnt_anim * 3);
-                            dx1 <= 179 + (cnt_anim * 3);
-                            dy1 <= 109 + (cnt_anim * 3);
+                        4'd4: begin  // 6 pixels per anim step
+                            dx0 <= 280 - (cnt_anim * 6);
+                            dy0 <= 140 - (cnt_anim * 6);
+                            dx1 <= 358 + (cnt_anim * 6);
+                            dy1 <= 218 + (cnt_anim * 6);
                             fb_cidx <= colr_offs + 4;
                         end
-                        4'd5: begin  // 2 pixels per anim step
-                            dx0 <= 150 - (cnt_anim * 2);
-                            dy0 <=  80 - (cnt_anim * 2);
-                            dx1 <= 169 + (cnt_anim * 2);
-                            dy1 <=  99 + (cnt_anim * 2);
+                        4'd5: begin  // 4 pixels per anim step
+                            dx0 <= 300 - (cnt_anim * 4);
+                            dy0 <= 160 - (cnt_anim * 4);
+                            dx1 <= 338 + (cnt_anim * 4);
+                            dy1 <= 198 + (cnt_anim * 4);
                             fb_cidx <= colr_offs + 5;
                         end
-                        4'd6: begin  // 1 pixel per anim step
-                            dx0 <= 155 - (cnt_anim * 1);
-                            dy0 <=  85 - (cnt_anim * 1);
-                            dx1 <= 164 + (cnt_anim * 1);
-                            dy1 <=  94 + (cnt_anim * 1);
+                        4'd6: begin  // 2 pixel per anim step
+                            dx0 <= 310 - (cnt_anim * 2);
+                            dy0 <= 170 - (cnt_anim * 2);
+                            dx1 <= 328 + (cnt_anim * 2);
+                            dy1 <= 188 + (cnt_anim * 2);
                             fb_cidx <= colr_offs + 6;
                         end
                         default: begin  // should never occur
-                            dx0 <=  10; dy0 <=  10;
-                            dx1 <=  20; dy1 <=  20;
+                            dx0 <=  20; dy0 <=  20;
+                            dx1 <=  40; dy1 <=  40;
                             fb_cidx <= 4'h7;  // white
                         end
                     endcase

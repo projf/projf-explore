@@ -30,13 +30,13 @@ module top_cube_pieces (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
@@ -53,13 +53,13 @@ module top_cube_pieces (
                  .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
 
     // framebuffer (FB)
-    localparam FB_WIDTH   = 320;
-    localparam FB_HEIGHT  = 180;
+    localparam FB_WIDTH   = 640;
+    localparam FB_HEIGHT  = 360;
     localparam FB_CIDXW   = 4;
-    localparam FB_CHANW   = 8;
-    localparam FB_SCALE   = 4;
+    localparam FB_CHANW   = 4;
+    localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
-    localparam FB_PALETTE = "16_colr_8bit_palette.mem";
+    localparam FB_PALETTE = "16_colr_4bit_palette.mem";
 
     logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -144,45 +144,45 @@ module top_cube_pieces (
                     state <= DRAW;
                     case (shape_id)
                         3'd0: begin  // moves in from right
-                            vx0 <= 130 + offs; vy0 <=  60;
-                            vx1 <= 230 + offs; vy1 <=  60;
-                            vx2 <= 230 + offs; vy2 <= 160;
+                            vx0 <= 260 + offs; vy0 <= 120;
+                            vx1 <= 460 + offs; vy1 <= 120;
+                            vx2 <= 460 + offs; vy2 <= 320;
                             fb_cidx <= (offs == 0) ? 4'h9 : 4'hA;  // orange or yellow
                         end
                         3'd1: begin  // moves in from bottom-right
-                            vx0 <= 130 + offs; vy0 <=  60 + offs;
-                            vx1 <= 230 + offs; vy1 <= 160 + offs;
-                            vx2 <= 130 + offs; vy2 <= 160 + offs;
+                            vx0 <= 260 + offs; vy0 <= 120 + offs;
+                            vx1 <= 460 + offs; vy1 <= 320 + offs;
+                            vx2 <= 260 + offs; vy2 <= 320 + offs;
                             fb_cidx <= (offs == 0) ? 4'h9 : 4'hA;  // orange or yellow
                         end
                         3'd2: begin  // moves in from bottom-left
-                            vx0 <= 130 - offs; vy0 <=  60 + offs;
-                            vx1 <=  90 - offs; vy1 <= 120 + offs;
-                            vx2 <= 130 - offs; vy2 <= 160 + offs;
+                            vx0 <= 260 - offs; vy0 <= 120 + offs;
+                            vx1 <= 180 - offs; vy1 <= 240 + offs;
+                            vx2 <= 260 - offs; vy2 <= 320 + offs;
                             fb_cidx <= (offs == 0) ? 4'h2 : 4'hD;  // dark purple or indigo
                         end
                         3'd3: begin  // moves in from left
-                            vx0 <=  90 - offs; vy0 <=  20;
-                            vx1 <= 130 - offs; vy1 <=  60;
-                            vx2 <=  90 - offs; vy2 <= 120;
+                            vx0 <= 180 - offs; vy0 <=  40;
+                            vx1 <= 260 - offs; vy1 <= 120;
+                            vx2 <= 180 - offs; vy2 <= 240;
                             fb_cidx <= (offs == 0) ? 4'h2 : 4'hD;  // dark purple or indigo
                         end
                         3'd4: begin  // moves in from top
-                            vx0 <=  90; vy0 <=  20 - offs;
-                            vx1 <= 190; vy1 <=  20 - offs;
-                            vx2 <= 130; vy2 <=  60 - offs;
+                            vx0 <= 180; vy0 <=  40 - offs;
+                            vx1 <= 380; vy1 <=  40 - offs;
+                            vx2 <= 260; vy2 <= 120 - offs;
                             fb_cidx <= (offs == 0) ? 4'h1 : 4'hC;  // dark blue or blue
                         end
                         3'd5: begin  // moves in from top-right
-                            vx0 <= 190 + offs; vy0 <=  20 - offs;
-                            vx1 <= 130 + offs; vy1 <=  60 - offs;
-                            vx2 <= 230 + offs; vy2 <=  60 - offs;
+                            vx0 <= 380 + offs; vy0 <=  40 - offs;
+                            vx1 <= 260 + offs; vy1 <= 120 - offs;
+                            vx2 <= 460 + offs; vy2 <= 120 - offs;
                             fb_cidx <= (offs == 0) ? 4'h1 : 4'hC;  // dark blue or blue
                         end
                         default: begin  // should never occur
-                            vx0 <=   10; vy0 <=   10;
-                            vx1 <=   10; vy1 <=   30;
-                            vx2 <=   20; vy2 <=   20;
+                            vx0 <=   20; vy0 <=   20;
+                            vx1 <=   20; vy1 <=   60;
+                            vx2 <=   40; vy2 <=   40;
                             fb_cidx <= 4'h7;  // white
                         end
                     endcase
@@ -245,9 +245,9 @@ module top_cube_pieces (
         dvi_hsync <= hsync_p1;
         dvi_vsync <= vsync_p1;
         dvi_de    <= de_p1;
-        dvi_red   <= fb_red;
-        dvi_green <= fb_green;
-        dvi_blue  <= fb_blue;
+        dvi_red   <= {2{fb_red}};
+        dvi_green <= {2{fb_green}};
+        dvi_blue  <= {2{fb_blue}};
     end
 
     // TMDS encoding and serialization
