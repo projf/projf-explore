@@ -15,9 +15,25 @@ module func_circle #(
     output logic r
     );
 
-    logic signed [2*CORDW:0] circle;  // two squares, so twice as wide
+    // // v1: simple version (latency: 2 cycles)
+    // logic signed [2*CORDW:0] circle;  // addition of two squares, so twice as wide
+    // always_ff @(posedge clk) begin
+    //     circle <= x*x + y*y;
+    //     r <= (circle < RADIUS * RADIUS) ? 1 : 0;
+    // end
+
+    // v2: extra pipeline stages (latency: 4 cycles)
+    logic [2*CORDW-1:0] x_squared, x_squared_p1;
+    logic [2*CORDW-1:0] y_squared, y_squared_p1;
+    logic signed [2*CORDW:0] circle;  // addition of two squares, so twice as wide
     always_ff @(posedge clk) begin
-        circle <= x*x + y*y;
+        x_squared_p1 <= x*x;
+        x_squared <= x_squared_p1;
+
+        y_squared_p1 <= y*y;
+        y_squared <= y_squared_p1;
+
+        circle <= x_squared + y_squared;
         r <= (circle < RADIUS * RADIUS) ? 1 : 0;
     end
 endmodule

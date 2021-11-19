@@ -15,10 +15,25 @@ module func_squared #(
     output logic r
     );
 
-    logic signed [2*CORDW-1:0] x_squared, y_scaled;
+    // // v1: simple version (latency: 2 cycles)
+    // logic signed [2*CORDW-1:0] x_squared;
+    // logic signed [2*CORDW-1:0] y_scaled;
+    // always_ff @(posedge clk) begin
+    //     y_scaled <= Y_SCALE * y;
+    //     x_squared <= x*x;
+    //     r <= (x_squared < y_scaled) ? 1 : 0;
+    // end
+
+    // v2: extra pipeline stages (latency: 3 cycles)
+    logic signed [2*CORDW-1:0] x_squared, x_squared_p1;
+    logic signed [2*CORDW-1:0] y_scaled, y_squared_p1;
     always_ff @(posedge clk) begin
-        x_squared <= x*x;
-        y_scaled <= Y_SCALE*y;
+        y_squared_p1 <= Y_SCALE * y;
+        y_scaled     <= y_squared_p1;
+
+        x_squared_p1 <= x*x;
+        x_squared <= x_squared_p1;
+
         r <= (x_squared < y_scaled) ? 1 : 0;
     end
 endmodule
