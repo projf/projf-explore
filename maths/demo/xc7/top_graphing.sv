@@ -27,8 +27,9 @@ module top_graphing (
 
     // display sync signals and coordinates
     localparam CORDW = 12;
-    logic hsync, vsync, de;
+    logic hsync, vsync;
     logic [CORDW-1:0] sx, sy;
+    logic de;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst(!clk_locked),

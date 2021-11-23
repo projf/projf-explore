@@ -2,49 +2,17 @@
 
 This folder accompanies the Project F series: **[Maths and Algorithms with FPGAs](https://projectf.io/posts/numbers-in-verilog/)**. These SystemVerilog maths demos let your visualize many of the concepts we cover. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
 
-_Demos under construction. Please be patient._
-
 File layout:
 
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `xc7-hd` - designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
-
-The following directories will be added as the designs are created:
-
-* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
-* `xc7` - designs for Arty and other Xilinx 7 Series boards
-* `res` - resources: colour palettes
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
 Included demos:
 
-* `top_graphing` - graph a mathematical function
-
-## iCEBreaker Build
-
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
-
-You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
-
-For example, to build `top_graphing`; clone the projf-explore git repo, then:
-
-```shell
-cd projf-explore/maths/demos/ice40
-make top_graphing
-```
-
-After the build completes, you'll have a bin file, such as `top_graphing.bin`. Use the bin file to program your board:
-
-```shell
-iceprog top_graphing.bin
-```
-
-If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
-
-### Problems Building
-
-If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
+* `top_graphing` - graph a mathematical function (uses DSPs for multiplication)
 
 ## Arty Build
 
