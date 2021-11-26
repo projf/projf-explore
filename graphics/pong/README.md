@@ -7,6 +7,7 @@ File layout:
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
@@ -78,6 +79,10 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Verilator SDL Simulation
+
+You can simulate these designs on your PC using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions. If you're new to Verilator sims, check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 ## Linting
 
