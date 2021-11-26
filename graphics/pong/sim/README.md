@@ -9,7 +9,7 @@ NB. This sim is based on `top_pong_v3`: it doesn't include user controls, so you
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).  
 If you have a dev board, see the [Intro to FPGA Graphics README](../README.md) for build instructions.
 
-![Bounce simulated on Linux](../../../doc/img/top-bounce-verilator-sdl.png?raw=true "")
+![Pong simulated on macOS](../../../doc/img/pong-verilator-sdl.png?raw=true "")
 
 ## Build & Run
 
@@ -18,7 +18,7 @@ If this is the first time you've used Verilator and SDL, you need to [install de
 Once you have Verilator and SDL installed, change to the correct directory:
 
 ```shell
-cd projf-explore/graphics/fpga-pong/sim
+cd projf-explore/graphics/pong/sim
 ```
 
 Then run Verilator and Make for the Pong project:
