@@ -2,12 +2,11 @@
 
 This folder contains a Verilator simulation to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**.
 
-NB. This sim is based on `top_pong_v3`: it doesn't include user controls, so you can't play against the hardware, only watch.
+This sim is based on `top_pong_v3`: it doesn't include user controls, so you can't play against the hardware, only watch. However, it should be straightforward to add controls via SDL if you want to make the game playable.
 
-[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
+[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for this simple design, you can reach 60 FPS on a modern PC.
 
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).  
-If you have a dev board, see the [Intro to FPGA Graphics README](../README.md) for build instructions.
 
 ![Pong simulated on macOS](../../../doc/img/pong-verilator-sdl.png?raw=true "")
 
