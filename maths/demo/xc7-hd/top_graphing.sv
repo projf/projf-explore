@@ -105,7 +105,7 @@ module top_graphing (
     localparam X_OFFS = 640;
     localparam Y_OFFS = 359;
     always_ff @(posedge clk_pix) begin
-        x <= sx -X_OFFS + 4;  // correction for function (+n) and offset calculation (+1)
+        x <= sx - X_OFFS + 4;  // latency for function (+n) and offset calculation (+1)
         y <= Y_OFFS - sy;
     end
 

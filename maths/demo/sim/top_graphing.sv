@@ -56,7 +56,7 @@ module top_graphing #(parameter CORDW=16) (   // coordinate width (in bits)
     localparam X_OFFS = 320;
     localparam Y_OFFS = 239;
     always_ff @(posedge clk_pix) begin
-        x <= sx -X_OFFS + 3;  // correction for function (+2) and offset calculation (+1)
+        x <= sx - X_OFFS + 4;  // latency for function (+n) and offset calculation (+1)
         y <= Y_OFFS - sy;
     end
 
