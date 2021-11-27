@@ -4,6 +4,7 @@ This folder accompanies the Project F series: **[Maths and Algorithms with FPGAs
 
 File layout:
 
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards (coming soon)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `xc7-hd` - designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
@@ -14,12 +15,16 @@ Included demos:
 
 * `top_graphing` - graph a mathematical function (uses DSPs for multiplication)
 
+## iCEBreaker Build
+
+Designs for iCEBreaker are not available yet. Sorry.
+
 ## Arty Build
 
 To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
-cd projf-explore/maths/demos/xc7/vivado
+cd projf-explore/maths/demo/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -36,7 +41,7 @@ It's straightforward to adapt the project for other Xilinx 7 Series boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd projf-explore/maths/demos/xc7/vivado
+cd projf-explore/maths/demo/xc7/vivado
 source ./create_project.tcl
 ```
 
