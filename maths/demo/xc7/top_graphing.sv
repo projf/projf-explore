@@ -46,7 +46,7 @@ module top_graphing (
 
     // signal when to draw mathematical function and axis
     logic draw, axes;
-    
+
     // VGA output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
