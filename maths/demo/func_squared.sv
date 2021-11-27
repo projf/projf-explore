@@ -26,10 +26,10 @@ module func_squared #(
 
     // v2: extra pipeline stages (latency: 3 cycles)
     logic signed [2*CORDW-1:0] x_squared, x_squared_p1;
-    logic signed [2*CORDW-1:0] y_scaled, y_squared_p1;
+    logic signed [2*CORDW-1:0] y_scaled, y_scaled_p1;
     always_ff @(posedge clk) begin
-        y_squared_p1 <= Y_SCALE * y;
-        y_scaled     <= y_squared_p1;
+        y_scaled_p1 <= Y_SCALE * y;
+        y_scaled    <= y_scaled_p1;
 
         x_squared_p1 <= x*x;
         x_squared <= x_squared_p1;
