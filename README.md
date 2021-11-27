@@ -37,13 +37,16 @@ A three-part introduction to FPGA development with Verilog; currently available 
 
 The third part will be available for the Nexys Video soon.
 
-## Maths
+## Maths and Algorithms
 
-Maths & Algorithms is our next topic, and the first blog post is now available:
+Maths & Algorithms is our lastest tutorial series:
 
-* [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) - handling integers, both signed and unsigned
+* [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) - working with signed and unsigned integers
+* [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps) - efficient multiplication with DSPs
 
-Stay tuned for more from this series later in 2021.
+There are [maths demos](maths/demo) in this repo to accompany the series.
+
+_Stay tuned for more parts over winter 2021-22._
 
 ## Requirements
 
