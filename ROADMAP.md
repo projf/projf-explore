@@ -11,9 +11,13 @@ See [About Project F](https://projectf.io/about/) and the repo [README](README.m
 
 I will complete the [FPGA Graphics](graphics/) series ([blog](https://projectf.io/posts/fpga-graphics/)) by the end of 2021. All the important designs are in place, but I need to add some iCEBreaker versions, fix [bugs](https://github.com/projf/projf-explore/issues), and complete blog explanations for framebuffers.
 
+Update December 2021: Minor updates continue. I still need to create a double-buffer for iCE40.
+
 ### Maths & Algorithms Series
 
 I plan to begin the next major blog series, covering Maths & Algorithms. The first part is due to cover the representation of numbers in Verilog. This series will incorporate existing designs for division, and square root etc.
+
+Update December 2021: This series started in autumn 2021 with [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) and [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/). It will continue in 2022.
 
 ### Module & Signal Naming
 
@@ -22,7 +26,7 @@ Project F module and signal naming aren't as consistent and straightforward as t
 I plan to make the following module name changes:
 
 * `clock_gen_NNN.sv` to `clock_NNN.sv`
-* `display_timings_NNN.sv` to `display_NNN.sv`
+* `display_timings_NNN.sv` to `display_NNN.sv` - IN PROGRESS
 * `simple_display_timings_NNN.sv` to `simple_NNN.sv` - DONE
 
 Where `NNN` is `480p`, `720p` etc. Xilinx `clock_480p` will also gain support for 5x clocks to match other display clocks.
@@ -50,7 +54,7 @@ And the following parameter names:
 * `DATAW` - data width
 * `DEPTH` - number of elements
 
-_Other names may be added to these lists during 2021._
+_Other names may be added to these lists during 2021-22._
 
 ## Future
 
