@@ -33,14 +33,14 @@ module top_life (
         .clk_pix_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_timings_720p #(.CORDW(CORDW)) display_timings_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),  // wait for pixel clock lock
+        .rst(!clk_pix_locked),
         .sx,
         .sy,
         .hsync,
