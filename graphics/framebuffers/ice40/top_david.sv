@@ -27,13 +27,13 @@ module top_david (
        .clk_locked
     );
 
-    // display timings
+    // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
-    logic de, frame, line;
-    display_timings_480p #(.CORDW(CORDW)) display_timings_inst (
+    logic de, line, frame;
+    display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for pixel clock lock
+        .rst(!clk_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),
