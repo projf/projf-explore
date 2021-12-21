@@ -4,7 +4,7 @@ This folder accompanies the Project F series: **[Maths and Algorithms with FPGAs
 
 File layout:
 
-* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards (coming soon)
+* `ice40` - designs for iCEBreaker and other Lattice iCE40UP boards
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `xc7-hd` - designs for Nexys Video and larger Xilinx 7 Series FPGAs
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
@@ -17,7 +17,7 @@ Included demos:
 
 ## iCEBreaker Build
 
-Designs for iCEBreaker are not available yet. Sorry.
+Designs for iCEBreaker are available but still need additional testing. Feel free to experiment with them.
 
 ## Arty Build
 
