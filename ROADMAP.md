@@ -1,11 +1,14 @@
 # Project F Roadmap
 
-This page summarises the plans for Project F over the next few months and in the longer term.  
-Follow [@WillFlux](https://twitter.com/WillFlux) for updates and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
+This page summarises the plans for Project F. Follow [@WillFlux](https://twitter.com/WillFlux) for updates and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
 
 See [About Project F](https://projectf.io/about/) and the repo [README](README.md) for an introduction to Project F.
 
-## During 2021
+## 2022
+
+I will announce plans for 2022 in the spring. In the meantime, I will continue to update and improve existing designs as described below.
+
+## 2021
 
 ### FPGA Graphics
 
@@ -17,7 +20,7 @@ Update December 2021: Minor updates continue. I still need to create a double-bu
 
 I plan to begin the next major blog series, covering Maths & Algorithms. The first part is due to cover the representation of numbers in Verilog. This series will incorporate existing designs for division, and square root etc.
 
-Update December 2021: This series started in autumn 2021 with [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) and [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/). It will continue in 2022.
+Update December 2021: This series started in autumn 2021 with [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) and [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/). It will continue in spring 2022.
 
 ### Module & Signal Naming
 
@@ -67,5 +70,5 @@ These are some of the ideas for future content.
   * RISC-V CPU Designs
   * Serial Protocols
   * 3D Graphics
-  * FPGA Languages: nMigen, SpinalHDL etc.
+  * Other Languages: Amaranth HDL, SpinalHDL etc.
   * Formal Verification

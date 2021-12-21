@@ -35,8 +35,6 @@ A three-part introduction to FPGA development with Verilog; currently available 
 * **Hello Arty**: [Designs](hello/hello-arty) - [Blog 1](https://projectf.io/posts/hello-arty-1/) - [Blog 2](https://projectf.io/posts/hello-arty-2/) - [Blog 3](https://projectf.io/posts/hello-arty-3/)
 * **Hello Nexys**: [Designs](hello/hello-nexys) - [Blog 1](https://projectf.io/posts/hello-nexys-1/) - [Blog 2](https://projectf.io/posts/hello-nexys-2/)
 
-The third part will be available for the Nexys Video soon.
-
 ## Maths and Algorithms
 
 Maths & Algorithms is our lastest tutorial series:
@@ -46,7 +44,7 @@ Maths & Algorithms is our lastest tutorial series:
 
 There are [maths demos](maths/demo) in this repo to accompany the series.
 
-_Stay tuned for more parts over winter 2021-22._
+_Stay tuned for more parts in spring 2022._
 
 ## Requirements
 

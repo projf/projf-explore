@@ -14,7 +14,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ### Test Benches
 
-_Test benches will be added to the repo soon._
+_Test benches still need to be added for UART._
 
 ### Examples
 

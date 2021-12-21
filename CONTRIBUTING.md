@@ -1,6 +1,6 @@
 # Contributing to Project F
 
-Project F welcomes contributions from beginners and experts alike. We have a few simple policies to ensure new designs are compatible with the project goals. This document is a new draft for autumn 2021; expect additional guidelines over the coming months.
+Project F welcomes contributions from beginners and experts alike. We have a few simple policies to ensure new designs are compatible with the project goals. This document is a new draft for autumn 2021; expect additional guidelines in 2022.
 
 ## Philosophy 
 

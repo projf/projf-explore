@@ -14,6 +14,6 @@ This series is also available for the [Arty A7](../hello-arty).
   * [G source](G/)
   * [H source](H/)
   * [I source](I/)
-* Hello Nexys - Part 3 (coming spring 2021)
+* Hello Nexys - Part 3 (not currently available)
 
 For other designs from Project F, see the main [README](../../README.md) or visit [projectf.io](https://projectf.io/).
