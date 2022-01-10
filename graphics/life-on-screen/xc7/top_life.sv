@@ -1,5 +1,5 @@
 // Project F: Life on Screen - Top Conway's Life (Arty Pmod VGA)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -31,7 +31,7 @@ module top_life (
     // display sync signals and coordinates
     localparam CORDW = 16;
     logic hsync, vsync;
-    logic de, line, frame;
+    logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst(!clk_locked),

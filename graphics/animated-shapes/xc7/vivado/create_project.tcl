@@ -1,5 +1,5 @@
 # Project F: Animated Shapes - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
+# (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - Animated Shapes Project Creation Script"
@@ -61,7 +61,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
-  [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
+  [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_bram_db.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
@@ -102,7 +102,7 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
-  [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
+  [file normalize "${lib_dir}/display/display_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_db_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_db_tb_behav.wcfg" ] \
   [file normalize "${origin_dir}/xc7/rotate_xy_tb.sv"] \

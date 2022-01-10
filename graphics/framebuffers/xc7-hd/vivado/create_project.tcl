@@ -1,5 +1,5 @@
 # Project F: Framebuffers - Create Vivado Project (Nexys Video)
-# (C)2021 Will Green, open source hardware released under the MIT License
+# (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - Framebuffers Project Creation Script"
@@ -107,7 +107,7 @@ set fs_sim_obj [get_filesets sim_1]
 set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/xd_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
-  [file normalize "${lib_dir}/display/display_timings_24x18.sv"] \
+  [file normalize "${lib_dir}/display/display_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_tb_behav.wcfg" ] \
