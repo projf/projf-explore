@@ -1,5 +1,5 @@
 // Project F Library - Double-Buffered Framebuffer in BRAM Test Bench (XC7)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -23,14 +23,14 @@ module framebuffer_bram_db_tb();
     logic [3:0] disp_g;  // 4-bit VGA green
     logic [3:0] disp_b;  // 4-bit VGA blue
 
-    // display timings
+    // display sync signals and coordinates
     localparam H_RES = 24;
     localparam V_RES = 18;
     localparam CORDW = 16;
     logic hsync, vsync;
     logic de, frame, line;
     logic signed [CORDW-1:0] sx, sy;
-    display_timings_24x18 display_timings_inst (
+    display_24x18 display_inst (
         .clk_pix(clk_25m),
         .rst(rst_pix),
         .sx,

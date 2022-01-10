@@ -31,7 +31,7 @@ Project F module and signal naming aren't as consistent and straightforward as t
 I plan to make the following module name changes:
 
 * `clock_gen_NNN.sv` to `clock_NNN.sv`
-* `display_timings_NNN.sv` to `display_NNN.sv` - IN PROGRESS
+* `display_timings_NNN.sv` to `display_NNN.sv` - DONE
 * `simple_display_timings_NNN.sv` to `simple_NNN.sv` - DONE
 
 Where `NNN` is `480p`, `720p` etc. Xilinx `clock_480p` will also gain support for 5x clocks to match other display clocks.

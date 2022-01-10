@@ -1,5 +1,5 @@
 ## Project F: Lines and Triangles - iCEBreaker Makefile
-## (C)2021 Will Green, open source hardware released under the MIT License
+## (C)2022 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
 # configuration
@@ -12,7 +12,7 @@ PCF = icebreaker.pcf
 PATH_LIB = ../../../lib
 ADD_SRC  = ${PATH_LIB}/clock/xd.sv
 ADD_SRC += ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
-ADD_SRC += ${PATH_LIB}/display/display_timings_480p.sv
+ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ${PATH_LIB}/display/ice40/framebuffer_spram.sv
 ADD_SRC += ${PATH_LIB}/display/linebuffer.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
@@ -28,7 +28,7 @@ top_cube: top_cube.rpt top_cube.bin
 top_latency_check: top_latency_check.rpt top_latency_check.bin
 
 %.json: %.sv $(ADD_SRC)
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc9 -device u -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@

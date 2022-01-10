@@ -1,5 +1,5 @@
 # Project F: 2D Shapes - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
+# (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - 2D Shapes Project Creation Script"
@@ -63,7 +63,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
-  [file normalize "${lib_dir}/display/display_timings_480p.sv"] \
+  [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/linebuffer.sv"] \
   [file normalize "${lib_dir}/graphics/draw_circle.sv"] \
