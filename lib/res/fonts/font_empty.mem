@@ -1,0 +1,294 @@
+// Project F Library - Empty Font File
+// This file formatted for Verilog $readmemh by Will Green, Project F
+// Learn more at https://projectf.io
+
+// Empty Font File for U+0000 to U+00FF inclusive.
+// Used to label characters after conversion to $readmemh format
+
+// C0 Controls
+// U+0000 - Null character
+// U+0001 - Start of Heading
+// U+0002 - Start of Text
+// U+0003 - End-of-text character
+// U+0004 - End-of-transmission character
+// U+0005 - Enquiry character
+// U+0006 - Acknowledge character
+// U+0007 - Bell character
+// U+0008 - Backspace
+// U+0009 - Horizontal tab
+// U+000A - Line feed
+// U+000B - Vertical tab
+// U+000C - Form feed
+// U+000D - Carriage return
+// U+000E - Shift Out
+// U+000F - Shift In
+// U+0010 - Data Link Escape
+// U+0011 - Device Control 1
+// U+0012 - Device Control 2
+// U+0013 - Device Control 3
+// U+0014 - Device Control 4
+// U+0015 - Negative-acknowledge character
+// U+0016 - Synchronous Idle
+// U+0017 - End of Transmission Block
+// U+0018 - Cancel character
+// U+0019 - End of Medium
+// U+001A - Substitute character
+// U+001B - Escape character
+// U+001C - File Separator
+// U+001D - Group Separator
+// U+001E - Record Separator
+// U+001F - Unit Separator
+
+// ASCII punctuation and symbols
+// U+0020 - Space
+// U+0021 - Exclamation mark
+// U+0022 - Quotation mark
+// U+0023 - Number sign
+// U+0024 - Dollar sign
+// U+0025 - Percent sign
+// U+0026 - Ampersand
+// U+0027 - Apostrophe
+// U+0028 - Left parenthesis
+// U+0029 - Right parenthesis
+// U+002A - Asterisk
+// U+002B - Plus sign
+// U+002C - Comma
+// U+002D - Hyphen-minus
+// U+002E - Full stop or period
+// U+002F - Solidus or Slash
+
+// ASCII digits
+// U+0030 - Digit Zero
+// U+0031 - Digit One
+// U+0032 - Digit Two
+// U+0033 - Digit Three
+// U+0034 - Digit Four
+// U+0035 - Digit Five
+// U+0036 - Digit Six
+// U+0037 - Digit Seven
+// U+0038 - Digit Eight
+// U+0039 - Digit Nine
+
+// ASCII punctuation and symbols
+// U+003A - Colon
+// U+003B - Semicolon
+// U+003C - Less-than sign
+// U+003D - Equal sign
+// U+003E - Greater-than sign
+// U+003F - Question mark
+// U+0040 - At sign or Commercial at
+
+// Uppercase Latin alphabet
+// U+0041 - Latin Capital letter A
+// U+0042 - Latin Capital letter B
+// U+0043 - Latin Capital letter C
+// U+0044 - Latin Capital letter D
+// U+0045 - Latin Capital letter E
+// U+0046 - Latin Capital letter F
+// U+0047 - Latin Capital letter G
+// U+0048 - Latin Capital letter H
+// U+0049 - Latin Capital letter I
+// U+004A - Latin Capital letter J
+// U+004B - Latin Capital letter K
+// U+004C - Latin Capital letter L
+// U+004D - Latin Capital letter M
+// U+004E - Latin Capital letter N
+// U+004F - Latin Capital letter O
+// U+0050 - Latin Capital letter P
+// U+0051 - Latin Capital letter Q
+// U+0052 - Latin Capital letter R
+// U+0053 - Latin Capital letter S
+// U+0054 - Latin Capital letter T
+// U+0055 - Latin Capital letter U
+// U+0056 - Latin Capital letter V
+// U+0057 - Latin Capital letter W
+// U+0058 - Latin Capital letter X
+// U+0059 - Latin Capital letter Y
+// U+005A - Latin Capital letter Z
+
+// ASCII punctuation and symbols
+// U+005B - Left Square Bracket
+// U+005C - Backslash
+// U+005D - Right Square Bracket
+// U+005E - Circumflex accent
+// U+005F - Low line
+// U+0060 - Grave accent
+
+// Lowercase Latin alphabet
+// U+0061 - Latin Small letter A
+// U+0062 - Latin Small letter B
+// U+0063 - Latin Small letter C
+// U+0064 - Latin Small letter D
+// U+0065 - Latin Small letter E
+// U+0066 - Latin Small letter F
+// U+0067 - Latin Small letter G
+// U+0068 - Latin Small letter H
+// U+0069 - Latin Small letter I
+// U+006A - Latin Small letter J
+// U+006B - Latin Small letter K
+// U+006C - Latin Small letter L
+// U+006D - Latin Small letter M
+// U+006E - Latin Small letter N
+// U+006F - Latin Small letter O
+// U+0070 - Latin Small letter P
+// U+0071 - Latin Small letter Q
+// U+0072 - Latin Small letter R
+// U+0073 - Latin Small letter S
+// U+0074 - Latin Small letter T
+// U+0075 - Latin Small letter U
+// U+0076 - Latin Small letter V
+// U+0077 - Latin Small letter W
+// U+0078 - Latin Small letter X
+// U+0079 - Latin Small letter Y
+// U+007A - Latin Small letter Z
+
+// ASCII punctuation and symbols
+// U+007B - Left Curly Bracket
+// U+007C - Vertical bar
+// U+007D - Right Curly Bracket
+// U+007E - Tilde
+
+// Control character
+// U+007F - Delete
+
+// C1 Controls
+// U+0080 - Padding Character
+// U+0081 - High Octet Preset
+// U+0082 - Break Permitted Here
+// U+0083 - No Break Here
+// U+0084 - Index
+// U+0085 - Next Line
+// U+0086 - Start of Selected Area
+// U+0087 - End of Selected Area
+// U+0088 - Character (Horizontal) Tabulation Set
+// U+0089 - Character (Horizontal) Tabulation with Justification
+// U+008A - Line (Vertical) Tabulation Set
+// U+008B - Partial Line Forward (Down)
+// U+008C - Partial Line Backward (Up)
+// U+008D - Reverse Line Feed (Index)
+// U+008E - Single-Shift Two
+// U+008F - Single-Shift Three
+// U+0090 - Device Control String
+// U+0091 - Private Use One
+// U+0092 - Private Use Two
+// U+0093 - Set Transmit State
+// U+0094 - Cancel character
+// U+0095 - Message Waiting
+// U+0096 - Start of Protected Area
+// U+0097 - End of Protected Area
+// U+0098 - Start of String
+// U+0099 - Single Graphic Character Introducer
+// U+009A - Single Character Introducer
+// U+009B - Control Sequence Introducer
+// U+009C - String Terminator
+// U+009D - Operating System Command
+// U+009E - Private Message
+// U+009F - Application Program Command
+
+// Latin-1 Punctuation and Symbols
+// U+00A0 - Non-breaking space
+// U+00A1 - Inverted exclamation mark
+// U+00A2 - Cent sign
+// U+00A3 - Pound sign
+// U+00A4 - Currency sign
+// U+00A5 - Yen sign
+// U+00A6 - Broken bar
+// U+00A7 - Section sign
+// U+00A8 - Diaeresis
+// U+00A9 - Copyright sign
+// U+00AA - Feminine Ordinal Indicator
+// U+00AB - Left-pointing double angle quotation mark
+// U+00AC - Not sign
+// U+00AD - Soft hyphen
+// U+00AE - Registered sign
+// U+00AF - Macron
+// U+00B0 - Degree symbol
+// U+00B1 - Plus-minus sign
+// U+00B2 - Superscript two
+// U+00B3 - Superscript three
+// U+00B4 - Acute accent
+// U+00B5 - Micro sign
+// U+00B6 - Pilcrow sign
+// U+00B7 - Middle dot
+// U+00B8 - Cedilla
+// U+00B9 - Superscript one
+// U+00BA - Masculine ordinal indicator
+// U+00BB - Right-pointing double-angle quotation mark
+// U+00BC - Vulgar fraction one quarter
+// U+00BD - Vulgar fraction one half
+// U+00BE - Vulgar fraction three quarters
+// U+00BF - Inverted question mark
+
+// Letters
+// U+00C0 - Latin Capital Letter A with grave
+// U+00C1 - Latin Capital letter A with acute
+// U+00C2 - Latin Capital letter A with circumflex
+// U+00C3 - Latin Capital letter A with tilde
+// U+00C4 - Latin Capital letter A with diaeresis
+// U+00C5 - Latin Capital letter A with ring above
+// U+00C6 - Latin Capital letter AE
+// U+00C7 - Latin Capital letter C with cedilla
+// U+00C8 - Latin Capital letter E with grave
+// U+00C9 - Latin Capital letter E with acute
+// U+00CA - Latin Capital letter E with circumflex
+// U+00CB - Latin Capital letter E with diaeresis
+// U+00CC - Latin Capital letter I with grave
+// U+00CD - Latin Capital letter I with acute
+// U+00CE - Latin Capital letter I with circumflex
+// U+00CF - Latin Capital letter I with diaeresis
+// U+00D0 - Latin Capital letter Eth
+// U+00D1 - Latin Capital letter N with tilde
+// U+00D2 - Latin Capital letter O with grave
+// U+00D3 - Latin Capital letter O with acute
+// U+00D4 - Latin Capital letter O with circumflex
+// U+00D5 - Latin Capital letter O with tilde
+// U+00D6 - Latin Capital letter O with diaeresis
+
+// Mathematical operator
+// U+00D7 - Multiplication sign
+
+// Letters
+// U+00D8 - Latin Capital letter O with stroke
+// U+00D9 - Latin Capital letter U with grave
+// U+00DA - Latin Capital letter U with acute
+// U+00DB - Latin Capital Letter U with circumflex
+// U+00DC - Latin Capital Letter U with diaeresis
+// U+00DD - Latin Capital Letter Y with acute
+// U+00DE - Latin Capital Letter Thorn
+// U+00DF - Latin Small Letter sharp S
+// U+00E0 - Latin Small Letter A with grave
+// U+00E1 - Latin Small Letter A with acute
+// U+00E2 - Latin Small Letter A with circumflex
+// U+00E3 - Latin Small Letter A with tilde
+// U+00E4 - Latin Small Letter A with diaeresis
+// U+00E5 - Latin Small Letter A with ring above
+// U+00E6 - Latin Small Letter AE
+// U+00E7 - Latin Small Letter C with cedilla
+// U+00E8 - Latin Small Letter E with grave
+// U+00E9 - Latin Small Letter E with acute
+// U+00EA - Latin Small Letter E with circumflex
+// U+00EB - Latin Small Letter E with diaeresis
+// U+00EC - Latin Small Letter I with grave
+// U+00ED - Latin Small Letter I with acute
+// U+00EE - Latin Small Letter I with circumflex
+// U+00EF - Latin Small Letter I with diaeresis
+// U+00F0 - Latin Small Letter Eth
+// U+00F1 - Latin Small Letter N with tilde
+// U+00F2 - Latin Small Letter O with grave
+// U+00F3 - Latin Small Letter O with acute
+// U+00F4 - Latin Small Letter O with circumflex
+// U+00F5 - Latin Small Letter O with tilde
+// U+00F6 - Latin Small Letter O with diaeresis
+
+// Mathematical operator
+// U+00F7 - Division sign
+
+// Letters
+// U+00F8 - Latin Small Letter O with stroke
+// U+00F9 - Latin Small Letter U with grave
+// U+00FA - Latin Small Letter U with acute
+// U+00FB - Latin Small Letter U with circumflex
+// U+00FC - Latin Small Letter U with diaeresis
+// U+00FD - Latin Small Letter Y with acute
+// U+00FE - Latin Small Letter Thorn
+// U+00FF - Latin Small Letter Y with diaeresis

@@ -13,7 +13,7 @@ Discover the [background to the Library](https://projectf.io/posts/verilog-libra
 * [maths](maths) - divide, LFSR, square root...
 * [memory](memory) - roms and ram designs, including BRAM
 * [null](null) - null modules for linting
-* [res](res) - resource files for testing
+* [res](res) - palettes, fonts, and resource files for testing
 * [uart](uart) - UART (serial) transmitter/receiver
 
 _NB. Documentation and test benches are still being added._
@@ -46,3 +46,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).
+
+## Resource Licences
+
+Resources in this repository, such as fonts and palettes, may have their own licences. In such cases, the licence is clearly stated at the top of each file. For example, GNU Unifont in `lib/res/fonts/font_unifont_8x16.mem`.
