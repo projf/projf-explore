@@ -1,4 +1,4 @@
-## Project F: UART Examples - Arty A7-35T Board Constraints
+## Project F Library - UART Examples: Arty A7-35T Board Constraints
 ## (C)2021 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
