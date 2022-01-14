@@ -6,6 +6,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
+* [draw_char](draw_char.sv) - Draw character from bitmap font
 * [draw_circle](draw_circle.sv) - Draw circle outline
 * [draw_circle_fill](draw_circle_fill.sv) - Draw filled circle
 * [draw_line](draw_line.sv) - Bresenham's line algorithm
@@ -39,6 +40,7 @@ These graphic modules share a similar interface:
 * `input: (x1,y1)` - vertex 1
 * `input: (x2,y2)` - vertex 2 (used by triangles)
 * `input: r0` - radius (used by circles)
+* `input: ucp` - Unicode code point (used by text)
 * `output: (x,y)` - output drawing coordinate
 * `output: drawing` - graphics are being drawn at `(x,y)`
 * `output: busy` - drawing request in progress
