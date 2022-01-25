@@ -36,7 +36,18 @@ I plan to make the following module name changes:
 
 Where `NNN` is `480p`, `720p` etc. Xilinx `clock_480p` will also gain support for 5x clocks to match other display clocks.
 
-I plan to standardise on the following signal names for memory/storage signals:
+I plan to standardise on the following signal names:
+
+* `clk_FOO` - clock
+  * `clk_pix`, `clk_sys`, `clk_100m`
+* `cnt_FOO` - counter (with associated `FOO_NUM` parameter)
+  * `cnt_line`, `cnt_shape`, `cnt_sprite`
+* `FOO_id` - numerical identifier for a collection of things
+  * `line_id`, `shape_id`, `sprite_id`
+
+We use `clk` and `cnt` prefixes because these signals are treated differently.
+
+For memory/storage signals:
 
 * `addr` - single-port address
 * `addr_write` - write address
