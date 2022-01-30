@@ -1,5 +1,5 @@
 // Project F: Ad Astra - Top LFSR (iCEBreaker 12-bit DVI Pmod)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -60,6 +60,7 @@ module top_lfsr (
         .clk(clk_pix),
         .rst(!clk_locked),
         .en(sf_area && de),
+        .seed(0),  // use default seed
         .sreg(sf_reg)
     );
 

@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Top David v2 (Nexys Video)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -86,6 +86,7 @@ module top_david_v2 (
         .clk(clk_pix),
         .rst(!clk_pix_locked),
         .en(lfsr_en),
+        .seed(0),  // use default seed
         .sreg(lfsr)
     );
 

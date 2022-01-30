@@ -1,5 +1,5 @@
 // Project F: Ad Astra - Starfield
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -40,12 +40,12 @@ module starfield #(
 
     lfsr #(
         .LEN(21),
-        .TAPS(21'b101000000000000000000),
-        .SEED(SEED)
+        .TAPS(21'b101000000000000000000)
         ) lsfr_sf (
         .clk,
         .rst(sf_cnt == 21'b0),
         .en,
+        .seed(SEED),
         .sreg(sf_reg)
     );
 endmodule
