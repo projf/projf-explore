@@ -29,7 +29,7 @@ module top_graphing #(parameter CORDW=16) (   // coordinate width (in bits)
         /* verilator lint_on PINCONNECTEMPTY */
         .de,
         .frame,
-        /* verilator lint_on PINCONNECTEMPTY */
+        /* verilator lint_off PINCONNECTEMPTY */
         .line()
         /* verilator lint_on PINCONNECTEMPTY */
     );
