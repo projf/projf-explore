@@ -22,8 +22,10 @@ module top_bounce #(parameter CORDW=10) (  // coordinate width
         .rst,
         .sx,
         .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
         .hsync(),
         .vsync(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .de
     );
 

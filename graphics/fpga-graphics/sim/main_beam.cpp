@@ -56,10 +56,14 @@ int main(int argc, char* argv[]) {
     // initialize Verilog module
     Vtop_beam* top = new Vtop_beam;
 
+    // reset
     top->rst = 1;
     top->clk_pix = 0;
     top->eval();
+    top->clk_pix = 1;
+    top->eval();
     top->rst = 0;
+    top->clk_pix = 0;
     top->eval();
 
     uint64_t frame_count = 0;

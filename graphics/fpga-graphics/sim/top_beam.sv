@@ -22,16 +22,20 @@ module top_beam #(parameter CORDW=10) (  // coordinate width
         .rst,
         .sx,
         .sy,
+        /* verilator lint_off PINCONNECTEMPTY */
         .hsync(),
         .vsync(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .de
     );
 
     // size of screen with and without blanking
+    /* verilator lint_off UNUSED */
     localparam H_RES_FULL = 800;
     localparam V_RES_FULL = 525;
-    localparam H_RES = 640;
-    localparam V_RES = 480;
+    localparam H_RES      = 640;
+    localparam V_RES      = 480;
+    /* verilator lint_on UNUSED */
 
     logic animate;  // high for one clock tick at start of vertical blanking
     always_comb animate = (sy == V_RES && sx == 0);

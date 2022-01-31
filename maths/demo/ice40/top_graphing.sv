@@ -31,7 +31,7 @@ module top_graphing (
     localparam CORDW = 12;
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic de;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst(!clk_locked),
@@ -40,8 +40,10 @@ module top_graphing (
         .hsync,
         .vsync,
         .de,
-        .frame,
-        .line
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        .line()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
 
     // signal when to draw mathematical function and axis

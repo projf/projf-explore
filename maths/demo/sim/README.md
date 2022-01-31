@@ -22,9 +22,8 @@ Then run Verilator and Make for the project of interest:
 
 ```shell
 verilator -I../ -I../../../lib/display -cc top_graphing.sv --exe main_graphing.cpp -o graphing \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_graphing.mk
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+&& make -C ./obj_dir -f Vtop_graphing.mk
 ```
 
 You can then run the simulation executable from `obj_dir`:
