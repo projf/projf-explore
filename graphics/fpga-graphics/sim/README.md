@@ -25,9 +25,8 @@ Then run Verilator and Make for the project of interest (Square, Beam, or Bounce
 
 ```shell
 verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_square.mk
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+&& make -C ./obj_dir -f Vtop_square.mk
 ```
 
 You can then run the simulation executable from `obj_dir`:
@@ -40,9 +39,8 @@ You can then run the simulation executable from `obj_dir`:
 
 ```shell
 verilator -I../ -cc top_beam.sv --exe main_beam.cpp -o beam \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_beam.mk
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+&& make -C ./obj_dir -f Vtop_beam.mk
 
 ./obj_dir/beam
 ```
@@ -51,9 +49,8 @@ make -C ./obj_dir -f Vtop_beam.mk
 
 ```shell
 verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -o bounce \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_bounce.mk
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+&& make -C ./obj_dir -f Vtop_bounce.mk
 
 ./obj_dir/bounce
 ```

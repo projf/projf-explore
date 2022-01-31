@@ -26,9 +26,8 @@ Then run Verilator and Make for the Pong project:
 
 ```shell
 verilator -I../ -cc top_pong.sv --exe main_pong.cpp -o pong \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_pong.mk
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+&& make -C ./obj_dir -f Vtop_pong.mk
 ```
 
 You can then run the simulation executable from `obj_dir`:
