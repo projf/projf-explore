@@ -1,5 +1,5 @@
 // Project F Library - 24x18 Display for Testing
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -9,12 +9,12 @@ module display_24x18 #(
     CORDW=16,    // signed coordinate width (bits)
     H_RES=24,    // horizontal resolution (pixels)
     V_RES=18,    // vertical resolution (lines)
-    H_FP=2,      // horizontal front porch
-    H_SYNC=2,    // horizontal sync
+    H_FP=3,      // horizontal front porch
+    H_SYNC=4,    // horizontal sync
     H_BP=4,      // horizontal back porch
-    V_FP=1,      // vertical front porch
-    V_SYNC=1,    // vertical sync
-    V_BP=2,      // vertical back porch
+    V_FP=3,      // vertical front porch
+    V_SYNC=2,    // vertical sync
+    V_BP=7,      // vertical back porch
     H_POL=1,     // horizontal sync polarity (0:neg, 1:pos)
     V_POL=1      // vertical sync polarity (0:neg, 1:pos)
     ) (
