@@ -58,7 +58,11 @@ module display_24x18 #(
         de    <= (y >= VA_STA && x >= HA_STA);
         frame <= (y == V_STA  && x == H_STA);
         line  <= (y >= VA_STA && x == H_STA);
-        if (rst) frame <= 0;  // don't assert frame in reset
+        if (rst) begin
+            de <= 0;
+            frame <= 0;
+            line <= 0;
+        end
     end
 
     // calculate horizontal and vertical screen position

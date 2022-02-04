@@ -1,5 +1,5 @@
 // Project F Library - 1280x720p60 Display
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -58,7 +58,11 @@ module display_720p #(
         de    <= (y >= VA_STA && x >= HA_STA);
         frame <= (y == V_STA  && x == H_STA);
         line  <= (y >= VA_STA && x == H_STA);
-        if (rst) frame <= 0;  // don't assert frame in reset
+        if (rst) begin
+            de <= 0;
+            frame <= 0;
+            line <= 0;
+        end
     end
 
     // calculate horizontal and vertical screen position
