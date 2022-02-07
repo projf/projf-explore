@@ -14,23 +14,15 @@ If you're new to graphics simulations check out [Verilog Simulation with Verilat
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
 
-Once you have Verilator and SDL installed, change to the correct directory:
+Make sure you're in the sim directory `projf-explore/graphics/pong/sim`.
+
+The use make to build:
 
 ```shell
-cd projf-explore/graphics/pong/sim
+make
 ```
 
-Then run Verilator and Make for the Pong project:
-
-### Pong Sim
-
-```shell
-verilator -I../ -cc top_pong.sv --exe main_pong.cpp -o pong \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
-&& make -C ./obj_dir -f Vtop_pong.mk
-```
-
-You can then run the simulation executable from `obj_dir`:
+Run the simulation executables from `obj_dir`:
 
 ```shell
 ./obj_dir/pong
