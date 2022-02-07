@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Bounce Verilator C++
-// (C)2021 Will Green, open source software released under the MIT License
+// (C)2022 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io
 
 #include <stdio.h>
@@ -76,8 +76,8 @@ int main(int argc, char* argv[]) {
         top->eval();
 
         // update pixel if not in blanking interval
-        if (top->de) {
-            Pixel* p = &screenbuffer[top->sy*H_RES + top->sx];
+        if (top->sdl_de) {
+            Pixel* p = &screenbuffer[top->sdl_sy*H_RES + top->sdl_sx];
             p->a = 0xFF;  // transparency
             p->b = top->sdl_b;
             p->g = top->sdl_g;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
         }
 
         // update texture once per frame at start of blanking
-        if (top->sy == V_RES && top->sx == 0) {
+        if (top->sdl_sy == V_RES && top->sdl_sx == 0) {
             // check for quit event
             SDL_Event e;
             if (SDL_PollEvent(&e)) {

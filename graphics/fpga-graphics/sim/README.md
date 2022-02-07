@@ -13,49 +13,36 @@ If you have a dev board, see the [Intro to FPGA Graphics README](../README.md) f
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
 
-Once you have Verilator and SDL installed, change to the correct directory:
+Make sure you're in the sim directory `projf-explore/graphics/fpga-graphics/sim`.
+
+Build a specific simulation (square, beam, or bounce):
 
 ```shell
-cd projf-explore/graphics/fpga-graphics/sim
+make square
 ```
 
-Then run Verilator and Make for the project of interest (Square, Beam, or Bounce):
-
-### Square
+Or build all three simulations:
 
 ```shell
-verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
-&& make -C ./obj_dir -f Vtop_square.mk
+make all
 ```
 
-You can then run the simulation executable from `obj_dir`:
+Run the simulation executables from `obj_dir`:
 
 ```shell
 ./obj_dir/square
 ```
 
-### Beam
+If you want to manually build a simulation, here's an example for 'square':
 
 ```shell
-verilator -I../ -cc top_beam.sv --exe main_beam.cpp -o beam \
+verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
-&& make -C ./obj_dir -f Vtop_beam.mk
 
-./obj_dir/beam
+make -C ./obj_dir -f Vtop_square.mk
 ```
 
-### Bounce
-
-```shell
-verilator -I../ -cc top_bounce.sv --exe main_bounce.cpp -o bounce \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
-&& make -C ./obj_dir -f Vtop_bounce.mk
-
-./obj_dir/bounce
-```
-
-_Note: all three designs use [simple_480p.sv](../simple_480p.sv) from the main [FPGA Graphics](../) folder._
+_Note: all these designs use [simple_480p.sv](../simple_480p.sv) from the main [FPGA Graphics](../) folder._
 
 ## Installing Dependencies
 
