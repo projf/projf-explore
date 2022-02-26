@@ -63,20 +63,21 @@ module framebuffer_bram_db #(
     // write address components
     logic signed [CORDW-1:0] x_add;  // pixel position on line
     logic signed[FB_ADDRW-1:0] fb_addr_line;  // address of line for drawing
-    logic [FB_ADDRW-1:0] fb_addr_clr;  // address for clearing screen
+    logic [FB_ADDRW-1:0] fb_addr_clr, fb_addr_clr_p1;  // address for clearing screen
 
     // write state machine
-    enum {IDLE, INIT, CLR, ACTIVE} wstate;
+    enum {IDLE, INIT, CLR, WAIT, ACTIVE} wstate;
     always_ff @(posedge clk_sys) begin
         case (wstate)
             INIT: begin
                 wstate <= (clear) ? CLR : ACTIVE;
-                fb_addr_clr <= 0;
+                fb_addr_clr_p1 <= 0;
             end
-            CLR: begin
-                if (fb_addr_clr == FB_PIXELS-1) wstate <= ACTIVE;
-                fb_addr_clr <= fb_addr_clr + 1;
+            CLR: begin  // clear whole buffer
+                if (fb_addr_clr_p1 == FB_BUFSIZE-1) wstate <= WAIT;
+                fb_addr_clr_p1 <= fb_addr_clr_p1 + 1;
             end
+            WAIT: wstate <= ACTIVE;  // one cycle of latency before becoming active
             default: if (frame_sys) wstate <= INIT;  // IDLE or ACTIVE
         endcase
         if (rst_sys) wstate <= IDLE;
@@ -88,10 +89,12 @@ module framebuffer_bram_db #(
     // calculate write address from pixel coordinates (three stages: mul, add, clear mux)
     always_ff @(posedge clk_sys) begin
         /* verilator lint_off WIDTH */
+        // first stage
+        fb_addr_clr <= fb_addr_clr_p1;
         fb_addr_line <= WIDTH * y;  // write address 1st stage (y could be negative)
         x_add <= x;  // save x for write address 2nd stage
-        fb_addr_write <= (wstate == CLR) ? fb_addr_clr : fb_addr_line + x_add;
-        // clipping is checked later
+        // second stage
+        fb_addr_write <= (wready) ? fb_addr_line + x_add : fb_addr_clr;
         /* verilator lint_on WIDTH */
     end
 
@@ -101,8 +104,8 @@ module framebuffer_bram_db #(
     always_ff @(posedge clk_sys) begin
         // first stage
         we_in_p1 <= ((we && wready) || wstate == CLR);  // draw or clear enables write
-        cidx_in_p1 <= (wstate == CLR) ? bgidx : cidx;   // which draw colour?
-        clip <= (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
+        cidx_in_p1 <= (wstate == CLR) ? bgidx : cidx;    // which draw colour?
+        clip <= (wstate == ACTIVE) && (y < 0 || y >= HEIGHT || x < 0 || x >= WIDTH);  // clipped?
         // second stage
         fb_we <= (busy || clip) ? 0 : we_in_p1;  // write if neither busy nor clipped
         fb_cidx_write <= cidx_in_p1;
