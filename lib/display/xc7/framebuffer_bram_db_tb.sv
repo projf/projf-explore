@@ -51,7 +51,7 @@ module framebuffer_bram_db_tb();
     localparam FB_HEIGHT  = 9;
     localparam FB_CIDXW   = 4;
     localparam FB_CHANW   = 4;
-    localparam FB_IMAGE   = "test_box_db_12x9.mem";
+    localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "test_palette.mem";
     localparam FB_SCALE   = 2;  // use =1 with fb active = (sy >=0 ....
 
@@ -115,10 +115,11 @@ module framebuffer_bram_db_tb();
                 end
             DRAW: 
                 if (!fb_busy) begin
-                    if (fbx < FB_WIDTH-1) begin
+                    if (fbx < FB_WIDTH+4) begin
                         fbx <= fbx + 1;
                     end else begin
                         fb_we <= 0;
+                        fb_cidx <= 4'hF;
                         state <= DONE;
                     end
                 end
@@ -169,6 +170,6 @@ module framebuffer_bram_db_tb();
         #28140
         fb_clear = 1;
 
-        #120000 $finish;
+        #200000 $finish;
     end
 endmodule

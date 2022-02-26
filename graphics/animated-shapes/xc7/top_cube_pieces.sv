@@ -56,6 +56,7 @@ module top_cube_pieces (
     localparam FB_SCALE   = 2;
     localparam FB_IMAGE   = "";
     localparam FB_PALETTE = "16_colr_4bit_palette.mem";
+    localparam BG_IDX     = 4'h5;  // background colour
 
     logic fb_we, fb_busy, fb_wready;
     logic signed [CORDW-1:0] fbx, fby;  // framebuffer coordinates
@@ -82,7 +83,7 @@ module top_cube_pieces (
         .x(fbx),
         .y(fby),
         .cidx(fb_cidx),
-        .bgidx(4'h0),
+        .bgidx(BG_IDX),
         .clear(1'b1),  // enable clearing of buffer before drawing
         .busy(fb_busy),
         .wready(fb_wready),
@@ -95,10 +96,10 @@ module top_cube_pieces (
     );
 
     // animate triangle coordinates
-    localparam MAX_OFFS   = 32;  // maximum pixels to move
-    localparam ANIM_SPEED =  1;  // pixel to move per frame
-    localparam FRAME_WAIT = 60;  // frames to pause between change of direction
-    logic [CORDW-1:0] offs;      // animation offset
+    localparam MAX_OFFS   = 200;  // maximum pixels to move
+    localparam ANIM_SPEED =   2;  // pixel to move per frame
+    localparam FRAME_WAIT =  60;  // frames to pause between change of direction
+    logic [CORDW-1:0] offs;       // animation offset
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic dir;  // direction: 1 is increasing offset
     enum {START, MOVE, WAIT} anim_state;

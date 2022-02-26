@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="31308288fs"></ZoomStartTime>
-      <ZoomEndTime time="42798289fs"></ZoomEndTime>
-      <Cursor1Time time="148240000fs"></Cursor1Time>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="228.240001 us"></ZoomEndTime>
+      <Cursor1Time time="85.530000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="197"></NameColumnWidth>
-      <ValueColumnWidth column_width="71"></ValueColumnWidth>
+      <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="84" />
+   <WVObjectSize size="89" />
    <wvobject fp_name="/framebuffer_bram_db_tb/clk_25m" type="logic">
       <obj_property name="ElementShortName">clk_25m</obj_property>
       <obj_property name="ObjectShortName">clk_25m</obj_property>
@@ -255,12 +255,12 @@
       <obj_property name="ObjectShortName">front_buf</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_read" type="array">
-      <obj_property name="ElementShortName">fb_addr_read[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_read[7:0]</obj_property>
+      <obj_property name="ElementShortName">fb_addr_read[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_read[6:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_write" type="array">
-      <obj_property name="ElementShortName">fb_addr_write[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_write[7:0]</obj_property>
+      <obj_property name="ElementShortName">fb_addr_write[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_write[6:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_cidx_read" type="array">
       <obj_property name="ElementShortName">fb_cidx_read[3:0]</obj_property>
@@ -275,12 +275,12 @@
       <obj_property name="ObjectShortName">x_add[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_line" type="array">
-      <obj_property name="ElementShortName">fb_addr_line[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_line[7:0]</obj_property>
+      <obj_property name="ElementShortName">fb_addr_line[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_line[6:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_clr" type="array">
-      <obj_property name="ElementShortName">fb_addr_clr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_clr[7:0]</obj_property>
+      <obj_property name="ElementShortName">fb_addr_clr[6:0]</obj_property>
+      <obj_property name="ObjectShortName">fb_addr_clr[6:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/wstate" type="array">
       <obj_property name="ElementShortName">wstate[31:0]</obj_property>
@@ -290,25 +290,9 @@
       <obj_property name="ElementShortName">fb_we</obj_property>
       <obj_property name="ObjectShortName">fb_we</obj_property>
    </wvobject>
-   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/we_in_p1" type="logic">
-      <obj_property name="ElementShortName">we_in_p1</obj_property>
-      <obj_property name="ObjectShortName">we_in_p1</obj_property>
-   </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_cidx_write" type="array">
       <obj_property name="ElementShortName">fb_cidx_write[3:0]</obj_property>
       <obj_property name="ObjectShortName">fb_cidx_write[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/cidx_in_p1" type="array">
-      <obj_property name="ElementShortName">cidx_in_p1[3:0]</obj_property>
-      <obj_property name="ObjectShortName">cidx_in_p1[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_read_offs" type="array">
-      <obj_property name="ElementShortName">fb_addr_read_offs[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_read_offs[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/fb_addr_write_offs" type="array">
-      <obj_property name="ElementShortName">fb_addr_write_offs[7:0]</obj_property>
-      <obj_property name="ObjectShortName">fb_addr_write_offs[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/lb_data_req" type="logic">
       <obj_property name="ElementShortName">lb_data_req</obj_property>
@@ -361,5 +345,42 @@
    <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/lb_en_out_p1" type="logic">
       <obj_property name="ElementShortName">lb_en_out_p1</obj_property>
       <obj_property name="ObjectShortName">lb_en_out_p1</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider340">
+      <obj_property name="label">BRAM</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/clk_write" type="logic">
+      <obj_property name="ElementShortName">clk_write</obj_property>
+      <obj_property name="ObjectShortName">clk_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/clk_read" type="logic">
+      <obj_property name="ElementShortName">clk_read</obj_property>
+      <obj_property name="ObjectShortName">clk_read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/addr_write" type="array">
+      <obj_property name="ElementShortName">addr_write[7:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/addr_read" type="array">
+      <obj_property name="ElementShortName">addr_read[7:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/framebuffer_bram_db_tb/fb_inst/bram_inst/memory" type="array">
+      <obj_property name="ElementShortName">memory[0:255][3:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:255][3:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>
