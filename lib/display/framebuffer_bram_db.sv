@@ -1,5 +1,5 @@
 // Project F Library - Double-Buffered Framebuffer in BRAM (Indexed Colour)
-// (C)2021 Will Green, Open Source Hardware released under the MIT License
+// (C)2022 Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
