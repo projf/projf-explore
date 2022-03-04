@@ -65,26 +65,6 @@ set design_sources [list \
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 #
-# Simulation Sources
-#
-
-# Create 'sim_1' fileset (if not found)
-if {[string equal [get_filesets -quiet sim_1] ""]} {
-  create_fileset -simset sim_1
-}
-set fs_sim_obj [get_filesets sim_1]
-
-# Generic simulation sources
-set sim_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_tb.sv"] \
-]
-add_files -norecurse -fileset $fs_sim_obj $sim_sources
-
-# Set 'sim_1' fileset properties
-set_property -name "top" -value "clock_tb" -objects $fs_sim_obj
-set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
-
-#
 # Constraints
 #
 
