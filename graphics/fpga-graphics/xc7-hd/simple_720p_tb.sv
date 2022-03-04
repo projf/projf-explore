@@ -17,7 +17,7 @@ module simple_720p_tb();
     logic clk_pix;         // pixel clock
     logic clk_pix_5x;      // 5x pixel clock for 10:1 DDR SerDes
     logic clk_pix_locked;  // pixel clock locked?
-    clock_gen_720p clock_pix_inst (
+    clock_720p clock_pix_inst (
         .clk_100m,
         .rst(rst),
         .clk_pix,
