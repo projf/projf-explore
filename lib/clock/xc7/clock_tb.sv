@@ -20,7 +20,7 @@ module clock_tb ();
        .rst,
        .clk_pix(clk_480p),
        .clk_pix_5x(clk_480p_5x),
-       .clk_locked(clk_locked_480p)
+       .clk_pix_locked(clk_locked_480p)
     );
 
     // 1280x720p60 clocks
@@ -32,7 +32,7 @@ module clock_tb ();
        .rst,
        .clk_pix(clk_720p),
        .clk_pix_5x(clk_720p_5x),
-       .clk_locked(clk_locked_720p)
+       .clk_pix_locked(clk_locked_720p)
     );
 
     always #(CLK_PERIOD / 2) clk_100m = ~clk_100m;
