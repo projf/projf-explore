@@ -6,8 +6,9 @@ SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
 square: square.exe
-beam: beam.exe
-bounce: bounce.exe
+flag_ethiopia: flag_ethiopia.exe
+flag_sweden: flag_sweden.exe
+colour: colour.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -16,7 +17,7 @@ bounce: bounce.exe
 	verilator -I../ -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: square beam bounce
+all: square flag_ethiopia flag_sweden colour
 
 clean:
 	rm -rf ./obj_dir

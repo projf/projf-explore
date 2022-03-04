@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Square (Flashback DVI)
+// Project F: FPGA Graphics - Flag of Sweden (Flashback DVI)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_square (
+module top_flag_sweden (
     input  wire logic clk_100m,         // 100 MHz clock
     input  wire logic btn_rst_n,        // reset button
     output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
@@ -44,18 +44,26 @@ module top_square (
         .de
     );
 
-    // define a square with screen coordinates
-    logic square;
-    always_comb begin
-        square = (sx > 440 && sx < 840) && (sy > 160 && sy < 560);
-    end
-
-    // paint colours: white inside square, blue outside
+    // flag of Sweden (16:10 ratio)
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
-        paint_r = (square) ? 4'hF : 4'h1;
-        paint_g = (square) ? 4'hF : 4'h3;
-        paint_b = (square) ? 4'hF : 4'h7;
+        if (sx < 1152 && sy > 288 && sy < 432) begin  // yellow cross horizontal
+            paint_r = 4'hF;
+            paint_g = 4'hC;
+            paint_b = 4'h0;
+        end else if (sx > 360 && sx < 504) begin  // yellow cross vertical
+            paint_r = 4'hF;
+            paint_g = 4'hC;
+            paint_b = 4'h0;
+        end else if (sx < 1152) begin  // blue flag background
+            paint_r = 4'h0;
+            paint_g = 4'h6;
+            paint_b = 4'hA;
+        end else begin  // black outside flag
+            paint_r = 4'h0;
+            paint_g = 4'h0;
+            paint_b = 4'h0;
+        end
     end
 
     // DVI signals (8 bits per colour channel)

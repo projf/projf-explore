@@ -15,7 +15,7 @@ If this is the first time you've used Verilator and SDL, you need to [install de
 
 Make sure you're in the sim directory `projf-explore/graphics/fpga-graphics/sim`.
 
-Build a specific simulation (square, beam, or bounce):
+Build a specific simulation (square, flag_ethiopia, flag_sweden, or colour):
 
 ```shell
 make square
@@ -37,7 +37,7 @@ If you want to manually build a simulation, here's an example for 'square':
 
 ```shell
 verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)" \
+    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
 make -C ./obj_dir -f Vtop_square.mk
 ```

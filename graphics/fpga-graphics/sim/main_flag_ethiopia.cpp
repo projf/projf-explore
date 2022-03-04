@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Beam Verilator C++
+// Project F: FPGA Graphics - Flag of Ethiopia Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
-// Learn more at https://projectf.io
+// Learn more at https://projectf.io/posts/fpga-graphics/
 
 #include <stdio.h>
 #include <SDL.h>
 #include <verilated.h>
-#include "Vtop_beam.h"
+#include "Vtop_flag_ethiopia.h"
 
 // screen dimensions
 const int H_RES = 640;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-    sdl_window = SDL_CreateWindow("Beam", SDL_WINDOWPOS_CENTERED,
+    sdl_window = SDL_CreateWindow("Traditional Flag of Ethiopia", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, H_RES, V_RES, SDL_WINDOW_SHOWN);
     if (!sdl_window) {
         printf("Window creation failed: %s\n", SDL_GetError());
@@ -54,20 +54,23 @@ int main(int argc, char* argv[]) {
     }
 
     // initialize Verilog module
-    Vtop_beam* top = new Vtop_beam;
+    Vtop_flag_ethiopia* top = new Vtop_flag_ethiopia;
 
     // reset
-    top->rst = 1;
+    top->sim_rst = 1;
     top->clk_pix = 0;
     top->eval();
     top->clk_pix = 1;
     top->eval();
-    top->rst = 0;
+    top->sim_rst = 0;
     top->clk_pix = 0;
     top->eval();
 
-    uint64_t frame_count = 0;
+    // initialize frame rate
     uint64_t start_ticks = SDL_GetPerformanceCounter();
+    uint64_t frame_count = 0;
+
+    // main loop
     while (1) {
         // cycle the clock
         top->clk_pix = 1;
@@ -84,7 +87,7 @@ int main(int argc, char* argv[]) {
             p->r = top->sdl_r;
         }
 
-        // update texture once per frame at start of blanking
+        // update texture once per frame (in blanking)
         if (top->sdl_sy == V_RES && top->sdl_sx == 0) {
             // check for quit event
             SDL_Event e;
@@ -101,6 +104,8 @@ int main(int argc, char* argv[]) {
             frame_count++;
         }
     }
+
+    // calculate frame rate
     uint64_t end_ticks = SDL_GetPerformanceCounter();
     double duration = ((double)(end_ticks-start_ticks))/SDL_GetPerformanceFrequency();
     double fps = (double)frame_count/duration;

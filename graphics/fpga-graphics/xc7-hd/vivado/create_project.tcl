@@ -1,6 +1,6 @@
 # Project F: FPGA Graphics - Create Vivado Project (Nexys Video)
-# (C)2021 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/fpga-graphics/
 
 puts "INFO: Project F - FPGA Graphics Project Creation Script"
 
@@ -43,9 +43,10 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
+  [file normalize "${origin_dir}/xc7-hd/top_colour.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_flag_ethiopia.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_flag_sweden.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_square.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_beam.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_bounce.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
@@ -56,15 +57,14 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_720p.sv"] \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_1080p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
   [file normalize "${origin_dir}/simple_720p.sv"] \
-  [file normalize "${origin_dir}/simple_1080p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -80,10 +80,10 @@ set fs_sim_obj [get_filesets sim_1]
 
 # Generic simulation sources
 set sim_sources [list \
+  [file normalize "${lib_dir}/clock/xc7/clock_tb.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/vivado/clock_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7-hd/simple_720p_tb.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/simple_1080p_tb.sv"] \
   [file normalize "${origin_dir}/xc7-hd/vivado/simple_720p_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7-hd/vivado/simple_1080p_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

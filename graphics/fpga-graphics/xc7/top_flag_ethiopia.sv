@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Square (Arty Pmod VGA)
+// Project F: FPGA Graphics - Flag of Ethiopia (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_square (
+module top_flag_ethiopia (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
     output      logic vga_hsync,    // horizontal sync
@@ -30,30 +30,36 @@ module top_square (
 
     // display sync signals and coordinates
     localparam CORDW = 10;  // screen coordinate width in bits
-    logic [CORDW-1:0] sx, sy;
+    logic [CORDW-1:0] sy;
     logic hsync, vsync, de;
     simple_480p display_inst (
         .clk_pix,
         .rst_pix(!clk_pix_locked),  // wait for clock lock
-        .sx,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .sx(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .sy,
         .hsync,
         .vsync,
         .de
     );
 
-    // define a square with screen coordinates
-    logic square;
-    always_comb begin
-        square = (sx > 220 && sx < 420) && (sy > 140 && sy < 340);
-    end
-
-    // paint colours: white inside square, blue outside
+    // traditional flag of Ethiopia
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
-        paint_r = (square) ? 4'hF : 4'h1;
-        paint_g = (square) ? 4'hF : 4'h3;
-        paint_b = (square) ? 4'hF : 4'h7;
+        if (sy < 160) begin  // top of flag is green
+            paint_r = 4'h0;
+            paint_g = 4'h9;
+            paint_b = 4'h3;
+        end else if (sy < 320) begin  // middle of flag is yellow
+            paint_r = 4'hF;
+            paint_g = 4'hE;
+            paint_b = 4'h1;
+        end else begin  // bottom of flag is red
+            paint_r = 4'hE;
+            paint_g = 4'h1;
+            paint_b = 4'h2;
+        end
     end
 
     // VGA Pmod output

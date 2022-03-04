@@ -61,18 +61,18 @@ You can then build `top_bounce`, `top_beam`, or `top_square` as you would for an
 
 ### Behavioural Simulation
 
-This design includes test benches for the `clock_gen_480p` and `simple_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
+This design includes test benches for the `clock_480p` and `simple_480p` modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
 
 ```tcl
 launch_simulation
 run all
 ```
 
-By default the `simple_480p` test bench is simulated, but you can switch to the `clock_gen_480p` test bench with:
+By default, the `simple_480p` test bench is simulated, but you can switch to the `clock_tb` test bench with:
 
 ```tcl
 set fs_sim_obj [get_filesets sim_1]
-set_property -name "top" -value "clock_gen_480p_tb" -objects $fs_sim_obj
+set_property -name "top" -value "clock_tb" -objects $fs_sim_obj
 relaunch_sim
 run all
 ```
@@ -104,14 +104,22 @@ If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you 
 
 ```shell
 $ ./fpga-graphics/lint.sh
-## Linting top modules in ./fpga-graphics/xc7
-##   Checking ./fpga-graphics/xc7/top_beam.sv
-##   Checking ./fpga-graphics/xc7/top_bounce.sv
-##   Checking ./fpga-graphics/xc7/top_square.sv
+## Linting top modules in ./fpga-graphics/sim
+##   Checking ./fpga-graphics/sim/top_beam.sv
+##   Checking ./fpga-graphics/sim/top_bounce.sv
+##   Checking ./fpga-graphics/sim/top_square.sv
 ## Linting top modules in ./fpga-graphics/ice40
 ##   Checking ./fpga-graphics/ice40/top_beam.sv
 ##   Checking ./fpga-graphics/ice40/top_bounce.sv
 ##   Checking ./fpga-graphics/ice40/top_square.sv
+## Linting top modules in ./fpga-graphics/xc7
+##   Checking ./fpga-graphics/xc7/top_beam.sv
+##   Checking ./fpga-graphics/xc7/top_bounce.sv
+##   Checking ./fpga-graphics/xc7/top_square.sv
+## Linting top modules in ./fpga-graphics/xc7-hd
+##   Checking ./fpga-graphics/xc7-hd/top_beam.sv
+##   Checking ./fpga-graphics/xc7-hd/top_bounce.sv
+##   Checking ./fpga-graphics/xc7-hd/top_square.sv
 ```
 
 You can learn more about this from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).

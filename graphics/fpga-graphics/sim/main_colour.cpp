@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Square Verilator C++
+// Project F: FPGA Graphics - Colour Test Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 #include <stdio.h>
 #include <SDL.h>
 #include <verilated.h>
-#include "Vtop_square.h"
+#include "Vtop_colour.h"
 
 // screen dimensions
 const int H_RES = 640;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-    sdl_window = SDL_CreateWindow("Square", SDL_WINDOWPOS_CENTERED,
+    sdl_window = SDL_CreateWindow("Colour Test", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, H_RES, V_RES, SDL_WINDOW_SHOWN);
     if (!sdl_window) {
         printf("Window creation failed: %s\n", SDL_GetError());
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     }
 
     // initialize Verilog module
-    Vtop_square* top = new Vtop_square;
+    Vtop_colour* top = new Vtop_colour;
 
     // reset
     top->sim_rst = 1;

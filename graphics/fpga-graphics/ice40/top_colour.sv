@@ -1,11 +1,11 @@
-// Project F: FPGA Graphics - Square (iCEBreaker 12-bit DVI Pmod)
+// Project F: FPGA Graphics - Colour Test (iCEBreaker 12-bit DVI Pmod)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_square (
+module top_colour (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button
     output      logic dvi_clk,      // DVI pixel clock
@@ -41,18 +41,18 @@ module top_square (
         .de
     );
 
-    // define a square with screen coordinates
-    logic square;
-    always_comb begin
-        square = (sx > 220 && sx < 420) && (sy > 140 && sy < 340);
-    end
-
-    // paint colours: white inside square, blue outside
+    // determine colour from screen position
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
-        paint_r = (square) ? 4'hF : 4'h1;
-        paint_g = (square) ? 4'hF : 4'h3;
-        paint_b = (square) ? 4'hF : 4'h7;
+        if (sx < 256 && sy < 256) begin  // colour square in top-left 256x256 pixels
+            paint_r = sx[7:4];  // 16 horizontal pixels of each red level
+            paint_g = sy[7:4];  // 16 vertical pixels of each green level
+            paint_b = 4'h4;     // constant blue level
+        end else begin  // otherwise black
+            paint_r = 4'h0;
+            paint_g = 4'h0;
+            paint_b = 4'h0;
+        end
     end
 
     // DVI Pmod output
