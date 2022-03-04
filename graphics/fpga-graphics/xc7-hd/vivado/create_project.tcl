@@ -52,7 +52,7 @@ add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
-set_property -name "top" -value "top_bounce" -objects $fs_design_obj
+set_property -name "top" -value "top_square" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
