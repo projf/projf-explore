@@ -392,7 +392,7 @@ module top_castle (
     dvi_generator dvi_out (
         .clk_pix,
         .clk_pix_5x,
-        .rst(!clk_pix_locked),
+        .rst_pix(!clk_pix_locked),
         .de(dvi_de),
         .data_in_ch0(dvi_blue),
         .data_in_ch1(dvi_green),

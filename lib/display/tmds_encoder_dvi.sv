@@ -1,15 +1,16 @@
 // Project F Library - TMDS Encoder for DVI
-// (C)2021 Will Green, Open source hardware released under the MIT License
+// (C)2022 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-// NB. This is an old design that uses assign. It will rewritten later in 2021.
+// NB. This design is from my early FPGA days and needs improvement.
+// I plan to rewrite it in 2022.
 
 module tmds_encoder_dvi (
     input  wire logic clk_pix,
-    input  wire logic rst,
+    input  wire logic rst_pix,
     input  wire logic [7:0] data_in,    // colour data
     input  wire logic [1:0] ctrl_in,    // control data
     input  wire logic de,               // data enable
@@ -80,7 +81,7 @@ module tmds_encoder_dvi (
             end
         end
 
-        if (rst) begin
+        if (rst_pix) begin
             tmds <= 10'b1101010100;  // equivalent to ctrl 2'b00
             bias <= 5'sb00000;
         end

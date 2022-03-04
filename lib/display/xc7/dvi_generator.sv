@@ -8,7 +8,7 @@
 module dvi_generator (
     input  wire logic clk_pix,
     input  wire logic clk_pix_5x,
-    input  wire logic rst,
+    input  wire logic rst_pix,
     input  wire logic de,                   // data enable (high when drawing)
     input  wire logic [7:0] data_in_ch0,    // channel 0 - data
     input  wire logic [7:0] data_in_ch1,    // channel 1 - data
@@ -26,7 +26,7 @@ module dvi_generator (
 
     tmds_encoder_dvi encode_ch0 (
         .clk_pix,
-        .rst,
+        .rst_pix,
         .data_in(data_in_ch0),
         .ctrl_in(ctrl_in_ch0),
         .de,
@@ -35,7 +35,7 @@ module dvi_generator (
 
     tmds_encoder_dvi encode_ch1 (
         .clk_pix,
-        .rst,
+        .rst_pix,
         .data_in(data_in_ch1),
         .ctrl_in(ctrl_in_ch1),
         .de,
@@ -44,7 +44,7 @@ module dvi_generator (
 
     tmds_encoder_dvi encode_ch2 (
         .clk_pix,
-        .rst,
+        .rst_pix,
         .data_in(data_in_ch2),
         .ctrl_in(ctrl_in_ch2),
         .de,
@@ -55,7 +55,7 @@ module dvi_generator (
     logic rst_oserdes;
     async_reset async_reset_inst (
         .clk(clk_pix),
-        .rst_in(rst),
+        .rst_in(rst_pix),
         .rst_out(rst_oserdes)
     );
 
