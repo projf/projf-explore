@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - Flag of Sweden (Flashback DVI)
+// Project F: FPGA Graphics - Flag of Sweden (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 

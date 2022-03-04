@@ -1,4 +1,4 @@
-// Project F: FPGA Graphics - Square (Flashback DVI)
+// Project F: FPGA Graphics - Square (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
