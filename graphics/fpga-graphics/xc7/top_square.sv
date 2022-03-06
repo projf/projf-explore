@@ -8,8 +8,8 @@
 module top_square (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
+    output      logic vga_hsync,    // VGA horizontal sync
+    output      logic vga_vsync,    // VGA vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
     output      logic [3:0] vga_g,  // 4-bit VGA green
     output      logic [3:0] vga_b   // 4-bit VGA blue
