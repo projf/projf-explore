@@ -50,12 +50,7 @@ module top_hitomezashi (
     logic [0:29] h_start;  // 30 horizontal lines
     /* verilator lint_on LITENDIAN */
 
-    initial begin
-        // alternating ones and zeros
-        // v_start = 40'b10101_01010_10101_01010_10101_01010_10101_01010;
-        // h_start = 30'b10101_01010_10101_01010_10101_01010;
-
-        // random
+    initial begin  // random start values
         v_start = 40'b01100_00101_00110_10011_10101_10101_01111_01101;
         h_start = 30'b10111_01001_00001_10100_00111_01010;
     end
