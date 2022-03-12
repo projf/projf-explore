@@ -2,7 +2,7 @@
 
 # Project F: Lint Script
 # (C)2022 Will Green, open source software released under the MIT License
-# Learn more at https://projectf.io
+# Learn more at https://projectf.io/posts/fpga-graphics/
 
 DIR=`dirname $0`
 LIB="${DIR}/../../lib"

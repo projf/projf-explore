@@ -1,13 +1,13 @@
-// Project F: FPGA Graphics - Top Square (iCEBreaker 12-bit DVI Pmod)
-// (C)2021 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// Project F: FPGA Graphics - Square (iCEBreaker 12-bit DVI Pmod)
+// (C)2022 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module top_square (
     input  wire logic clk_12m,      // 12 MHz clock
-    input  wire logic btn_rst,      // reset button (active high)
+    input  wire logic btn_rst,      // reset button
     output      logic dvi_clk,      // DVI pixel clock
     output      logic dvi_hsync,    // DVI horizontal sync
     output      logic dvi_vsync,    // DVI vertical sync
@@ -19,12 +19,12 @@ module top_square (
 
     // generate pixel clock
     logic clk_pix;
-    logic clk_locked;
-    clock_gen_480p clock_pix_inst (
-       .clk(clk_12m),
+    logic clk_pix_locked;
+    clock_480p clock_pix_inst (
+       .clk_12m,
        .rst(btn_rst),
        .clk_pix,
-       .clk_locked
+       .clk_pix_locked
     );
 
     // display sync signals and coordinates
@@ -33,7 +33,7 @@ module top_square (
     logic hsync, vsync, de;
     simple_480p display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst_pix(!clk_pix_locked),  // wait for clock lock
         .sx,
         .sy,
         .hsync,
@@ -41,37 +41,39 @@ module top_square (
         .de
     );
 
-    // 32 x 32 pixel square
-    logic q_draw;
-    always_comb q_draw = (sx < 32 && sy < 32) ? 1 : 0;
-
-    // colours
-    logic [3:0] red, green, blue;
+    // define a square with screen coordinates
+    logic square;
     always_comb begin
-        red   = !de ? 4'h0 : (q_draw ? 4'hF : 4'h0);
-        green = !de ? 4'h0 : (q_draw ? 4'h8 : 4'h8);
-        blue  = !de ? 4'h0 : (q_draw ? 4'h0 : 4'hF);
+        square = (sx > 220 && sx < 420) && (sy > 140 && sy < 340);
     end
 
-    // Output DVI clock: 180° out of phase with other DVI signals
-    SB_IO #(
-        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
-    ) dvi_clk_io (
-        .PACKAGE_PIN(dvi_clk),
-        .OUTPUT_CLK(clk_pix),
-        .D_OUT_0(1'b0),  // output not DDR because we disable rising edge out
-        .D_OUT_1(1'b1)   // output 180° out of phase using falling edge out
-    );
+    // paint colours: white inside square, blue outside
+    logic [3:0] paint_r, paint_g, paint_b;
+    always_comb begin
+        paint_r = (square) ? 4'hF : 4'h1;
+        paint_g = (square) ? 4'hF : 4'h3;
+        paint_b = (square) ? 4'hF : 4'h7;
+    end
 
-    // Output DVI signals
+    // DVI Pmod output
     SB_IO #(
         .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, red, green, blue}),
+        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
+    );
+
+    // DVI Pmod clock output: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
     );
 endmodule

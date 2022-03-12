@@ -1,6 +1,6 @@
 # Lines and Triangles
 
-This folder accompanies the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. These SystemVerilog designs draw lines and triangles in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**. These SystemVerilog designs draw lines and triangles in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

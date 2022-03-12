@@ -1,6 +1,6 @@
 # Animated Shapes
 
-This folder accompanies the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. These SystemVerilog designs animate shapes using a double-buffered framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Animated Shapes](https://projectf.io/posts/animated-shapes/)**. These SystemVerilog designs animate shapes using a double-buffered framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

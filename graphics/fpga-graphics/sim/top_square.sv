@@ -1,13 +1,13 @@
-// Project F: FPGA Graphics - Top Square (Verilator SDL)
+// Project F: FPGA Graphics - Square (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module top_square #(parameter CORDW=10) (  // coordinate width
     input  wire logic clk_pix,             // pixel clock
-    input  wire logic rst,                 // reset
+    input  wire logic sim_rst,             // sim reset
     output      logic [CORDW-1:0] sdl_sx,  // horizontal SDL position
     output      logic [CORDW-1:0] sdl_sy,  // vertical SDL position
     output      logic sdl_de,              // data enable (low in blanking interval)
@@ -21,7 +21,7 @@ module top_square #(parameter CORDW=10) (  // coordinate width
     logic de;
     simple_480p display_inst (
         .clk_pix,
-        .rst,
+        .rst_pix(sim_rst),
         .sx,
         .sy,
         /* verilator lint_off PINCONNECTEMPTY */
@@ -31,17 +31,27 @@ module top_square #(parameter CORDW=10) (  // coordinate width
         .de
     );
 
-    // 32 x 32 pixel square
-    logic q_draw;
-    always_comb q_draw = (sx < 32 && sy < 32) ? 1 : 0;
+    // define a square with screen coordinates
+    logic square;
+    always_comb begin
+        square = (sx > 220 && sx < 420) && (sy > 140 && sy < 340);
+    end
 
-    // SDL output
+    // paint colours: white inside square, blue outside
+    logic [3:0] paint_r, paint_g, paint_b;
+    always_comb begin
+        paint_r = (square) ? 4'hF : 4'h1;
+        paint_g = (square) ? 4'hF : 4'h3;
+        paint_b = (square) ? 4'hF : 4'h7;
+    end
+
+    // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
-        sdl_r <= !de ? 8'h00 : (q_draw ? 8'hFF : 8'h00);
-        sdl_g <= !de ? 8'h00 : (q_draw ? 8'h88 : 8'h88);
-        sdl_b <= !de ? 8'h00 : (q_draw ? 8'h00 : 8'hFF);
+        sdl_r <= {2{paint_r}};  // double signal width from 4 to 8 bits
+        sdl_g <= {2{paint_g}};
+        sdl_b <= {2{paint_b}};
     end
 endmodule

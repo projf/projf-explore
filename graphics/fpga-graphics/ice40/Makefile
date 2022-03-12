@@ -1,6 +1,6 @@
 ## Project F: FPGA Graphics - iCEBreaker Makefile
-## (C)2021 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## (C)2022 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/fpga-graphics/
 
 # configuration
 SHELL = /bin/sh
@@ -10,15 +10,17 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_LIB = ../../../lib
-ADD_SRC = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
+ADD_SRC += ${PATH_LIB}/clock/ice40/clock_480p.sv
 ADD_SRC += ../simple_480p.sv
 
-top_bounce: top_bounce.rpt top_bounce.bin
-top_beam: top_beam.rpt top_beam.bin
-top_square: top_square.rpt top_square.bin
+square: square.rpt square.bin
+flag_ethiopia: flag_ethiopia.rpt flag_ethiopia.bin
+flag_sweden: flag_sweden.rpt flag_sweden.bin
+colour: colour.rpt colour.bin
 
-%.json: %.sv $(ADD_SRC)
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: top_%.sv $(ADD_SRC)
+	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u \
+		-top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
@@ -27,11 +29,11 @@ top_square: top_square.rpt top_square.bin
 	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
-	icepack $< $@
+	icepack $< $(subst top_,,$@)
+
+all: square flag_ethiopia flag_sweden colour
 
 clean:
-	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
-
-all: top_bounce top_beam top_square
+	rm -f *.json *.asc *.rpt *.bin *yosys.log
 
 .PHONY: all clean

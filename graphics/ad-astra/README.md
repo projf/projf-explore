@@ -1,6 +1,6 @@
 # Ad Astra
 
-This folder accompanies the Project F blog post: **[Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**. These SystemVerilog designs use starfields and hardware sprites to create greetings demos. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Ad Astra](https://projectf.io/posts/fpga-ad-astra/)**. These SystemVerilog designs use starfields and hardware sprites to create greetings demos. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

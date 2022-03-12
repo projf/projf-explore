@@ -1,6 +1,6 @@
 # Maths Demo
 
-This folder accompanies the Project F series: **[Maths and Algorithms with FPGAs](https://projectf.io/posts/numbers-in-verilog/)**. These SystemVerilog maths demos let your visualize many of the concepts we cover. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F series: **[Maths and Algorithms with FPGAs](https://projectf.io/posts/numbers-in-verilog/)**. These SystemVerilog maths demos let your visualize many of the concepts we cover. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

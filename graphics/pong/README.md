@@ -1,6 +1,6 @@
 # Pong
 
-This folder accompanies the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**. These SystemVerilog designs race the beam to create the classic arcade game. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**. These SystemVerilog designs recreate the classic arcade game. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 
