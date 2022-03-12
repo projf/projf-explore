@@ -2,7 +2,7 @@
 
 A UART was one of the first SystemVerilog designs I created. These designs are not polished, but I hope you find them useful.
 
-You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. See the [Library](../) for other helpful Verilog modules or discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
+You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules or discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
 
 Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://twitter.com/WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://1bitsquared.com/pages/chat).
 

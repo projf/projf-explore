@@ -1,6 +1,6 @@
 # Framebuffers
 
-This folder accompanies the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**. These SystemVerilog designs show you how to drive the display from a bitmap in memory. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**. These SystemVerilog designs show you how to drive the display from a bitmap in memory. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

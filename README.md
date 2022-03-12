@@ -14,11 +14,14 @@ The Project F Library includes handy Verilog designs for everyone. From framebuf
 
 See [Library](lib/) for details or discover about the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
 
-## Graphics
+## FPGA Graphics
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how displays work, race the beam with Pong, animate starfields and sprites, paint Michelangelo's David, simulate life with bitmaps, draw lines and shapes, and create smooth animation with double buffering. Along the way, you'll experience a Smörgåsbord of designs and techniques, from BRAM and finite state machines to crossing clock domains and translating C algorithms into Verilog.
+In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, simulate life, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
 
-* **Intro to FPGA Graphics**: [Designs](graphics/fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
+If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+
+* **Beginning FPGA Graphics**: [Designs](graphics/fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
+* **Racing the Beam**: [Designs](graphics/racing-the-beam) - [Blog](https://projectf.io/posts/racing-the-beam/)
 * **Pong**: [Designs](graphics/pong) - [Blog](https://projectf.io/posts/fpga-pong/)
 * **Hardware Sprites**: [Designs](graphics/hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
 * **Ad Astra**: [Designs](graphics/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)

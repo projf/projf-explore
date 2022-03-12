@@ -1,6 +1,6 @@
 # 2D Shapes
 
-This folder accompanies the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. These SystemVerilog designs draw circles, rectangles, and filled shapes in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[2D Shapes](https://projectf.io/posts/fpga-shapes/)**. These SystemVerilog designs draw circles, rectangles, and filled shapes in a framebuffer. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

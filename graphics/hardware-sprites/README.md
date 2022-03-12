@@ -1,6 +1,6 @@
 # Hardware Sprites
 
-This folder accompanies the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**. These SystemVerilog designs create fast, colourful, graphics with minimal logic. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**. These SystemVerilog designs create fast, colourful, graphics with minimal logic. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 

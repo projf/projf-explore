@@ -1,6 +1,6 @@
 # Life on Screen
 
-This folder accompanies the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. These SystemVerilog designs use a framebuffer to render Conway's Game of Life. You can freely build on these [MIT licensed](../../LICENSE) designs for commercial and non-commercial projects. Have fun.
+This folder accompanies the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. These SystemVerilog designs use a framebuffer to render Conway's Game of Life. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 
