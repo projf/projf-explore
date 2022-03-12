@@ -46,7 +46,7 @@ module top_hitomezashi (
         .de
     );
 
-    // stitch start values: big endian vector, so we can write left to right
+    // stitch start values: big-endian vector, so we can write left to right
     /* verilator lint_off LITENDIAN */
     logic [0:39] v_start;  // 40 vertical lines
     logic [0:21] h_start;  // 22 horizontal lines

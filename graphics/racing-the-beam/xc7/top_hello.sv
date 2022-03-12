@@ -44,7 +44,7 @@ module top_hello (
         .de
     );
 
-    // bitmap: big endian vector, so we can write pixels left to right
+    // bitmap: big-endian vector, so we can write pixels left to right
     /* verilator lint_off LITENDIAN */
     logic [0:19] bmap [15];  // 20 pixels by 15 lines
     /* verilator lint_on LITENDIAN */
