@@ -34,7 +34,7 @@ You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool 
 For example, to build `rasterbars`; clone the projf-explore git repo, then:
 
 ```shell
-cd projf-explore/graphics/fpga-graphics/ice40
+cd projf-explore/graphics/racing-the-beam/ice40
 make rasterbars
 ```
 
@@ -55,7 +55,7 @@ If you have problems building the iCE40 designs, make sure you're using Yosys 0.
 To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
-cd projf-explore/graphics/fpga-graphics/xc7/vivado
+cd projf-explore/graphics/racing-the-beam/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -90,7 +90,7 @@ It's straightforward to adapt the project for other Xilinx 7 Series boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd projf-explore/graphics/fpga-graphics/xc7/vivado
+cd projf-explore/graphics/racing-the-beam/xc7/vivado
 source ./create_project.tcl
 ```
 
