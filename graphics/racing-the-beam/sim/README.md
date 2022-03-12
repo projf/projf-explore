@@ -1,4 +1,4 @@
-# Simulations for Intro to FPGA Graphics 
+# Simulations for Racing the Beam
 
 This folder contains Verilator simulations to accompany the Project F blog post: **[Reacing the Beam](https://projectf.io/posts/racing-the-beam/)**.
 
