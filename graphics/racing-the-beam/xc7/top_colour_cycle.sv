@@ -45,7 +45,7 @@ module top_colour_cycle (
     );
 
     // screen dimensions (must match display_inst)
-    localparam V_RES = 480;
+    localparam V_RES = 480;  // vertical screen resolution
 
     logic frame;  // high for one clock tick at the start of vertical blanking
     always_comb frame = (sy == V_RES && sx == 0);

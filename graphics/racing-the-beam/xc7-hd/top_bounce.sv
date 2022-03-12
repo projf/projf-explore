@@ -45,8 +45,8 @@ module top_bounce (
     );
 
     // screen dimensions (must match display_inst)
-    localparam H_RES = 1280;
-    localparam V_RES = 720;
+    localparam H_RES = 1280;  // horizontal screen resolution
+    localparam V_RES =  720;  // vertical screen resolution
 
     logic frame;  // high for one clock tick at the start of vertical blanking
     always_comb frame = (sy == V_RES && sx == 0);
