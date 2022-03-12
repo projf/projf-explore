@@ -1,4 +1,4 @@
-# Simulations for Intro to FPGA Graphics 
+# Simulations for Beginning FPGA Graphics
 
 This folder contains Verilator simulations to accompany the Project F blog post: **[Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
 

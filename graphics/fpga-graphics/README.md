@@ -1,4 +1,4 @@
-# Intro to FPGA Graphics
+# Beginning FPGA Graphics
 
 This folder accompanies the Project F blog post: **[Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**. These SystemVerilog designs introduce you to displays and demonstrate how to draw your first FPGA graphics. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
