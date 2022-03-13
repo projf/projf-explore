@@ -1,6 +1,6 @@
 # Racing the Beam
 
-This folder accompanies the Project F blog post: **[Reacing the Beam](https://projectf.io/posts/racing-the-beam/)**. These SystemVerilog designs race the beam to create simple demos. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
+This folder accompanies the Project F blog post: **[Racing the Beam](https://projectf.io/posts/racing-the-beam/)**. These SystemVerilog designs race the beam to create simple demos. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
 File layout:
 
