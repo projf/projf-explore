@@ -19,8 +19,7 @@ flag_sweden: flag_sweden.rpt flag_sweden.bin
 colour: colour.rpt colour.bin
 
 %.json: top_%.sv $(ADD_SRC)
-	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u \
-		-top top_$(basename $@) -json $@' $< $(ADD_SRC)
+	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u -top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@

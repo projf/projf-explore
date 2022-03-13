@@ -20,8 +20,7 @@ colour_cycle: colour_cycle.rpt colour_cycle.bin
 bounce: bounce.rpt bounce.bin
 
 %.json: top_%.sv $(ADD_SRC)
-	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u \
-		-top top_$(basename $@) -json $@' $< $(ADD_SRC)
+	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u -top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
