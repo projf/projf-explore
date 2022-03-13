@@ -7,7 +7,7 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).  
 If you have a dev board, see the [Beginning FPGA Graphics README](../README.md) for build instructions.
 
-![](../../doc/img/flag_ethiopia.png?raw=true "")
+![](../../doc/img/../flag_ethiopia.png?raw=true "")
 
 _Traditional flag of Ethiopia._
 
