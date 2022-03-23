@@ -24,7 +24,7 @@ module display_480p #(
     output      logic vsync,    // vertical sync
     output      logic de,       // data enable (low in blanking interval)
     output      logic frame,    // high at start of frame
-    output      logic line,     // high at start of active line
+    output      logic line,     // high at start of line
     output      logic signed [CORDW-1:0] sx,  // horizontal screen position
     output      logic signed [CORDW-1:0] sy   // vertical screen position
     );
@@ -57,7 +57,7 @@ module display_480p #(
     always_ff @(posedge clk_pix) begin
         de    <= (y >= VA_STA && x >= HA_STA);
         frame <= (y == V_STA  && x == H_STA);
-        line  <= (y >= VA_STA && x == H_STA);
+        line  <= (x == H_STA);
         if (rst) begin
             de <= 0;
             frame <= 0;
