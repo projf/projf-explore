@@ -20,7 +20,7 @@ module top_graphing #(parameter CORDW=16) (   // coordinate width (in bits)
     // display sync signals and coordinates
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst,
+        .rst_pix(rst),
         .sx,
         .sy,
         /* verilator lint_off PINCONNECTEMPTY */
