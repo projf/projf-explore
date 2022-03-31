@@ -36,7 +36,7 @@ module top_life (
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),
+        .rst_pix(!clk_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         .sy(),

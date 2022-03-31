@@ -32,7 +32,7 @@ module top_cube_pieces (
     logic frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),
+        .rst_pix(!clk_locked),
         .sx,
         .sy,
         .hsync,

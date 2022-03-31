@@ -37,7 +37,7 @@ module top_castle (
     logic de, frame, line;
     display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),
+        .rst_pix(!clk_pix_locked),
         /* verilator lint_off PINCONNECTEMPTY */
         .sx(),
         /* verilator lint_on PINCONNECTEMPTY */

@@ -19,7 +19,7 @@ module display_480p #(
     V_POL=0      // vertical sync polarity (0:neg, 1:pos)
     ) (
     input  wire logic clk_pix,  // pixel clock
-    input  wire logic rst,      // reset
+    input  wire logic rst_pix,  // reset in pixel clock domain
     output      logic hsync,    // horizontal sync
     output      logic vsync,    // vertical sync
     output      logic de,       // data enable (low in blanking interval)
@@ -58,7 +58,7 @@ module display_480p #(
         de    <= (y >= VA_STA && x >= HA_STA);
         frame <= (y == V_STA  && x == H_STA);
         line  <= (x == H_STA);
-        if (rst) begin
+        if (rst_pix) begin
             de <= 0;
             frame <= 0;
             line <= 0;
@@ -73,7 +73,7 @@ module display_480p #(
         end else begin
             x <= x + 1;
         end
-        if (rst) begin
+        if (rst_pix) begin
             x <= H_STA;
             y <= V_STA;
         end
@@ -83,7 +83,7 @@ module display_480p #(
     always_ff @ (posedge clk_pix) begin
         sx <= x;
         sy <= y;
-        if (rst) begin
+        if (rst_pix) begin
             sx <= H_STA;
             sy <= V_STA;
         end
