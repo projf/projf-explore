@@ -37,7 +37,7 @@ module top_greet_v1 (
     logic de, frame, line;
     display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_pix_locked),
+        .rst_pix(!clk_pix_locked),
         .sx,
         .sy,
         .hsync,

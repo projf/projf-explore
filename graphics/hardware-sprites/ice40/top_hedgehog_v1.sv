@@ -34,7 +34,7 @@ module top_hedgehog_v1 (
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst(!clk_locked),  // wait for clock lock
+        .rst_pix(!clk_locked),  // wait for clock lock
         .sx,
         .sy,
         .hsync,
