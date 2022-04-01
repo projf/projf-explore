@@ -1,6 +1,6 @@
 ## Project F: Pong - iCEBreaker Board Constraints (DVI)
-## (C)2021 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## (C)2022 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/fpga-pong/
 
 ## Board Clock: 12 MHz
 set_frequency  clk_12m      12
@@ -8,8 +8,8 @@ set_io -nowarn clk_12m      35
 
 ## Buttons
 set_io -nowarn btn_rst      10
+set_io -nowarn btn_fire     19
 set_io -nowarn btn_up       18
-set_io -nowarn btn_ctrl     19
 set_io -nowarn btn_dn       20
 
 ## 12-bit DVI Pmod on Pmod 1A/1B

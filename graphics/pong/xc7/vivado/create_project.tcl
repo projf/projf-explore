@@ -1,8 +1,8 @@
 # Project F: Pong - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/fpga-pong/
 
-puts "INFO: Project F - FPGA Pong Project Creation Script"
+puts "INFO: Project F - Pong Project Creation Script"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
@@ -44,10 +44,6 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_pong.sv"] \
-  [file normalize "${origin_dir}/xc7/top_pong_v1.sv"] \
-  [file normalize "${origin_dir}/xc7/top_pong_v2.sv"] \
-  [file normalize "${origin_dir}/xc7/top_pong_v3.sv"] \
-  [file normalize "${origin_dir}/xc7/top_pong_v4.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
@@ -59,11 +55,32 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/essential/debounce.sv"] \
   [file normalize "${origin_dir}/simple_480p.sv"] \
+  [file normalize "${origin_dir}/simple_score.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
+
+#
+# Simulation Sources
+#
+
+# Create 'sim_1' fileset (if not found)
+if {[string equal [get_filesets -quiet sim_1] ""]} {
+  create_fileset -simset sim_1
+}
+set fs_sim_obj [get_filesets sim_1]
+
+# Generic simulation sources
+set sim_sources [list \
+  [file normalize "${lib_dir}/clock/xc7/clock_tb.sv"] \
+]
+add_files -norecurse -fileset $fs_sim_obj $sim_sources
+
+# Set 'sim_1' fileset properties
+set_property -name "top" -value "clock_tb" -objects $fs_sim_obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
 # Constraints
