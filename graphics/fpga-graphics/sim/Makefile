@@ -2,6 +2,7 @@
 ## (C)2022 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
+CFLAGS = -O3
 SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
@@ -15,7 +16,7 @@ colour: colour.exe
 
 %.mk: top_%.sv
 	verilator -I../ -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
-		-CFLAGS "${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
+		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
 all: square flag_ethiopia flag_sweden colour
 
