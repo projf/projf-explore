@@ -10,7 +10,6 @@ SDL_LDFLAGS = `sdl2-config --libs`
 PATH_LIB = ../../../lib/essential
 
 pong: pong.exe
-ball_paddles: ball_paddles.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -19,7 +18,7 @@ ball_paddles: ball_paddles.exe
 	verilator -I../ -I${PATH_LIB} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: pong ball_paddles
+all: pong
 
 clean:
 	rm -rf ./obj_dir
