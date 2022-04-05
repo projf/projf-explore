@@ -29,6 +29,7 @@ module top_pong (
     localparam PAD_HEIGHT = 48;  // paddle height in pixels
     localparam PAD_WIDTH  = 10;  // paddle width in pixels
     localparam PAD_OFFS   = 32;  // paddle distance from edge of screen in pixels
+    localparam PAD_SPY    =  3;  // vertical paddle speed
 
     // generate pixel clock
     logic clk_pix;
@@ -72,7 +73,7 @@ module top_pong (
     logic [CORDW-1:0] ball_x, ball_y;  // position (origin at top left)
     logic [CORDW-1:0] ball_spx;        // horizontal speed (pixels/frame)
     logic [CORDW-1:0] ball_spy;        // vertical speed (pixels/frame)
-    logic [3:0] shot_cnt;              // shot counter for speed increment
+    logic [3:0] shot_cnt;              // shot counter
     logic ball_dx, ball_dy;            // direction: 0 is right/down
     logic ball_dx_prev;                // direction in previous tick (for shot counting)
     logic coll_r, coll_l;              // screen collision flags
@@ -80,7 +81,6 @@ module top_pong (
     // paddle properties
     logic [CORDW-1:0] padl_y, padr_y;  // vertical position of left and right paddles
     logic [CORDW-1:0] ai_y, play_y;    // vertical position of AI and player paddle
-    logic [CORDW-1:0] pad_spy=3;       // vertical speed (pixels/frame)
 
     // link paddles to AI or player
     always_comb begin
@@ -124,13 +124,13 @@ module top_pong (
         if (state == POSITION) ai_y <= (V_RES - PAD_HEIGHT)/2;
         else if (frame && state == PLAY) begin
             if (ai_y + PAD_HEIGHT/2 < ball_y) begin  // ball below
-                if (ai_y + PAD_HEIGHT + pad_spy >= V_RES-1) begin  // bottom of screen?
+                if (ai_y + PAD_HEIGHT + PAD_SPY >= V_RES-1) begin  // bottom of screen?
                     ai_y <= V_RES - PAD_HEIGHT - 1;  // move down as far as we can
-                end else ai_y <= ai_y + pad_spy;  // move down
+                end else ai_y <= ai_y + PAD_SPY;  // move down
             end else if (ai_y + PAD_HEIGHT/2 > ball_y + BALL_SIZE) begin // ball above
-                if (ai_y < pad_spy) begin  // top of screen
+                if (ai_y < PAD_SPY) begin  // top of screen
                     ai_y <= 0;  // move up as far as we can
-                end else ai_y <= ai_y - pad_spy;  // move up
+                end else ai_y <= ai_y - PAD_SPY;  // move up
             end
         end
     end
@@ -140,13 +140,13 @@ module top_pong (
         if (state == POSITION) play_y <= (V_RES - PAD_HEIGHT)/2;
         else if (frame && state == PLAY) begin
             if (sig_dn) begin
-                if (play_y + PAD_HEIGHT + pad_spy >= V_RES-1) begin  // bottom of screen?
+                if (play_y + PAD_HEIGHT + PAD_SPY >= V_RES-1) begin  // bottom of screen?
                     play_y <= V_RES - PAD_HEIGHT - 1;  // move down as far as we can
-                end else play_y <= play_y + pad_spy;  // move down
+                end else play_y <= play_y + PAD_SPY;  // move down
             end else if (sig_up) begin
-                if (play_y < pad_spy) begin  // top of screen
+                if (play_y < PAD_SPY) begin  // top of screen
                     play_y <= 0;  // move up as far as we can
-                end else play_y <= play_y - pad_spy;  // move up
+                end else play_y <= play_y - PAD_SPY;  // move up
             end
         end
     end
@@ -157,8 +157,6 @@ module top_pong (
             NEW_GAME: begin
                 score_l <= 0;  // reset score
                 score_r <= 0;
-                ball_dx <= 1;  // reversed by state:POSITION
-                ball_dy <= 1;
             end
 
             POSITION: begin
@@ -166,14 +164,17 @@ module top_pong (
                 coll_r <= 0;
                 ball_spx <= BALL_ISPX;  // reset speed
                 ball_spy <= BALL_ISPY;
-                ball_dx <= ~ball_dx;  // reverse direction from prior point
-                ball_dy <= ~ball_dy;
                 shot_cnt <= 0;  // reset shot count
 
                 // centre ball vertically and position on paddle (right or left)
                 ball_y <= (V_RES - BALL_SIZE)/2;
-                if (coll_r) ball_x <= H_RES - (PAD_OFFS + PAD_WIDTH + BALL_SIZE);
-                else ball_x <= PAD_OFFS + PAD_WIDTH;
+                if (coll_r) begin
+                    ball_x <= H_RES - (PAD_OFFS + PAD_WIDTH + BALL_SIZE);
+                    ball_dx <= 1;  // move left
+                end else begin
+                    ball_x <= PAD_OFFS + PAD_WIDTH;
+                    ball_dx <= 0;  // move right
+                end
             end
 
             PLAY: begin
@@ -204,11 +205,10 @@ module top_pong (
                         else ball_y <= ball_y - ball_spy;
                     end
 
-                    // ball speed
-                    ball_dx_prev <= ball_dx;
+                    // ball speed increases after SPEEDUP shots
                     if (ball_dx_prev != ball_dx) shot_cnt <= shot_cnt + 1;
                     if (shot_cnt == SPEEDUP) begin  // increase ball speed
-                        ball_spx <= ball_spx + 1;
+                        ball_spx <= (ball_spx < PAD_WIDTH) ? ball_spx + 1 : ball_spx;
                         ball_spy <= ball_spy + 1;
                         shot_cnt <= 0;
                     end
@@ -219,6 +219,9 @@ module top_pong (
         // change direction if ball collides with paddle
         if (ball && padl && ball_dx==1) ball_dx <= 0;  // left paddle
         if (ball && padr && ball_dx==0) ball_dx <= 1;  // right paddle
+
+        // record ball direction in previous frame
+        if (frame) ball_dx_prev <= ball_dx;
     end
 
     // check for ball and paddles at current screen position (sx,sy)
