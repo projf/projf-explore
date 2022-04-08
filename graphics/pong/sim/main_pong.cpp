@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Pong Verilator C++
+// Project F: FPGA Pong - Pong Game Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 
@@ -53,16 +53,19 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // reference SDL keyboard state array: https://wiki.libsdl.org/SDL_GetKeyboardState
+    const Uint8 *keyb_state = SDL_GetKeyboardState(NULL);
+
     // initialize Verilog module
     Vtop_pong* top = new Vtop_pong;
 
     // reset
-    top->rst = 1;
+    top->sim_rst = 1;
     top->clk_pix = 0;
     top->eval();
     top->clk_pix = 1;
     top->eval();
-    top->rst = 0;
+    top->sim_rst = 0;
     top->clk_pix = 0;
     top->eval();
 
@@ -84,7 +87,7 @@ int main(int argc, char* argv[]) {
             p->r = top->sdl_r;
         }
 
-        // update texture once per frame at start of blanking
+        // update texture and keyboard input once per frame (in blanking)
         if (top->sdl_sy == V_RES && top->sdl_sx == 0) {
             // check for quit event
             SDL_Event e;
@@ -93,6 +96,11 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
+
+            // update keyboard state
+            top->btn_up = keyb_state[SDL_SCANCODE_UP];
+            top->btn_dn = keyb_state[SDL_SCANCODE_DOWN];
+            top->btn_fire = keyb_state[SDL_SCANCODE_SPACE];
 
             SDL_UpdateTexture(sdl_texture, NULL, screenbuffer, H_RES*sizeof(Pixel));
             SDL_RenderClear(sdl_renderer);

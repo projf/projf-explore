@@ -1,14 +1,15 @@
-# Simulation for Pong
+# Simulations for FPGA Pong
 
-This folder contains a Verilator simulation to accompany the Project F blog post: **[Pong](https://projectf.io/posts/fpga-pong/)**.
+This folder contains Verilator simulations to accompany the Project F blog post: **[FPGA Pong](https://projectf.io/posts/fpga-pong/)**.
 
-This sim is based on `top_pong_v3`: it doesn't include user controls, so you can't play against the hardware, only watch. However, it should be straightforward to add controls via SDL if you want to make the game playable.
+[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
-[Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for this simple design, you can reach 60 FPS on a modern PC.
+If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
+If you have a dev board, see the [FPGA Pong README](../README.md) for build instructions.
 
-If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).  
+![](../../../doc/img/pong-verilator-sdl.png?raw=true "")
 
-![Pong simulated on macOS](../../../doc/img/pong-verilator-sdl.png?raw=true "")
+_Pong running as a Verilator simulation on macOS._
 
 ## Build & Run
 
@@ -16,19 +17,27 @@ If this is the first time you've used Verilator and SDL, you need to [install de
 
 Make sure you're in the sim directory `projf-explore/graphics/pong/sim`.
 
-The use make to build:
+Build Pong:
 
 ```shell
-make
+make pong
 ```
 
-Run the simulation executables from `obj_dir`:
+Run the simulation executable from `obj_dir`:
 
 ```shell
 ./obj_dir/pong
 ```
 
-_Note: this design uses [simple_480p.sv](../simple_480p.sv) from the main [Pong](../) folder._
+The keyboard controls are:
+
+* Down Arrow - down
+* Space - start (fire)
+* Up Arrow - up
+
+You can edit the keyboard controls in `main_pong.cpp`; search for `update keyboard state`.
+
+_Note: this design uses [simple_480p.sv](../simple_480p.sv) and [simple_score.sv](../simple_score.sv) from the main [Pong](../) folder._
 
 ## Installing Dependencies
 
@@ -64,9 +73,7 @@ _If you want to build the latest version of Verilator yourself, see [Building Ve
 
 ### macOS
 
-Install [Xcode](https://developer.apple.com/xcode/) to get a C++ toolchain.
-
-Install the [Homebrew](https://brew.sh/) package manager.
+Install the [Homebrew](https://brew.sh/) package manager; this will also install Xcode Command Line Tools.
 
 With Homebrew installed, you can run:
 

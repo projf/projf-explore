@@ -1,13 +1,13 @@
-// Project F: Pong - Simple 1280x720p60 Display
-// (C)2021 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// Project F: FPGA Pong - Simple 1280x720p60 Display
+// (C)2022 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/fpga-pong/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module simple_720p (
     input  wire logic clk_pix,   // pixel clock
-    input  wire logic rst,       // reset
+    input  wire logic rst_pix,   // reset in pixel clock domain
     output      logic [11:0] sx, // horizontal screen position
     output      logic [11:0] sy, // vertical screen position
     output      logic hsync,     // horizontal sync
@@ -41,7 +41,7 @@ module simple_720p (
         end else begin
             sx <= sx + 1;
         end
-        if (rst) begin
+        if (rst_pix) begin
             sx <= 0;
             sy <= 0;
         end
