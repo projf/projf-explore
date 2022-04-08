@@ -37,7 +37,7 @@ The keyboard controls are:
 
 You can edit the keyboard controls in `main_pong.cpp`; search for `update keyboard state`.
 
-_Note: this designs use [simple_480p.sv](../simple_480p.sv) from the main [Pong](../) folder._
+_Note: this design uses [simple_480p.sv](../simple_480p.sv) and [simple_score.sv](../simple_score.sv) from the main [Pong](../) folder._
 
 ## Installing Dependencies
 

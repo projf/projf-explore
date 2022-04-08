@@ -1,8 +1,8 @@
-# Project F: Pong - Create Vivado Project
+# Project F: FPGA Pong - Create Vivado Project
 # (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-pong/
 
-puts "INFO: Project F - Pong Project Creation Script"
+puts "INFO: Project F - FPGA Pong Project Creation Script"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {

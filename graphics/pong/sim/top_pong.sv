@@ -1,4 +1,4 @@
-// Project F: Pong - Pong Game (Verilator SDL)
+// Project F: FPGA Pong - Pong Game (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 

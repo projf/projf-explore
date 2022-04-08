@@ -1,4 +1,4 @@
-// Project F: Pong - Simple 1280x720p60 Display
+// Project F: FPGA Pong - Simple 1280x720p60 Display
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 

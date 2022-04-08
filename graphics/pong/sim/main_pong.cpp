@@ -1,4 +1,4 @@
-// Project F: Pong - Pong Game Verilator C++
+// Project F: FPGA Pong - Pong Game Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 
