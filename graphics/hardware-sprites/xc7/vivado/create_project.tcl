@@ -65,7 +65,6 @@ set design_sources [list \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${lib_dir}/memory/rom_sync.sv"] \
   [file normalize "${origin_dir}/clut_simple.sv"] \
-  [file normalize "${origin_dir}/linebuffer_simple.sv"] \
   [file normalize "${origin_dir}/sprite_inline.sv"] \
   [file normalize "${origin_dir}/sprite_rom.sv"] \
   [file normalize "${origin_dir}/sprite_scale.sv"] \

@@ -15,7 +15,6 @@ ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
 ADD_SRC += ../clut_simple.sv
-ADD_SRC += ../linebuffer_simple.sv
 ADD_SRC += ../sprite_inline.sv
 ADD_SRC += ../sprite_rom.sv
 ADD_SRC += ../sprite_scale.sv
