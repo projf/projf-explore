@@ -1,11 +1,11 @@
-// Project F: Hardware Sprites - Hedgehog (iCEBreaker 12-bit DVI Pmod)
+// Project F: Hardware Sprites - Hourglass (iCEBreaker 12-bit DVI Pmod)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hedgehog (
+module top_hourglass (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button
     output      logic dvi_clk,      // DVI pixel clock
@@ -55,31 +55,16 @@ module top_hedgehog (
     localparam CHANW = 4;         // colour channel width (bits)
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam INDXW = 4;         // colour index width (bits)
-    localparam TRANS_INDX = 'h9;  // transparant colour index
-    localparam PAL_FILE = "../res/palettes/hedgehog-12b.mem";  // palette file
+    localparam TRANS_INDX = 'h0;  // transparant colour index
+    localparam BG_COLR = 'h137;   // background colour
+    localparam PAL_FILE = "../res/palettes/step-12b.mem";  // palette file
 
     // sprite parameters
-    localparam SX_OFFS    =  3;  // horizontal screen offset (pixels): +1 for CLUT
-    localparam SPR_WIDTH  = 32;  // width in pixels
-    localparam SPR_HEIGHT = 20;  // height in pixels
-    localparam SPR_SCALE  =  2;  // 2^2 = 4x scale
-    localparam SPR_DRAWW  = SPR_WIDTH * 2**SPR_SCALE;  // draw width
-    localparam SPR_SPX    =  2;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "../res/sprites/hedgehog.mem";  // sprite bitmap file
-
-    logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
-
-    // update sprite position once per frame
-    always_ff @(posedge clk_pix) begin
-        if (frame) begin
-            if (sprx <= -SPR_DRAWW) sprx <= H_RES;  // move back to right of screen
-            else sprx <= sprx - SPR_SPX;  // otherwise keep moving left
-        end
-        if (rst_pix) begin  // start off screen and level with grass
-            sprx <= H_RES;
-            spry <= 240;
-        end
-    end
+    localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
+    localparam SPR_WIDTH  = 8;  // width in pixels
+    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
+    localparam SPR_FILE   = "../res/sprites/hourglass.mem";  // sprite bitmap file
 
     logic drawing;  // drawing at (sx,sy)
     logic [INDXW-1:0] spr_pix_indx;  // pixel colour index
@@ -92,17 +77,28 @@ module top_hedgehog (
         .SPR_HEIGHT(SPR_HEIGHT),
         .SPR_SCALE(SPR_SCALE),
         .SPR_DATAW(INDXW)
-        ) sprite_hedgehog (
+        ) sprite_hourglass (
         .clk(clk_pix),
         .rst(rst_pix),
         .line,
         .sx,
         .sy,
-        .sprx,
-        .spry,
+        .sprx(32),
+        .spry(16),
         .pix(spr_pix_indx),
         .drawing
     );
+
+    // frame counter to rotate sprite colours
+    localparam FRAME_NUM = 15;  // rotate colour every N frames
+    logic [$clog2(FRAME_NUM):0] cnt_frame;  // frame counter
+    logic [INDXW-1:0] indx_offs;  // pixel colour offset
+    always_ff @(posedge clk_pix) begin
+        if (frame) begin
+            cnt_frame <= (cnt_frame == FRAME_NUM-1) ? 0 : cnt_frame + 1;
+            if (cnt_frame == 0) indx_offs <= indx_offs - 1;
+        end
+    end
 
     // colour lookup table
     logic [COLRW-1:0] spr_pix_colr;
@@ -115,7 +111,7 @@ module top_hedgehog (
         .clk_read(clk_pix),
         .we(0),
         .indx_write(0),
-        .indx_read(spr_pix_indx),
+        .indx_read(spr_pix_indx + indx_offs),
         .colr_in(0),
         .colr_out(spr_pix_colr)
     );
@@ -124,24 +120,9 @@ module top_hedgehog (
     logic drawing_t1;
     always_ff @(posedge clk_pix) drawing_t1 <= drawing && (spr_pix_indx != TRANS_INDX);
 
-    // background colour
-    logic [COLRW-1:0] bg_colr;
-    always_ff @(posedge clk_pix) begin
-        if (line) begin
-            if      (sy == 0)   bg_colr <= 12'h239;
-            else if (sy == 80)  bg_colr <= 12'h24A;
-            else if (sy == 140) bg_colr <= 12'h25B;
-            else if (sy == 190) bg_colr <= 12'h26C;
-            else if (sy == 230) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 295) bg_colr <= 12'h2BF;
-            else if (sy == 320) bg_colr <= 12'h260;
-        end
-    end
-
     // paint colours
     logic [CHANW-1:0] paint_r, paint_g, paint_b;
-    always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : bg_colr;
+    always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
 
     // DVI Pmod output
     SB_IO #(

@@ -1,0 +1,20 @@
+// Project F: Hardware Sprites - Hedgehog Palette (12-bit output)
+// Adapted from Team17 game Superfrog for demonstration purposes
+// Learn more at https://projectf.io/posts/hardware-sprites/
+
+CCC  // 0
+AAA  // 1
+888  // 2
+874  // 3
+763  // 4
+651  // 5
+540  // 6
+330  // 7
+111  // 8
+F0F  // 9 - transparent
+000  // A - unused
+000  // B - unused
+000  // C - unused
+000  // D - unused
+000  // E - unused
+000  // F - unused
