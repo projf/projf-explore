@@ -1,4 +1,4 @@
-# Hardware Sprites 2022
+# Hardware Sprites
 
 New sprite designs for 2022.
 

@@ -1,6 +1,6 @@
-## Project F: Racing the Beam - Nexys Video Board Constraints
+## Project F: Hardware Sprites - Nexys Video Board Constraints
 ## (C)2022 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/racing-the-beam/
+## Learn more at https://projectf.io/posts/hardware-sprites/
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]
