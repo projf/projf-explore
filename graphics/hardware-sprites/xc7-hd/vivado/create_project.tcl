@@ -59,6 +59,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
+  [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_720p.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
@@ -67,7 +68,6 @@ set design_sources [list \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
   [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
-  [file normalize "${origin_dir}/clut_simple.sv"] \
   [file normalize "${origin_dir}/sprite_inline.sv"] \
   [file normalize "${origin_dir}/sprite_rom.sv"] \
   [file normalize "${origin_dir}/sprite_scale.sv"] \
