@@ -1,0 +1,8 @@
+// Project F Library - PICO-8 Palette
+// 16 Colours with 4 bits per channel
+// Learn more at https://projectf.io
+
+// 4-bit per channel version created by Project F from Lexaloffle original
+// Palette source: https://lospec.com/palette-list/pico-8
+
+000 235 825 085 B53 655 CCC FFF F05 FA0 FF2 0E3 3BF 87A F7B FCA
