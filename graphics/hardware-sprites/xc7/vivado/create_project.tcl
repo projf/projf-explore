@@ -72,8 +72,8 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${lib_dir}/res/palettes/teleport16_4b.mem"] \
   [file normalize "${origin_dir}/res/palettes/hedgehog-12b.mem"] \
-  [file normalize "${origin_dir}/res/palettes/step-12b.mem"] \
   [file normalize "${origin_dir}/res/sprites/hedgehog.mem"] \
   [file normalize "${origin_dir}/res/sprites/hourglass.mem"] \
   [file normalize "${origin_dir}/res/sprites/letter_f.mem"] \
@@ -95,11 +95,11 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
-  [file normalize "${origin_dir}/xc7/clut_simple_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/clut_simple_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/clut_simple_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/sprite_inline_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_rom_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_scale_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/vivado/clut_simple_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/sprite_inline_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/sprite_rom_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/sprite_scale_tb_behav.wcfg"] \

@@ -16,7 +16,7 @@ module clut_simple_tb();
     localparam COLRW = 12;  // 12 colour bits per pixel
     localparam INDXW = 4;   // 4 index bits per pixel
 
-    localparam PAL_FILE = "step-12b.mem";
+    localparam PAL_FILE = "teleport16_4b.mem";
     logic we;
     logic [COLRW-1:0] pix_colr_in, pix_colr_out;
     logic [INDXW-1:0] pix_indx_write, pix_indx_read;

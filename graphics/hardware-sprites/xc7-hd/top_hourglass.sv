@@ -60,7 +60,7 @@ module top_hourglass (
     localparam INDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h0;  // transparant colour index
     localparam BG_COLR = 'h137;   // background colour
-    localparam PAL_FILE = "step-12b.mem";  // palette file
+    localparam PAL_FILE = "teleport16_4b.mem";  // palette file
 
     // sprite parameters
     localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
