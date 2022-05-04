@@ -55,7 +55,7 @@ module top_hourglass (
     // colour parameters
     localparam CHANW = 4;         // colour channel width (bits)
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
-    localparam INDXW = 4;         // colour index width (bits)
+    localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h0;  // transparant colour index
     localparam BG_COLR = 'h137;   // background colour
     localparam PAL_FILE = "teleport16_4b.mem";  // palette file
@@ -68,7 +68,7 @@ module top_hourglass (
     localparam SPR_FILE   = "hourglass.mem";  // sprite bitmap file
 
     logic drawing;  // drawing at (sx,sy)
-    logic [INDXW-1:0] spr_pix_indx;  // pixel colour index
+    logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
     sprite_scale #(
         .CORDW(CORDW),
         .H_RES(H_RES),
@@ -77,7 +77,7 @@ module top_hourglass (
         .SPR_WIDTH(SPR_WIDTH),
         .SPR_HEIGHT(SPR_HEIGHT),
         .SPR_SCALE(SPR_SCALE),
-        .SPR_DATAW(INDXW)
+        .SPR_DATAW(CIDXW)
         ) sprite_hourglass (
         .clk(clk_pix),
         .rst(rst_pix),
@@ -93,7 +93,7 @@ module top_hourglass (
     // frame counter to rotate sprite colours
     localparam FRAME_NUM = 15;  // rotate colour every N frames
     logic [$clog2(FRAME_NUM):0] cnt_frame;  // frame counter
-    logic [INDXW-1:0] indx_offs;  // pixel colour offset
+    logic [CIDXW-1:0] indx_offs;  // pixel colour offset
     always_ff @(posedge clk_pix) begin
         if (frame) begin
             cnt_frame <= (cnt_frame == FRAME_NUM-1) ? 0 : cnt_frame + 1;
@@ -105,14 +105,14 @@ module top_hourglass (
     logic [COLRW-1:0] spr_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
-        .INDXW(INDXW),
+        .CIDXW(CIDXW),
         .F_PAL(PAL_FILE)
         ) clut_instance (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(0),
-        .indx_write(0),
-        .indx_read(spr_pix_indx + indx_offs),
+        .cidx_write(0),
+        .cidx_read(spr_pix_indx + indx_offs),
         .colr_in(0),
         .colr_out(spr_pix_colr)
     );

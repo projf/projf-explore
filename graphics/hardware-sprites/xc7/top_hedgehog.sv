@@ -55,7 +55,7 @@ module top_hedgehog (
     // colour parameters
     localparam CHANW = 4;         // colour channel width (bits)
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
-    localparam INDXW = 4;         // colour index width (bits)
+    localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h9;  // transparant colour index
     localparam PAL_FILE = "hedgehog-12b.mem";  // palette file
 
@@ -83,7 +83,7 @@ module top_hedgehog (
     end
 
     logic drawing;  // drawing at (sx,sy)
-    logic [INDXW-1:0] spr_pix_indx;  // pixel colour index
+    logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
     sprite_scale #(
         .CORDW(CORDW),
         .H_RES(H_RES),
@@ -92,7 +92,7 @@ module top_hedgehog (
         .SPR_WIDTH(SPR_WIDTH),
         .SPR_HEIGHT(SPR_HEIGHT),
         .SPR_SCALE(SPR_SCALE),
-        .SPR_DATAW(INDXW)
+        .SPR_DATAW(CIDXW)
         ) sprite_hedgehog (
         .clk(clk_pix),
         .rst(rst_pix),
@@ -109,14 +109,14 @@ module top_hedgehog (
     logic [COLRW-1:0] spr_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
-        .INDXW(INDXW),
+        .CIDXW(CIDXW),
         .F_PAL(PAL_FILE)
         ) clut_instance (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(0),
-        .indx_write(0),
-        .indx_read(spr_pix_indx),
+        .cidx_write(0),
+        .cidx_read(spr_pix_indx),
         .colr_in(0),
         .colr_out(spr_pix_colr)
     );
