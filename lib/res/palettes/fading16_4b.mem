@@ -1,0 +1,8 @@
+// Project F Library - Fading 16 Palette
+// 16 Colours with 4 bits per channel
+// Learn more at https://projectf.io
+
+// 4-bit per channel version created by Project F from CalmRadish original
+// Palette source: https://lospec.com/palette-list/fading-16
+
+DDA CB8 C86 A55 745 544 556 687 9A8 655 988 BA9 886 BA6 876 B96

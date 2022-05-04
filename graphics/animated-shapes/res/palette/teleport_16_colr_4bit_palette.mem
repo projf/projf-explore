@@ -1,5 +1,5 @@
-// Project F: Animated Shapes - Tunnel Palette
-// 4 bits per channel
+// Project F: Animated Shapes - Teleport Palette
+// 16 Colours with 4 bits per channel
 // Learn more at https://projectf.io
 
 825  // 0 - dark-purple
@@ -13,8 +13,8 @@ FF2  // 6 - yellow
 0E3  // 8 - green
 0B4  // 9 - green to dark-green
 085  // A - dark-green
-19A  // 9 - dark-green to blue
-3BF  // A - blue
-59C  // B - blue to indigo
-87A  // C - indigo
-847  // D - indigo to dark-purple
+19A  // B - dark-green to blue
+3BF  // C - blue
+59C  // D - blue to indigo
+87A  // E - indigo
+847  // F - indigo to dark-purple

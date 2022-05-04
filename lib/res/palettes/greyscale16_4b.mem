@@ -1,0 +1,5 @@
+// Project F Library - Greyscale 16 Colour Palette
+// 16 Colours with 4 bits per channel
+// Learn more at https://projectf.io
+
+000 111 222 333 444 555 666 777 888 999 AAA BBB CCC DDD EEE FFF

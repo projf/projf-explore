@@ -47,10 +47,12 @@ module display_480p #(
 
     // generate horizontal and vertical sync with correct polarity
     always_ff @(posedge clk_pix) begin
-        hsync <= H_POL ? (x > HS_STA && x <= HS_END)
-                      : ~(x > HS_STA && x <= HS_END);
-        vsync <= V_POL ? (y > VS_STA && y <= VS_END)
-                      : ~(y > VS_STA && y <= VS_END);
+        hsync <= H_POL ? (x > HS_STA && x <= HS_END) : ~(x > HS_STA && x <= HS_END);
+        vsync <= V_POL ? (y > VS_STA && y <= VS_END) : ~(y > VS_STA && y <= VS_END);
+        if (rst_pix) begin
+            hsync <= H_POL ? 0 : 1;
+            vsync <= V_POL ? 0 : 1;
+        end
     end
 
     // control signals
