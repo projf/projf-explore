@@ -57,9 +57,9 @@ module sprite_scale #(
         spr_active = (spr_diff >= 0) && (spr_diff < SPR_HEIGHT);
         spr_begin = (sx >= sprx_r - SX_OFFS);
         /* verilator lint_off WIDTH */
-        spr_end = (bmap_x == SPR_WIDTH-1);  // end horizontal drawing at sprite end
+        spr_end = (bmap_x == SPR_WIDTH-1);
         /* verilator lint_on WIDTH */
-        line_end = (sx == H_RES - SX_OFFS);  // end horizontal drawing at line end
+        line_end = (sx == H_RES - SX_OFFS);
     end
 
     // sprite state machine
