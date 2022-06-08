@@ -69,11 +69,11 @@ module sprite_scale #(
         ACTIVE,    // check if sprite is active on this line
         WAIT_POS,  // wait for horizontal sprite position
         SPR_LINE,  // iterate over sprite pixels
-        WAIT_MEM   // account for memory latency
+        WAIT_DATA  // account for data latency
     } state;
 
     always_ff @(posedge clk) begin
-        if (line) begin  // stop drawing and prepare for new line
+        if (line) begin  // prepare for new line
             state <= REG_POS;
             pix <= 0;
             drawing <= 0;
@@ -96,20 +96,20 @@ module sprite_scale #(
                     end
                 end
                 SPR_LINE: begin
-                    if (line_end) state <= WAIT_MEM;
+                    if (line_end) state <= WAIT_DATA;
                     pix <= spr_rom_data;
                     drawing <= 1;
                     /* verilator lint_off WIDTH */
                     if (SPR_SCALE == 0 || cnt_x == 2**SPR_SCALE-1) begin
                     /* verilator lint_on WIDTH */
-                        if (spr_end) state <= WAIT_MEM;
+                        if (spr_end) state <= WAIT_DATA;
                         spr_rom_addr <= spr_rom_addr + 1;
                         bmap_x <= bmap_x + 1;
                         cnt_x <= 0;
                     end else cnt_x <= cnt_x + 1;
                 end
-                WAIT_MEM: begin
-                    state <= IDLE;  // 1 cycle of memory latency
+                WAIT_DATA: begin
+                    state <= IDLE;  // 1 cycle between address set and data receipt
                     pix <= 0;  // default colour
                     drawing <= 0;
                 end

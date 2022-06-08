@@ -37,6 +37,10 @@ module top_tinyf_inline #(parameter CORDW=16) (  // coordinate width
     // screen dimensions (must match display_inst)
     localparam H_RES = 640;
 
+    // sprite parameters
+    localparam SPRX = 32;  // horizontal position
+    localparam SPRY = 16;  // vertical position
+
     // sprite
     logic pix, drawing;
     sprite_inline #(
@@ -48,8 +52,8 @@ module top_tinyf_inline #(parameter CORDW=16) (  // coordinate width
         .line,
         .sx,
         .sy,
-        .sprx(32),
-        .spry(16),
+        .sprx(SPRX),
+        .spry(SPRY),
         .pix,
         .drawing
     );

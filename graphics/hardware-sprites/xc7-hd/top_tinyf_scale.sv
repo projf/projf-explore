@@ -1,4 +1,4 @@
-// Project F: Hardware Sprites - Tiny F with Scaling (Flashback DVI)
+// Project F: Hardware Sprites - Tiny F with Scaling (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
@@ -6,16 +6,16 @@
 `timescale 1ns / 1ps
 
 module top_tinyf_scale (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst_n,        // reset button
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
     // generate pixel clock
@@ -38,7 +38,7 @@ module top_tinyf_scale (
     localparam CORDW = 16;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic de, line;
     display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
@@ -47,46 +47,25 @@ module top_tinyf_scale (
         .hsync,
         .vsync,
         .de,
-        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .line
     );
 
     // screen dimensions (must match display_inst)
     localparam H_RES = 1280;
-    localparam V_RES = 720;
 
     // sprite parameters
-    localparam SPR_FILE   = "letter_f.mem";
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // height in pixels
-    localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
-    localparam SPR_DATAW  = 1;  // bits per pixel
-    localparam SPR_DRAWW  = SPR_WIDTH  * 2**SPR_SCALE;  // draw width
-    localparam SPR_DRAWH  = SPR_HEIGHT * 2**SPR_SCALE;  // draw height
-    localparam SPR_SPX    = 4;  // horizontal speed (pixels/frame)
+    localparam SPRX       = 32;  // horizontal position
+    localparam SPRY       = 16;  // vertical position
+    localparam SPR_WIDTH  =  8;  // width in pixels
+    localparam SPR_HEIGHT =  8;  // height in pixels
+    localparam SPR_SCALE  =  3;  // 2^3 = 8x scale
+    localparam SPR_DATAW  =  1;  // bits per pixel
+    localparam SPR_FILE = "letter_f.mem";
 
-    // draw sprite at position (sprx,spry)
-    logic signed [CORDW-1:0] sprx, spry;
-    logic dx;  // direction: 0 is right/down
-
-    // update sprite position once per frame
-    always_ff @(posedge clk_pix) begin
-        if (frame) begin
-            if (dx == 0) begin  // moving right
-                if (sprx + SPR_DRAWW >= H_RES + 2*SPR_DRAWW) dx <= 1;  // move left
-                else sprx <= sprx + SPR_SPX;  // continue right
-            end else begin  // moving left
-                if (sprx <= -2*SPR_DRAWW) dx <= 0;  // move right
-                else sprx <= sprx - SPR_SPX;  // continue left
-            end
-        end
-        if (rst_pix) begin  // centre sprite and set direction right
-            sprx <= H_RES/2 - SPR_DRAWW/2;
-            spry <= V_RES/2 - SPR_DRAWH/2;
-            dx <= 0;
-        end
-    end
-
+    // sprite
     logic drawing;  // drawing at (sx,sy)
     logic [SPR_DATAW-1:0] pix;  // pixel colour index
     sprite_scale #(
@@ -103,8 +82,8 @@ module top_tinyf_scale (
         .line,
         .sx,
         .sy,
-        .sprx,
-        .spry,
+        .sprx(SPRX),
+        .spry(SPRY),
         .pix,
         .drawing
     );

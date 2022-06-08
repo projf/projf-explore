@@ -1,4 +1,4 @@
-// Project F: Hardware Sprites - Hedgehog (Flashback DVI)
+// Project F: Hardware Sprites - Hedgehog (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
@@ -6,16 +6,16 @@
 `timescale 1ns / 1ps
 
 module top_hedgehog (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst_n,        // reset button
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
     // generate pixel clock
@@ -59,7 +59,7 @@ module top_hedgehog (
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h9;  // transparant colour index
-    localparam PAL_FILE = "hedgehog-12b.mem";  // palette file
+    localparam PAL_FILE = "hedgehog_4b.mem";
 
     // sprite parameters
     localparam SX_OFFS    =  3;  // horizontal screen offset (pixels): +1 for CLUT
@@ -68,7 +68,7 @@ module top_hedgehog (
     localparam SPR_SCALE  =  3;  // 2^3 = 8x scale
     localparam SPR_DRAWW  = SPR_WIDTH * 2**SPR_SCALE;  // draw width
     localparam SPR_SPX    =  4;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "hedgehog.mem";  // sprite bitmap file
+    localparam SPR_FILE   = "hedgehog.mem";
 
     logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
 

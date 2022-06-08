@@ -1,11 +1,11 @@
-// Project F: Hardware Sprites - Tiny F with Scaling (Verilator SDL)
+// Project F: Hardware Sprites - Tiny F with Motion (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_tinyf_scale #(parameter CORDW=16) (  // coordinate width
+module top_tinyf_move #(parameter CORDW=16) (  // coordinate width
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -36,15 +36,38 @@ module top_tinyf_scale #(parameter CORDW=16) (  // coordinate width
 
     // screen dimensions (must match display_inst)
     localparam H_RES = 640;
+    localparam V_RES = 480;
 
     // sprite parameters
-    localparam SPRX       = 32;  // horizontal position
-    localparam SPRY       = 16;  // vertical position
-    localparam SPR_WIDTH  =  8;  // width in pixels
-    localparam SPR_HEIGHT =  8;  // height in pixels
-    localparam SPR_SCALE  =  3;  // 2^3 = 8x scale
-    localparam SPR_DATAW  =  1;  // bits per pixel
-    localparam SPR_FILE = "../res/sprites/letter_f.mem";
+    localparam SPR_WIDTH  = 8;  // width in pixels
+    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_SCALE  = 3;  // 2^3 = 8x scale
+    localparam SPR_DATAW  = 1;  // bits per pixel
+    localparam SPR_DRAWW  = SPR_WIDTH  * 2**SPR_SCALE;  // draw width
+    localparam SPR_DRAWH  = SPR_HEIGHT * 2**SPR_SCALE;  // draw height
+    localparam SPR_SPX    = 4;  // horizontal speed (pixels/frame)
+    localparam SPR_FILE   = "../res/sprites/letter_f.mem";
+
+    logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
+    logic dx;  // direction: 0 is right/down
+
+    // update sprite position once per frame
+    always_ff @(posedge clk_pix) begin
+        if (frame) begin
+            if (dx == 0) begin  // moving right
+                if (sprx + SPR_DRAWW >= H_RES + 2*SPR_DRAWW) dx <= 1;  // move left
+                else sprx <= sprx + SPR_SPX;  // continue right
+            end else begin  // moving left
+                if (sprx <= -2*SPR_DRAWW) dx <= 0;  // move right
+                else sprx <= sprx - SPR_SPX;  // continue left
+            end
+        end
+        if (rst_pix) begin  // centre sprite and set direction right
+            sprx <= H_RES/2 - SPR_DRAWW/2;
+            spry <= V_RES/2 - SPR_DRAWH/2;
+            dx <= 0;
+        end
+    end
 
     // sprite
     logic drawing;  // drawing at (sx,sy)
@@ -63,8 +86,8 @@ module top_tinyf_scale #(parameter CORDW=16) (  // coordinate width
         .line,
         .sx,
         .sy,
-        .sprx(SPRX),
-        .spry(SPRY),
+        .sprx,
+        .spry,
         .pix,
         .drawing
     );

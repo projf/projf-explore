@@ -22,6 +22,7 @@ ADD_SRC += ../sprite_scale.sv
 tinyf_inline: tinyf_inline.rpt tinyf_inline.bin
 tinyf_rom: tinyf_rom.rpt tinyf_rom.bin
 tinyf_scale: tinyf_scale.rpt tinyf_scale.bin
+tinyf_move: tinyf_move.rpt tinyf_move.bin
 hourglass: hourglass.rpt hourglass.bin
 hedgehog: hedgehog.rpt hedgehog.bin
 

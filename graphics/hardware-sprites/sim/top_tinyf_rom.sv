@@ -37,8 +37,12 @@ module top_tinyf_rom #(parameter CORDW=16) (  // coordinate width
     // screen dimensions (must match display_inst)
     localparam H_RES = 640;
 
-    // sprite
+    // sprite parameters
+    localparam SPRX = 32;  // horizontal position
+    localparam SPRY = 16;  // vertical position
     localparam SPR_FILE = "../res/sprites/letter_f.mem";
+
+    // sprite
     logic pix, drawing;
     sprite_rom #(
         .CORDW(CORDW),
@@ -50,8 +54,8 @@ module top_tinyf_rom #(parameter CORDW=16) (  // coordinate width
         .line,
         .sx,
         .sy,
-        .sprx(32),
-        .spry(16),
+        .sprx(SPRX),
+        .spry(SPRY),
         .pix,
         .drawing
     );

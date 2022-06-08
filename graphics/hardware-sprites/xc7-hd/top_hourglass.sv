@@ -1,4 +1,4 @@
-// Project F: Hardware Sprites - Hourglass (Flashback DVI)
+// Project F: Hardware Sprites - Hourglass (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
@@ -6,16 +6,16 @@
 `timescale 1ns / 1ps
 
 module top_hourglass (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst_n,        // reset button
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
     // generate pixel clock
@@ -38,7 +38,7 @@ module top_hourglass (
     localparam CORDW = 16;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic de, line;
     display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
@@ -47,7 +47,9 @@ module top_hourglass (
         .hsync,
         .vsync,
         .de,
-        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .line
     );
 
@@ -58,16 +60,16 @@ module top_hourglass (
     localparam CHANW = 4;         // colour channel width (bits)
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam CIDXW = 4;         // colour index width (bits)
-    localparam TRANS_INDX = 'h0;  // transparant colour index
+    localparam TRANS_INDX = 'hF;  // transparant colour index
     localparam BG_COLR = 'h137;   // background colour
-    localparam PAL_FILE = "teleport16_4b.mem";  // palette file
+    localparam PAL_FILE = "teleport16_4b.mem";
 
     // sprite parameters
     localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
     localparam SPR_WIDTH  = 8;  // width in pixels
     localparam SPR_HEIGHT = 8;  // height in pixels
     localparam SPR_SCALE  = 5;  // 2^5 = 32x scale
-    localparam SPR_FILE   = "hourglass.mem";  // sprite bitmap file
+    localparam SPR_FILE   = "hourglass.mem";
 
     logic drawing;  // drawing at (sx,sy)
     logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
@@ -92,17 +94,6 @@ module top_hourglass (
         .drawing
     );
 
-    // frame counter to rotate sprite colours
-    localparam FRAME_NUM = 15;  // rotate colour every N frames
-    logic [$clog2(FRAME_NUM):0] cnt_frame;  // frame counter
-    logic [CIDXW-1:0] indx_offs;  // pixel colour offset
-    always_ff @(posedge clk_pix) begin
-        if (frame) begin
-            cnt_frame <= (cnt_frame == FRAME_NUM-1) ? 0 : cnt_frame + 1;
-            if (cnt_frame == 0) indx_offs <= indx_offs - 1;
-        end
-    end
-
     // colour lookup table
     logic [COLRW-1:0] spr_pix_colr;
     clut_simple #(
@@ -114,7 +105,7 @@ module top_hourglass (
         .clk_read(clk_pix),
         .we(0),
         .cidx_write(0),
-        .cidx_read(spr_pix_indx + indx_offs),
+        .cidx_read(spr_pix_indx),
         .colr_in(0),
         .colr_out(spr_pix_colr)
     );

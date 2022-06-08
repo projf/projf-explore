@@ -1,11 +1,11 @@
-// Project F: Hardware Sprites - Hourglass (iCEBreaker 12-bit DVI Pmod)
+// Project F: Hardware Sprites - Tiny F with Motion (iCEBreaker 12-bit DVI Pmod)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hourglass (
+module top_tinyf_move (
     input  wire logic clk_12m,      // 12 MHz clock
     input  wire logic btn_rst,      // reset button
     output      logic dvi_clk,      // DVI pixel clock
@@ -35,7 +35,7 @@ module top_hourglass (
     localparam CORDW = 16;  // screen coordinate width in bits
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, line;
+    logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
@@ -44,76 +44,75 @@ module top_hourglass (
         .hsync,
         .vsync,
         .de,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .frame(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .frame,
         .line
     );
 
     // screen dimensions (must match display_inst)
     localparam H_RES = 640;
-
-    // colour parameters
-    localparam CHANW = 4;         // colour channel width (bits)
-    localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
-    localparam CIDXW = 4;         // colour index width (bits)
-    localparam TRANS_INDX = 'hF;  // transparant colour index
-    localparam BG_COLR = 'h137;   // background colour
-    localparam PAL_FILE = "../../../lib/res/palettes/teleport16_4b.mem";
+    localparam V_RES = 480;
 
     // sprite parameters
-    localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
     localparam SPR_WIDTH  = 8;  // width in pixels
     localparam SPR_HEIGHT = 8;  // height in pixels
-    localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
-    localparam SPR_FILE   = "../res/sprites/hourglass.mem";
+    localparam SPR_SCALE  = 3;  // 2^3 = 8x scale
+    localparam SPR_DATAW  = 1;  // bits per pixel
+    localparam SPR_DRAWW  = SPR_WIDTH  * 2**SPR_SCALE;  // draw width
+    localparam SPR_DRAWH  = SPR_HEIGHT * 2**SPR_SCALE;  // draw height
+    localparam SPR_SPX    = 4;  // horizontal speed (pixels/frame)
+    localparam SPR_FILE   = "../res/sprites/letter_f.mem";
+
+    // draw sprite at position (sprx,spry)
+    logic signed [CORDW-1:0] sprx, spry;
+    logic dx;  // direction: 0 is right/down
+
+    // update sprite position once per frame
+    always_ff @(posedge clk_pix) begin
+        if (frame) begin
+            if (dx == 0) begin  // moving right
+                if (sprx + SPR_DRAWW >= H_RES + 2*SPR_DRAWW) dx <= 1;  // move left
+                else sprx <= sprx + SPR_SPX;  // continue right
+            end else begin  // moving left
+                if (sprx <= -2*SPR_DRAWW) dx <= 0;  // move right
+                else sprx <= sprx - SPR_SPX;  // continue left
+            end
+        end
+        if (rst_pix) begin  // centre sprite and set direction right
+            sprx <= H_RES/2 - SPR_DRAWW/2;
+            spry <= V_RES/2 - SPR_DRAWH/2;
+            dx <= 0;
+        end
+    end
 
     logic drawing;  // drawing at (sx,sy)
-    logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
+    logic [SPR_DATAW-1:0] pix;  // pixel colour index
     sprite_scale #(
         .CORDW(CORDW),
         .H_RES(H_RES),
-        .SX_OFFS(SX_OFFS),
         .SPR_FILE(SPR_FILE),
         .SPR_WIDTH(SPR_WIDTH),
         .SPR_HEIGHT(SPR_HEIGHT),
         .SPR_SCALE(SPR_SCALE),
-        .SPR_DATAW(CIDXW)
-        ) sprite_hourglass (
+        .SPR_DATAW(SPR_DATAW)
+        ) sprite_f (
         .clk(clk_pix),
         .rst(rst_pix),
         .line,
         .sx,
         .sy,
-        .sprx(32),
-        .spry(16),
-        .pix(spr_pix_indx),
+        .sprx,
+        .spry,
+        .pix,
         .drawing
     );
 
-    // colour lookup table
-    logic [COLRW-1:0] spr_pix_colr;
-    clut_simple #(
-        .COLRW(COLRW),
-        .CIDXW(CIDXW),
-        .F_PAL(PAL_FILE)
-        ) clut_instance (
-        .clk_write(clk_pix),
-        .clk_read(clk_pix),
-        .we(0),
-        .cidx_write(0),
-        .cidx_read(spr_pix_indx),
-        .colr_in(0),
-        .colr_out(spr_pix_colr)
-    );
-
-    // account for transparency and delay drawing signal to match CLUT delay (1 cycle)
-    logic drawing_t1;
-    always_ff @(posedge clk_pix) drawing_t1 <= drawing && (spr_pix_indx != TRANS_INDX);
-
-    // paint colours
-    logic [CHANW-1:0] paint_r, paint_g, paint_b;
-    always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
+    // paint colours: yellow sprite, blue background
+    logic [3:0] paint_r, paint_g, paint_b;
+    always_comb begin
+        paint_r = (drawing && pix) ? 4'hF : 4'h1;
+        paint_g = (drawing && pix) ? 4'hC : 4'h3;
+        paint_b = (drawing && pix) ? 4'h0 : 4'h7;
+    end
 
     // DVI Pmod output
     SB_IO #(

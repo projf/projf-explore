@@ -46,6 +46,7 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_hedgehog.sv"] \
   [file normalize "${origin_dir}/xc7/top_hourglass.sv"] \
   [file normalize "${origin_dir}/xc7/top_tinyf_inline.sv"] \
+  [file normalize "${origin_dir}/xc7/top_tinyf_move.sv"] \
   [file normalize "${origin_dir}/xc7/top_tinyf_rom.sv"] \
   [file normalize "${origin_dir}/xc7/top_tinyf_scale.sv"] \
 ]
@@ -73,7 +74,7 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 # Memory design sources
 set mem_design_sources [list \
   [file normalize "${lib_dir}/res/palettes/teleport16_4b.mem"] \
-  [file normalize "${origin_dir}/res/palettes/hedgehog-12b.mem"] \
+  [file normalize "${origin_dir}/res/palettes/hedgehog_4b.mem"] \
   [file normalize "${origin_dir}/res/sprites/hedgehog.mem"] \
   [file normalize "${origin_dir}/res/sprites/hourglass.mem"] \
   [file normalize "${origin_dir}/res/sprites/letter_f.mem"] \

@@ -1,4 +1,4 @@
-// Project F: Hardware Sprites - Tiny F from ROM (Flashback DVI)
+// Project F: Hardware Sprites - Tiny F from ROM (Nexys Video)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
@@ -6,16 +6,16 @@
 `timescale 1ns / 1ps
 
 module top_tinyf_rom (
-    input  wire logic clk_100m,         // 100 MHz clock
-    input  wire logic btn_rst_n,        // reset button
-    output      logic hdmi_tx_ch0_p,    // HDMI source channel 0 diff+
-    output      logic hdmi_tx_ch0_n,    // HDMI source channel 0 diff-
-    output      logic hdmi_tx_ch1_p,    // HDMI source channel 1 diff+
-    output      logic hdmi_tx_ch1_n,    // HDMI source channel 1 diff-
-    output      logic hdmi_tx_ch2_p,    // HDMI source channel 2 diff+
-    output      logic hdmi_tx_ch2_n,    // HDMI source channel 2 diff-
-    output      logic hdmi_tx_clk_p,    // HDMI source clock diff+
-    output      logic hdmi_tx_clk_n     // HDMI source clock diff-
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
     // generate pixel clock
@@ -56,7 +56,12 @@ module top_tinyf_rom (
     // screen dimensions (must match display_inst)
     localparam H_RES = 1280;
 
+    // sprite parameters
+    localparam SPRX = 32;  // horizontal position
+    localparam SPRY = 16;  // vertical position
     localparam SPR_FILE = "letter_f.mem";
+
+    // sprite
     logic pix, drawing;
     sprite_rom #(
         .CORDW(CORDW),
@@ -68,8 +73,8 @@ module top_tinyf_rom (
         .line,
         .sx,
         .sy,
-        .sprx(32),
-        .spry(16),
+        .sprx(SPRX),
+        .spry(SPRY),
         .pix,
         .drawing
     );

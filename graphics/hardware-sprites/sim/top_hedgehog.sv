@@ -42,7 +42,7 @@ module top_hedgehog #(parameter CORDW=16) (  // coordinate width
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h9;  // transparant colour index
-    localparam PAL_FILE = "../res/palettes/hedgehog-12b.mem";  // palette file
+    localparam PAL_FILE = "../res/palettes/hedgehog_4b.mem";
 
     // sprite parameters
     localparam SX_OFFS    =  3;  // horizontal screen offset (pixels): +1 for CLUT
@@ -51,7 +51,7 @@ module top_hedgehog #(parameter CORDW=16) (  // coordinate width
     localparam SPR_SCALE  =  2;  // 2^2 = 4x scale
     localparam SPR_DRAWW  = SPR_WIDTH * 2**SPR_SCALE;  // draw width
     localparam SPR_SPX    =  2;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "../res/sprites/hedgehog.mem";  // sprite bitmap file
+    localparam SPR_FILE   = "../res/sprites/hedgehog.mem";
 
     logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
 

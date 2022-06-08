@@ -9,5 +9,6 @@ Included demos:
 * Tiny F Inline
 * Tiny F ROM
 * Tiny F Scale
+* Tiny F Move
 * Hourglass
 * Hedgehog
