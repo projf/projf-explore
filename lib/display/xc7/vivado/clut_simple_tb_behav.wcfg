@@ -13,10 +13,10 @@
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
       <ZoomEndTime time="1,280.000 ns"></ZoomEndTime>
-      <Cursor1Time time="1,280.000 ns"></Cursor1Time>
+      <Cursor1Time time="451.553 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="124"></NameColumnWidth>
+      <NameColumnWidth column_width="120"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="19" />
@@ -44,21 +44,23 @@
       <obj_property name="ElementShortName">we</obj_property>
       <obj_property name="ObjectShortName">we</obj_property>
    </wvobject>
-   <wvobject fp_name="/clut_simple_tb/clut_instance/indx_write" type="array">
-      <obj_property name="ElementShortName">indx_write[3:0]</obj_property>
-      <obj_property name="ObjectShortName">indx_write[3:0]</obj_property>
+   <wvobject fp_name="/clut_simple_tb/clut_instance/cidx_write" type="array">
+      <obj_property name="ElementShortName">cidx_write[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cidx_write[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/clut_simple_tb/clut_instance/indx_read" type="array">
-      <obj_property name="ElementShortName">indx_read[3:0]</obj_property>
-      <obj_property name="ObjectShortName">indx_read[3:0]</obj_property>
+   <wvobject fp_name="/clut_simple_tb/clut_instance/cidx_read" type="array">
+      <obj_property name="ElementShortName">cidx_read[3:0]</obj_property>
+      <obj_property name="ObjectShortName">cidx_read[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/clut_simple_tb/clut_instance/colr_in" type="array">
       <obj_property name="ElementShortName">colr_in[11:0]</obj_property>
       <obj_property name="ObjectShortName">colr_in[11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/clut_simple_tb/clut_instance/colr_out" type="array">
       <obj_property name="ElementShortName">colr_out[11:0]</obj_property>
       <obj_property name="ObjectShortName">colr_out[11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject type="divider" fp_name="divider524">
       <obj_property name="label">BRAM</obj_property>
@@ -87,13 +89,16 @@
    <wvobject fp_name="/clut_simple_tb/clut_instance/bram_clut/data_in" type="array">
       <obj_property name="ElementShortName">data_in[11:0]</obj_property>
       <obj_property name="ObjectShortName">data_in[11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/clut_simple_tb/clut_instance/bram_clut/data_out" type="array">
       <obj_property name="ElementShortName">data_out[11:0]</obj_property>
       <obj_property name="ObjectShortName">data_out[11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/clut_simple_tb/clut_instance/bram_clut/memory" type="array">
       <obj_property name="ElementShortName">memory[0:15][11:0]</obj_property>
       <obj_property name="ObjectShortName">memory[0:15][11:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
 </wave_config>
