@@ -100,10 +100,10 @@ set sim_sources [list \
   [file normalize "${lib_dir}/display/xc7/vivado/clut_simple_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/sprite_inline_tb.sv"] \
   [file normalize "${origin_dir}/xc7/sprite_rom_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/sprite_scale_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/sprite_tb.sv"] \
   [file normalize "${origin_dir}/xc7/vivado/sprite_inline_tb_behav.wcfg"] \
   [file normalize "${origin_dir}/xc7/vivado/sprite_rom_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7/vivado/sprite_scale_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/sprite_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 

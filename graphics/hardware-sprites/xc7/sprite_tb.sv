@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module sprite_scale_tb();
+module sprite_tb();
 
     parameter CLK_PERIOD = 40;  // 40 ns == 25 MHz
 

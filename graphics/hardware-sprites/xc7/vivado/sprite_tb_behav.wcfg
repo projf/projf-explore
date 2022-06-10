@@ -3,10 +3,10 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="sprite_scale_tb_behav.wdb" id="1">
+      <db_ref path="sprite_tb_behav.wdb" id="1">
          <top_modules>
             <top_module name="glbl" />
-            <top_module name="sprite_scale_tb" />
+            <top_module name="sprite_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
@@ -20,59 +20,59 @@
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="38" />
-   <wvobject fp_name="/sprite_scale_tb/rst" type="logic">
+   <wvobject fp_name="/sprite_tb/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/clk_25m" type="logic">
+   <wvobject fp_name="/sprite_tb/clk_25m" type="logic">
       <obj_property name="ElementShortName">clk_25m</obj_property>
       <obj_property name="ObjectShortName">clk_25m</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sx" type="array">
+   <wvobject fp_name="/sprite_tb/sx" type="array">
       <obj_property name="ElementShortName">sx[15:0]</obj_property>
       <obj_property name="ObjectShortName">sx[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sy" type="array">
+   <wvobject fp_name="/sprite_tb/sy" type="array">
       <obj_property name="ElementShortName">sy[15:0]</obj_property>
       <obj_property name="ObjectShortName">sy[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/hsync" type="logic">
+   <wvobject fp_name="/sprite_tb/hsync" type="logic">
       <obj_property name="ElementShortName">hsync</obj_property>
       <obj_property name="ObjectShortName">hsync</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/vsync" type="logic">
+   <wvobject fp_name="/sprite_tb/vsync" type="logic">
       <obj_property name="ElementShortName">vsync</obj_property>
       <obj_property name="ObjectShortName">vsync</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/de" type="logic">
+   <wvobject fp_name="/sprite_tb/de" type="logic">
       <obj_property name="ElementShortName">de</obj_property>
       <obj_property name="ObjectShortName">de</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/frame" type="logic">
+   <wvobject fp_name="/sprite_tb/frame" type="logic">
       <obj_property name="ElementShortName">frame</obj_property>
       <obj_property name="ObjectShortName">frame</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/line" type="logic">
+   <wvobject fp_name="/sprite_tb/line" type="logic">
       <obj_property name="ElementShortName">line</obj_property>
       <obj_property name="ObjectShortName">line</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprx" type="array">
+   <wvobject fp_name="/sprite_tb/sprx" type="array">
       <obj_property name="ElementShortName">sprx[15:0]</obj_property>
       <obj_property name="ObjectShortName">sprx[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/spry" type="array">
+   <wvobject fp_name="/sprite_tb/spry" type="array">
       <obj_property name="ElementShortName">spry[15:0]</obj_property>
       <obj_property name="ObjectShortName">spry[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/pix" type="logic">
+   <wvobject fp_name="/sprite_tb/pix" type="logic">
       <obj_property name="ElementShortName">pix</obj_property>
       <obj_property name="ObjectShortName">pix</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/drawing" type="logic">
+   <wvobject fp_name="/sprite_tb/drawing" type="logic">
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
@@ -80,90 +80,90 @@
       <obj_property name="label">Sprite</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/clk" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/rst" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/line" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/line" type="logic">
       <obj_property name="ElementShortName">line</obj_property>
       <obj_property name="ObjectShortName">line</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/sx" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/sx" type="array">
       <obj_property name="ElementShortName">sx[15:0]</obj_property>
       <obj_property name="ObjectShortName">sx[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/sy" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/sy" type="array">
       <obj_property name="ElementShortName">sy[15:0]</obj_property>
       <obj_property name="ObjectShortName">sy[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/sprx" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/sprx" type="array">
       <obj_property name="ElementShortName">sprx[15:0]</obj_property>
       <obj_property name="ObjectShortName">sprx[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spry" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spry" type="array">
       <obj_property name="ElementShortName">spry[15:0]</obj_property>
       <obj_property name="ObjectShortName">spry[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/pix" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/pix" type="array">
       <obj_property name="ElementShortName">pix[0:0]</obj_property>
       <obj_property name="ObjectShortName">pix[0:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/drawing" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/drawing" type="logic">
       <obj_property name="ElementShortName">drawing</obj_property>
       <obj_property name="ObjectShortName">drawing</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_rom_addr" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_rom_addr" type="array">
       <obj_property name="ElementShortName">spr_rom_addr[5:0]</obj_property>
       <obj_property name="ObjectShortName">spr_rom_addr[5:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_rom_data" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_rom_data" type="array">
       <obj_property name="ElementShortName">spr_rom_data[0:0]</obj_property>
       <obj_property name="ObjectShortName">spr_rom_data[0:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/bmap_x" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/bmap_x" type="array">
       <obj_property name="ElementShortName">bmap_x[2:0]</obj_property>
       <obj_property name="ObjectShortName">bmap_x[2:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/cnt_x" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/cnt_x" type="array">
       <obj_property name="ElementShortName">cnt_x[2:0]</obj_property>
       <obj_property name="ObjectShortName">cnt_x[2:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/sprx_r" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/sprx_r" type="array">
       <obj_property name="ElementShortName">sprx_r[15:0]</obj_property>
       <obj_property name="ObjectShortName">sprx_r[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spry_r" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spry_r" type="array">
       <obj_property name="ElementShortName">spry_r[15:0]</obj_property>
       <obj_property name="ObjectShortName">spry_r[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_diff" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_diff" type="array">
       <obj_property name="ElementShortName">spr_diff[15:0]</obj_property>
       <obj_property name="ObjectShortName">spr_diff[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_active" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_active" type="logic">
       <obj_property name="ElementShortName">spr_active</obj_property>
       <obj_property name="ObjectShortName">spr_active</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_begin" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_begin" type="logic">
       <obj_property name="ElementShortName">spr_begin</obj_property>
       <obj_property name="ObjectShortName">spr_begin</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_end" type="logic">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_end" type="logic">
       <obj_property name="ElementShortName">spr_end</obj_property>
       <obj_property name="ObjectShortName">spr_end</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/state" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/state" type="array">
       <obj_property name="ElementShortName">state[31:0]</obj_property>
       <obj_property name="ObjectShortName">state[31:0]</obj_property>
    </wvobject>
@@ -171,15 +171,15 @@
       <obj_property name="label">ROM</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_rom/addr" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_rom/addr" type="array">
       <obj_property name="ElementShortName">addr[5:0]</obj_property>
       <obj_property name="ObjectShortName">addr[5:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_rom/data" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_rom/data" type="array">
       <obj_property name="ElementShortName">data[0:0]</obj_property>
       <obj_property name="ObjectShortName">data[0:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sprite_scale_tb/sprite_scale_instance/spr_rom/memory" type="array">
+   <wvobject fp_name="/sprite_tb/sprite_scale_instance/spr_rom/memory" type="array">
       <obj_property name="ElementShortName">memory[0:63][0:0]</obj_property>
       <obj_property name="ObjectShortName">memory[0:63][0:0]</obj_property>
    </wvobject>
