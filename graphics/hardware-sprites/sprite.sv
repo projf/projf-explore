@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module sprite_scale #(
+module sprite #(
     parameter CORDW=16,      // screen coordinate width in bits
     parameter H_RES=640,     // horizontal screen resolution (pixels)
     parameter SX_OFFS=2,     // horizontal screen offset (pixels)

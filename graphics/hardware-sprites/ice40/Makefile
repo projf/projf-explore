@@ -17,7 +17,7 @@ ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
 ADD_SRC += ../sprite_inline.sv
 ADD_SRC += ../sprite_rom.sv
-ADD_SRC += ../sprite_scale.sv
+ADD_SRC += ../sprite.sv
 
 tinyf_inline: tinyf_inline.rpt tinyf_inline.bin
 tinyf_rom: tinyf_rom.rpt tinyf_rom.bin

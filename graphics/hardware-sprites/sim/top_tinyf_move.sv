@@ -72,7 +72,7 @@ module top_tinyf_move #(parameter CORDW=16) (  // coordinate width
     // sprite
     logic drawing;  // drawing at (sx,sy)
     logic [SPR_DATAW-1:0] pix;  // pixel colour index
-    sprite_scale #(
+    sprite #(
         .CORDW(CORDW),
         .H_RES(H_RES),
         .SPR_FILE(SPR_FILE),

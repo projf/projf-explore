@@ -44,7 +44,7 @@ module sprite_scale_tb();
     logic signed [CORDW-1:0] sprx, spry;
 
     logic pix, drawing;
-    sprite_scale #(
+    sprite #(
         .CORDW(CORDW),
         .H_RES(H_RES),
         .SX_OFFS(SX_OFFS),

@@ -84,7 +84,7 @@ module top_hedgehog (
 
     logic drawing;  // drawing at (sx,sy)
     logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
-    sprite_scale #(
+    sprite #(
         .CORDW(CORDW),
         .H_RES(H_RES),
         .SX_OFFS(SX_OFFS),

@@ -67,7 +67,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
   [file normalize "${origin_dir}/sprite_inline.sv"] \
   [file normalize "${origin_dir}/sprite_rom.sv"] \
-  [file normalize "${origin_dir}/sprite_scale.sv"] \
+  [file normalize "${origin_dir}/sprite.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
