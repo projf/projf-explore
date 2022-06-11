@@ -7,6 +7,16 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 If you have a dev board, see the [Hardware Sprites README](../README.md) for build instructions.
 
+Included demos:
+
+* Tiny F - monochrome 8x8 pixel 'F' sprite
+  * Tiny F Inline - inline Verilog graphic
+  * Tiny F ROM - async ROM graphic
+  * Tiny F Scale - sprite scaling
+  * Tiny F Move - sprite moving
+* Hourglass - 16-colour 8x8 pixel hourglass sprite
+* Hedgehog - 16 colour hedgehog sprite
+
 ![](../../../doc/img/hardware-sprites.png?raw=true "")
 
 _Hedgehog sprite video capture from Nexys Video._
