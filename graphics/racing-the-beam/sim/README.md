@@ -23,7 +23,7 @@ Build a specific simulation (rasterbars, hello etc.):
 make rasterbars
 ```
 
-Or build all five simulations:
+Or build all simulations:
 
 ```shell
 make all

@@ -23,7 +23,7 @@ Build a specific simulation (square, flag_ethiopia, flag_sweden, or colour):
 make square
 ```
 
-Or build all four simulations:
+Or build all simulations:
 
 ```shell
 make all

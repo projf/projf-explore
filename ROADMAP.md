@@ -8,7 +8,7 @@ See [About Project F](https://projectf.io/about/) and the repo [README](README.m
 
 ## 2022
 
-I will announce plans for 2022 in the spring. In the meantime, I will continue to update and improve existing designs as described below.
+Updated roadmap coming summer 2022. In the meantime, I will continue to update and improve existing designs as described below.
 
 ## 2021
 

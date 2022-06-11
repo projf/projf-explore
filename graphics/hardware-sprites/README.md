@@ -1,14 +1,94 @@
 # Hardware Sprites
 
-New sprite designs for 2022.
+This folder accompanies the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**. These SystemVerilog designs create fast, colourful, graphics with minimal logic. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
-_README will be completed before merge into main._
+File layout:
+
+* `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
+* `res` - resources: sprite bitmaps and palettes
+* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
+* `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+
+These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
 Included demos:
 
-* Tiny F Inline
-* Tiny F ROM
-* Tiny F Scale
-* Tiny F Move
-* Hourglass
-* Hedgehog
+* Tiny F - monochrome 8x8 pixel 'F' sprite
+  * Tiny F Inline - inline Verilog graphic
+  * Tiny F ROM - async ROM graphic
+  * Tiny F Scale - sprite scaling
+  * Tiny F Move - sprite moving
+* Hourglass - 16-colour 8x8 pixel hourglass sprite
+* Hedgehog - 16 colour hedgehog sprite
+
+Learn more about the designs and demos from _[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)_, or read on for build instructions.
+
+![](../../doc/img/hardware-sprites.png?raw=true "")
+
+_Hedgehog sprite video capture from Nexys Video._
+
+## iCEBreaker Build
+
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://bygone.clairexen.net/icestorm/).
+
+You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
+
+For example, to build `hedgehog`; clone the projf-explore git repo, then:
+
+```shell
+cd projf-explore/graphics/hardware-sprites/ice40
+make hedgehog
+```
+
+After the build completes, you'll have a bin file, such as `hedgehog.bin`. Use the bin file to program your board:
+
+```shell
+iceprog hedgehog.bin
+```
+
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
+
+### Problems Building
+
+If you have problems building the iCE40 designs, make sure you're using Yosys 0.10 or later.
+
+## Arty Build
+
+To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+
+```tcl
+cd projf-explore/graphics/hardware-sprites/xc7/vivado
+source ./create_project.tcl
+```
+
+You can then build the demos as you would for any Vivado project.
+
+### Other Xilinx 7 Series Boards
+
+It's straightforward to adapt the project for other Xilinx 7 Series boards:
+
+1. Create a suitable constraints file named `<board>.xdc` within the `xc7` directory
+2. Make a note of your board's FPGA part, such as `xc7a35ticsg324-1L`
+3. Set the board and part names in Tcl, then source the create project script:
+
+```tcl
+set board_name <board>
+set fpga_part <fpga-part>
+cd projf-explore/graphics/hardware-sprites/xc7/vivado
+source ./create_project.tcl
+```
+
+Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Verilator SDL Simulation
+
+You can simulate these designs on your PC using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions. If you're new to Verilator sims, check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
+
+## Linting
+
+If you have [Verilator](https://www.veripool.org/wiki/verilator) installed, you can run the linting shell script `lint.sh` to check the designs. Learn more from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).
+
+## SystemVerilog?
+
+These designs use a little SystemVerilog to make Verilog more pleasant. See the [Library README](../../lib/README.md#systemverilog) for details of SV features used.
