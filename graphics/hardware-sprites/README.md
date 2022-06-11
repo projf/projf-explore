@@ -15,10 +15,10 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 Included demos:
 
 * Tiny F - monochrome 8x8 pixel 'F' sprite
-  * Tiny F Inline - inline Verilog graphic
-  * Tiny F ROM - async ROM graphic
-  * Tiny F Scale - sprite scaling
-  * Tiny F Move - sprite moving
+  * Inline - inline Verilog graphic
+  * ROM - async ROM graphic
+  * Scale - sprite scaling
+  * Move - sprite moving
 * Hourglass - 16-colour 8x8 pixel hourglass sprite
 * Hedgehog - 16 colour hedgehog sprite
 
