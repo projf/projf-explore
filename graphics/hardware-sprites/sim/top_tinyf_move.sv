@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_tinyf_move #(parameter CORDW=16) (  // coordinate width
+module top_tinyf_move #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -39,14 +39,14 @@ module top_tinyf_move #(parameter CORDW=16) (  // coordinate width
     localparam V_RES = 480;
 
     // sprite parameters
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_WIDTH  = 8;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 8;  // bitmap height in pixels
     localparam SPR_SCALE  = 3;  // 2^3 = 8x scale
     localparam SPR_DATAW  = 1;  // bits per pixel
     localparam SPR_DRAWW  = SPR_WIDTH  * 2**SPR_SCALE;  // draw width
     localparam SPR_DRAWH  = SPR_HEIGHT * 2**SPR_SCALE;  // draw height
     localparam SPR_SPX    = 4;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "../res/sprites/letter_f.mem";
+    localparam SPR_FILE   = "../res/sprites/letter_f.mem";  // bitmap file
 
     logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
     logic dx;  // direction: 0 is right/down

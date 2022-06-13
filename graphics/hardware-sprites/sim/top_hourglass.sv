@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hourglass #(parameter CORDW=16) (  // coordinate width
+module top_hourglass #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -43,14 +43,14 @@ module top_hourglass #(parameter CORDW=16) (  // coordinate width
     localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'hF;  // transparant colour index
     localparam BG_COLR = 'h137;   // background colour
-    localparam PAL_FILE = "../../../lib/res/palettes/teleport16_4b.mem";
+    localparam PAL_FILE = "../../../lib/res/palettes/teleport16_4b.mem";  // palette file
 
     // sprite parameters
     localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_WIDTH  = 8;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 8;  // bitmap height in pixels
     localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
-    localparam SPR_FILE   = "../res/sprites/hourglass.mem";
+    localparam SPR_FILE   = "../res/sprites/hourglass.mem";  // bitmap file
 
     logic drawing;  // drawing at (sx,sy)
     logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index

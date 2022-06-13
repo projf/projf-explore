@@ -32,7 +32,7 @@ module top_tinyf_inline (
     always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
-    localparam CORDW = 16;  // screen coordinate width in bits
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, line;

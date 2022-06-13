@@ -33,7 +33,7 @@ module top_hourglass (
     always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
-    localparam CORDW = 16;  // screen coordinate width in bits
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, line;
@@ -60,14 +60,14 @@ module top_hourglass (
     localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'hF;  // transparant colour index
     localparam BG_COLR = 'h137;   // background colour
-    localparam PAL_FILE = "teleport16_4b.mem";
+    localparam PAL_FILE = "teleport16_4b.mem";  // palette file
 
     // sprite parameters
     localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_WIDTH  = 8;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 8;  // bitmap height in pixels
     localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
-    localparam SPR_FILE   = "hourglass.mem";
+    localparam SPR_FILE   = "hourglass.mem";  // bitmap file
 
     logic drawing;  // drawing at (sx,sy)
     logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index

@@ -32,7 +32,7 @@ module top_tinyf_move (
     always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
-    localparam CORDW = 16;  // screen coordinate width in bits
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
@@ -53,14 +53,14 @@ module top_tinyf_move (
     localparam V_RES = 480;
 
     // sprite parameters
-    localparam SPR_WIDTH  = 8;  // width in pixels
-    localparam SPR_HEIGHT = 8;  // height in pixels
+    localparam SPR_WIDTH  = 8;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 8;  // bitmap height in pixels
     localparam SPR_SCALE  = 3;  // 2^3 = 8x scale
     localparam SPR_DATAW  = 1;  // bits per pixel
     localparam SPR_DRAWW  = SPR_WIDTH  * 2**SPR_SCALE;  // draw width
     localparam SPR_DRAWH  = SPR_HEIGHT * 2**SPR_SCALE;  // draw height
     localparam SPR_SPX    = 4;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "../res/sprites/letter_f.mem";
+    localparam SPR_FILE   = "../res/sprites/letter_f.mem";  // bitmap file
 
     // draw sprite at position (sprx,spry)
     logic signed [CORDW-1:0] sprx, spry;

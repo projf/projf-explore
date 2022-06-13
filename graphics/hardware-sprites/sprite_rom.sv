@@ -6,7 +6,7 @@
 `timescale 1ns / 1ps
 
 module sprite_rom #(
-    parameter CORDW=16,      // screen coordinate width in bits
+    parameter CORDW=16,      // signed coordinate width (bits)
     parameter H_RES=640,     // horizontal screen resolution (pixels)
     parameter SX_OFFS=2,     // horizontal screen offset (pixels)
     parameter SPR_FILE="",   // sprite bitmap file ($readmemh format)

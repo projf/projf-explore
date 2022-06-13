@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hedgehog #(parameter CORDW=16) (  // coordinate width
+module top_hedgehog #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -42,16 +42,16 @@ module top_hedgehog #(parameter CORDW=16) (  // coordinate width
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam CIDXW = 4;         // colour index width (bits)
     localparam TRANS_INDX = 'h9;  // transparant colour index
-    localparam PAL_FILE = "../res/palettes/hedgehog_4b.mem";
+    localparam PAL_FILE = "../res/palettes/hedgehog_4b.mem";  // palette file
 
     // sprite parameters
     localparam SX_OFFS    =  3;  // horizontal screen offset (pixels): +1 for CLUT
-    localparam SPR_WIDTH  = 32;  // width in pixels
-    localparam SPR_HEIGHT = 20;  // height in pixels
+    localparam SPR_WIDTH  = 32;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 20;  // bitmap height in pixels
     localparam SPR_SCALE  =  2;  // 2^2 = 4x scale
     localparam SPR_DRAWW  = SPR_WIDTH * 2**SPR_SCALE;  // draw width
     localparam SPR_SPX    =  2;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "../res/sprites/hedgehog.mem";
+    localparam SPR_FILE   = "../res/sprites/hedgehog.mem";  // bitmap file
 
     logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
 
