@@ -1,0 +1,12 @@
+// Project F: Hardware Sprites - Letter "F" 8x8 pixels
+// Made available under the CC-0 license (Public Domain)
+// Learn more at https://projectf.io/posts/hardware-sprites/
+
+1 1 1 1 1 1 0 0
+1 1 0 0 0 0 0 0
+1 1 0 0 0 0 0 0
+1 1 1 1 1 0 0 0
+1 1 0 0 0 0 0 0
+1 1 0 0 0 0 0 0
+1 1 0 0 0 0 1 1
+0 0 0 0 0 0 1 1

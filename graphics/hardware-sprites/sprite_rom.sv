@@ -1,18 +1,17 @@
-// Project F: Hardware Sprites - Sprite with Scaling
+// Project F: Hardware Sprites - Sprite from ROM
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module sprite #(
+module sprite_rom #(
     parameter CORDW=16,      // signed coordinate width (bits)
     parameter H_RES=640,     // horizontal screen resolution (pixels)
     parameter SX_OFFS=2,     // horizontal screen offset (pixels)
     parameter SPR_FILE="",   // sprite bitmap file ($readmemh format)
     parameter SPR_WIDTH=8,   // sprite bitmap width in pixels
     parameter SPR_HEIGHT=8,  // sprite bitmap height in pixels
-    parameter SPR_SCALE=0,   // scale factor: 0=1x, 1=2x, 2=4x, 3=8x etc.
     parameter SPR_DATAW=1    // data width: bits per pixel
     ) (
     input  wire logic clk,                            // clock
@@ -27,7 +26,7 @@ module sprite #(
     // sprite bitmap ROM
     localparam SPR_ROM_DEPTH = SPR_WIDTH * SPR_HEIGHT;
     logic [$clog2(SPR_ROM_DEPTH)-1:0] spr_rom_addr;  // pixel position
-    logic [SPR_DATAW-1:0] spr_rom_data;  // pixel colour
+    logic spr_rom_data;  // pixel colour
     rom_async #(
         .WIDTH(SPR_DATAW),
         .DEPTH(SPR_ROM_DEPTH),
@@ -40,26 +39,21 @@ module sprite #(
     // horizontal coordinate within sprite bitmap
     logic [$clog2(SPR_WIDTH)-1:0] bmap_x;
 
-    // horizontal scale counter
-    logic [SPR_SCALE:0] cnt_x;
-
     // for registering sprite position
     logic signed [CORDW-1:0] sprx_r, spry_r;
 
     // status flags: used to change state
-    logic signed [CORDW-1:0]  spr_diff;  // diff vertical screen and sprite positions
     logic spr_active;  // sprite active on this line
     logic spr_begin;   // begin sprite drawing
     logic spr_end;     // end of sprite on this line
     logic line_end;    // end of screen line, corrected for sx offset
     always_comb begin
-        spr_diff = (sy - spry_r) >>> SPR_SCALE;  // arithmetic right-shift
-        spr_active = (spr_diff >= 0) && (spr_diff < SPR_HEIGHT);
-        spr_begin = (sx >= sprx_r - SX_OFFS);
+        spr_active = (sy - spry_r >= 0) && (sy - spry_r < SPR_HEIGHT);
+        spr_begin  = (sx >= sprx_r - SX_OFFS);
         /* verilator lint_off WIDTH */
-        spr_end = (bmap_x == SPR_WIDTH-1);
+        spr_end    = (bmap_x == SPR_WIDTH-1);
         /* verilator lint_on WIDTH */
-        line_end = (sx == H_RES - SX_OFFS);
+        line_end   = (sx == H_RES - SX_OFFS);
     end
 
     // sprite state machine
@@ -89,24 +83,17 @@ module sprite #(
                     if (spr_begin) begin
                         state <= SPR_LINE;
                         /* verilator lint_off WIDTH */
-                        spr_rom_addr <= spr_diff * SPR_WIDTH + (sx - sprx_r) + SX_OFFS;
+                        spr_rom_addr <= (sy - spry_r) * SPR_WIDTH + (sx - sprx_r) + SX_OFFS;
                         /* verilator lint_on WIDTH */
                         bmap_x <= 0;
-                        cnt_x <= 0;
                     end
                 end
                 SPR_LINE: begin
-                    if (line_end) state <= WAIT_DATA;
+                    if (spr_end || line_end) state <= WAIT_DATA;
+                    spr_rom_addr <= spr_rom_addr + 1;
+                    bmap_x <= bmap_x + 1;
                     pix <= spr_rom_data;
                     drawing <= 1;
-                    /* verilator lint_off WIDTH */
-                    if (SPR_SCALE == 0 || cnt_x == 2**SPR_SCALE-1) begin
-                    /* verilator lint_on WIDTH */
-                        if (spr_end) state <= WAIT_DATA;
-                        spr_rom_addr <= spr_rom_addr + 1;
-                        bmap_x <= bmap_x + 1;
-                        cnt_x <= 0;
-                    end else cnt_x <= cnt_x + 1;
                 end
                 WAIT_DATA: begin
                     state <= IDLE;  // 1 cycle between address set and data receipt
@@ -121,7 +108,6 @@ module sprite #(
             state <= IDLE;
             spr_rom_addr <= 0;
             bmap_x <= 0;
-            cnt_x <= 0;
             pix <= 0;
             drawing <= 0;
         end

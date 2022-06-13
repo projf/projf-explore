@@ -7,6 +7,14 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 If you have a dev board, see the [Racing the Beam README](../README.md) for build instructions.
 
+Included demos:
+
+* Raster Bars
+* Hitomezashi
+* Hello
+* Colour Cycle
+* Bounce
+
 ![](../../../doc/img/rasterbars.png?raw=true "")
 
 _Raster Bars running as a Verilator simulation._
@@ -23,7 +31,7 @@ Build a specific simulation (rasterbars, hello etc.):
 make rasterbars
 ```
 
-Or build all five simulations:
+Or build all simulations:
 
 ```shell
 make all

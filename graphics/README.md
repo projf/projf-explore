@@ -7,6 +7,7 @@ If you're new to the series, start by reading [Beginning FPGA Graphics](https://
 * **Beginning FPGA Graphics**: [Designs](fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
 * **Racing the Beam**: [Designs](racing-the-beam) - [Blog](https://projectf.io/posts/racing-the-beam/)
 * **FPGA Pong**: [Designs](pong) - [Blog](https://projectf.io/posts/fpga-pong/)
+* **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no demos with this post)
 * **Hardware Sprites**: [Designs](hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
 * **Ad Astra**: [Designs](ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
 * **Framebuffers**: [Designs](framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)

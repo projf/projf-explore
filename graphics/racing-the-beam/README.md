@@ -19,7 +19,7 @@ Included demos:
 * Colour Cycle
 * Bounce
 
-Learn more about the designs and demos from _[Reacing the Beam](https://projectf.io/posts/racing-the-beam/)_, or read on for build instructions.
+Learn more about the designs and demos from _[Racing the Beam](https://projectf.io/posts/racing-the-beam/)_, or read on for build instructions.
 
 ![](../../doc/img/rasterbars.png?raw=true "")
 

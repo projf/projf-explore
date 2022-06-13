@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="sprite_inline_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="sprite_inline_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="28.300001 us"></ZoomEndTime>
+      <Cursor1Time time="222.120000 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="128"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="30" />
+   <wvobject fp_name="/sprite_inline_tb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/clk_25m" type="logic">
+      <obj_property name="ElementShortName">clk_25m</obj_property>
+      <obj_property name="ObjectShortName">clk_25m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sx" type="array">
+      <obj_property name="ElementShortName">sx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sy" type="array">
+      <obj_property name="ElementShortName">sy[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/hsync" type="logic">
+      <obj_property name="ElementShortName">hsync</obj_property>
+      <obj_property name="ObjectShortName">hsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/vsync" type="logic">
+      <obj_property name="ElementShortName">vsync</obj_property>
+      <obj_property name="ObjectShortName">vsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/de" type="logic">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/frame" type="logic">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/pix" type="logic">
+      <obj_property name="ElementShortName">pix</obj_property>
+      <obj_property name="ObjectShortName">pix</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/drawing" type="logic">
+      <obj_property name="ElementShortName">drawing</obj_property>
+      <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider33">
+      <obj_property name="label">Sprite</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/line" type="logic">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/sx" type="array">
+      <obj_property name="ElementShortName">sx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/sy" type="array">
+      <obj_property name="ElementShortName">sy[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/sprx" type="array">
+      <obj_property name="ElementShortName">sprx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sprx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/spry" type="array">
+      <obj_property name="ElementShortName">spry[15:0]</obj_property>
+      <obj_property name="ObjectShortName">spry[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/pix" type="logic">
+      <obj_property name="ElementShortName">pix</obj_property>
+      <obj_property name="ObjectShortName">pix</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/drawing" type="logic">
+      <obj_property name="ElementShortName">drawing</obj_property>
+      <obj_property name="ObjectShortName">drawing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/bmap_x" type="array">
+      <obj_property name="ElementShortName">bmap_x[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bmap_x[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/bmap_y" type="array">
+      <obj_property name="ElementShortName">bmap_y[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bmap_y[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/sprx_r" type="array">
+      <obj_property name="ElementShortName">sprx_r[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sprx_r[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/spry_r" type="array">
+      <obj_property name="ElementShortName">spry_r[15:0]</obj_property>
+      <obj_property name="ObjectShortName">spry_r[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/spr_active" type="logic">
+      <obj_property name="ElementShortName">spr_active</obj_property>
+      <obj_property name="ObjectShortName">spr_active</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/spr_begin" type="logic">
+      <obj_property name="ElementShortName">spr_begin</obj_property>
+      <obj_property name="ObjectShortName">spr_begin</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/spr_end" type="logic">
+      <obj_property name="ElementShortName">spr_end</obj_property>
+      <obj_property name="ObjectShortName">spr_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sprite_inline_tb/sprite_instance/bmap" type="array">
+      <obj_property name="ElementShortName">bmap[0:7][0:7]</obj_property>
+      <obj_property name="ObjectShortName">bmap[0:7][0:7]</obj_property>
+   </wvobject>
+</wave_config>

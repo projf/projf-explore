@@ -1,33 +1,36 @@
-# Simulations for Beginning FPGA Graphics
+# Simulations for Hardware Sprites
 
-This folder contains Verilator simulations to accompany the Project F blog post: **[Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/)**.
+This folder contains Verilator simulations to accompany the Project F blog post: **[Hardware Sprites](https://projectf.io/posts/hardware-sprites/)**.
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
-If you have a dev board, see the [Beginning FPGA Graphics README](../README.md) for build instructions.
+If you have a dev board, see the [Hardware Sprites README](../README.md) for build instructions.
 
 Included demos:
 
-* Square
-* Flag of Ethipoia
-* Flag of Sweden
-* Colour
+* Tiny F - monochrome 8x8 pixel 'F' sprite
+  * Inline - inline Verilog graphic
+  * ROM - async ROM graphic
+  * Scale - sprite scaling
+  * Move - sprite moving
+* Hourglass - 16-colour 8x8 pixel hourglass sprite
+* Hedgehog - 16 colour hedgehog sprite
 
-![](../../../doc/img/flag_ethiopia.png?raw=true "")
+![](../../../doc/img/hardware-sprites.png?raw=true "")
 
-_Traditional flag of Ethiopia running as a Verilator simulation._
+_Hedgehog sprite video capture from Nexys Video._
 
 ## Build & Run
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
 
-Make sure you're in the sim directory `projf-explore/graphics/fpga-graphics/sim`.
+Make sure you're in the sim directory `projf-explore/graphics/hardware-sprites/sim`.
 
-Build a specific simulation (square, flag_ethiopia, flag_sweden, or colour):
+Build a specific simulation (hourglass, hedgehog etc.):
 
 ```shell
-make square
+make hedgehog
 ```
 
 Or build all simulations:
@@ -39,19 +42,17 @@ make all
 Run the simulation executables from `obj_dir`:
 
 ```shell
-./obj_dir/square
+./obj_dir/hedgehog
 ```
 
-If you want to manually build a simulation, here's an example for 'square':
+If you want to manually build a simulation, here's an example for 'hedgehog':
 
 ```shell
-verilator -I../ -cc top_square.sv --exe main_square.cpp -o square \
+verilator -I../ -cc top_hedgehog.sv --exe main_hedgehog.cpp -o hedgehog \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
-make -C ./obj_dir -f Vtop_square.mk
+make -C ./obj_dir -f Vtop_hedgehog.mk
 ```
-
-_Note: all these designs use [simple_480p.sv](../simple_480p.sv) from the main [FPGA Graphics](../) folder._
 
 ## Installing Dependencies
 

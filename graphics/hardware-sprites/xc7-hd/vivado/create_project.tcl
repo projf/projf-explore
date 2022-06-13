@@ -1,6 +1,6 @@
 # Project F: Hardware Sprites - Create Vivado Project (Nexys Video)
-# (C)2021 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/hardware-sprites/
 
 puts "INFO: Project F - Hardware Sprites Project Creation Script"
 
@@ -44,49 +44,78 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_hedgehog.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_hedgehog_v1.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_sprite_v1.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_sprite_v2.sv"] \
-  [file normalize "${origin_dir}/xc7-hd/top_sprite_v2a.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_hourglass.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_tinyf_inline.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_tinyf_move.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_tinyf_rom.sv"] \
+  [file normalize "${origin_dir}/xc7-hd/top_tinyf_scale.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
-set_property -name "top" -value "top_hedgehog" -objects $fs_design_obj
+set_property -name "top" -value "top_tinyf_inline" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_720p.sv"] \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_1080p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
+  [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_720p.sv"] \
-  [file normalize "${lib_dir}/display/display_1080p.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
-  [file normalize "${lib_dir}/memory/rom_sync.sv"] \
+  [file normalize "${origin_dir}/sprite_inline.sv"] \
+  [file normalize "${origin_dir}/sprite_rom.sv"] \
   [file normalize "${origin_dir}/sprite.sv"] \
-  [file normalize "${origin_dir}/sprite_v1.sv"] \
-  [file normalize "${origin_dir}/sprite_v2.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${origin_dir}/res/hedgehog/hedgehog.mem"] \
-  [file normalize "${origin_dir}/res/hedgehog/hedgehog_palette.mem"] \
-  [file normalize "${origin_dir}/res/hedgehog/hedgehog_walk.mem"] \
-  [file normalize "${origin_dir}/res/simple/letter_f.mem"] \
-  [file normalize "${origin_dir}/res/simple/saucer.mem"] \
-  [file normalize "${origin_dir}/res/simple/user.mem"] \
+  [file normalize "${lib_dir}/res/palettes/teleport16_4b.mem"] \
+  [file normalize "${origin_dir}/res/palettes/hedgehog_4b.mem"] \
+  [file normalize "${origin_dir}/res/sprites/hedgehog.mem"] \
+  [file normalize "${origin_dir}/res/sprites/hourglass.mem"] \
+  [file normalize "${origin_dir}/res/sprites/letter_f.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
 set_property -name "file_type" -value "Memory File" -objects $design_mem_obj
+
+#
+# Simulation Sources
+#
+
+# Create 'sim_1' fileset (if not found)
+if {[string equal [get_filesets -quiet sim_1] ""]} {
+  create_fileset -simset sim_1
+}
+set fs_sim_obj [get_filesets sim_1]
+
+# Generic simulation sources
+set sim_sources [list \
+  [file normalize "${lib_dir}/display/display_24x18.sv"] \
+  [file normalize "${lib_dir}/display/xc7/clut_simple_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/display_720p_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/clut_simple_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/display_720p_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/sprite_inline_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/sprite_rom_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/sprite_tb.sv"] \
+  [file normalize "${origin_dir}/xc7/vivado/sprite_inline_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/sprite_rom_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7/vivado/sprite_tb_behav.wcfg"] \
+]
+add_files -norecurse -fileset $fs_sim_obj $sim_sources
+
+# Set 'sim_1' fileset properties
+set_property -name "top" -value "display_720p_tb" -objects $fs_sim_obj
+set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
 # Constraints

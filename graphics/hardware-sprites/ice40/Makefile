@@ -1,6 +1,6 @@
 ## Project F: Hardware Sprites - iCEBreaker Makefile
-## (C)2021 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## (C)2022 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/hardware-sprites/
 
 # configuration
 SHELL = /bin/sh
@@ -10,20 +10,24 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_LIB = ../../../lib
-ADD_SRC  = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
+ADD_SRC += ${PATH_LIB}/clock/ice40/clock_480p.sv
+ADD_SRC += ${PATH_LIB}/display/clut_simple.sv
 ADD_SRC += ${PATH_LIB}/display/display_480p.sv
+ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
 ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
-ADD_SRC += ${PATH_LIB}/memory/rom_sync.sv
-ADD_SRC += ../sprite_v1.sv ../sprite_v2.sv ../sprite.sv
+ADD_SRC += ../sprite_inline.sv
+ADD_SRC += ../sprite_rom.sv
+ADD_SRC += ../sprite.sv
 
-top_hedgehog: top_hedgehog.rpt top_hedgehog.bin
-top_sprite_v1: top_sprite_v1.rpt top_sprite_v1.bin
-top_sprite_v2: top_sprite_v2.rpt top_sprite_v2.bin
-top_sprite_v2a: top_sprite_v2a.rpt top_sprite_v2a.bin
-top_hedgehog_v1: top_hedgehog_v1.rpt top_hedgehog_v1.bin
+tinyf_inline: tinyf_inline.rpt tinyf_inline.bin
+tinyf_rom: tinyf_rom.rpt tinyf_rom.bin
+tinyf_scale: tinyf_scale.rpt tinyf_scale.bin
+tinyf_move: tinyf_move.rpt tinyf_move.bin
+hourglass: hourglass.rpt hourglass.bin
+hedgehog: hedgehog.rpt hedgehog.bin
 
-%.json: %.sv $(ADD_SRC)
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc2 -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: top_%.sv $(ADD_SRC)
+	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u -top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
@@ -32,11 +36,11 @@ top_hedgehog_v1: top_hedgehog_v1.rpt top_hedgehog_v1.bin
 	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
-	icepack $< $@
+	icepack $< $(subst top_,,$@)
+
+all: tinyf_inline tinyf_rom tinyf_scale hourglass hedgehog
 
 clean:
-	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
-
-all: top_sprite_v1 top_sprite_v2 top_sprite_v2a top_hedgehog_v1 top_hedgehog
+	rm -f *.json *.asc *.rpt *.bin *yosys.log
 
 .PHONY: all clean

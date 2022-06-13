@@ -1,0 +1,12 @@
+// Project F: Hardware Sprites - Hourglass 8x8 pixels with 4-bit indexed colour
+// Made available under the CC-0 license (Public Domain)
+// Learn more at https://projectf.io/posts/hardware-sprites/
+
+0 0 0 0 0 0 0 0
+F 1 1 1 1 1 1 F
+F F 2 2 2 2 F F
+F F F 3 3 F F F
+F F F 4 4 F F F
+F F 5 5 5 5 F F
+F 6 6 6 6 6 6 F
+7 7 7 7 7 7 7 7

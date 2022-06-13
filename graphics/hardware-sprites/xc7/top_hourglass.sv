@@ -1,11 +1,11 @@
-// Project F: Hardware Sprites - Hedgehog (Arty Pmod VGA)
+// Project F: Hardware Sprites - Hourglass (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_hedgehog (
+module top_hourglass (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
     output      logic vga_hsync,    // horizontal sync
@@ -36,7 +36,7 @@ module top_hedgehog (
     localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
-    logic de, frame, line;
+    logic de, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
@@ -45,7 +45,9 @@ module top_hedgehog (
         .hsync,
         .vsync,
         .de,
-        .frame,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .frame(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .line
     );
 
@@ -56,31 +58,16 @@ module top_hedgehog (
     localparam CHANW = 4;         // colour channel width (bits)
     localparam COLRW = 3*CHANW;   // colour width: three channels (bits)
     localparam CIDXW = 4;         // colour index width (bits)
-    localparam TRANS_INDX = 'h9;  // transparant colour index
-    localparam PAL_FILE = "hedgehog_4b.mem";  // palette file
+    localparam TRANS_INDX = 'hF;  // transparant colour index
+    localparam BG_COLR = 'h137;   // background colour
+    localparam PAL_FILE = "teleport16_4b.mem";  // palette file
 
     // sprite parameters
-    localparam SX_OFFS    =  3;  // horizontal screen offset (pixels): +1 for CLUT
-    localparam SPR_WIDTH  = 32;  // bitmap width in pixels
-    localparam SPR_HEIGHT = 20;  // bitmap height in pixels
-    localparam SPR_SCALE  =  2;  // 2^2 = 4x scale
-    localparam SPR_DRAWW  = SPR_WIDTH * 2**SPR_SCALE;  // draw width
-    localparam SPR_SPX    =  2;  // horizontal speed (pixels/frame)
-    localparam SPR_FILE   = "hedgehog.mem";  // bitmap file
-
-    logic signed [CORDW-1:0] sprx, spry;  // draw sprite at position (sprx,spry)
-
-    // update sprite position once per frame
-    always_ff @(posedge clk_pix) begin
-        if (frame) begin
-            if (sprx <= -SPR_DRAWW) sprx <= H_RES;  // move back to right of screen
-            else sprx <= sprx - SPR_SPX;  // otherwise keep moving left
-        end
-        if (rst_pix) begin  // start off screen and level with grass
-            sprx <= H_RES;
-            spry <= 240;
-        end
-    end
+    localparam SX_OFFS    = 3;  // horizontal screen offset (pixels): +1 for CLUT
+    localparam SPR_WIDTH  = 8;  // bitmap width in pixels
+    localparam SPR_HEIGHT = 8;  // bitmap height in pixels
+    localparam SPR_SCALE  = 4;  // 2^4 = 16x scale
+    localparam SPR_FILE   = "hourglass.mem";  // bitmap file
 
     logic drawing;  // drawing at (sx,sy)
     logic [CIDXW-1:0] spr_pix_indx;  // pixel colour index
@@ -93,14 +80,14 @@ module top_hedgehog (
         .SPR_HEIGHT(SPR_HEIGHT),
         .SPR_SCALE(SPR_SCALE),
         .SPR_DATAW(CIDXW)
-        ) sprite_hedgehog (
+        ) sprite_hourglass (
         .clk(clk_pix),
         .rst(rst_pix),
         .line,
         .sx,
         .sy,
-        .sprx,
-        .spry,
+        .sprx(32),
+        .spry(16),
         .pix(spr_pix_indx),
         .drawing
     );
@@ -125,24 +112,9 @@ module top_hedgehog (
     logic drawing_t1;
     always_ff @(posedge clk_pix) drawing_t1 <= drawing && (spr_pix_indx != TRANS_INDX);
 
-    // background colour
-    logic [COLRW-1:0] bg_colr;
-    always_ff @(posedge clk_pix) begin
-        if (line) begin
-            if      (sy == 0)   bg_colr <= 12'h239;
-            else if (sy == 80)  bg_colr <= 12'h24A;
-            else if (sy == 140) bg_colr <= 12'h25B;
-            else if (sy == 190) bg_colr <= 12'h26C;
-            else if (sy == 230) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 295) bg_colr <= 12'h2BF;
-            else if (sy == 320) bg_colr <= 12'h260;
-        end
-    end
-
     // paint colours
     logic [CHANW-1:0] paint_r, paint_g, paint_b;
-    always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : bg_colr;
+    always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
 
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
