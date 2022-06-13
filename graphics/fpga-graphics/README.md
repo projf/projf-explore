@@ -69,7 +69,7 @@ launch_simulation
 run all
 ```
 
-By default, the `simple_480p` test bench is simulated, but you can switch to the `clock_tb` test bench with:
+By default, the `simple_480p` test bench is run, but you can switch to the `clock_tb` test bench using the GUI or from the Tcl console:
 
 ```tcl
 set fs_sim_obj [get_filesets sim_1]

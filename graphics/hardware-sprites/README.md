@@ -64,6 +64,26 @@ source ./create_project.tcl
 
 You can then build the demos as you would for any Vivado project.
 
+### Behavioural Simulation
+
+This design includes test benches for the updated display module, CLUT, and sprites modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl Console with:
+
+```tcl
+launch_simulation
+run all
+```
+
+By default, the `display_480p` test bench is run, but you can switch to other test benches using the GUI or from the Tcl console:
+
+```tcl
+set fs_sim_obj [get_filesets sim_1]
+set_property -name "top" -value "sprite_tb" -objects $fs_sim_obj
+relaunch_sim
+run all
+```
+
+This example switches to `sprite_tb`; replace this name with the test bench you want.
+
 ### Other Xilinx 7 Series Boards
 
 It's straightforward to adapt the project for other Xilinx 7 Series boards:
