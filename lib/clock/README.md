@@ -6,7 +6,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
-* [xd.sv](xd.sv) - clock domain crossing (CDC) with pulse
+* [xd.sv](xd.sv) - clock domain crossing (CDC) with pulse [[docs](https://projectf.io/posts/simple-fpga-cdc)]
 * Lattice iCE40 (12 MHz board clock)
   * [ice40/clock_gen_480p.sv](ice40/clock_gen_480p.sv) - PLL clock generation for VGA 640x480 (25.125 MHz)
 * Xilinx 7 Series (100 MHz board clock)
@@ -25,7 +25,7 @@ If you're new to FPGA development, check out the explanation of clocks in [Hello
 
 The [FPGA Graphics](https://projectf.io/posts/fpga-graphics/) series makes extensive use of these clock generation modules.
 
-See [Framebuffers](https://projectf.io/posts/framebuffers/) for an example of clock domain crossing with the **xd** module.
+See [Simple Clock Domain Crossing](https://projectf.io/posts/simple-fpga-cdc) for documentation of the **xd** module.
 
 ## SystemVerilog?
 
