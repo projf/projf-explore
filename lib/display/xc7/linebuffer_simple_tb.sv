@@ -17,6 +17,40 @@ module linebuffer_simple_tb();
     logic clk_25m;
     logic rst_25m;
 
+    // display sync signals and coordinates
+    localparam CORDW = 16;  // screen coordinate width in bits
+    logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
+    logic de, frame, line;
+    display_24x18 #(.CORDW(CORDW)) display_inst (
+        .clk_pix(clk_25m),
+        .rst_pix(rst_25m),
+        .sx,
+        .sy,
+        .hsync,
+        .vsync,
+        .de,
+        .frame,
+        .line
+    );
+
+    // test graphic
+    localparam GFX_WIDTH  = 8;
+    localparam GFX_HEIGHT = 8;
+    /* verilator lint_off LITENDIAN */
+    logic [0:GFX_WIDTH-1] bmap [GFX_HEIGHT];
+    /* verilator lint_on LITENDIAN */
+    initial begin  // big endian vector, so we can write initial block left to right
+        bmap[0]  = 8'b1111_1100;
+        bmap[1]  = 8'b1100_0000;
+        bmap[2]  = 8'b1100_0000;
+        bmap[3]  = 8'b1111_1000;
+        bmap[4]  = 8'b1100_0000;
+        bmap[5]  = 8'b1100_0000;
+        bmap[6]  = 8'b1100_0011;
+        bmap[7]  = 8'b0000_0011;
+    end
+
     // generate clocks
     always #(CLK_PERIOD_100M / 2) clk_100m = ~clk_100m;
     always #(CLK_PERIOD_25M / 2) clk_25m = ~clk_25m;
