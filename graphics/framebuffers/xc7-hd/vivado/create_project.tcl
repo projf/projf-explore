@@ -111,6 +111,7 @@ set sim_sources [list \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_tb_behav.wcfg" ] \
+  [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_simple_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources

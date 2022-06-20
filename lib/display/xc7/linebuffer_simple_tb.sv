@@ -34,6 +34,9 @@ module linebuffer_simple_tb();
         .line
     );
 
+    // screen dimensions (must match display_inst)
+    localparam H_RES = 24;
+
     // test graphic
     localparam GFX_WIDTH  = 8;
     localparam GFX_HEIGHT = 8;
@@ -49,6 +52,31 @@ module linebuffer_simple_tb();
         bmap[5]  = 8'b1100_0000;
         bmap[6]  = 8'b1100_0011;
         bmap[7]  = 8'b0000_0011;
+    end
+
+    localparam LB_SCALE=1;
+    localparam DATAW=1;
+    logic gfx_in, gfx_out;
+    linebuffer_simple #(
+        .DATAW(DATAW),
+        .LEN(H_RES),
+        .SCALE(LB_SCALE)
+    ) linebuffer_simple_inst (
+        .clk_in(clk_100m),
+        .clk_out(clk_25m),
+        .rst_in(rst_100m),
+        .rst_out(line),
+        .en_in(1'b1),
+        .en_out(de),
+        .data_in(gfx_in),
+        .data_out(gfx_out)
+    );
+
+    always_comb begin
+        gfx_in = 1'b0;
+        if (de && sx < GFX_WIDTH && sy < GFX_HEIGHT) begin
+            gfx_in = bmap[sy][sx];
+        end
     end
 
     // generate clocks
@@ -67,6 +95,7 @@ module linebuffer_simple_tb();
         rst_25m = 1;
 
         #100 rst_25m = 0;
+        #100_000 $finish;
     end
 
 endmodule
