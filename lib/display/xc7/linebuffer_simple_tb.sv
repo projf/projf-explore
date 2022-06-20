@@ -37,25 +37,8 @@ module linebuffer_simple_tb();
     // screen dimensions (must match display_inst)
     localparam H_RES = 24;
 
-    // test graphic
-    localparam GFX_WIDTH  = 8;
-    localparam GFX_HEIGHT = 8;
-    /* verilator lint_off LITENDIAN */
-    logic [0:GFX_WIDTH-1] bmap [GFX_HEIGHT];
-    /* verilator lint_on LITENDIAN */
-    initial begin  // big endian vector, so we can write initial block left to right
-        bmap[0]  = 8'b1111_1100;
-        bmap[1]  = 8'b1100_0000;
-        bmap[2]  = 8'b1100_0000;
-        bmap[3]  = 8'b1111_1000;
-        bmap[4]  = 8'b1100_0000;
-        bmap[5]  = 8'b1100_0000;
-        bmap[6]  = 8'b1100_0011;
-        bmap[7]  = 8'b0000_0011;
-    end
-
-    localparam LB_SCALE=1;
     localparam DATAW=1;
+    localparam LB_SCALE=1;
     logic gfx_in, gfx_out;
     linebuffer_simple #(
         .DATAW(DATAW),
@@ -67,16 +50,14 @@ module linebuffer_simple_tb();
         .rst_in(rst_100m),
         .rst_out(line),
         .en_in(1'b1),
-        .en_out(de),
+        .en_out(sy >= 0 && sx >= -1),
         .data_in(gfx_in),
         .data_out(gfx_out)
     );
 
-    always_comb begin
-        gfx_in = 1'b0;
-        if (de && sx < GFX_WIDTH && sy < GFX_HEIGHT) begin
-            gfx_in = bmap[sy][sx];
-        end
+    always @(posedge clk_100m) begin
+        gfx_in <= ~gfx_in;
+        if (rst_100m) gfx_in <= 0;
     end
 
     // generate clocks

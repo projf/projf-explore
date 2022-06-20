@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="100.100000 us"></ZoomEndTime>
-      <Cursor1Time time="100.100000 us"></Cursor1Time>
+      <ZoomStartTime time="16,645.629 ns"></ZoomStartTime>
+      <ZoomEndTime time="19,351.630 ns"></ZoomEndTime>
+      <Cursor1Time time="17,440.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="170"></NameColumnWidth>
-      <ValueColumnWidth column_width="82"></ValueColumnWidth>
+      <ValueColumnWidth column_width="78"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="39" />
+   <WVObjectSize size="47" />
    <wvobject fp_name="/linebuffer_simple_tb/clk_100m" type="logic">
       <obj_property name="ElementShortName">clk_100m</obj_property>
       <obj_property name="ObjectShortName">clk_100m</obj_property>
@@ -65,11 +65,6 @@
    <wvobject fp_name="/linebuffer_simple_tb/line" type="logic">
       <obj_property name="ElementShortName">line</obj_property>
       <obj_property name="ObjectShortName">line</obj_property>
-   </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/bmap" type="array">
-      <obj_property name="ElementShortName">bmap[0:7][0:7]</obj_property>
-      <obj_property name="ObjectShortName">bmap[0:7][0:7]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_simple_tb/gfx_in" type="logic">
       <obj_property name="ElementShortName">gfx_in</obj_property>
@@ -170,10 +165,11 @@
    <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/addr_out" type="array">
       <obj_property name="ElementShortName">addr_out[4:0]</obj_property>
       <obj_property name="ObjectShortName">addr_out[4:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/cnt_h" type="array">
-      <obj_property name="ElementShortName">cnt_h[0:0]</obj_property>
-      <obj_property name="ObjectShortName">cnt_h[0:0]</obj_property>
+      <obj_property name="ElementShortName">cnt_h[1:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt_h[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/addr_in" type="array">
       <obj_property name="ElementShortName">addr_in[4:0]</obj_property>
@@ -182,5 +178,42 @@
    <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/we" type="logic">
       <obj_property name="ElementShortName">we</obj_property>
       <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider410">
+      <obj_property name="label">LB BRAM</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/clk_write" type="logic">
+      <obj_property name="ElementShortName">clk_write</obj_property>
+      <obj_property name="ObjectShortName">clk_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/clk_read" type="logic">
+      <obj_property name="ElementShortName">clk_read</obj_property>
+      <obj_property name="ObjectShortName">clk_read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/addr_write" type="array">
+      <obj_property name="ElementShortName">addr_write[4:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_write[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/addr_read" type="array">
+      <obj_property name="ElementShortName">addr_read[4:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_read[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/linebuffer_simple_inst/bram_lb/memory" type="array">
+      <obj_property name="ElementShortName">memory[0:23][0:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:23][0:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>
