@@ -37,8 +37,9 @@ module linebuffer_simple_tb();
     // screen dimensions (must match display_inst)
     localparam H_RES = 24;
 
+    // simple linebuffer
     localparam DATAW=1;
-    localparam LB_SCALE=1;
+    localparam LB_SCALE=3;
     logic gfx_in, gfx_out;
     linebuffer_simple #(
         .DATAW(DATAW),
@@ -50,11 +51,12 @@ module linebuffer_simple_tb();
         .rst_in(rst_100m),
         .rst_out(line),
         .en_in(1'b1),
-        .en_out(sy >= 0 && sx >= -1),
+        .en_out(sy >= 0 && sx >= -1),  // account for BRAM latency
         .data_in(gfx_in),
         .data_out(gfx_out)
     );
 
+    // simple input data (alternate 0 and 1)
     always @(posedge clk_100m) begin
         gfx_in <= ~gfx_in;
         if (rst_100m) gfx_in <= 0;

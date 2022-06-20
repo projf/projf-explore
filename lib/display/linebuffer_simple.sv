@@ -38,13 +38,12 @@ module linebuffer_simple #(
 
     // read data in
     logic [$clog2(LEN)-1:0] addr_in;
+    logic we;
     always_ff @(posedge clk_in) begin
         if (addr_in != LEN-1) addr_in <= addr_in + 1;
         if (rst_in) addr_in <= 0;
+        we <= (addr_in == LEN-1) ? 0 : en_in;
     end
-
-    logic we;
-    always_comb we = (addr_in == LEN-1) ? 0 : en_in;
 
     bram_sdp #(
         .WIDTH(DATAW), 
