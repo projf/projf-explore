@@ -12,6 +12,7 @@ PROJF_LIBS += -I../../../lib/display
 
 david_mono: david_mono.exe
 david_mono_draw: david_mono_draw.exe
+david_16colr: david_16colr.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -20,7 +21,7 @@ david_mono_draw: david_mono_draw.exe
 	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: david_mono david_mono_draw
+all: david_mono david_mono_draw david_16colr
 
 clean:
 	rm -rf ./obj_dir
