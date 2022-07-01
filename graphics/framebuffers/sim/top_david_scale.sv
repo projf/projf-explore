@@ -74,25 +74,26 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .data_out(fb_colr_read)
     );
 
+    // linebuffer
+    localparam LB_SCALE = 4;
+    logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
+    always_ff @(posedge clk_pix) begin
+        if (sy == 0) cnt_lb_rline <= 0;
+        else if (line) begin
+            cnt_lb_rline <= (cnt_lb_rline == LB_SCALE-1) ? 0 : cnt_lb_rline + 1;
+        end
+    end
+
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_ff @(posedge clk_pix) begin
         if (frame) begin  // reset address at start of frame
             fb_addr_read <= 0;
-        end else if (sy >= -1 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH) begin
+        end else if (line) begin
+            cnt_lbx <= 0;
+        end else if (sy >= 0 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH) begin
             fb_addr_read <= fb_addr_read + 1;
             cnt_lbx <= cnt_lbx + 1;
-        end
-        if (line) cnt_lbx <= 0;
-    end
-
-    // linebuffer
-    localparam LB_SCALE = 4;
-    logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
-    always_ff @(posedge clk_pix) begin
-        if (frame) cnt_lb_rline <= 0;
-        else if (line) begin
-            cnt_lb_rline <= (cnt_lb_rline == LB_SCALE-1) ? 0 : cnt_lb_rline + 1;
         end
     end
 
