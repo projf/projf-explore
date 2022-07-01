@@ -91,7 +91,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
         if (frame) cnt_lb_rline <= 0;
-        else if (line)  begin
+        else if (line) begin
             cnt_lb_rline <= (cnt_lb_rline == LB_SCALE-1) ? 0 : cnt_lb_rline + 1;
         end
     end
@@ -100,9 +100,9 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic paint_area;    // area of screen to paint
     logic lb_en_out;     // linebuffer enable out
     always_comb begin
-        lb_en_out  = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE 
+        lb_en_out  = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
             && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
-        paint_area = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE 
+        paint_area = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
             && sx >= 0 && sx < (FB_WIDTH * LB_SCALE));
     end
 
