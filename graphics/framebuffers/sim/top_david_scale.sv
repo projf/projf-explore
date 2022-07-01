@@ -38,8 +38,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
+    // localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -47,12 +47,13 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    // localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
-    localparam FB_IMAGE  = "../../../lib/res/test/test_box_160x120.mem";  // bitmap file
+    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
+    // localparam FB_IMAGE  = "../../../lib/res/test/test_box_160x120.mem";  // bitmap file
 
     logic [FB_ADDRW-1:0] fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_read;
 
+    // framebuffer memory
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
@@ -71,23 +72,25 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .data_out(fb_colr_read)
     );
 
-    // linebuffer
+    // linebuffer (LB)
     localparam LB_SCALE = 4;
-    logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
+    logic [$clog2(LB_SCALE):0] cnt_lb_line;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
-        if (sy == 0) cnt_lb_rline <= 0;
-        else if (line) begin
-            cnt_lb_rline <= (cnt_lb_rline == LB_SCALE-1) ? 0 : cnt_lb_rline + 1;
+        if (line) begin
+            if (sy == 0) cnt_lb_line <= 0;
+            else cnt_lb_line <= (cnt_lb_line == LB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
-    // linebuffer enable
-    localparam LAT = 2;  // latency compensation: LB+1, CLUT+1
-    logic lb_en_in;   // enable linebuffer in
-    logic lb_en_out;  // linebuffer enable out
-    always_comb begin
-        lb_en_in  = (sy >= 0 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH);
-        lb_en_out = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
+    // enable linebuffer input
+    logic lb_en_in;
+    always_comb lb_en_in = (sy >= 0 && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
+
+    // enable linebuffer output
+    logic lb_en_out;
+    localparam LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    always_ff @(posedge clk_pix) begin
+        lb_en_out <= (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
             && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
     end
 
@@ -109,7 +112,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .DATAW(CIDXW),
         .LEN(FB_WIDTH),
         .SCALE(LB_SCALE)
-    ) lb_sf (
+    ) linebuffer_instance (
         .clk_in(clk_pix),
         .clk_out(clk_pix),
         .rst_in(line),
