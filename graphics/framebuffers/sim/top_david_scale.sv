@@ -75,7 +75,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // linebuffer
-    localparam LB_SCALE = 4;
+    localparam LB_SCALE = 8;
     logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
         if (sy == 0) cnt_lb_rline <= 0;
@@ -89,7 +89,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     always_ff @(posedge clk_pix) begin
         if (frame) begin  // reset address at start of frame
             fb_addr_read <= 0;
-        end else if (line) begin
+        end else if (line) begin  // reset horizontal counter at start of line
             cnt_lbx <= 0;
         end else if (sy >= 0 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH) begin
             fb_addr_read <= fb_addr_read + 1;
@@ -98,16 +98,12 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     end
 
     localparam LAT = 2;  // LB+1, CLUT+1
-    logic paint_area;    // area of screen to paint
     logic lb_en_out;     // linebuffer enable out
     always_comb begin
-        lb_en_out  = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
+        lb_en_out = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
             && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
-        paint_area = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
-            && sx >= 0 && sx < (FB_WIDTH * LB_SCALE));
     end
 
-    // en_out needs to corrected for latency
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
         .DATAW(4),
@@ -141,8 +137,13 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // paint screen
+    logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
-    always_comb {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr: 12'h000;
+    always_comb begin
+        paint_area = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
+            && sx >= 0 && sx < FB_WIDTH * LB_SCALE);
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
+    end
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
