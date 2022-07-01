@@ -75,7 +75,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // linebuffer
-    localparam LB_SCALE = 8;
+    localparam LB_SCALE = 4;
     logic [$clog2(LB_SCALE):0] cnt_lb_rline;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
         if (sy == 0) cnt_lb_rline <= 0;
@@ -98,15 +98,17 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     end
 
     localparam LAT = 2;  // LB+1, CLUT+1
-    logic lb_en_out;     // linebuffer enable out
+    logic lb_en_in;   // linebuffer enable in
+    logic lb_en_out;  // linebuffer enable out
     always_comb begin
+        lb_en_in  = cnt_lb_rline == 0 && !line;
         lb_en_out = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
             && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
     end
 
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
-        .DATAW(4),
+        .DATAW(CIDXW),
         .LEN(H_RES),
         .SCALE(LB_SCALE)
     ) lb_sf (
@@ -114,7 +116,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .clk_out(clk_pix),
         .rst_in(line),
         .rst_out(line),
-        .en_in(cnt_lb_rline == 0),
+        .en_in(lb_en_in),
         .en_out(lb_en_out),
         .data_in(fb_colr_read),
         .data_out(lb_colr_out)
