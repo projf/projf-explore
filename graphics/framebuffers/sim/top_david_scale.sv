@@ -34,9 +34,6 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .line
     );
 
-    // screen dimensions (must match display_inst)
-    localparam H_RES      = 640;
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
@@ -84,6 +81,16 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         end
     end
 
+    // linebuffer enable
+    localparam LAT = 2;  // latency compensation: LB+1, CLUT+1
+    logic lb_en_in;   // enable linebuffer in
+    logic lb_en_out;  // linebuffer enable out
+    always_comb begin
+        lb_en_in  = (sy >= 0 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH);
+        lb_en_out = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
+            && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
+    end
+
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_ff @(posedge clk_pix) begin
@@ -91,25 +98,16 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
             fb_addr_read <= 0;
         end else if (line) begin  // reset horizontal counter at start of line
             cnt_lbx <= 0;
-        end else if (sy >= 0 && cnt_lb_rline == 0 && cnt_lbx < FB_WIDTH) begin
+        end else if (lb_en_in) begin
             fb_addr_read <= fb_addr_read + 1;
             cnt_lbx <= cnt_lbx + 1;
         end
     end
 
-    localparam LAT = 2;  // LB+1, CLUT+1
-    logic lb_en_in;   // linebuffer enable in
-    logic lb_en_out;  // linebuffer enable out
-    always_comb begin
-        lb_en_in  = cnt_lb_rline == 0 && !line;
-        lb_en_out = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
-            && sx >= 0-LAT && sx < (FB_WIDTH * LB_SCALE)-LAT);
-    end
-
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
         .DATAW(CIDXW),
-        .LEN(H_RES),
+        .LEN(FB_WIDTH),
         .SCALE(LB_SCALE)
     ) lb_sf (
         .clk_in(clk_pix),

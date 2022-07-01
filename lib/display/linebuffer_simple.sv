@@ -40,9 +40,13 @@ module linebuffer_simple #(
     logic [$clog2(LEN)-1:0] addr_in;
     logic we;
     always_ff @(posedge clk_in) begin
-        if (addr_in != LEN-1) addr_in <= addr_in + 1;
-        if (rst_in) addr_in <= 0;
-        we <= (addr_in == LEN-1) ? 0 : en_in;
+        if (en_in) we <= 1;
+        if (addr_in == LEN-1) we <= 0;
+        if (we) addr_in <= addr_in + 1;
+        if (rst_in) begin
+            we <= 0;
+            addr_in <= 0;
+        end
     end
 
     bram_sdp #(
