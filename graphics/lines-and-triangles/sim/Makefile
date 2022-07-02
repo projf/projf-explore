@@ -1,4 +1,4 @@
-## Project F: Hardware Sprites - Verilator Sim Makefile
+## Project F: Lines and Triangles - Verilator Sim Makefile
 ## (C)2022 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/hardware-sprites/
 
@@ -7,15 +7,12 @@ SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
 # Project F Verilog Library
+PROJF_LIBS += -I../../../lib/clock
 PROJF_LIBS += -I../../../lib/display
+PROJF_LIBS += -I../../../lib/graphics
 PROJF_LIBS += -I../../../lib/memory
 
-tinyf_inline: tinyf_inline.exe
-tinyf_rom: tinyf_rom.exe
-tinyf_scale: tinyf_scale.exe
-tinyf_move: tinyf_move.exe
-hourglass: hourglass.exe
-hedgehog: hedgehog.exe
+line: line.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -24,7 +21,7 @@ hedgehog: hedgehog.exe
 	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: tinyf_inline tinyf_rom tinyf_scale tinyf_move hourglass hedgehog
+all: line
 
 clean:
 	rm -rf ./obj_dir

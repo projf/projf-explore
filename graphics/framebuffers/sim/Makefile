@@ -7,8 +7,8 @@ SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
 # Project F Verilog Library
-PROJF_LIBS += -I../../../lib/memory
 PROJF_LIBS += -I../../../lib/display
+PROJF_LIBS += -I../../../lib/memory
 
 david_mono: david_mono.exe
 david_mono_draw: david_mono_draw.exe
