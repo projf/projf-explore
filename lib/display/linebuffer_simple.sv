@@ -10,12 +10,12 @@ module linebuffer_simple #(
     parameter LEN=640,  // length of line
     parameter SCALE=1   // scaling factor (>=1)
     ) (
-    input  wire logic clk_in,    // input clock
-    input  wire logic clk_out,   // output clock
-    input  wire logic rst_in,    // reset (clk_in)
-    input  wire logic rst_out,   // reset (clk_out)
-    input  wire logic en_in,     // enable input (clk_in)
-    input  wire logic en_out,    // enable output (clk_out)
+    input  wire logic clk_in,   // input clock
+    input  wire logic clk_out,  // output clock
+    input  wire logic rst_in,   // reset (clk_in)
+    input  wire logic rst_out,  // reset (clk_out)
+    input  wire logic en_in,    // enable input (clk_in)
+    input  wire logic en_out,   // enable output (clk_out)
     input  wire logic [DATAW-1:0] data_in,  // data in (clk_in)
     output      logic [DATAW-1:0] data_out  // data out (clk_out)
     );
@@ -50,7 +50,7 @@ module linebuffer_simple #(
     end
 
     bram_sdp #(
-        .WIDTH(DATAW), 
+        .WIDTH(DATAW),
         .DEPTH(LEN)
         ) bram_lb (
         .clk_write(clk_in),
