@@ -23,12 +23,8 @@ module bitmap_addr #(
     );
 
     always_ff @(posedge clk) begin
-        // check for clipping in pixel and offset
-        if (x < 0 || x > bmpw-1 || 
-            y < 0 || y > bmph-1 || 
-            offx < 0 || offx > bmpw-1 || 
-            offy < 0 || offy > bmph-1
-        ) begin
+        // check for clipping)
+        if (x+offx < 0 || x+offx > bmpw-1 || y+offy < 0 || y+offy > bmph-1) begin
             clip <= 1;
             addr <= 0;
         end else begin
