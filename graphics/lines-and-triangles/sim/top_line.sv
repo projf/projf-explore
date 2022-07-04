@@ -42,10 +42,10 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     );
 
     // display settings
-    // localparam FB_SCALE = 1;  // framebuffer scaling via linebuffer
+    // localparam FB_SCALE = 1;  // framebuffer scaling via linebuffer (min 1x)
     // localparam OSX = 160;     // horizontal offset (1x scale)
     // localparam OSY = 150;     // vertical offset (1x scale)
-    localparam FB_SCALE = 2;  // framebuffer scaling via linebuffer
+    localparam FB_SCALE = 2;  // framebuffer scaling via linebuffer (min 1x)
     localparam OSX =  0;      // horizontal offset (2x scale)
     localparam OSY = 60;      // vertical offset (2x scale)
 
@@ -191,9 +191,9 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     ) linebuffer_instance (
         .clk_in(clk_sys),
         .clk_out(clk_pix),
-        .rst_in(line),
+        .rst_in(line),  // should be in system clock domain
         .rst_out(line),
-        .en_in(lb_en_in),
+        .en_in(lb_en_in),  // should be in system clock domain
         .en_out(lb_en_out),
         .data_in(fb_colr_read),
         .data_out(lb_colr_out)

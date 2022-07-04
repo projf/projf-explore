@@ -17,6 +17,15 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     output      logic [7:0] sdl_b   // 8-bit blue
     );
 
+    // system clock is the same as pixel clock in simulation
+    /* verilator lint_off UNUSED */
+    logic clk_sys, rst_sys;
+    /* verilator lint_on UNUSED */
+    always_comb begin
+        clk_sys = clk_pix;
+        rst_sys = rst_pix;
+    end
+
     // display sync signals and coordinates
     logic signed [CORDW-1:0] sx, sy;
     logic de, frame, line;
@@ -33,6 +42,9 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .frame,
         .line
     );
+
+    // display settings
+    localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (min 1x)
 
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
@@ -59,8 +71,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .DEPTH(FB_PIXELS),
         .INIT_F(FB_IMAGE)
     ) bram_inst (
-        .clk_write(clk_pix),
-        .clk_read(clk_pix),
+        .clk_write(clk_sys),
+        .clk_read(clk_sys),
         /* verilator lint_off PINCONNECTEMPTY */
         .we(),
         .addr_write(),
@@ -73,12 +85,11 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // linebuffer (LB)
-    localparam LB_SCALE = 4;
-    logic [$clog2(LB_SCALE):0] cnt_lb_line;  // count lines for scaling
+    logic [$clog2(FB_SCALE):0] cnt_lb_line;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
         if (line) begin
             if (sy == 0) cnt_lb_line <= 0;
-            else cnt_lb_line <= (cnt_lb_line == LB_SCALE-1) ? 0 : cnt_lb_line + 1;
+            else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
@@ -90,13 +101,13 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
-            && sx >= 0-LB_LAT && sx < (FB_WIDTH * LB_SCALE)-LB_LAT);
+        lb_en_out <= (sy >= 0 && sy < FB_HEIGHT * FB_SCALE
+            && sx >= 0-LB_LAT && sx < (FB_WIDTH * FB_SCALE)-LB_LAT);
     end
 
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
-    always_ff @(posedge clk_pix) begin
+    always_ff @(posedge clk_sys) begin
         if (frame) begin  // reset address at start of frame
             fb_addr_read <= 0;
         end else if (line) begin  // reset horizontal counter at start of line
@@ -111,13 +122,13 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     linebuffer_simple #(
         .DATAW(CIDXW),
         .LEN(FB_WIDTH),
-        .SCALE(LB_SCALE)
+        .SCALE(FB_SCALE)
     ) linebuffer_instance (
-        .clk_in(clk_pix),
+        .clk_in(clk_sys),
         .clk_out(clk_pix),
-        .rst_in(line),
+        .rst_in(line),  // should be in system clock domain
         .rst_out(line),
-        .en_in(lb_en_in),
+        .en_in(lb_en_in),  // should be in system clock domain
         .en_out(lb_en_out),
         .data_in(fb_colr_read),
         .data_out(lb_colr_out)
@@ -143,8 +154,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= 0 && sy < FB_HEIGHT * LB_SCALE
-            && sx >= 0 && sx < FB_WIDTH * LB_SCALE);
+        paint_area = (sy >= 0 && sy < FB_HEIGHT * FB_SCALE
+            && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
