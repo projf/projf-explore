@@ -41,9 +41,13 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
         .line
     );
 
-    // display offsets for letterboxing etc.
-    localparam OSX =  0;  // horizontal offset not yet implemented
-    localparam OSY = 60;
+    // display settings
+    // localparam FB_SCALE = 1;  // framebuffer scaling via linebuffer
+    // localparam OSX = 160;     // horizontal offset (1x scale)
+    // localparam OSY = 150;     // vertical offset (1x scale)
+    localparam FB_SCALE = 2;  // framebuffer scaling via linebuffer
+    localparam OSX =  0;      // horizontal offset (2x scale)
+    localparam OSY = 60;      // vertical offset (2x scale)
 
     logic frame_sys;  // start of new frame in system clock domain
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
@@ -146,25 +150,24 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     always_ff @(posedge clk_sys) fb_we <= drawing;
 
     // linebuffer (LB)
-    localparam LB_SCALE = 2;
-    logic [$clog2(LB_SCALE):0] cnt_lb_line;  // count lines for scaling
+    logic [$clog2(FB_SCALE):0] cnt_lb_line;  // count lines for scaling
     always_ff @(posedge clk_pix) begin
         if (line) begin
             if (sy == 0) cnt_lb_line <= 0;
-            else cnt_lb_line <= (cnt_lb_line == LB_SCALE-1) ? 0 : cnt_lb_line + 1;
+            else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
     // enable linebuffer input
     logic lb_en_in;
-    always_comb lb_en_in = (sy >= OSY && sy < (FB_HEIGHT * LB_SCALE) + OSY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
+    always_comb lb_en_in = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
     // enable linebuffer output
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= OSY && sy < (FB_HEIGHT * LB_SCALE) + OSY
-            && sx >= 0-LB_LAT && sx < (FB_WIDTH * LB_SCALE)-LB_LAT);
+        lb_en_out <= (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
+            && sx >= OSX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + OSX - LB_LAT);
     end
 
     // calculate framebuffer read address for linebuffer
@@ -184,7 +187,7 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     linebuffer_simple #(
         .DATAW(CIDXW),
         .LEN(FB_WIDTH),
-        .SCALE(LB_SCALE)
+        .SCALE(FB_SCALE)
     ) linebuffer_instance (
         .clk_in(clk_sys),
         .clk_out(clk_pix),
@@ -216,8 +219,8 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= OSY && sy < (FB_HEIGHT * LB_SCALE) + OSY
-            && sx >= 0 && sx < FB_WIDTH * LB_SCALE);
+        paint_area = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
+            && sx >= OSX && sx < FB_WIDTH * FB_SCALE + OSX);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
