@@ -44,9 +44,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // display signals in system domain
-    logic de_sys, frame_sys, line_sys, line_act, line_zero;
-    xd xd_de    (.clk_i(clk_pix), .clk_o(clk_sys),
-                 .rst_i(rst_pix), .rst_o(rst_sys), .i(de), .o(de_sys));
+    logic frame_sys, line_sys, line_act, line_zero;
     xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
                  .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
     xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys),
@@ -58,6 +56,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
 
     // display settings
     localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (1-63)
+    localparam OSX = 0;       // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam OSY = 0;       // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
 
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
@@ -113,6 +113,9 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     // enable linebuffer input
     logic lb_en_in;
     always_comb lb_en_in = (line_act && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
+    // always_comb lb_en_in = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
+    // needs updating for offset (SY - but we don't have this in clk_sys domain)
+    // Then we can remove line_act
 
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
@@ -131,8 +134,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (de && sy < FB_HEIGHT * FB_SCALE
-            && sx >= 0-LB_LAT && sx < (FB_WIDTH * FB_SCALE)-LB_LAT);
+        lb_en_out <= (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
+            && sx >= OSX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + OSX - LB_LAT);
     end
 
     logic [FB_DATAW-1:0] lb_colr_out;
@@ -171,7 +174,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (de && sy < FB_HEIGHT * FB_SCALE && sx < FB_WIDTH * FB_SCALE);
+        paint_area = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
+            && sx >= OSX && sx < FB_WIDTH * FB_SCALE + OSX);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
