@@ -7,6 +7,7 @@ SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
 # Project F Verilog Library
+PROJF_LIBS += -I../../../lib/clock
 PROJF_LIBS += -I../../../lib/display
 PROJF_LIBS += -I../../../lib/memory
 

@@ -5,6 +5,8 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
+// NEEDS UPDATING WHEN REVISED LINEBUFFER IS READY
+
 module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
