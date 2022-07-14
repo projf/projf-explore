@@ -87,15 +87,27 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
     xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
                     .i(sy==0), .o(lb_first));
 
+    // fizzlefade!
+    logic lfsr_en;
+    logic [14:0] lfsr;
+    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
+        .LEN(15),
+        .TAPS(15'b110000000000000)
+    ) lsfr_fz (
+        .clk(clk_sys),
+        .rst(rst_sys),
+        .en(lfsr_en),
+        .seed(0),  // use default seed
+        .sreg(lfsr)
+    );
+
     // control fade start and rate
     localparam FADE_WAIT = 120;   // wait for N frames before fading
     localparam FADE_RATE = 2000;  // every N system cycles update LFSR
     logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
     logic [$clog2(FADE_RATE)-1:0] cnt_rate;
     always_ff @(posedge clk_sys) begin
-        if (frame_sys) begin
-            cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
-        end
+        if (frame_sys) cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
         if (cnt_wait == FADE_WAIT-1) begin
             if (cnt_rate == FADE_RATE-1) begin
                 lfsr_en <= 1;
@@ -110,20 +122,6 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
         end
         fb_colr_write <= 4'h0;  // fade colour
     end
-
-    // fizzlefade!
-    logic lfsr_en;
-    logic [14:0] lfsr;
-    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
-        .LEN(15),
-        .TAPS(15'b110000000000000)
-    ) lsfr_fz (
-        .clk(clk_sys),
-        .rst(rst_sys),
-        .en(lfsr_en),
-        .seed(0),  // use default seed
-        .sreg(lfsr)
-    );
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
