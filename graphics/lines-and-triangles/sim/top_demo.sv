@@ -41,22 +41,6 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .line
     );
 
-    // framebuffer display settings
-    localparam FB_SCALE =  2;  // framebuffer scaling via linebuffer (1-63)
-    localparam FB_OFFX  =  0;  // horizontal offset
-    localparam FB_OFFY  = 60;  // vertical offset
-
-    // display signals in system domain
-    logic frame_sys, line_sys, lb_line, lb_first;
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(frame), .o(frame_sys));
-    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(line), .o(line_sys));
-    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=FB_OFFY), .o(lb_line));
-    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==FB_OFFY), .o(lb_first));
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
@@ -64,12 +48,15 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 320;
-    localparam FB_HEIGHT = 180;
+    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
+    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
+    localparam FB_SCALE  =   2;  // framebuffer display scale via linebuffer (1-63)
+    localparam FB_OFFX   =   0;  // horizontal offset
+    localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "";  // bitmap file
+    localparam FB_IMAGE  = "";     // initial bitmap file
 
     // pixel read and write addresses and colours
     logic fb_we;
@@ -91,12 +78,25 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .data_out(fb_colr_read)
     );
 
+    // display signals in system domain
+    logic frame_sys, line_sys, lb_line, lb_first;
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(frame), .o(frame_sys));
+    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(line), .o(line_sys));
+    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy>=FB_OFFY), .o(lb_line));
+    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy==FB_OFFY), .o(lb_first));
+
     // render line/cube/triangles
+    parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
     render_triangles #(  // switch module name to change demo
         .CORDW(CORDW),
-        .CIDXW(CIDXW)
+        .CIDXW(CIDXW),
+        .SCALE(DRAW_SCALE)
     ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),

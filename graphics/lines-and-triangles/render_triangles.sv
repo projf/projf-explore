@@ -7,7 +7,8 @@
 
 module render_triangles #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=4    // colour index width (bits)
+    parameter CIDXW=4,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
     ) (  
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
@@ -81,12 +82,12 @@ module render_triangles #(
         .rst,
         .start(draw_start),
         .oe,
-        .x0(vx0),
-        .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
-        .x2(vx2),
-        .y2(vy2),
+        .x0(vx0 * SCALE),
+        .y0(vy0 * SCALE),
+        .x1(vx1 * SCALE),
+        .y1(vy1 * SCALE),
+        .x2(vx2 * SCALE),
+        .y2(vy2 * SCALE),
         .x,
         .y,
         .drawing,

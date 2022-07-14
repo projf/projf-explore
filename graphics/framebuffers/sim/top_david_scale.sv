@@ -41,20 +41,6 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .line
     );
 
-    // framebuffer display settings
-    localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (1-63)
-
-    // display signals in system domain
-    logic frame_sys, line_sys, lb_line, lb_first;
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(frame), .o(frame_sys));
-    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(line), .o(line_sys));
-    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=0), .o(lb_line));
-    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==0), .o(lb_first));
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
@@ -65,6 +51,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
     localparam FB_HEIGHT = 120;  // framebuffer width in pixels
+    localparam FB_SCALE  =   4;  // framebuffer display scale via linebuffer (1-63)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
@@ -93,6 +80,17 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         /* verilator lint_on PINCONNECTEMPTY */
         .data_out(fb_colr_read)
     );
+
+    // display signals in system domain
+    logic frame_sys, line_sys, lb_line, lb_first;
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(frame), .o(frame_sys));
+    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(line), .o(line_sys));
+    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy>=0), .o(lb_line));
+    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy==0), .o(lb_first));
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
