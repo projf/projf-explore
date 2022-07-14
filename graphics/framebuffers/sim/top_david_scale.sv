@@ -126,6 +126,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
             && sx >= -LB_LAT && sx < (FB_WIDTH * FB_SCALE) - LB_LAT);
     end
 
+    // display linebuffer
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
         .DATAW(CIDXW),
