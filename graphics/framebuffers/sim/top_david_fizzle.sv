@@ -120,7 +120,7 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
                 fb_we <= 0;
             end
         end
-        fb_colr_write <= 4'h0;  // fade colour
+        fb_colr_write <= 4'h7;  // fade colour
     end
 
     // count lines for scaling via linebuffer
