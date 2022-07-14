@@ -42,9 +42,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // framebuffer display settings
-    localparam FB_SCALE = 2;    // framebuffer scaling via linebuffer (1-63)
-    localparam FB_OFFX  = 160;  // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
-    localparam FB_OFFY  = 120;  // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (1-63)
 
     // display signals in system domain
     logic frame_sys, line_sys, lb_line, lb_first;
@@ -53,9 +51,9 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
                     .i(line), .o(line_sys));
     xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=FB_OFFY), .o(lb_line));
+                    .i(sy>=0), .o(lb_line));
     xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==FB_OFFY), .o(lb_first));
+                    .i(sy==0), .o(lb_first));
 
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
@@ -130,8 +128,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
+        lb_en_out <= (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
+            && sx >= -LB_LAT && sx < (FB_WIDTH * FB_SCALE) - LB_LAT);
     end
 
     logic [FB_DATAW-1:0] lb_colr_out;
@@ -170,8 +168,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
+        paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
+            && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
