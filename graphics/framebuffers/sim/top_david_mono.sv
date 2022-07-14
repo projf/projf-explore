@@ -1,6 +1,6 @@
 // Project F: Framebuffers - Mono David (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/hardware-sprites/
+// Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
 `timescale 1ns / 1ps
