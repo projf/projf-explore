@@ -18,9 +18,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // system clock is the same as pixel clock in simulation
-    /* verilator lint_off UNUSED */
     logic clk_sys, rst_sys;
-    /* verilator lint_on UNUSED */
     always_comb begin
         clk_sys = clk_pix;
         rst_sys = rst_pix;
@@ -54,10 +52,10 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     xd xd_zero  (.clk_i(clk_pix), .clk_o(clk_sys),
                 .rst_i(rst_pix), .rst_o(rst_sys), .i(sy==0), .o(line_zero));
 
-    // display settings
+    // framebuffer display settings
     localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (1-63)
-    localparam OSX = 0;       // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
-    localparam OSY = 0;       // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam FB_OFFX  = 0;  // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam FB_OFFY  = 0;  // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
 
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
@@ -75,6 +73,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     // localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
     localparam FB_IMAGE  = "../../../lib/res/test/test_box_160x120.mem";  // bitmap file
 
+    // pixel read address and colour
     logic [FB_ADDRW-1:0] fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_read;
 
@@ -113,9 +112,9 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     // enable linebuffer input
     logic lb_en_in;
     always_comb lb_en_in = (line_act && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
-    // always_comb lb_en_in = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
+    // always_comb lb_en_in = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
     // needs updating for offset (SY - but we don't have this in clk_sys domain)
-    // Then we can remove line_act
+    // Then we can remove line_act - or update line_act to handle offset more reasonably
 
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
@@ -134,8 +133,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
-            && sx >= OSX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + OSX - LB_LAT);
+        lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
     end
 
     logic [FB_DATAW-1:0] lb_colr_out;
@@ -174,8 +173,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= OSY && sy < (FB_HEIGHT * FB_SCALE) + OSY
-            && sx >= OSX && sx < FB_WIDTH * FB_SCALE + OSX);
+        paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
