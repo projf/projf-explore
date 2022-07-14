@@ -23,13 +23,15 @@ module bitmap_addr #(
     );
 
     always_ff @(posedge clk) begin
-        // check for clipping)
+        // check for clipping
         if (x+offx < 0 || x+offx > bmpw-1 || y+offy < 0 || y+offy > bmph-1) begin
             clip <= 1;
             addr <= 0;
         end else begin
             clip <= 0;
+            /* verilator lint_off WIDTH */
             addr <= bmpw * (y + offy) + x + offx;
+            /* verilator lint_on WIDTH */
         end
     end    
 endmodule
