@@ -12,7 +12,7 @@ PROJF_LIBS += -I../../../lib/display
 PROJF_LIBS += -I../../../lib/graphics
 PROJF_LIBS += -I../../../lib/memory
 
-line: line.exe
+demo: demo.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -21,7 +21,7 @@ line: line.exe
 	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: line
+all: demo
 
 clean:
 	rm -rf ./obj_dir

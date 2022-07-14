@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Line Verilator C++
+// Project F: Lines and Triangles - Demo Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 #include <stdio.h>
 #include <SDL.h>
 #include <verilated.h>
-#include "Vtop_line.h"
+#include "Vtop_demo.h"
 
 // screen dimensions
 const int H_RES = 640;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdl_renderer = NULL;
     SDL_Texture*  sdl_texture  = NULL;
 
-    sdl_window = SDL_CreateWindow("Line", SDL_WINDOWPOS_CENTERED,
+    sdl_window = SDL_CreateWindow("Lines and Triangles Demo", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, H_RES, V_RES, SDL_WINDOW_SHOWN);
     if (!sdl_window) {
         printf("Window creation failed: %s\n", SDL_GetError());
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
     }
 
     // initialize Verilog module
-    Vtop_line* top = new Vtop_line;
+    Vtop_demo* top = new Vtop_demo;
 
     // reset
     top->rst_pix = 1;

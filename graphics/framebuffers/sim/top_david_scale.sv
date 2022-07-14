@@ -94,11 +94,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .data_out(fb_colr_read)
     );
 
-    //
-    // linebuffer (LB)
-    //
-
-    // count lines for scaling
+    // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
         if (line_sys) begin

@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Line (Verilator SDL)
+// Project F: Lines and Triangles - Demo (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
+module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -91,47 +91,24 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
         .data_out(fb_colr_read)
     );
 
-    // draw line in framebuffer
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
-    logic draw_start, drawing, draw_done;  // drawing signals
-
-    // draw state machine
-    enum {IDLE, INIT, DRAW, DONE} state;
-    always_ff @(posedge clk_sys) begin
-        case (state)
-            INIT: begin  // register coordinates and colour
-                vx0 <=  70; vy0 <=   0;
-                vx1 <= 249; vy1 <= 179;
-                fb_colr_write <= 4'h3;  // orange
-                draw_start <= 1;
-                state <= DRAW;
-            end
-            DRAW: begin
-                draw_start <= 0;
-                if (draw_done) state <= DONE;
-            end
-            DONE: state <= DONE;
-            default: if (frame_sys) state <= INIT;  // IDLE
-        endcase
-    end
-
+    // render line
+    logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    render_line #(
+        .CORDW(CORDW),
+        .CIDXW(CIDXW)
+    ) render_line_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .start(draw_start),
         .oe(1'b1),
-        .x0(vx0),
-        .y0(vy0),
-        .x1(vx1),
-        .y1(vy1),
+        .start(frame_sys),
         .x(drx),
         .y(dry),
-        .drawing,
+        .cidx(fb_colr_write),
         /* verilator lint_off PINCONNECTEMPTY */
-        .busy(),
+        .drawing,
+        .done()
         /* verilator lint_on PINCONNECTEMPTY */
-        .done(draw_done)
     );
 
     // calculate pixel address in framebuffer (two cycle latency)
@@ -155,11 +132,7 @@ module top_line #(parameter CORDW=16) (  // signed coordinate width (bits)
     // delay write enable to match address calculation latency
     always_ff @(posedge clk_sys) fb_we <= drawing;
 
-    //
-    // linebuffer (LB)
-    //
-
-    // count lines for scaling
+    // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
         if (line_sys) begin
