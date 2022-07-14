@@ -1,5 +1,5 @@
 // Project F Library - Test Bench for Cross Domain Pulse
-// (C)2021 Will Green, Open source hardware released under the MIT License
+// (C)2022 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
