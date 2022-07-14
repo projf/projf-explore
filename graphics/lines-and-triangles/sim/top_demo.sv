@@ -91,13 +91,13 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .data_out(fb_colr_read)
     );
 
-    // render line
+    // render line/cube/triangles
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_line #(
+    render_triangles #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW)
-    ) render_line_instance (
+    ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
         .oe(1'b1),
@@ -105,8 +105,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .x(drx),
         .y(dry),
         .cidx(fb_colr_write),
-        /* verilator lint_off PINCONNECTEMPTY */
         .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
         .done()
         /* verilator lint_on PINCONNECTEMPTY */
     );
