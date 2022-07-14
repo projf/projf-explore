@@ -94,7 +94,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;
+        draw_oe <= 0;  // drawing disabled by default
         if (frame_sys) begin  // once per frame
             if (cnt_frame_wait != FRAME_WAIT-1) begin
                 cnt_frame_wait <= cnt_frame_wait + 1;
