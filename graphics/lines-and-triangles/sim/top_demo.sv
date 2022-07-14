@@ -78,16 +78,12 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .data_out(fb_colr_read)
     );
 
-    // display signals in system domain
-    logic frame_sys, line_sys, lb_line, lb_first;
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(frame), .o(frame_sys));
-    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(line), .o(line_sys));
-    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=FB_OFFY), .o(lb_line));
-    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==FB_OFFY), .o(lb_first));
+    // display flags in system clock domain
+    logic frame_sys, line_sys, lb_line, lb_1st;
+    xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
+    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
+    xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=FB_OFFY), .dst(lb_line));
+    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==FB_OFFY), .dst(lb_1st));
 
     // control drawing speed
     localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
@@ -149,7 +145,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
         if (line_sys) begin
-            if (lb_first) cnt_lb_line <= 0;
+            if (lb_1st) cnt_lb_line <= 0;
             else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end

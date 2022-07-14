@@ -76,16 +76,12 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
         .data_out(fb_colr_read)
     );
 
-    // display signals in system domain
+    // display flags in system clock domain
     logic frame_sys, line_sys, lb_line, lb_first;
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(frame), .o(frame_sys));
-    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(line), .o(line_sys));
-    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=0), .o(lb_line));
-    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==0), .o(lb_first));
+    xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
+    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
+    xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=0), .dst(lb_line));
+    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==0), .dst(lb_first));
 
     // fizzlefade!
     logic lfsr_en;
