@@ -89,6 +89,19 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
                     .i(sy==FB_OFFY), .o(lb_first));
 
+    // control drawing speed with output enable
+    localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic draw_oe;  // draw requested
+    always_ff @(posedge clk_sys) begin
+        draw_oe <= 0;
+        if (frame_sys) begin  // once per frame
+            if (cnt_frame_wait != FRAME_WAIT-1) begin
+                cnt_frame_wait <= cnt_frame_wait + 1;
+            end else draw_oe <= 1;  // request drawing
+        end
+    end
+
     // render line/cube/triangles
     parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
     logic drawing;  // actively drawing
@@ -100,7 +113,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .oe(1'b1),
+        .oe(draw_oe),  // set to 1'b1 to draw at full speed
         .start(frame_sys),
         .x(drx),
         .y(dry),
