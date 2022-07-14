@@ -41,28 +41,28 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .line
     );
 
-    // display signals in system domain
-    logic frame_sys, line_sys, line_act, line_zero;
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
-                 .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
-    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys),
-                .rst_i(rst_pix), .rst_o(rst_sys), .i(line), .o(line_sys));
-    xd xd_act   (.clk_i(clk_pix), .clk_o(clk_sys),
-                .rst_i(rst_pix), .rst_o(rst_sys), .i(sy>=0), .o(line_act));
-    xd xd_zero  (.clk_i(clk_pix), .clk_o(clk_sys),
-                .rst_i(rst_pix), .rst_o(rst_sys), .i(sy==0), .o(line_zero));
-
     // framebuffer display settings
-    localparam FB_SCALE = 4;  // framebuffer scaling via linebuffer (1-63)
-    localparam FB_OFFX  = 0;  // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
-    localparam FB_OFFY  = 0;  // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam FB_SCALE = 2;    // framebuffer scaling via linebuffer (1-63)
+    localparam FB_OFFX  = 160;  // horizontal offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+    localparam FB_OFFY  = 120;  // vertical offset (FOR TESTING - REMOVE FROM FINAL DESIGN)
+
+    // display signals in system domain
+    logic frame_sys, line_sys, lb_line, lb_first;
+    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(frame), .o(frame_sys));
+    xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(line), .o(line_sys));
+    xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy>=FB_OFFY), .o(lb_line));
+    xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
+                    .i(sy==FB_OFFY), .o(lb_first));
 
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
+    // localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -70,8 +70,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    // localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
-    localparam FB_IMAGE  = "../../../lib/res/test/test_box_160x120.mem";  // bitmap file
+    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
+    // localparam FB_IMAGE  = "../../../lib/res/test/test_box_160x120.mem";  // bitmap file
 
     // pixel read address and colour
     logic [FB_ADDRW-1:0] fb_addr_read;
@@ -104,17 +104,14 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
         if (line_sys) begin
-            if (line_zero) cnt_lb_line <= 0;
+            if (lb_first) cnt_lb_line <= 0;
             else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
     // enable linebuffer input
     logic lb_en_in;
-    always_comb lb_en_in = (line_act && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
-    // always_comb lb_en_in = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
-    // needs updating for offset (SY - but we don't have this in clk_sys domain)
-    // Then we can remove line_act - or update line_act to handle offset more reasonably
+    always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
     // calculate framebuffer read address for linebuffer
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
