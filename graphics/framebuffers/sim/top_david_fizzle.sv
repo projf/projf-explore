@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Demo (Verilator SDL)
+// Project F: Framebuffers - David Fizzle (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/hardware-sprites/
+// Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
+module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -45,18 +45,16 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
-    localparam FB_SCALE  =   2;  // framebuffer display scale via linebuffer (1-63)
-    localparam FB_OFFX   =   0;  // horizontal offset
-    localparam FB_OFFY   =  60;  // vertical offset
+    localparam FB_WIDTH  = 160;  // framebuffer width in pixels
+    localparam FB_HEIGHT = 120;  // framebuffer width in pixels
+    localparam FB_SCALE  =   4;  // framebuffer display scale via linebuffer (1-63)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "";     // initial bitmap file
+    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
 
     // pixel read and write addresses and colours
     logic fb_we;
@@ -85,65 +83,47 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     xd xd_line  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
                     .i(line), .o(line_sys));
     xd xd_read  (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy>=FB_OFFY), .o(lb_line));
+                    .i(sy>=0), .o(lb_line));
     xd xd_start (.clk_i(clk_pix), .clk_o(clk_sys), .rst_i(rst_pix), .rst_o(rst_sys),
-                    .i(sy==FB_OFFY), .o(lb_first));
+                    .i(sy==0), .o(lb_first));
 
-    // control drawing speed
-    localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
-    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_oe;  // draw requested
+    // control fade start and rate
+    localparam FADE_WAIT = 120;   // wait for N frames before fading
+    localparam FADE_RATE = 2000;  // every N system cycles update LFSR
+    logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
+    logic [$clog2(FADE_RATE)-1:0] cnt_rate;
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;  // drawing disabled by default
-        if (frame_sys) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_oe <= 1;  // request drawing
+        if (frame_sys) begin
+            cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
         end
+        if (cnt_wait == FADE_WAIT-1) begin
+            if (cnt_rate == FADE_RATE-1) begin
+                lfsr_en <= 1;
+                fb_we <= 1;
+                fb_addr_write <= lfsr;
+                cnt_rate <= 0;
+            end else begin
+                cnt_rate <= cnt_rate + 1;
+                lfsr_en <= 0;
+                fb_we <= 0;
+            end
+        end
+        fb_colr_write <= 4'h0;  // fade colour
     end
 
-    // render line/cube/triangles
-    parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
-    logic drawing;  // actively drawing
-    logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_triangles #(  // switch module name to change demo
-        .CORDW(CORDW),
-        .CIDXW(CIDXW),
-        .SCALE(DRAW_SCALE)
-    ) render_instance (
+    // fizzlefade!
+    logic lfsr_en;
+    logic [14:0] lfsr;
+    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
+        .LEN(15),
+        .TAPS(15'b110000000000000)
+    ) lsfr_fz (
         .clk(clk_sys),
         .rst(rst_sys),
-        .oe(draw_oe),  // set to 1'b1 to draw at full speed
-        .start(frame_sys),
-        .x(drx),
-        .y(dry),
-        .cidx(fb_colr_write),
-        .drawing,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .done()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .en(lfsr_en),
+        .seed(0),  // use default seed
+        .sreg(lfsr)
     );
-
-    // calculate pixel address in framebuffer (two cycle latency)
-    bitmap_addr #(
-        .CORDW(CORDW),
-        .ADDRW(FB_ADDRW)
-    ) bitmap_addr_instance (
-        .clk(clk_sys),
-        .bmpw(FB_WIDTH),
-        .bmph(FB_HEIGHT),
-        .x(drx),
-        .y(dry),
-        .offx(0),
-        .offy(0),
-        .addr(fb_addr_write),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .clip()
-        /* verilator lint_on PINCONNECTEMPTY */
-    );
-
-    // delay write enable to match address calculation latency
-    always_ff @(posedge clk_sys) fb_we <= drawing;
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -175,8 +155,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic lb_en_out;
     localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
+        lb_en_out <= (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
+            && sx >= -LB_LAT && sx < (FB_WIDTH * FB_SCALE) - LB_LAT);
     end
 
     logic [FB_DATAW-1:0] lb_colr_out;
@@ -195,7 +175,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .data_out(lb_colr_out)
     );
 
-    // colour lookup table
+    // colour lookup table (CLUT)
     logic [COLRW-1:0] fb_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
@@ -215,8 +195,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
+        paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
+            && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
