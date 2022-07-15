@@ -47,6 +47,7 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_david_v2.sv"] \
   [file normalize "${origin_dir}/xc7/top_david_v3.sv"] \
   [file normalize "${origin_dir}/xc7/top_david.sv"] \
+  [file normalize "${origin_dir}/xc7/top_david_scale.sv"] \
   [file normalize "${origin_dir}/xc7/top_line.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
@@ -60,7 +61,10 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
+  [file normalize "${lib_dir}/clock/xd2.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
@@ -73,6 +77,8 @@ add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
+  [file normalize "${lib_dir}/res/palettes/grey16_4b.mem"] \
+  [file normalize "${lib_dir}/res/palettes/sweetie16_4b.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_160x120.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_mono_160x120.mem"] \
@@ -101,6 +107,7 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/xd_tb.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/xd2_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
