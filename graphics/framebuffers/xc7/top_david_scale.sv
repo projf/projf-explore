@@ -70,7 +70,7 @@ module top_david_scale (
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
     localparam FB_HEIGHT = 120;  // framebuffer width in pixels
-    localparam FB_SCALE  =   4;  // framebuffer display scale via linebuffer (1-63)
+    localparam FB_SCALE  =   2;  // framebuffer display scale via linebuffer (1-63)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
