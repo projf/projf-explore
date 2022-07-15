@@ -185,14 +185,14 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .clk_pix,
         .line,
         .line_sys,
-        .en_in(lb_en_in),  // should be in system clock domain
+        .en_in(lb_en_in),
         .en_out(lb_en_out),
         .scale(FB_SCALE),
         .data_in(fb_colr_read),
         .data_out(lb_colr_out)
     );
 
-    // colour lookup table
+    // colour lookup table (CLUT)
     logic [COLRW-1:0] fb_pix_colr;
     clut_simple #(
         .COLRW(COLRW),

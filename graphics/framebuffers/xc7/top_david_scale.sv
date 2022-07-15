@@ -101,17 +101,17 @@ module top_david_scale (
     );
 
     // display flags in system clock domain
-    logic frame_sys, line_sys, lb_line, lb_first;
+    logic frame_sys, line_sys, lb_line, lb_1st;
     xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
     xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
     xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=0), .dst(lb_line));
-    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==0), .dst(lb_first));
+    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==0), .dst(lb_1st));
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
         if (line_sys) begin
-            if (lb_first) cnt_lb_line <= 0;
+            if (lb_1st) cnt_lb_line <= 0;
             else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
