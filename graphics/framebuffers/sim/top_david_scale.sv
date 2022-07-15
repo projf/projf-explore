@@ -163,7 +163,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     always_comb begin
         paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
             && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : 12'h000;
     end
 
     // SDL output (8 bits per colour channel)
