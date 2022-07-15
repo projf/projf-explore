@@ -17,15 +17,15 @@ module xd2_tb();
     xd2 xd_slowfast (
         .clk_src(clk_slow),
         .clk_dst(clk_fast),
-        .i(pulse_a_src),
-        .o(pulse_a_dst)
+        .src(pulse_a_src),
+        .dst(pulse_a_dst)
     );
 
     xd2 xd_fastslow (
         .clk_src(clk_fast),
         .clk_dst(clk_slow),       
-        .i(pulse_b_src),
-        .o(pulse_b_dst)
+        .src(pulse_b_src),
+        .dst(pulse_b_dst)
     );
 
     always #(CLK_SLOW_PERIOD / 2) clk_slow = ~clk_slow;
