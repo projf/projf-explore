@@ -33,7 +33,6 @@ module xd2_tb();
 
     initial begin
         clk_slow = 1;
-        clk_fast = 1;
         pulse_a_src = 0;
 
         #100 pulse_a_src = 1;
@@ -57,6 +56,7 @@ module xd2_tb();
     end
 
     initial begin
+        clk_fast = 1;
         pulse_b_src = 0;
 
         #200 pulse_b_src = 1;

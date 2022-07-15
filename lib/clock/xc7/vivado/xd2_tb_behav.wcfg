@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="600.001 ns"></ZoomEndTime>
+      <ZoomEndTime time="600.000 ns"></ZoomEndTime>
       <Cursor1Time time="600.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="111"></NameColumnWidth>
+      <NameColumnWidth column_width="107"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
+   <WVObjectSize size="20" />
    <wvobject fp_name="/xd2_tb/clk_slow" type="logic">
       <obj_property name="ElementShortName">clk_slow</obj_property>
       <obj_property name="ObjectShortName">clk_slow</obj_property>
@@ -43,5 +43,63 @@
    <wvobject fp_name="/xd2_tb/pulse_b_dst" type="logic">
       <obj_property name="ElementShortName">pulse_b_dst</obj_property>
       <obj_property name="ObjectShortName">pulse_b_dst</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider631">
+      <obj_property name="label">xd_slowfast</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/clk_src" type="logic">
+      <obj_property name="ElementShortName">clk_src</obj_property>
+      <obj_property name="ObjectShortName">clk_src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/clk_dst" type="logic">
+      <obj_property name="ElementShortName">clk_dst</obj_property>
+      <obj_property name="ObjectShortName">clk_dst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/src" type="logic">
+      <obj_property name="ElementShortName">src</obj_property>
+      <obj_property name="ObjectShortName">src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/dst" type="logic">
+      <obj_property name="ElementShortName">dst</obj_property>
+      <obj_property name="ObjectShortName">dst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/toggle_src" type="logic">
+      <obj_property name="ElementShortName">toggle_src</obj_property>
+      <obj_property name="ObjectShortName">toggle_src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_slowfast/shr_dst" type="array">
+      <obj_property name="ElementShortName">shr_dst[3:0]</obj_property>
+      <obj_property name="ObjectShortName">shr_dst[3:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider638">
+      <obj_property name="label">xd_fastslow</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/clk_src" type="logic">
+      <obj_property name="ElementShortName">clk_src</obj_property>
+      <obj_property name="ObjectShortName">clk_src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/clk_dst" type="logic">
+      <obj_property name="ElementShortName">clk_dst</obj_property>
+      <obj_property name="ObjectShortName">clk_dst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/src" type="logic">
+      <obj_property name="ElementShortName">src</obj_property>
+      <obj_property name="ObjectShortName">src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/dst" type="logic">
+      <obj_property name="ElementShortName">dst</obj_property>
+      <obj_property name="ObjectShortName">dst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/toggle_src" type="logic">
+      <obj_property name="ElementShortName">toggle_src</obj_property>
+      <obj_property name="ObjectShortName">toggle_src</obj_property>
+   </wvobject>
+   <wvobject fp_name="/xd2_tb/xd_fastslow/shr_dst" type="array">
+      <obj_property name="ElementShortName">shr_dst[3:0]</obj_property>
+      <obj_property name="ObjectShortName">shr_dst[3:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
 </wave_config>
