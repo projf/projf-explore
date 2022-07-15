@@ -130,10 +130,10 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
 
     // enable linebuffer input
     logic lb_en_in;
+    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
     // calculate framebuffer read address for linebuffer
-    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_ff @(posedge clk_sys) begin
         if (frame_sys) begin  // reset address at start of frame
             fb_addr_read <= 0;
@@ -163,7 +163,7 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
         .clk_pix,
         .line,
         .line_sys,
-        .en_in(lb_en_in),  // should be in system clock domain
+        .en_in(lb_en_in),
         .en_out(lb_en_out),
         .scale(FB_SCALE),
         .data_in(fb_colr_read),

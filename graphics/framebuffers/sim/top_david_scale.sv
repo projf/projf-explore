@@ -134,7 +134,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         .clk_pix,
         .line,
         .line_sys,
-        .en_in(lb_en_in),  // should be in system clock domain
+        .en_in(lb_en_in),
         .en_out(lb_en_out),
         .scale(FB_SCALE),
         .data_in(fb_colr_read),

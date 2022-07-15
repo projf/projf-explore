@@ -14,14 +14,14 @@ module xd2_tb();
     logic pulse_a_src, pulse_a_dst;  // for slow->fast
     logic pulse_b_src, pulse_b_dst;  // for fast->slow
 
-    xd xd_slowfast (
+    xd2 xd_slowfast (
         .clk_src(clk_slow),
         .clk_dst(clk_fast),
         .i(pulse_a_src),
         .o(pulse_a_dst)
     );
 
-    xd xd_fastslow (
+    xd2 xd_fastslow (
         .clk_src(clk_fast),
         .clk_dst(clk_slow),       
         .i(pulse_b_src),
