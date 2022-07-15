@@ -37,21 +37,28 @@ module linebuffer_simple_tb();
     // screen dimensions (must match display_inst)
     localparam H_RES = 24;
 
+    // display flags in system clock domain
+    logic line_sys;
+    xd2 xd_line (.clk_src(clk_25m), .clk_dst(clk_100m), .src(line), .dst(line_sys));
+
     // simple linebuffer
     localparam DATAW=1;
-    localparam LB_SCALE=3;
+    localparam SCALEW=6;
+    localparam SCALE=2;
+
     logic gfx_in, gfx_out;
     linebuffer_simple #(
         .DATAW(DATAW),
         .LEN(H_RES),
-        .SCALE(LB_SCALE)
+        .SCALEW(SCALEW)
     ) linebuffer_simple_inst (
-        .clk_in(clk_100m),
-        .clk_out(clk_25m),
-        .rst_in(rst_100m),
-        .rst_out(line),
-        .en_in(1'b1),
+        .clk_sys(clk_100m),
+        .clk_pix(clk_25m),
+        .line,
+        .line_sys,
+        .en_in(!rst_100m),
         .en_out(sy >= 0 && sx >= -1),  // account for BRAM latency
+        .scale(SCALE),  // scale factor (>=1)
         .data_in(gfx_in),
         .data_out(gfx_out)
     );
