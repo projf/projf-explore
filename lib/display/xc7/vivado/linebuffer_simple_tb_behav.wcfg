@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="847.518 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,154.662 ns"></ZoomEndTime>
+      <ZoomStartTime time="665.078 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,066.985 ns"></ZoomEndTime>
       <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="130"></NameColumnWidth>
-      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+      <NameColumnWidth column_width="129"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="56" />
+   <WVObjectSize size="58" />
    <wvobject fp_name="/linebuffer_simple_tb/clk_100m" type="logic">
       <obj_property name="ElementShortName">clk_100m</obj_property>
       <obj_property name="ObjectShortName">clk_100m</obj_property>
@@ -226,28 +226,36 @@
       <obj_property name="label">XD</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/clk_src" type="logic">
-      <obj_property name="ElementShortName">clk_src</obj_property>
-      <obj_property name="ObjectShortName">clk_src</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/clk_i" type="logic">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/clk_dst" type="logic">
-      <obj_property name="ElementShortName">clk_dst</obj_property>
-      <obj_property name="ObjectShortName">clk_dst</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/clk_o" type="logic">
+      <obj_property name="ElementShortName">clk_o</obj_property>
+      <obj_property name="ObjectShortName">clk_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/src" type="logic">
-      <obj_property name="ElementShortName">src</obj_property>
-      <obj_property name="ObjectShortName">src</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/rst_i" type="logic">
+      <obj_property name="ElementShortName">rst_i</obj_property>
+      <obj_property name="ObjectShortName">rst_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/dst" type="logic">
-      <obj_property name="ElementShortName">dst</obj_property>
-      <obj_property name="ObjectShortName">dst</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/rst_o" type="logic">
+      <obj_property name="ElementShortName">rst_o</obj_property>
+      <obj_property name="ObjectShortName">rst_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/toggle_src" type="logic">
-      <obj_property name="ElementShortName">toggle_src</obj_property>
-      <obj_property name="ObjectShortName">toggle_src</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/i" type="logic">
+      <obj_property name="ElementShortName">i</obj_property>
+      <obj_property name="ObjectShortName">i</obj_property>
    </wvobject>
-   <wvobject fp_name="/linebuffer_simple_tb/xd_line/shr_dst" type="array">
-      <obj_property name="ElementShortName">shr_dst[3:0]</obj_property>
-      <obj_property name="ObjectShortName">shr_dst[3:0]</obj_property>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/o" type="logic">
+      <obj_property name="ElementShortName">o</obj_property>
+      <obj_property name="ObjectShortName">o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/toggle_i" type="logic">
+      <obj_property name="ElementShortName">toggle_i</obj_property>
+      <obj_property name="ObjectShortName">toggle_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/linebuffer_simple_tb/xd_line/shr_o" type="array">
+      <obj_property name="ElementShortName">shr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">shr_o[3:0]</obj_property>
    </wvobject>
 </wave_config>

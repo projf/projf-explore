@@ -40,6 +40,7 @@ module linebuffer_simple_tb();
     // display flags in system clock domain
     logic line_sys;
     xd2 xd_line (.clk_src(clk_25m), .clk_dst(clk_100m), .src(line), .dst(line_sys));
+    // xd xd_line (.clk_i(clk_25m), .clk_o(clk_100m), .rst_i(rst_25m), .rst_o(rst_100m), .i(line), .o(line_sys));  // old style
 
     // simple linebuffer
     localparam DATAW=1;
