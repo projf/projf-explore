@@ -107,6 +107,13 @@ module top_david_scale (
     xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=0), .dst(lb_line));
     xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==0), .dst(lb_1st));
 
+    // // OLD XD - display flags in system clock domain
+    // logic frame_sys, line_sys, lb_line, lb_1st;
+    // xd xd_frame (.clk_i(clk_pix), .rst_i(rst_pix), .clk_o(clk_sys), .rst_o(rst_sys), .i(frame), .o(frame_sys));
+    // xd xd_line  (.clk_i(clk_pix), .rst_i(rst_pix), .clk_o(clk_sys), .rst_o(rst_sys), .i(line),  .o(line_sys));
+    // xd xd_read  (.clk_i(clk_pix), .rst_i(rst_pix), .clk_o(clk_sys), .rst_o(rst_sys), .i(sy>=0), .o(lb_line));
+    // xd xd_start (.clk_i(clk_pix), .rst_i(rst_pix), .clk_o(clk_sys), .rst_o(rst_sys), .i(sy==0), .o(lb_1st));
+
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
