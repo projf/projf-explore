@@ -1,4 +1,4 @@
-// Project F: 2D Shapes - Render Rectangles (Verilator SDL)
+// Project F: 2D Shapes - Render Rectangles
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 

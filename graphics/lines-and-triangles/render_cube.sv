@@ -1,6 +1,6 @@
-// Project F: Lines and Triangles - Render Cube (Verilator SDL)
+// Project F: Lines and Triangles - Render Cube
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/hardware-sprites/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
