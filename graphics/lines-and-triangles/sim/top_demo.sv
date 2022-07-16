@@ -50,7 +50,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
     localparam FB_HEIGHT = 180;  // framebuffer height in pixels
-    localparam FB_SCALE  =   2;  // framebuffer display scale via linebuffer (1-63)
+    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
     localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer

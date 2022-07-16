@@ -49,8 +49,8 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 120;  // framebuffer width in pixels
-    localparam FB_SCALE  =   4;  // framebuffer display scale via linebuffer (1-63)
+    localparam FB_HEIGHT = 120;  // framebuffer height in pixels
+    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
