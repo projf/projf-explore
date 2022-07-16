@@ -1,6 +1,6 @@
 ## Project F: Lines and Triangles - Verilator Sim Makefile
 ## (C)2022 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/hardware-sprites/
+## Learn more at https://projectf.io/posts/lines-and-triangles/
 
 CFLAGS = -O2
 SDL_CFLAGS = `sdl2-config --cflags`

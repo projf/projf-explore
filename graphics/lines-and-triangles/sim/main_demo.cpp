@@ -1,6 +1,6 @@
 // Project F: Lines and Triangles - Demo Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
-// Learn more at https://projectf.io/posts/hardware-sprites/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 #include <stdio.h>
 #include <SDL.h>
