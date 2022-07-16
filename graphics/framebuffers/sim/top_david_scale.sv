@@ -85,9 +85,12 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
 
     // display flags in system clock domain
     logic frame_sys, line_sys, line0_sys;
-    xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
-    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
-    xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line && sy==0), .dst(line0_sys));
+    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_sys),
+        .flag_src(frame), .flag_dst(frame_sys));
+    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
+        .flag_src(line),  .flag_dst(line_sys));
+    xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
+        .flag_src(line && sy==0), .flag_dst(line0_sys));
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;

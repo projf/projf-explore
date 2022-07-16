@@ -79,18 +79,20 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     );
 
     // display flags in system clock domain
-    logic frame_sys, line_sys, lb_line, lb_1st;
-    xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
-    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
-    xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=FB_OFFY), .dst(lb_line));
-    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==FB_OFFY), .dst(lb_1st));
+    logic frame_sys, line_sys, line0_sys;
+    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_sys),
+        .flag_src(frame), .flag_dst(frame_sys));
+    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
+        .flag_src(line),  .flag_dst(line_sys));
+    xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
+        .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
-    // control drawing speed
+    // reduce drawing speed to make process visible
     localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;  // drawing disabled by default
+        draw_oe <= 0;  // comment out to draw at full speed
         if (frame_sys) begin  // once per frame
             if (cnt_frame_wait != FRAME_WAIT-1) begin
                 cnt_frame_wait <= cnt_frame_wait + 1;
@@ -109,7 +111,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .oe(draw_oe),  // set to 1'b1 to draw at full speed
+        .oe(draw_oe),
         .start(frame_sys),
         .x(drx),
         .y(dry),
@@ -144,27 +146,33 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
-        if (line_sys) begin
-            if (lb_1st) cnt_lb_line <= 0;
-            else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
+        if (line0_sys) cnt_lb_line <= 0;
+        else if (line_sys) begin
+            cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
+    //  which screen lines need linebuffer?
+    logic lb_line;
+    always_ff @(posedge clk_sys) begin
+        if (line0_sys) lb_line <= 1;  // enable from sy==0
+        if (frame_sys) lb_line <= 0;  // disable at frame start
+    end
+
     // enable linebuffer input
-    logic lb_en_in;
+    logic lb_en_in;  // enable linebuffer input
+    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;  // horizontal pixel counter
     always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
     // calculate framebuffer read address for linebuffer
-    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_ff @(posedge clk_sys) begin
-        if (frame_sys) begin  // reset address at start of frame
-            fb_addr_read <= 0;
-        end else if (line_sys) begin  // reset horizontal counter at start of line
+        if (line_sys) begin  // reset horizontal counter at start of line
             cnt_lbx <= 0;
-        end else if (lb_en_in) begin
+        end else if (lb_en_in) begin  // increment address when LB enabled
             fb_addr_read <= fb_addr_read + 1;
             cnt_lbx <= cnt_lbx + 1;
         end
+        if (frame_sys) fb_addr_read <= 0;  // reset address at frame start
     end
 
     // enable linebuffer output
