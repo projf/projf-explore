@@ -53,7 +53,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
     localparam FB_HEIGHT = 120;  // framebuffer width in pixels
-    localparam FB_SCALE  =   4;  // framebuffer display scale via linebuffer (1-63)
+    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
@@ -89,12 +89,6 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line && sy==0), .dst(line0_sys));
 
-    logic lb_line;
-    always_ff @(posedge clk_sys) begin
-        if (frame_sys) lb_line <= 0;
-        else if (line0_sys) lb_line <= 1;
-    end
-
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
@@ -104,21 +98,27 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         end
     end
 
+    //  which screen lines need linebuffer?
+    logic lb_line;
+    always_ff @(posedge clk_sys) begin
+        if (line0_sys) lb_line <= 1;  // enable from sy==0
+        if (frame_sys) lb_line <= 0;  // disable at frame start
+    end
+
     // enable linebuffer input
-    logic lb_en_in;
+    logic lb_en_in;  // enable linebuffer input
+    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;  // horizontal pixel counter
     always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
     // calculate framebuffer read address for linebuffer
-    logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;
     always_ff @(posedge clk_sys) begin
-        if (frame_sys) begin  // reset address at start of frame
-            fb_addr_read <= 0;
-        end else if (line_sys) begin  // reset horizontal counter at start of line
+        if (line_sys) begin  // reset horizontal counter at start of line
             cnt_lbx <= 0;
-        end else if (lb_en_in) begin
+        end else if (lb_en_in) begin  // increment address when LB enabled
             fb_addr_read <= fb_addr_read + 1;
             cnt_lbx <= cnt_lbx + 1;
         end
+        if (frame_sys) fb_addr_read <= 0;  // reset address at frame start
     end
 
     // enable linebuffer output
