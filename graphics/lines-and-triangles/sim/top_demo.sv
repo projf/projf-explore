@@ -152,7 +152,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         end
     end
 
-    //  which screen lines need linebuffer?
+    // which screen lines need linebuffer?
     logic lb_line;
     always_ff @(posedge clk_sys) begin
         if (line0_sys) lb_line <= 1;  // enable from sy==0
