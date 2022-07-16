@@ -84,18 +84,23 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     );
 
     // display flags in system clock domain
-    logic frame_sys, line_sys, lb_line, lb_1st;
+    logic frame_sys, line_sys, line0_sys;
     xd2 xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys), .src(frame), .dst(frame_sys));
     xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line),  .dst(line_sys));
-    xd2 xd_read  (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy>=0), .dst(lb_line));
-    xd2 xd_start (.clk_src(clk_pix), .clk_dst(clk_sys), .src(sy==0), .dst(lb_1st));
+    xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys), .src(line && sy==0), .dst(line0_sys));
+
+    logic lb_line;
+    always_ff @(posedge clk_sys) begin
+        if (frame_sys) lb_line <= 0;
+        else if (line0_sys) lb_line <= 1;
+    end
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
     always_ff @(posedge clk_sys) begin
-        if (line_sys) begin
-            if (lb_1st) cnt_lb_line <= 0;
-            else cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
+        if (line0_sys) cnt_lb_line <= 0;
+        else if (line_sys) begin
+            cnt_lb_line <= (cnt_lb_line == FB_SCALE-1) ? 0 : cnt_lb_line + 1;
         end
     end
 
