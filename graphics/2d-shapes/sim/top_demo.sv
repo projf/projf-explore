@@ -45,12 +45,16 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    // localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "../../../lib/res/palettes/pico8_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
     localparam FB_HEIGHT = 180;  // framebuffer height in pixels
     localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
+    // localparam FB_WIDTH  = 640;  // framebuffer width in pixels
+    // localparam FB_HEIGHT = 360;  // framebuffer height in pixels
+    // localparam FB_SCALE  =   1;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
     localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
@@ -88,7 +92,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
     // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
+    localparam FRAME_WAIT = 15;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
@@ -104,7 +108,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_rectangles_fill #(  // switch module name to change demo
+    render_castle #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -216,6 +220,23 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .colr_out(fb_pix_colr)
     );
 
+    // background colour (sy ignores 16:9 letterbox)
+    logic [COLRW-1:0] bg_colr;
+    always_ff @(posedge clk_pix) begin
+        if (line) begin
+            if      (sy ==   0) bg_colr <= 12'h000;
+            else if (sy ==  60) bg_colr <= 12'h239;
+            else if (sy == 130) bg_colr <= 12'h24A;
+            else if (sy == 175) bg_colr <= 12'h25B;
+            else if (sy == 210) bg_colr <= 12'h26C;
+            else if (sy == 240) bg_colr <= 12'h27D;
+            else if (sy == 265) bg_colr <= 12'h29E;
+            else if (sy == 285) bg_colr <= 12'h2BF;
+            else if (sy == 302) bg_colr <= 12'h260;  // below castle (2x pix)
+            else if (sy == 420) bg_colr <= 12'h000;
+        end
+    end
+
     // paint screen
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
@@ -225,14 +246,18 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
+    localparam BG_ENABLED = 1;
+    logic show_bg;
+    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
+
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width
+        sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
+        sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
     end
 endmodule

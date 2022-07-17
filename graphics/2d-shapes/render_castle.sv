@@ -28,6 +28,7 @@ module render_castle #(
     logic signed [CORDW-1:0] x_tri,    y_tri;     // triangle framebuffer coords
     logic signed [CORDW-1:0] x_rect,   y_rect;    // rectangle framebuffer coords
     logic signed [CORDW-1:0] x_circle, y_circle;  // circle framebuffer coords
+    logic draw_done;  // combined done signal
     logic draw_start_tri, drawing_tri, draw_done_tri;           // drawing triangle
     logic draw_start_rect, drawing_rect, draw_done_rect;        // drawing rectangle
     logic draw_start_circle, drawing_circle, draw_done_circle;  // drawing circle
@@ -169,7 +170,7 @@ module render_castle #(
                 draw_start_tri    <= 0;
                 draw_start_rect   <= 0;
                 draw_start_circle <= 0;
-                if (done) begin
+                if (draw_done) begin
                     if (shape_id == SHAPE_CNT-1) begin
                         state <= DONE;
                     end else begin
@@ -186,8 +187,8 @@ module render_castle #(
 
     // drawing and done apply to all drawing types
     always_comb begin
-        drawing = drawing_tri   || drawing_rect   || drawing_circle;
-        done    = draw_done_tri || draw_done_rect || draw_done_circle;
+        drawing   = drawing_tri   || drawing_rect   || drawing_circle;
+        draw_done = draw_done_tri || draw_done_rect || draw_done_circle;
     end
 
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
