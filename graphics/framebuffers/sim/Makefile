@@ -13,7 +13,6 @@ PROJF_LIBS += -I../../../lib/maths
 PROJF_LIBS += -I../../../lib/memory
 
 david_mono: david_mono.exe
-david_mono_draw: david_mono_draw.exe
 david_16colr: david_16colr.exe
 david_scale: david_scale.exe
 david_fizzle: david_fizzle.exe
@@ -25,7 +24,7 @@ david_fizzle: david_fizzle.exe
 	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: david_mono david_mono_draw david_16colr david_scale david_fizzle
+all: david_mono david_16colr david_scale david_fizzle
 
 clean:
 	rm -rf ./obj_dir
