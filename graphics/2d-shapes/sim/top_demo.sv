@@ -246,8 +246,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    localparam BG_ENABLED = 1;
-    logic show_bg;
+    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
+    logic show_bg;              // should make background colour configurable palette index
     always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
 
     // SDL output (8 bits per colour channel)
