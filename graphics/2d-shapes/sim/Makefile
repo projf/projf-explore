@@ -1,4 +1,4 @@
-## Project F: Lines and Triangles - Verilator Sim Makefile
+## Project F: 2D Shapes - Verilator Sim Makefile
 ## (C)2022 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-shapes/
 
