@@ -116,7 +116,7 @@ module top_david_fizzle (
     );
 
     // control fade start and rate
-    localparam FADE_WAIT = 120;   // wait for N frames before fading
+    localparam FADE_WAIT = 300;   // wait for N frames before fading
     localparam FADE_RATE = 2000;  // every N system cycles update LFSR
     logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
     logic [$clog2(FADE_RATE)-1:0] cnt_rate;
