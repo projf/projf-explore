@@ -45,15 +45,6 @@ Run the simulation executables from `obj_dir`:
 ./obj_dir/hedgehog
 ```
 
-If you want to manually build a simulation, here's an example for 'hedgehog':
-
-```shell
-verilator -I../ -cc top_hedgehog.sv --exe main_hedgehog.cpp -o hedgehog \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_hedgehog.mk
-```
-
 ## Installing Dependencies
 
 To build the simulations, you need:
