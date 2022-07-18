@@ -16,7 +16,7 @@ Included demos - all based on a photo of David by Michelangelo:
 * David Scale - 160x120 16-colour image scaled to fill 640x480 display
 * David Fizzle - Fizzle fade on scaled image of David
 
-![](../../doc/img/framebuffers-fizzle.png?raw=true "")
+![](../../../doc/img/framebuffers-fizzle.png?raw=true "")
 
 _David by Michelangelo with fizzle fade from david\_fizzle simulation._
 
