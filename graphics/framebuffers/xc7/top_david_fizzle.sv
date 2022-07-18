@@ -1,11 +1,11 @@
-// Project F: Framebuffers - Scaled David (Arty Pmod VGA)
+// Project F: Framebuffers - David Fizzle (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_david_scale (
+module top_david_fizzle (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
     output      logic vga_hsync,    // horizontal sync
@@ -65,8 +65,7 @@ module top_david_scale (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "grey16_4b.mem";  // palette file
-    // localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -75,12 +74,12 @@ module top_david_scale (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "david.mem";  // bitmap file
-    // localparam FB_IMAGE  = "test_box_160x120.mem";  // bitmap file
+    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
 
-    // pixel read address and colour
-    logic [FB_ADDRW-1:0] fb_addr_read;
-    logic [FB_DATAW-1:0] fb_colr_read;
+    // pixel read and write addresses and colours
+    logic fb_we;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
+    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
     // framebuffer memory
     bram_sdp #(
@@ -90,14 +89,10 @@ module top_david_scale (
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .we(),
-        .addr_write(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .we(fb_we),
+        .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .data_in(fb_colr_write),
         .data_out(fb_colr_read)
     );
 
@@ -109,6 +104,42 @@ module top_david_scale (
         .flag_src(line),  .flag_dst(line_sys));
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==0), .flag_dst(line0_sys));
+
+    // fizzlefade!
+    logic lfsr_en;
+    logic [14:0] lfsr;
+    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
+        .LEN(15),
+        .TAPS(15'b110000000000000)
+    ) lsfr_fz (
+        .clk(clk_sys),
+        .rst(rst_sys),
+        .en(lfsr_en),
+        .seed(0),  // use default seed
+        .sreg(lfsr)
+    );
+
+    // control fade start and rate
+    localparam FADE_WAIT = 120;   // wait for N frames before fading
+    localparam FADE_RATE = 2000;  // every N system cycles update LFSR
+    logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
+    logic [$clog2(FADE_RATE)-1:0] cnt_rate;
+    always_ff @(posedge clk_sys) begin
+        if (frame_sys) cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
+        if (cnt_wait == FADE_WAIT-1) begin
+            if (cnt_rate == FADE_RATE-1) begin
+                lfsr_en <= 1;
+                fb_we <= 1;
+                fb_addr_write <= lfsr;
+                cnt_rate <= 0;
+            end else begin
+                cnt_rate <= cnt_rate + 1;
+                lfsr_en <= 0;
+                fb_we <= 0;
+            end
+        end
+        fb_colr_write <= 4'h7;  // fade colour
+    end
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
