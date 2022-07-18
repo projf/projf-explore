@@ -5,11 +5,12 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
 If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
-If you have a dev board, see the [Framebuffers README](../README.md) for build instructions.
 
-Included demos:
+If you have a dev board, see the main [Framebuffers README](../README.md) for build instructions.
 
-Included demos - all based on a photo of David by Michelangelo:
+## Demos
+
+All based on an image of David by Michelangelo.
 
 * David Mono - 160x120 dithered monochrome image on 640x480 display
 * David 16 Colour - 160x120 16-colour image on 640x480 display

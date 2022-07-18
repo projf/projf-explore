@@ -11,7 +11,9 @@ File layout:
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
-Included demos - all based on a photo of David by Michelangelo:
+## Demos
+
+All based on an image of David by Michelangelo:
 
 * David Mono - 160x120 dithered monochrome image on 640x480 display
 * David 16 Colour - 160x120 16-colour image on 640x480 display

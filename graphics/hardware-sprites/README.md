@@ -12,7 +12,7 @@ File layout:
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
-Included demos:
+## Demos
 
 * Tiny F - monochrome 8x8 pixel 'F' sprite
   * Inline - inline Verilog graphic
