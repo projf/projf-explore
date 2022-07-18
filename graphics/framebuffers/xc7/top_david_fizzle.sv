@@ -65,7 +65,7 @@ module top_david_fizzle (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
+    localparam PAL_FILE = "grey16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -74,7 +74,7 @@ module top_david_fizzle (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
+    localparam FB_IMAGE  = "david.mem";  // bitmap file
 
     // pixel read and write addresses and colours
     logic fb_we;
