@@ -72,8 +72,8 @@ module top_david_mono (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = 1;  // colour bits per pixel
-    localparam FB_IMAGE  = "../res/david/david_1bit.mem";  // bitmap file
-    // localparam FB_IMAGE  = "../../../lib/res/test/test_box_mono_160x120.mem";  // bitmap file
+    localparam FB_IMAGE  = "david_1bit.mem";  // bitmap file
+    // localparam FB_IMAGE  = "test_box_mono_160x120.mem";  // bitmap file
 
     // pixel read address and colour
     logic [FB_ADDRW-1:0] fb_addr_read;
