@@ -15,8 +15,8 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 All based on an image of David by Michelangelo:
 
-* David Mono - 160x120 dithered monochrome image on 640x480 display
-* David 16 Colour - 160x120 16-colour image on 640x480 display
+* David Mono - 160x120 dithered monochrome image
+* David 16 Colour - 160x120 16-colour image
 * David Scale - 160x120 16-colour image scaled to fill 640x480 display
 * David Fizzle - Fizzle fade on scaled image of David
 
