@@ -87,7 +87,7 @@ module top_david_mono #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic paint_area;  // area of framebuffer to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-         paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
+        paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
         {paint_r, paint_g, paint_b} = (paint_area && fb_colr_read) ? 12'hFFF: 12'h000;
     end
 
