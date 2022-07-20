@@ -15,20 +15,6 @@ module top_david_16colr (
     output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // generate system clock
-    logic clk_sys;
-    logic clk_sys_locked;
-    /* verilator lint_off UNUSED */
-    logic rst_sys;
-    /* verilator lint_on UNUSED */
-    clock_sys clock_sys_inst (
-       .clk_100m,
-       .rst(!btn_rst_n),  // reset button is active low
-       .clk_sys,
-       .clk_sys_locked
-    );
-    always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
-
     // generate pixel clock
     logic clk_pix;
     logic clk_pix_locked;
