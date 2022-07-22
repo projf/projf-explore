@@ -78,7 +78,6 @@ set mem_design_sources [list \
   [file normalize "${lib_dir}/res/test/test_box_12x9.mem"] \
   [file normalize "${lib_dir}/res/test/test_box_160x120.mem"] \
   [file normalize "${origin_dir}/res/david/david.mem"] \
-  [file normalize "${origin_dir}/res/david/david_test.mem"] \
   [file normalize "${origin_dir}/res/david/david_1bit.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources

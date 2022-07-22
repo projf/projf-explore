@@ -57,11 +57,23 @@ module top_david_fizzle (
         .line
     );
 
+    // library resource path
+    localparam LIB_RES = "../../../lib/res";
+
+    // bitmap images
+    localparam BMAP_IMAGE = "../res/david/david.mem";
+    // localparam BMAP_IMAGE = {LIB_RES,"/test/test_box_160x120.mem"};
+
+    // colour palettes
+    localparam PAL_FILE = {LIB_RES,"/palettes/grey16_4b.mem"};
+    // localparam PAL_FILE = {LIB_RES,"/palettes/greyinvert16_4b.mem"};
+    // localparam PAL_FILE = {LIB_RES,"/palettes/sepia16_4b.mem"};
+    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/grey16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -70,7 +82,6 @@ module top_david_fizzle (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "../res/david/david.mem";  // bitmap file
 
     // pixel read and write addresses and colours
     logic fb_we;
@@ -81,7 +92,7 @@ module top_david_fizzle (
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
-        .INIT_F(FB_IMAGE)
+        .INIT_F(BMAP_IMAGE)
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),

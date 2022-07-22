@@ -61,14 +61,20 @@ module top_david_scale (
         .line
     );
 
+    // bitmap images
+    localparam BMAP_IMAGE = "david.mem";
+    // localparam BMAP_IMAGE = "test_box_160x120.mem";
+
+    // colour palettes
+    localparam PAL_FILE = "grey16_4b.mem";
+    // localparam PAL_FILE = "greyinvert16_4b.mem";
+    // localparam PAL_FILE = "sepia16_4b.mem";
+    // localparam PAL_FILE = "sweetie16_4b.mem";
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "grey16_4b.mem";  // palette file: greyscale
-    // localparam PAL_FILE = "greyinvert16_4b.mem";  // palette file: inverted greyscale
-    // localparam PAL_FILE = "sepia16_4b.mem";  // palette file: sepia
-    // localparam PAL_FILE = "sweetie16_4b.mem";  // palette file: Sweetie-16
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -77,9 +83,6 @@ module top_david_scale (
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "david.mem";  // bitmap file: David
-    // localparam FB_IMAGE  = "david_test.mem";  // bitmap file: David with test pixels
-    // localparam FB_IMAGE  = "test_box_160x120.mem";  // bitmap file: latency test box
 
     // pixel read address and colour
     logic [FB_ADDRW-1:0] fb_addr_read;
@@ -89,7 +92,7 @@ module top_david_scale (
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
-        .INIT_F(FB_IMAGE)
+        .INIT_F(BMAP_IMAGE)
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
