@@ -89,7 +89,7 @@ module top_david_mono (
     localparam LAT = 2;  // read_fb+1, BRAM+1
     logic read_fb;
     always_ff @(posedge clk_pix) begin
-        read_fb <= (sy >= 0 && sy < FB_HEIGHT && sx >= 0-LAT && sx < FB_WIDTH-LAT);
+        read_fb <= (sy >= 0 && sy < FB_HEIGHT && sx >= -LAT && sx < FB_WIDTH-LAT);
         if (frame) begin  // reset address at start of frame
             fb_addr_read <= 0;
         end else if (read_fb) begin  // increment address in painting area
