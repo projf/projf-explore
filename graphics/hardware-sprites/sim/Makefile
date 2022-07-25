@@ -7,8 +7,8 @@ SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
 # Project F Verilog Library
-PROJF_LIBS += -I../../../lib/memory
 PROJF_LIBS += -I../../../lib/display
+PROJF_LIBS += -I../../../lib/memory
 
 tinyf_inline: tinyf_inline.exe
 tinyf_rom: tinyf_rom.exe

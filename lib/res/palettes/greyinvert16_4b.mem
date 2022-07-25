@@ -1,0 +1,5 @@
+// Project F Library - Greyscale Inverted 16 Colour Palette
+// 16 Colours with 4 bits per channel
+// Learn more at https://projectf.io
+
+FFF EEE DDD CCC BBB AAA 999 888 777 666 555 444 333 222 111 000

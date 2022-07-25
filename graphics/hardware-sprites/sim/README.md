@@ -4,10 +4,11 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
-If you're new to graphics simulations check out [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
-If you have a dev board, see the [Hardware Sprites README](../README.md) for build instructions.
+If you're new to graphics simulations check out the blog post on [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
-Included demos:
+If you have a dev board, see the main [Hardware Sprites README](../README.md) for build instructions.
+
+## Demos
 
 * Tiny F - monochrome 8x8 pixel 'F' sprite
   * Inline - inline Verilog graphic
@@ -43,15 +44,6 @@ Run the simulation executables from `obj_dir`:
 
 ```shell
 ./obj_dir/hedgehog
-```
-
-If you want to manually build a simulation, here's an example for 'hedgehog':
-
-```shell
-verilator -I../ -cc top_hedgehog.sv --exe main_hedgehog.cpp -o hedgehog \
-    -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
-
-make -C ./obj_dir -f Vtop_hedgehog.mk
 ```
 
 ## Installing Dependencies
