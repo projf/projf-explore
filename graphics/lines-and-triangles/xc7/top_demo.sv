@@ -1,41 +1,61 @@
-// Project F: Lines and Triangles - Demo (Verilator SDL)
+// Project F: Lines and Triangles - Demo (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/lines-and-triangles/
+// Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
-    input  wire logic clk_pix,      // pixel clock
-    input  wire logic rst_pix,      // sim reset
-    output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
-    output      logic signed [CORDW-1:0] sdl_sy,  // vertical SDL position
-    output      logic sdl_de,       // data enable (low in blanking interval)
-    output      logic sdl_frame,    // high at start of frame
-    output      logic [7:0] sdl_r,  // 8-bit red
-    output      logic [7:0] sdl_g,  // 8-bit green
-    output      logic [7:0] sdl_b   // 8-bit blue
+module top_demo (
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst_n,    // reset button
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // system clock is the same as pixel clock in simulation
-    logic clk_sys, rst_sys;
-    always_comb begin
-        clk_sys = clk_pix;
-        rst_sys = rst_pix;
-    end
+    // generate system clock
+    logic clk_sys;
+    logic clk_sys_locked;
+    /* verilator lint_off UNUSED */
+    logic rst_sys;
+    /* verilator lint_on UNUSED */
+    clock_sys clock_sys_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
+       .clk_sys,
+       .clk_sys_locked
+    );
+    always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
+
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_pix_locked;
+    logic rst_pix;
+    clock_480p clock_pix_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
+       .clk_pix,
+       /* verilator lint_off PINCONNECTEMPTY */
+       .clk_pix_5x(),  // not used for VGA output
+       /* verilator lint_on PINCONNECTEMPTY */
+       .clk_pix_locked
+    );
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
         .sy,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .hsync(),
-        .vsync(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .hsync,
+        .vsync,
         .de,
         .frame,
         .line
@@ -45,7 +65,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -225,14 +245,18 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    // SDL output (8 bits per colour channel)
+    // VGA Pmod output
     always_ff @(posedge clk_pix) begin
-        sdl_sx <= sx;
-        sdl_sy <= sy;
-        sdl_de <= de;
-        sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
+        if (de) begin
+            vga_r <= paint_r;
+            vga_g <= paint_g;
+            vga_b <= paint_b;
+        end else begin  // VGA colour should be black in blanking interval
+            vga_r <= 4'h0;
+            vga_g <= 4'h0;
+            vga_b <= 4'h0;
+        end
     end
 endmodule
