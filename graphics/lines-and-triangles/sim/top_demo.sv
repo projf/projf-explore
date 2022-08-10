@@ -103,7 +103,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_line #(  // switch module name to change demo
+    render_triangles #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)

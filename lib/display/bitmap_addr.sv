@@ -23,7 +23,8 @@ module bitmap_addr #(
     output      logic clip                      // pixel coordinate outside bitmap
     );
 
-    logic signed [CORDW-1:0] addr_y1, addr_x1, addr_x2, addr_mul;
+    logic signed [CORDW-1:0] addr_y1, addr_x1, addr_x2;
+    logic [ADDRW-1:0] addr_mul;
     logic clip_t1;  // clip check temporary
 
     always_ff @(posedge clk) begin
@@ -38,6 +39,8 @@ module bitmap_addr #(
 
         // step 3
         clip <= clip_t1;
+        /* verilator lint_off WIDTH */
         addr <= addr_mul + addr_x2;
+        /* verilator lint_on WIDTH */
     end    
 endmodule
