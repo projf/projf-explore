@@ -58,6 +58,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
   [file normalize "${lib_dir}/clock/xd2.sv"] \
+  [file normalize "${lib_dir}/display/bitmap_addr.sv"] \
   [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
@@ -65,6 +66,9 @@ set design_sources [list \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${origin_dir}/render_cube.sv"] \
+  [file normalize "${origin_dir}/render_line.sv"] \
+  [file normalize "${origin_dir}/render_triangles.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

@@ -79,7 +79,6 @@ module top_demo (
     localparam FB_IMAGE  = "";     // initial bitmap file
 
     // pixel read and write addresses and colours
-    logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
@@ -91,7 +90,7 @@ module top_demo (
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we),
+        .we(fb_we_sr[0]),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
@@ -142,7 +141,7 @@ module top_demo (
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // calculate pixel address in framebuffer (two cycle latency)
+    // calculate pixel address in framebuffer (three-cycle latency)
     bitmap_addr #(
         .CORDW(CORDW),
         .ADDRW(FB_ADDRW)
@@ -161,7 +160,12 @@ module top_demo (
     );
 
     // delay write enable to match address calculation latency
-    always_ff @(posedge clk_sys) fb_we <= drawing;
+    localparam LAT_WE = 3;  // latency (cycles)
+    logic [LAT_WE-1:0] fb_we_sr;
+    always_ff @(posedge clk_sys) begin
+        fb_we_sr <= {drawing, fb_we_sr[LAT_WE-1:1]};
+        if (rst_sys) fb_we_sr <= 0;
+    end
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;

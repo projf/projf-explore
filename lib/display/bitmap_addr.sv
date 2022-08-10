@@ -5,13 +5,14 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-// one-cycle address calculation that doesn't handle offset wrapping
+// three-cycle address calculation
+// NB. doesn't handle coordinate wrapping using offsets
 
 module bitmap_addr #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter ADDRW=24   // address width (bits)
     ) (
-    input  wire logic clk,  // clock
+    input  wire logic clk,                      // clock
     input  wire logic signed [CORDW-1:0] bmpw,  // bitmap width
     input  wire logic signed [CORDW-1:0] bmph,  // bitmap height
     input  wire logic signed [CORDW-1:0] x,     // horizontal pixel coordinate
@@ -22,16 +23,21 @@ module bitmap_addr #(
     output      logic clip                      // pixel coordinate outside bitmap
     );
 
+    logic signed [CORDW-1:0] addr_y1, addr_x1, addr_x2, addr_mul;
+    logic clip_t1;  // clip check temporary
+
     always_ff @(posedge clk) begin
-        // check for clipping
-        if (x+offx < 0 || x+offx > bmpw-1 || y+offy < 0 || y+offy > bmph-1) begin
-            clip <= 1;
-            addr <= 0;
-        end else begin
-            clip <= 0;
-            /* verilator lint_off WIDTH */
-            addr <= bmpw * (y + offy) + x + offx;
-            /* verilator lint_on WIDTH */
-        end
+        // step 1
+        addr_y1 <= y + offy;
+        addr_x1 <= x + offx;
+
+        // step 2
+        addr_mul <= bmpw * addr_y1;
+        addr_x2  <= addr_x1;
+        clip_t1  <= (addr_x1 < 0 || addr_x1 > bmpw-1 || addr_y1 < 0 || addr_y1 > bmph-1);
+
+        // step 3
+        clip <= clip_t1;
+        addr <= addr_mul + addr_x2;
     end    
 endmodule
