@@ -16,7 +16,7 @@ See [Library](lib/) for details or discover about the [background to the Library
 
 ## FPGA Graphics
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, simulate life, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
+In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We’ll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo’s David, draw lines and triangles, and animate characters and shapes. Along the way, you’ll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
 
 If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
