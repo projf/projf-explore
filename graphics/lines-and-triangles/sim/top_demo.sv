@@ -41,11 +41,14 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .line
     );
 
+    // library resource path
+    localparam LIB_RES = "../../../lib/res";
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -85,6 +88,10 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .flag_src(line),  .flag_dst(line_sys));
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
+
+    //
+    // draw in framebuffer
+    //
 
     // reduce drawing speed to make process visible
     localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
@@ -139,13 +146,17 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // delay write enable to match address calculation latency
-    localparam LAT_WE = 3;  // latency (cycles)
-    logic [LAT_WE-1:0] fb_we_sr;
+    // delay write enable to match address calculation
+    localparam LAT_ADDR = 3;  // latency (cycles)
+    logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing, fb_we_sr[LAT_WE-1:1]};
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
+
+    //
+    // read framebuffer for display output via linebuffer
+    //
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -181,10 +192,10 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
+            && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
     end
 
     // display linebuffer

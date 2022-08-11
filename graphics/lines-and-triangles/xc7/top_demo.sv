@@ -1,6 +1,6 @@
 // Project F: Lines and Triangles - Demo (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/framebuffers/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
@@ -106,6 +106,10 @@ module top_demo (
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
+    //
+    // draw in framebuffer
+    //
+
     // reduce drawing speed to make process visible
     localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
@@ -159,13 +163,17 @@ module top_demo (
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // delay write enable to match address calculation latency
-    localparam LAT_WE = 3;  // latency (cycles)
-    logic [LAT_WE-1:0] fb_we_sr;
+    // delay write enable to match address calculation
+    localparam LAT_ADDR = 3;  // latency (cycles)
+    logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing, fb_we_sr[LAT_WE-1:1]};
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
+
+    //
+    // read framebuffer for display output via linebuffer
+    //
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -201,10 +209,10 @@ module top_demo (
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
+            && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
     end
 
     // display linebuffer
