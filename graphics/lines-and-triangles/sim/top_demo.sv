@@ -93,7 +93,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     //
 
     // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 120;  // wait this many frames to start drawing
+    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
@@ -106,7 +106,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     end
 
     // render line/cube/triangles
-    parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
+    parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
     render_triangles #(  // switch module name to change demo
