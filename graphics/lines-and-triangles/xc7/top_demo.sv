@@ -86,9 +86,10 @@ module top_demo (
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS)
     ) vram_bram_inst (
-        .clk(clk_sys),
+        .clk_read(clk_sys),
+        .clk_write(clk_sys),
         .we(fb_we_sr[0]),
-        .wmask(fb_we_sr[0]),  // same as write enable for single nibble
+        .wmask(fb_we_sr[0]),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),

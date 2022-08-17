@@ -12,7 +12,8 @@ module vram_bram #(
     localparam NIB=4,                // nibble width: 4 bits
     localparam NIB_CNT=WIDTH/NIB     // nibble count
     ) (
-    input wire logic clk,                     // clock
+    input wire logic clk_write,               // write clock
+    input wire logic clk_read,                // read clock
     input wire logic we,                      // write enable
     input wire logic [NIB_CNT-1:0] wmask,     // write mask
     input wire logic [ADDRW-1:0] addr_write,  // write address
@@ -24,12 +25,13 @@ module vram_bram #(
     logic [WIDTH-1:0] memory [DEPTH];
 
     integer i;  // for looping over nibbles
-    always @(posedge clk) begin
+    always @(posedge clk_write) begin
         for(i=0; i<NIB_CNT; i=i+1) begin
             if (we && wmask[i]) begin
                 memory[addr_write][i*NIB +: NIB] <= data_in[i*NIB +:NIB];
             end
         end
-        data_out <= memory[addr_read];
     end
+
+    always @(posedge clk_read) data_out <= memory[addr_read];
 endmodule
