@@ -24,6 +24,12 @@ module vram_bram #(
 
     logic [WIDTH-1:0] memory [DEPTH];
 
+    // read port
+    always @(posedge clk_read) begin
+        data_out <= memory[addr_read];
+    end
+
+    // write port
     integer i;  // for looping over nibbles
     always @(posedge clk_write) begin
         for(i=0; i<NIB_CNT; i=i+1) begin
@@ -32,6 +38,4 @@ module vram_bram #(
             end
         end
     end
-
-    always @(posedge clk_read) data_out <= memory[addr_read];
 endmodule
