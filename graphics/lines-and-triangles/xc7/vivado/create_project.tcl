@@ -65,8 +65,8 @@ set design_sources [list \
   [file normalize "${lib_dir}/maths/lfsr.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/vram_bram.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
+  [file normalize "${lib_dir}/memory/vram_bram.sv"] \
   [file normalize "${origin_dir}/render_cube.sv"] \
   [file normalize "${origin_dir}/render_line.sv"] \
   [file normalize "${origin_dir}/render_triangles.sv"] \

@@ -88,7 +88,9 @@ module top_demo (
     ) vram_bram_inst (
         .clk(clk_sys),
         .we(fb_we_sr[0]),
-        .addr((fb_we_sr[0] == 0) ? fb_addr_read : fb_addr_write),
+        .wmask(fb_we_sr[0]),  // same as write enable for single nibble
+        .addr_write(fb_addr_write),
+        .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
         .data_out(fb_colr_read)
     );
