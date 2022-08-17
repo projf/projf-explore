@@ -41,12 +41,15 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .line
     );
 
+    // library resource path
+    localparam LIB_RES = "../../../lib/res";
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = "../../../lib/res/palettes/sweetie16_4b.mem";  // palette file
-    localparam PAL_FILE = "../../../lib/res/palettes/pico8_4b.mem";  // palette file
+    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -60,10 +63,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "";     // initial bitmap file
 
     // pixel read and write addresses and colours
-    logic fb_we;
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
@@ -71,11 +72,11 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
-        .INIT_F(FB_IMAGE)
+        .INIT_F("")
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we),
+        .we(fb_we_sr[0]),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
@@ -92,7 +93,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
     // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 15;  // wait this many frames to start drawing
+    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
@@ -105,7 +106,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     end
 
     // render shapes
-    parameter DRAW_SCALE = 1;  // 1=320x180, 2=640x360, 4=1280x720
+    parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
     render_castle #(  // switch module name to change demo
@@ -126,7 +127,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // calculate pixel address in framebuffer (two cycle latency)
+    // calculate pixel address in framebuffer (three-cycle latency)
     bitmap_addr #(
         .CORDW(CORDW),
         .ADDRW(FB_ADDRW)
@@ -144,8 +145,17 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         /* verilator lint_on PINCONNECTEMPTY */
     );
 
-    // delay write enable to match address calculation latency
-    always_ff @(posedge clk_sys) fb_we <= drawing;
+    // delay write enable to match address calculation
+    localparam LAT_ADDR = 3;  // latency (cycles)
+    logic [LAT_ADDR-1:0] fb_we_sr;
+    always_ff @(posedge clk_sys) begin
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
+        if (rst_sys) fb_we_sr <= 0;
+    end
+
+    //
+    // read framebuffer for display output via linebuffer
+    //
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -181,10 +191,10 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX - LB_LAT && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LB_LAT);
+            && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
     end
 
     // display linebuffer
@@ -256,7 +266,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width
+        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width (assumes CHANW=4)
         sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
         sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
     end
