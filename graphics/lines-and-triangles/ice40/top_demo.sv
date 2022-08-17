@@ -119,7 +119,7 @@ module top_demo (
         end
     end
 
-    // render line/cube/triangles
+    // render line/edge/cube/triangles
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates

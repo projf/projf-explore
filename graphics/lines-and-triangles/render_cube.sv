@@ -22,7 +22,7 @@ module render_cube #(
     );
 
     localparam LINE_CNT=9;  // number of lines to draw
-    logic [3:0] line_id;    // line identifier
+    logic [$clog2(LINE_CNT):0] line_id;  // line identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, draw_done;  // drawing signals
 
@@ -35,31 +35,31 @@ module render_cube #(
                 state <= DRAW;
                 cidx <= 'h2;  // colour index
                 case (line_id)
-                    4'd0: begin
+                    'd0: begin
                         vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
                     end
-                    4'd1: begin
+                    'd1: begin
                         vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
                     end
-                    4'd2: begin
+                    'd2: begin
                         vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
                     end
-                    4'd3: begin
+                    'd3: begin
                         vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
                     end
-                    4'd4: begin
+                    'd4: begin
                         vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
                     end
-                    4'd5: begin
+                    'd5: begin
                         vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
                     end
-                    4'd6: begin
+                    'd6: begin
                         vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
                     end
-                    4'd7: begin
+                    'd7: begin
                         vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
                     end
-                    default: begin  // shape_id=8
+                    default: begin  // line_id=8
                         vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
                     end
                 endcase

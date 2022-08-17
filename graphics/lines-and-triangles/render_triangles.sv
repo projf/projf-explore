@@ -22,7 +22,7 @@ module render_triangles #(
     );
 
     localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [1:0] shape_id;    // shape identifier
+    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
@@ -34,13 +34,13 @@ module render_triangles #(
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
-                    2'd0: begin
+                    'd0: begin
                         vx0 <=  60; vy0 <=  20;
                         vx1 <= 280; vy1 <=  80;
                         vx2 <= 160; vy2 <= 164;
                         cidx <= 'h3;  // colour index
                     end
-                    2'd1: begin
+                    'd1: begin
                         vx0 <=  70; vy0 <= 160;
                         vx1 <= 220; vy1 <=  90;
                         vx2 <= 170; vy2 <=  10;
