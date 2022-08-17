@@ -191,7 +191,7 @@ module top_david_fizzle (
     // display linebuffer
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
-        .DATAW(CIDXW),
+        .DATAW(FB_DATAW),
         .LEN(FB_WIDTH)
     ) linebuffer_instance (
         .clk_sys,
