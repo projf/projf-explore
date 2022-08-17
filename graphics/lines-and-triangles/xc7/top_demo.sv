@@ -81,15 +81,15 @@ module top_demo (
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
-    // video memory
-    vram_bram #(
+    // framebuffer memory
+    bram_sdp #(
         .WIDTH(FB_DATAW),
-        .DEPTH(FB_PIXELS)
-    ) vram_bram_inst (
-        .clk_read(clk_sys),
+        .DEPTH(FB_PIXELS),
+        .INIT_F("")
+    ) bram_inst (
         .clk_write(clk_sys),
+        .clk_read(clk_sys),
         .we(fb_we_sr[0]),
-        .wmask(fb_we_sr[0]),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),

@@ -31,7 +31,7 @@ module render_line #(
             INIT: begin  // register coordinates and colour
                 vx0 <=  70; vy0 <=   0;
                 vx1 <= 249; vy1 <= 179;
-                cidx <= 4'h3;  // colour index
+                cidx <= 'h3;  // colour index
                 draw_start <= 1;
                 state <= DRAW;
             end

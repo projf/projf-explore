@@ -33,7 +33,7 @@ module render_cube #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                cidx <= 4'h7;  // colour index
+                cidx <= 'h2;  // colour index
                 case (line_id)
                     4'd0: begin
                         vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
@@ -59,11 +59,8 @@ module render_cube #(
                     4'd7: begin
                         vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
                     end
-                    4'd8: begin
+                    default: begin  // shape_id=8
                         vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
-                    end
-                    default: begin  // should never occur
-                        vx0 <=   0; vy0 <=   0; vx1 <=   0; vy1 <=   0;
                     end
                 endcase
             end

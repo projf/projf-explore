@@ -59,21 +59,20 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
-    localparam FB_IMAGE  = "";     // initial bitmap file
 
     // pixel read and write addresses and colours
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
-    // video memory
-    vram_bram #(
+    // framebuffer memory
+    bram_sdp #(
         .WIDTH(FB_DATAW),
-        .DEPTH(FB_PIXELS)
-    ) vram_bram_inst (
-        .clk_read(clk_sys),
+        .DEPTH(FB_PIXELS),
+        .INIT_F("")
+    ) bram_inst (
         .clk_write(clk_sys),
+        .clk_read(clk_sys),
         .we(fb_we_sr[0]),
-        .wmask(fb_we_sr[0]),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),

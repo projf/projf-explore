@@ -33,7 +33,9 @@ module bitmap_addr #(
         addr_x1 <= x + offx;
 
         // step 2
+        /* verilator lint_off WIDTH */
         addr_mul <= bmpw * addr_y1;
+        /* verilator lint_on WIDTH */
         addr_x2  <= addr_x1;
         clip_t1  <= (addr_x1 < 0 || addr_x1 > bmpw-1 || addr_y1 < 0 || addr_y1 > bmph-1);
 
