@@ -62,7 +62,6 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
-  [file normalize "${lib_dir}/maths/lfsr.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
