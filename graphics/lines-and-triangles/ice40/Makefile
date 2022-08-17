@@ -20,6 +20,7 @@ ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_triangle.sv
 ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
 ADD_SRC += ../render_cube_sm.sv
+ADD_SRC += ../render_edge_sm.sv
 ADD_SRC += ../render_line_sm.sv
 ADD_SRC += ../render_triangles_sm.sv
 
