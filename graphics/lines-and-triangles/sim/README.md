@@ -1,6 +1,6 @@
 # Simulation for Lines and Triangles
 
-This folder contains Verilator simulations to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**.
+This folder contains a Verilator simulation to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**.
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
@@ -12,7 +12,7 @@ If you have a dev board, see the main [Lines and Triangles README](../README.md)
 
 There is one demo that can draw a line, cube, or triangles.
 
-![](../../doc/img/lines-and-triangles-sim.png?raw=true "")
+![](../../../doc/img/lines-and-triangles-sim.png?raw=true "")
 
 _Triangles drawn by sim demo._
 
