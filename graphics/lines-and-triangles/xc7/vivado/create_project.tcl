@@ -67,6 +67,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
   [file normalize "${origin_dir}/render_cube.sv"] \
+  [file normalize "${origin_dir}/render_edge.sv"] \
   [file normalize "${origin_dir}/render_line.sv"] \
   [file normalize "${origin_dir}/render_triangles.sv"] \
 ]
