@@ -44,5 +44,5 @@ module bitmap_addr #(
         /* verilator lint_off WIDTH */
         addr <= addr_mul + addr_x2;
         /* verilator lint_on WIDTH */
-    end    
+    end
 endmodule
