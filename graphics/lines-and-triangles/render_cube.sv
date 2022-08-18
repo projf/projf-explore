@@ -9,7 +9,7 @@ module render_cube #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
-    ) (  
+    ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
     input  wire logic oe,     // output enable
