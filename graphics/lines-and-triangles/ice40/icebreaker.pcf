@@ -1,6 +1,6 @@
 ## Project F: Lines and Triangles - iCEBreaker Board Constraints (DVI)
 ## (C)2021 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## Learn more at https://projectf.io/posts/lines-and-triangles/
 
 ## Board Clock: 12 MHz
 set_frequency  clk_12m      12

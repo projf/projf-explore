@@ -5,48 +5,45 @@ This folder accompanies the Project F blog post: **[Lines and Triangles](https:/
 File layout:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
-* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
-* `res` - resources: colour palettes
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
-Included demos:
+## Demos
 
-* `top_line` - draw a diagonal line with Bresenham’s line algorithm
-* `top_cube` - draw a cube outline from multiple lines
-* `top_triangles` - draw triangle outlines
+There is one demo that can draw a line, cube, or triangles.
 
-Learn more about the designs and demos from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demo from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/lines-and-triangles.jpg?raw=true "")
 
-_Cube drawn by an Artix-7 FPGA using the top_cube demo._
+_Cube drawn by an Artix-7 FPGA on VGA monitor._
 
 ## iCEBreaker Build
 
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](http://www.clifford.at/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://www.clifford.at/icestorm/). 
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://bygone.clairexen.net/icestorm/).
 
-You can get pre-built tool binaries for Linux, Mac, and Windows from [Open Tool Forge](https://github.com/open-tool-forge/fpga-toolchain). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
+You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
 
-For example, to build `top_triangles`; clone the projf-explore git repo, then:
+To build the `demo`; project,clone the projf-explore git repo, then:
 
 ```shell
 cd projf-explore/graphics/lines-and-triangles/ice40
-make top_triangles
+make demo
 ```
 
-After the build completes, you'll have a bin file, such as `top_triangles.bin`. Use the bin file to program your board:
+After the build completes, you'll have a bin file called `demo.bin`. Use the bin file to program your board:
 
 ```shell
-iceprog top_triangles.bin
+iceprog demo.bin
 ```
 
 If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
-### Known Issue with Framebuffer
+### Problems Building
 
-There's currently a minor issue with clearing the SPRAM before drawing: one pixel remains uncleared. I'm planning to implement clearing within the SPRAM version of the framebuffer and tackle this issue then.
+If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too old to support Project F designs. Try building the latest version of Yosys from source (see above for links).
 
 ## Arty Build
 
@@ -57,23 +54,14 @@ cd projf-explore/graphics/lines-and-triangles/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build `top_triangles` or `top_line` as you would for any Vivado project.
+You can then build `top_demo` as you would for any Vivado project.
 
 ### Simulation
 
-This design includes a test bench for the line and triangle drawing modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl console with:
+This design includes test benches for the line and triangle drawing modules. You can run the test bench simulations from the GUI under the "Flow" menu or from the Tcl console with:
 
 ```tcl
 launch_simulation
-run all
-```
-
-By default the `draw_line` test bench is simulated, but you can switch to the `draw_triangle` test bench with:
-
-```tcl
-set fs_sim_obj [get_filesets sim_1]
-set_property -name "top" -value "draw_triangle_tb" -objects $fs_sim_obj
-relaunch_sim
 run all
 ```
 
@@ -93,6 +81,10 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Verilator SDL Simulation
+
+You can simulate these designs on your computer using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions.
 
 ## Linting
 

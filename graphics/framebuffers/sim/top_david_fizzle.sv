@@ -166,16 +166,16 @@ module top_david_fizzle #(parameter CORDW=16) (  // signed coordinate width (bit
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LB_LAT = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
-            && sx >= -LB_LAT && sx < (FB_WIDTH * FB_SCALE) - LB_LAT);
+            && sx >= -LAT_LB && sx < (FB_WIDTH * FB_SCALE) - LAT_LB);
     end
 
     // display linebuffer
     logic [FB_DATAW-1:0] lb_colr_out;
     linebuffer_simple #(
-        .DATAW(CIDXW),
+        .DATAW(FB_DATAW),
         .LEN(FB_WIDTH)
     ) linebuffer_instance (
         .clk_sys,

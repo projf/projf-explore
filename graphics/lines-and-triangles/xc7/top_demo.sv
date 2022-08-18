@@ -1,11 +1,11 @@
-// Project F: Framebuffers - Scaled David (Arty Pmod VGA)
+// Project F: Lines and Triangles - Demo (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/framebuffers/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_david_scale (
+module top_demo (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
     output      logic vga_hsync,    // horizontal sync
@@ -61,49 +61,38 @@ module top_david_scale (
         .line
     );
 
-    // bitmap images
-    localparam BMAP_IMAGE = "david.mem";
-    // localparam BMAP_IMAGE = "test_box_160x120.mem";
-
-    // colour palettes
-    localparam PAL_FILE = "grey16_4b.mem";
-    // localparam PAL_FILE = "greyinvert16_4b.mem";
-    // localparam PAL_FILE = "sepia16_4b.mem";
-    // localparam PAL_FILE = "sweetie16_4b.mem";
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 160;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 120;  // framebuffer height in pixels
-    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
+    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
+    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
+    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
+    localparam FB_OFFX   =   0;  // horizontal offset
+    localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
 
-    // pixel read address and colour
-    logic [FB_ADDRW-1:0] fb_addr_read;
-    logic [FB_DATAW-1:0] fb_colr_read;
+    // pixel read and write addresses and colours
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
+    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
 
     // framebuffer memory
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
-        .INIT_F(BMAP_IMAGE)
+        .INIT_F("")
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .we(),
-        .addr_write(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .we(fb_we_sr[0]),
+        .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .data_in(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .data_in(fb_colr_write),
         .data_out(fb_colr_read)
     );
 
@@ -114,7 +103,76 @@ module top_david_scale (
     xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line),  .flag_dst(line_sys));
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
-        .flag_src(line && sy==0), .flag_dst(line0_sys));
+        .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
+
+    //
+    // draw in framebuffer
+    //
+
+    // reduce drawing speed to make process visible
+    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
+    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
+    logic draw_oe;  // draw requested
+    always_ff @(posedge clk_sys) begin
+        draw_oe <= 0;  // comment out to draw at full speed
+        if (frame_sys) begin  // once per frame
+            if (cnt_frame_wait != FRAME_WAIT-1) begin
+                cnt_frame_wait <= cnt_frame_wait + 1;
+            end else draw_oe <= 1;  // request drawing
+        end
+    end
+
+    // render line/edge/cube/triangles
+    parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
+    logic drawing;  // actively drawing
+    logic signed [CORDW-1:0] drx, dry;  // draw coordinates
+    render_line #(  // switch module name to change demo
+        .CORDW(CORDW),
+        .CIDXW(CIDXW),
+        .SCALE(DRAW_SCALE)
+    ) render_instance (
+        .clk(clk_sys),
+        .rst(rst_sys),
+        .oe(draw_oe),
+        .start(frame_sys),
+        .x(drx),
+        .y(dry),
+        .cidx(fb_colr_write),
+        .drawing,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .done()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
+
+    // calculate pixel address in framebuffer (three-cycle latency)
+    bitmap_addr #(
+        .CORDW(CORDW),
+        .ADDRW(FB_ADDRW)
+    ) bitmap_addr_instance (
+        .clk(clk_sys),
+        .bmpw(FB_WIDTH),
+        .bmph(FB_HEIGHT),
+        .x(drx),
+        .y(dry),
+        .offx(0),
+        .offy(0),
+        .addr(fb_addr_write),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .clip()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
+
+    // delay write enable to match address calculation
+    localparam LAT_ADDR = 3;  // latency (cycles)
+    logic [LAT_ADDR-1:0] fb_we_sr;
+    always_ff @(posedge clk_sys) begin
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
+        if (rst_sys) fb_we_sr <= 0;
+    end
+
+    //
+    // read framebuffer for display output via linebuffer
+    //
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -152,8 +210,8 @@ module top_david_scale (
     logic lb_en_out;
     localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
-            && sx >= -LAT_LB && sx < (FB_WIDTH * FB_SCALE) - LAT_LB);
+        lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
     end
 
     // display linebuffer
@@ -193,9 +251,9 @@ module top_david_scale (
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
-            && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : 12'h000;
+        paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
     // VGA Pmod output

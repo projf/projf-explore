@@ -1,41 +1,55 @@
-// Project F: 2D Shapes - Demo (Verilator SDL)
+// Project F: Lines and Triangles - Demo (iCEBreaker 12-bit DVI Pmod)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-shapes/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
-    input  wire logic clk_pix,      // pixel clock
-    input  wire logic rst_pix,      // sim reset
-    output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
-    output      logic signed [CORDW-1:0] sdl_sy,  // vertical SDL position
-    output      logic sdl_de,       // data enable (low in blanking interval)
-    output      logic sdl_frame,    // high at start of frame
-    output      logic [7:0] sdl_r,  // 8-bit red
-    output      logic [7:0] sdl_g,  // 8-bit green
-    output      logic [7:0] sdl_b   // 8-bit blue
+module top_demo (
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
-    // system clock is the same as pixel clock in simulation
+    // system clock is the same as pixel clock on iCE40
     logic clk_sys, rst_sys;
     always_comb begin
         clk_sys = clk_pix;
         rst_sys = rst_pix;
     end
 
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_pix_locked;
+    clock_480p clock_pix_inst (
+       .clk_12m,
+       .rst(btn_rst),
+       .clk_pix,
+       .clk_pix_locked
+    );
+
+    // reset in pixel clock domain
+    logic rst_pix;
+    always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
+
     // display sync signals and coordinates
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
         .sy,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .hsync(),
-        .vsync(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .hsync,
+        .vsync,
         .de,
         .frame,
         .line
@@ -47,17 +61,13 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
-    localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
-    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
+    localparam CIDXW = 2;        // colour index width (bits)
+    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
-    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
-    // localparam FB_WIDTH  = 640;  // framebuffer width in pixels
-    // localparam FB_HEIGHT = 360;  // framebuffer height in pixels
-    // localparam FB_SCALE  =   1;  // framebuffer display scale (1-63)
+    localparam FB_WIDTH  = 160;  // framebuffer width in pixels
+    localparam FB_HEIGHT =  90;  // framebuffer height in pixels
+    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
     localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
@@ -92,12 +102,16 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
+    //
+    // draw in framebuffer
+    //
+
     // reduce drawing speed to make process visible
     localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        // draw_oe <= 0;  // comment out to draw at full speed
+        draw_oe <= 0;  // comment out to draw at full speed
         if (frame_sys) begin  // once per frame
             if (cnt_frame_wait != FRAME_WAIT-1) begin
                 cnt_frame_wait <= cnt_frame_wait + 1;
@@ -105,11 +119,11 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         end
     end
 
-    // render shapes
+    // render line/edge/cube/triangles
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_castle #(  // switch module name to change demo
+    render_line_sm #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -218,34 +232,17 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [COLRW-1:0] fb_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
-        .CIDXW(CIDXW),
+        .CIDXW(2*CIDXW),  // CIDXW is 2-bit on iCE40
         .F_PAL(PAL_FILE)
         ) clut_instance (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(0),
         .cidx_write(0),
-        .cidx_read(lb_colr_out),
+        .cidx_read({2'b00,lb_colr_out}),  // lb_colr_out is 2-bit on iCE40
         .colr_in(0),
         .colr_out(fb_pix_colr)
     );
-
-    // background colour (sy ignores 16:9 letterbox)
-    logic [COLRW-1:0] bg_colr;
-    always_ff @(posedge clk_pix) begin
-        if (line) begin
-            if      (sy ==   0) bg_colr <= 12'h000;
-            else if (sy ==  60) bg_colr <= 12'h239;
-            else if (sy == 130) bg_colr <= 12'h24A;
-            else if (sy == 175) bg_colr <= 12'h25B;
-            else if (sy == 210) bg_colr <= 12'h26C;
-            else if (sy == 240) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 285) bg_colr <= 12'h2BF;
-            else if (sy == 302) bg_colr <= 12'h260;  // below castle (2x pix)
-            else if (sy == 420) bg_colr <= 12'h000;
-        end
-    end
 
     // paint screen
     logic paint_area;  // area of screen to paint
@@ -256,18 +253,25 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
-    logic show_bg;              // should make background colour configurable palette index
-    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
+    // DVI Pmod output
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
 
-    // SDL output (8 bits per colour channel)
-    always_ff @(posedge clk_pix) begin
-        sdl_sx <= sx;
-        sdl_sy <= sy;
-        sdl_de <= de;
-        sdl_frame <= frame;
-        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
-        sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
-    end
+    // DVI Pmod clock output: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
 endmodule

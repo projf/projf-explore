@@ -1,6 +1,6 @@
 # FPGA Graphics from Project F
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, simulate life, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
+In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
 
 If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
@@ -9,9 +9,7 @@ If you're new to the series, start by reading [Beginning FPGA Graphics](https://
 * **FPGA Pong**: [Designs](pong) - [Blog](https://projectf.io/posts/fpga-pong/)
 * **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no demos with this post)
 * **Hardware Sprites**: [Designs](hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
-* **Ad Astra**: [Designs](ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
 * **Framebuffers**: [Designs](framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
-* **Life on Screen**: [Designs](life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles**: [Designs](lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
 * **2D Shapes**: [Designs](2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
 * **Animated Shapes**: [Designs](animated-shapes) - [Blog](https://projectf.io/posts/animated-shapes/)

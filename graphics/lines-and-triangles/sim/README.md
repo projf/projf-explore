@@ -1,48 +1,37 @@
-# Simulations for Framebuffers
+# Simulation for Lines and Triangles
 
-This folder contains Verilator simulations to accompany the Project F blog post: **[Framebuffers](https://projectf.io/posts/framebuffers/)**.
+This folder contains a Verilator simulation to accompany the Project F blog post: **[Lines and Triangles](https://projectf.io/posts/lines-and-triangles/)**.
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
 If you're new to graphics simulations check out the blog post on [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
-If you have a dev board, see the main [Framebuffers README](../README.md) for build instructions.
+If you have a dev board, see the main [Lines and Triangles README](../README.md) for build instructions.
 
 ## Demos
 
-All based on an image of David by Michelangelo.
+There is one demo that can draw a line, cube, or triangles.
 
-* David Mono - 160x120 dithered monochrome image on 640x480 display
-* David 16 Colour - 160x120 16-colour image on 640x480 display
-* David Scale - 160x120 16-colour image scaled to fill 640x480 display
-* David Fizzle - Fizzle fade on scaled image of David
+![](../../../doc/img/lines-and-triangles-sim.png?raw=true "")
 
-![](../../../doc/img/framebuffers-fizzle.png?raw=true "")
-
-_David by Michelangelo with fizzle fade from david\_fizzle simulation._
+_Triangles drawn by sim demo._
 
 ## Build & Run
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
 
-Make sure you're in the sim directory `projf-explore/graphics/framebuffers/sim`.
+Make sure you're in the sim directory `projf-explore/graphics/lines-and-triangles/sim`.
 
-Build a specific simulation (david_mono, david_scale etc.):
+Build the demo:
 
 ```shell
-make david_scale
+make demo
 ```
 
-Or build all simulations:
+Run the simulation executable from `obj_dir`:
 
 ```shell
-make all
-```
-
-Run the simulation executables from `obj_dir`:
-
-```shell
-./obj_dir/david_scale
+./obj_dir/demo
 ```
 
 ## Installing Dependencies

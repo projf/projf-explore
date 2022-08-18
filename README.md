@@ -16,7 +16,7 @@ See [Library](lib/) for details or discover about the [background to the Library
 
 ## FPGA Graphics
 
-In this series, we explore graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, simulate life, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
+In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
 
 If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
@@ -25,9 +25,7 @@ If you're new to the series, start by reading [Beginning FPGA Graphics](https://
 * **FPGA Pong**: [Designs](graphics/pong) - [Blog](https://projectf.io/posts/fpga-pong/)
 * **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no demos with this post)
 * **Hardware Sprites**: [Designs](graphics/hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
-* **Ad Astra**: [Designs](graphics/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
 * **Framebuffers**: [Designs](graphics/framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
-* **Life on Screen**: [Designs](graphics/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
 * **Lines and Triangles**: [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
 * **2D Shapes**: [Designs](graphics/2d-shapes) - [Blog](https://projectf.io/posts/fpga-shapes/)
 * **Animated Shapes**: [Designs](graphics/animated-shapes) - [Blog](https://projectf.io/posts/animated-shapes/)
@@ -48,7 +46,14 @@ Maths & Algorithms is our lastest tutorial series:
 
 There are [maths demos](maths/demo) in this repo to accompany the series.
 
-_Stay tuned for more parts in summer 2022._
+_Stay tuned for more parts later in 2022._
+
+## Demos
+
+Designs demonstrating graphics and other effects:
+
+* **Ad Astra**: [Designs](graphics/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
+* **Life on Screen**: [Designs](graphics/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
 
 ## Requirements
 
