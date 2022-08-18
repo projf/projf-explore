@@ -1,6 +1,6 @@
 // Project F: Life on Screen - Conway's Game of Life
-// (C)2021 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// (C)2022 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/life-on-screen/
 
 `default_nettype none
 `timescale 1ns / 1ps

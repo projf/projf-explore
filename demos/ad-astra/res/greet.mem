@@ -1,6 +1,6 @@
 // Project F: Ad Astra - Greetings ROM
-// (C)2020 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// (C)2022 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/fpga-ad-astra/
 
 // NB. The Ad Astra Demo expects 32 messages of 16 chars
 // Only U+0020 - U+005F (64 chars) are available in font_unscii_8x8_latin_uc.mem
