@@ -52,8 +52,8 @@ _Stay tuned for more parts later in 2022._
 
 Assorted demo projects:
 
-* **Ad Astra**: [Designs](demos/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/)
-* **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/)
+* **Ad Astra**: [Designs](demos/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/) - greetings with starfields and hardware sprites
+* **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/) - Conway's Game of Life in logic
 
 ## Requirements
 
