@@ -19,7 +19,7 @@ Included demos:
 * `top_rotate` - rotating triangles with trigonometry
 * `top_teleport` - teleport in style
 
-Learn more about the designs and demos from the [Animated Shapes](https://projectf.io/posts/animated-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Animated Shapes](https://projectf.io/posts/animated-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/animated-shapes.png?raw=true "")
 

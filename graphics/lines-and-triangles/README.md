@@ -12,9 +12,16 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 ## Demos
 
-There is one demo that can draw a line, cube, or triangles.
+There is one demo top module that can draw a line, cube, or triangles.
 
-Learn more about the designs and demo from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+To switch between the different demos, change the render instance after line in `top_demo.sv`:
+
+* `render_line` - single diagonal line
+* `render_edge` - line around the edge of the framebuffer
+* `render_cube` - cube outline from nine lines
+* `render_triangles` - three triangle outlines
+
+Learn more about the designs and demo from the [Lines and Triangles](https://projectf.io/posts/lines-and-triangles/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/lines-and-triangles.jpg?raw=true "")
 

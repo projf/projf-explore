@@ -15,7 +15,7 @@ Included demos:
 
 * `top_life` - Conway's Game of Life
 
-Learn more about the designs and demos from the [Life on Screen](https://projectf.io/posts/life-on-screen/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Life on Screen](https://projectf.io/posts/life-on-screen/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/life-on-screen.png?raw=true "")
 

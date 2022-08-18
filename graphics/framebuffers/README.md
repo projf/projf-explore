@@ -20,7 +20,7 @@ All based on an image of David by Michelangelo:
 * David Scale - 160x120 16-colour image scaled to fill 640x480 display
 * David Fizzle - Fizzle fade on scaled image of David
 
-Learn more about the designs and demos from the [Framebuffers](https://projectf.io/posts/framebuffers/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Framebuffers](https://projectf.io/posts/framebuffers/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/framebuffers.png?raw=true "")
 

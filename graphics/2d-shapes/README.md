@@ -21,7 +21,7 @@ Included demos:
 * `top_rainbow` - rainbow drawn with filled circles
 * `top_castle` - castle picture drawn from filled shapes
 
-Learn more about the designs and demos from the [2D Shapes](https://projectf.io/posts/fpga-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [2D Shapes](https://projectf.io/posts/fpga-shapes/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/2d-shapes.jpg?raw=true "")
 

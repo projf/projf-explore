@@ -23,7 +23,7 @@ Included demos:
 * `top_greet_v1` - greetings to open source hardware projects
 * `top_greet` - greetings to open source hardware projects with copper colours
 
-Learn more about the designs and demos from the [Ad Astra](https://projectf.io/posts/fpga-ad-astra/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out our [introduction to FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+Learn more about the designs and demos from the [Ad Astra](https://projectf.io/posts/fpga-ad-astra/) blog post, or read on for build instructions. New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/fpga-ad-astra.png?raw=true "")
 

@@ -34,6 +34,15 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/demo
 ```
 
+### Switching Demo
+
+To switch between the different demos, change the render instance around line 112 in `top_demo.sv`, then rerun make.
+
+* `render_line` - single diagonal line
+* `render_edge` - line around the edge of the screen buffer
+* `render_cube` - cube outline from nine lines
+* `render_triangles` - three triangle outlines
+
 ## Installing Dependencies
 
 To build the simulations, you need:
