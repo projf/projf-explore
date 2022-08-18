@@ -1,4 +1,4 @@
-# Life on Screen
+# Life on Screen FPGA Demo
 
 This folder accompanies the Project F blog post: **[Life on Screen](https://projectf.io/posts/life-on-screen/)**. These SystemVerilog designs use a simple framebuffer to render Conway's Game of Life. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
 
@@ -7,7 +7,7 @@ File layout:
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `res` - resources: palettes and world seed files
 
-This demo make uses of modules from the [Project F library](../../lib/). Check the included Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
+This demo makes use of modules from the [Project F library](../../lib/). Check the included Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules.
 
 Included demos:
 

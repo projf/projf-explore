@@ -1,6 +1,6 @@
 // Project F: Ad Astra - Starfield
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// Learn more at https://projectf.io/posts/fpga-ad-astra/
 
 `default_nettype none
 `timescale 1ns / 1ps

@@ -1,6 +1,6 @@
 # Project F: Ad Astra - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/fpga-ad-astra/
 
 puts "INFO: Project F - Ad Astra Project Creation Script"
 

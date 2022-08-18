@@ -1,13 +1,13 @@
 // Project F: Ad Astra - Top LFSR (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io
+// Learn more at https://projectf.io/posts/fpga-ad-astra/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module top_lfsr (
     input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
+    input  wire logic btn_rst_n,    // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
     output      logic vga_vsync,    // vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
@@ -17,13 +17,18 @@ module top_lfsr (
 
     // generate pixel clock
     logic clk_pix;
-    logic clk_locked;
-    clock_gen_480p clock_pix_inst (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+    logic clk_pix_locked;
+    logic rst_pix;
+    clock_480p clock_pix_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
        .clk_pix,
-       .clk_locked
+       /* verilator lint_off PINCONNECTEMPTY */
+       .clk_pix_5x(),  // not used for VGA output
+       /* verilator lint_on PINCONNECTEMPTY */
+       .clk_pix_locked
     );
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 16;
@@ -32,7 +37,7 @@ module top_lfsr (
     logic de;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst_pix(!clk_locked),
+        .rst_pix,
         .sx,
         .sy,
         .hsync,
@@ -56,7 +61,7 @@ module top_lfsr (
         .TAPS(17'b10010000000000000)
     ) lsfr_sf (
         .clk(clk_pix),
-        .rst(!clk_locked),
+        .rst(rst_pix),
         .en(sf_area && de),
         .seed(0),  // use default seed
         .sreg(sf_reg)
