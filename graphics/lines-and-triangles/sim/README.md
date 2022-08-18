@@ -67,7 +67,6 @@ apt install build-essential
 Install packages for Verilator and the dev version of SDL:
 
 ```shell
-apt update
 apt install verilator libsdl2-dev
 ```
 
