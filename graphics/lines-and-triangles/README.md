@@ -14,7 +14,7 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 There is one demo top module that can draw a line, cube, or triangles.
 
-To switch between the different demos, change the render instance after line in `top_demo.sv`:
+To switch between the different demos, change the render instance near line 120 in `top_demo.sv`:
 
 * `render_line` - single diagonal line
 * `render_edge` - line around the edge of the framebuffer
