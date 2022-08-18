@@ -1,6 +1,6 @@
 # Project F: Life on Screen - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/life-on-screen/
 
 puts "INFO: Project F - Life on Screen Project Creation Script"
 

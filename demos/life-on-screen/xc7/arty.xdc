@@ -1,6 +1,6 @@
 ## Project F: Life on Screen - Arty A7-35 Vivado Board Constraints
-## (C)2021 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## (C)2022 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/life-on-screen/
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]
@@ -16,7 +16,7 @@ set_clock_groups -name SysPixel -asynchronous \
     -group [get_clocks -of_objects [get_pins clock_pix_inst/MMCME2_BASE_inst/CLKOUT0]];
 
 ## Buttons
-set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {btn_rst}];
+set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {btn_rst_n}];
 
 ## VGA Pmod on Header JB/JC
 set_property -dict {PACKAGE_PIN U14 IOSTANDARD LVCMOS33} [get_ports {vga_hsync}];
