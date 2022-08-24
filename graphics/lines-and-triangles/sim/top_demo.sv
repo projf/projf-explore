@@ -106,6 +106,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     // render line/edge/cube/triangles
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
+    logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
     render_line #(  // switch module name to change demo
         .CORDW(CORDW),
@@ -138,16 +139,14 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .offx(0),
         .offy(0),
         .addr(fb_addr_write),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .clip()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .clip
     );
 
     // delay write enable to match address calculation
     localparam LAT_ADDR = 3;  // latency (cycles)
     logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
+        fb_we_sr <= {drawing && !clip, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
 
