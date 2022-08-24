@@ -178,12 +178,6 @@ module render_castle #(
         if (rst) state <= IDLE;
     end
 
-    // drawing and done apply to all drawing types
-    always_comb begin
-        drawing   = drawing_tri   || drawing_rect   || drawing_circle;
-        draw_done = draw_done_tri || draw_done_rect || draw_done_circle;
-    end
-
     draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk,
         .rst,
@@ -239,12 +233,18 @@ module render_castle #(
         .done(draw_done_circle)
     );
 
-    // write to framebuffer when drawing
+    // output coordinates for the active shape
     always_ff @(posedge clk) begin
         x <= drawing_tri ? x_tri : (drawing_rect ? x_rect : x_circle);
         y <= drawing_tri ? y_tri : (drawing_rect ? y_rect : y_circle);
     end
 
-    // needs delaying one cycle?
-    always_comb done = (state == DONE);
+    // drawing and done apply to all drawing types
+    always_ff @(posedge clk) begin
+        drawing   <= drawing_tri   || drawing_rect   || drawing_circle;
+        draw_done <= draw_done_tri || draw_done_rect || draw_done_circle;
+    end
+
+    // doesn't need delaying one cycle because it's based on draw_done
+    always_ff @(posedge clk) done <= (state == DONE);
 endmodule
