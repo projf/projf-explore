@@ -48,8 +48,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
-    // localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
+    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -109,7 +109,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic drawing;  // actively drawing
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_rainbow #(  // switch module name to change demo
+    render_castle #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -254,7 +254,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    localparam BG_ENABLED = 0;  // turn sky/grass off/on - assumes background colour is black
+    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
     logic show_bg;              // should make background colour configurable palette index
     always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
 

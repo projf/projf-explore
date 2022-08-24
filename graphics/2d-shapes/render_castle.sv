@@ -9,7 +9,7 @@ module render_castle #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
-    ) (  
+    ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
     input  wire logic oe,     // output enable
@@ -40,129 +40,122 @@ module render_castle #(
             INIT: begin  // register coordinates and colour
                 state <= DRAW;
                 case (shape_id)
-                    5'd0: begin  // main building
+                    'd0: begin  // main building
                         draw_start_rect <= 1;
                         vx0 <=  60; vy0 <=  70;
                         vx1 <= 190; vy1 <= 120;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey (with pico8_4b palette)
                     end
-                    5'd1: begin  // drawbridge
+                    'd1: begin  // drawbridge
                         draw_start_rect <= 1;
                         vx0 <= 110; vy0 <= 100;
                         vx1 <= 140; vy1 <= 120;
-                        cidx <= 4'h4;  // brown
+                        cidx <= 'h4;  // brown
                     end
-                    5'd2: begin  // drawbridge arch
+                    'd2: begin  // drawbridge arch
                         draw_start_circle <= 1;
                         vx0 <= 125; vy0 <= 100;
                         vr0 <=  15;
-                        cidx <= 4'h4;  // brown
+                        cidx <= 'h4;  // brown
                     end
-                    5'd3: begin  // left tower
+                    'd3: begin  // left tower
                         draw_start_rect <= 1;
                         vx0 <=  40; vy0 <=  45;
                         vx1 <=  60; vy1 <= 120;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd4: begin  // middle tower
+                    'd4: begin  // middle tower
                         draw_start_rect <= 1;
                         vx0 <= 110; vy0 <=  40;
                         vx1 <= 140; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd5: begin  // right tower
+                    'd5: begin  // right tower
                         draw_start_rect <= 1;
                         vx0 <= 190; vy0 <=  45;
                         vx1 <= 210; vy1 <= 120;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd6: begin  // left roof
+                    'd6: begin  // left roof
                         draw_start_tri <= 1;
                         vx0 <=  50; vy0 <=  30;
                         vx1 <=  65; vy1 <=  45;
                         vx2 <=  35; vy2 <=  45;
-                        cidx <= 4'h2;  // dark-purple
+                        cidx <= 'h2;  // dark-purple
                     end
-                    5'd7: begin  // middle roof
+                    'd7: begin  // middle roof
                         draw_start_tri <= 1;
                         vx0 <= 125; vy0 <=  20;
                         vx1 <= 145; vy1 <=  40;
                         vx2 <= 105; vy2 <=  40;
-                        cidx <= 4'h2;  // dark-purple
+                        cidx <= 'h2;  // dark-purple
                     end
-                    5'd8: begin  // right roof
+                    'd8: begin  // right roof
                         draw_start_tri <= 1;
                         vx0 <= 200; vy0 <=  30;
                         vx1 <= 215; vy1 <=  45;
                         vx2 <= 185; vy2 <=  45;
-                        cidx <= 4'h2;  // dark-purple
+                        cidx <= 'h2;  // dark-purple
                     end
-                    5'd9: begin  // left window
+                    'd9: begin  // left window
                         draw_start_rect <= 1;
                         vx0 <=  46; vy0 <=  50;
                         vx1 <=  54; vy1 <=  65;
-                        cidx <= 4'h1;  // dark blue
+                        cidx <= 'h1;  // dark blue
                     end
-                    5'd10: begin  // middle window
+                    'd10: begin  // middle window
                         draw_start_rect <= 1;
                         vx0 <= 120; vy0 <=  45;
                         vx1 <= 130; vy1 <=  65;
-                        cidx <= 4'h1;  // dark blue
+                        cidx <= 'h1;  // dark blue
                     end
-                    5'd11: begin  // right window
+                    'd11: begin  // right window
                         draw_start_rect <= 1;
                         vx0 <= 196; vy0 <=  50;
                         vx1 <= 204; vy1 <=  65;
-                        cidx <= 4'h1;  // dark blue
+                        cidx <= 'h1;  // dark blue
                     end
-                    5'd12: begin  // battlement 1
+                    'd12: begin  // battlement 1
                         draw_start_rect <= 1;
                         vx0 <=  63; vy0 <=  62;
                         vx1 <=  72; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd13: begin  // battlement 2
+                    'd13: begin  // battlement 2
                         draw_start_rect <= 1;
                         vx0 <=   80; vy0 <=  62;
                         vx1 <=   89; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd14: begin  // battlement 3
+                    'd14: begin  // battlement 3
                         draw_start_rect <= 1;
                         vx0 <=  97; vy0 <=  62;
                         vx1 <= 106; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd15: begin  // battlement 4
+                    'd15: begin  // battlement 4
                         draw_start_rect <= 1;
                         vx0 <= 144; vy0 <=  62;
                         vx1 <= 153; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd16: begin  // battlement 5
+                    'd16: begin  // battlement 5
                         draw_start_rect <= 1;
                         vx0 <= 161; vy0 <=  62;
                         vx1 <= 170; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd17: begin  // battlement 6
+                    'd17: begin  // battlement 6
                         draw_start_rect <= 1;
                         vx0 <= 178; vy0 <=  62;
                         vx1 <= 187; vy1 <=  70;
-                        cidx <= 4'h5;  // dark grey
+                        cidx <= 'h5;  // dark grey
                     end
-                    5'd18: begin  // Sun
+                    default: begin  // Sun
                         draw_start_circle <= 1;
                         vx0 <= 275; vy0 <=  38;
                         vr0 <= 20;
-                        cidx <= 4'h9;  // orange
-                    end
-                    default: begin  // should never occur
-                        draw_start_tri <= 1;
-                        vx0 <=   10; vy0 <=   10;
-                        vx1 <=   10; vy1 <=   30;
-                        vx2 <=   20; vy2 <=   20;
-                        cidx <= 4'h7;  // white
+                        cidx <= 'h9;  // orange
                     end
                 endcase
             end
