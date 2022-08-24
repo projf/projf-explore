@@ -101,7 +101,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (line_sys) draw_oe <= 1;  // draw one pixel per line (~500 per frame)
+        end else if (line_sys && sy[3:0] == 0) draw_oe <= 1;  // draw every 16 lines
     end
 
     // render shapes
