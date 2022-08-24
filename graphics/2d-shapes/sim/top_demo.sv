@@ -48,16 +48,13 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
-    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    // localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
     localparam FB_HEIGHT = 180;  // framebuffer height in pixels
     localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
-    // localparam FB_WIDTH  = 640;  // framebuffer width in pixels
-    // localparam FB_HEIGHT = 360;  // framebuffer height in pixels
-    // localparam FB_SCALE  =   1;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
     localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
@@ -92,24 +89,27 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
+    //
+    // draw in framebuffer
+    //
+
     // reduce drawing speed to make process visible
     localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        // draw_oe <= 0;  // comment out to draw at full speed
-        if (frame_sys) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_oe <= 1;  // request drawing
-        end
+        draw_oe <= 0;  // comment out to draw at full speed
+        if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
+            if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
+        end else if (line_sys) draw_oe <= 1;  // draw one pixel per line (~500 per frame)
     end
 
     // render shapes
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
+    logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_castle #(  // switch module name to change demo
+    render_rainbow #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -140,16 +140,14 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .offx(0),
         .offy(0),
         .addr(fb_addr_write),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .clip()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .clip
     );
 
     // delay write enable to match address calculation
     localparam LAT_ADDR = 3;  // latency (cycles)
     logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
+        fb_we_sr <= {drawing && !clip, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
 
@@ -256,7 +254,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
+    localparam BG_ENABLED = 0;  // turn sky/grass off/on - assumes background colour is black
     logic show_bg;              // should make background colour configurable palette index
     always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
 

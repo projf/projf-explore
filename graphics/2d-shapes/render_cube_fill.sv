@@ -34,47 +34,41 @@ module render_cube_fill #(
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
-                    3'd0: begin
+                    'd0: begin
                         vx0 <= 130; vy0 <=  60;
                         vx1 <= 230; vy1 <=  60;
                         vx2 <= 230; vy2 <= 160;
-                        cidx <= 4'h3;  // colour index
+                        cidx <= 'h3;  // colour index
                     end
-                    3'd1: begin
+                    'd1: begin
                         vx0 <= 130; vy0 <=  60;
                         vx1 <= 230; vy1 <= 160;
                         vx2 <= 130; vy2 <= 160;
-                        cidx <= 4'h4;
+                        cidx <= 'h4;
                     end
-                    3'd2: begin
+                    'd2: begin
                         vx0 <= 130; vy0 <=  60;
                         vx1 <=  90; vy1 <= 120;
                         vx2 <= 130; vy2 <= 160;
-                        cidx <= 4'h5;
+                        cidx <= 'h5;
                     end
-                    3'd3: begin
+                    'd3: begin
                         vx0 <=  90; vy0 <=  20;
                         vx1 <= 130; vy1 <=  60;
                         vx2 <=  90; vy2 <= 120;
-                        cidx <= 4'h6;
+                        cidx <= 'h6;
                     end
-                    3'd4: begin
+                    'd4: begin
                         vx0 <=  90; vy0 <=  20;
                         vx1 <= 190; vy1 <=  20;
                         vx2 <= 130; vy2 <=  60;
-                        cidx <= 4'h9;
+                        cidx <= 'h9;
                     end
-                    3'd5: begin
+                    default: begin  // shape_id=5
                         vx0 <= 190; vy0 <=  20;
                         vx1 <= 130; vy1 <=  60;
                         vx2 <= 230; vy2 <=  60;
                         cidx <= 4'hA;
-                    end
-                    default: begin  // should never occur
-                        vx0 <=   10; vy0 <=   10;
-                        vx1 <=   10; vy1 <=   30;
-                        vx2 <=   20; vy2 <=   20;
-                        cidx <= 4'hF;
                     end
                 endcase
             end
