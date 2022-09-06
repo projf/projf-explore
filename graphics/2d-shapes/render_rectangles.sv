@@ -35,9 +35,9 @@ module render_rectangles #(
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
                 vx0 <=  60 + shape_id;
-                vy0 <=  15 + shape_id;
+                vy0 <=  20 + shape_id;
                 vx1 <= 260 - shape_id;
-                vy1 <= 165 - shape_id;
+                vy1 <= 160 - shape_id;
                 /* verilator lint_on WIDTH */
                 cidx <= shape_id[3:0];  // use lowest four bits for colour
             end

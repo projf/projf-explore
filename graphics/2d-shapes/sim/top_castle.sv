@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Demo (Verilator SDL)
+// Project F: 2D Shapes - Castle Demo (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
+module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     input  wire logic clk_pix,      // pixel clock
     input  wire logic rst_pix,      // sim reset
     output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
@@ -48,7 +48,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -100,7 +101,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (line_sys) draw_oe <= 1;  // every screen line
+        end else if (line_sys && sy[3:0] == 0) draw_oe <= 1;  // every 16th screen line
     end
 
     // render shapes
@@ -108,7 +109,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic drawing;  // actively drawing
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_rectangles #(  // switch module name to change demo
+    render_castle #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -227,6 +228,23 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         .colr_out(fb_pix_colr)
     );
 
+    // background colour (sy ignores 16:9 letterbox)
+    logic [COLRW-1:0] bg_colr;
+    always_ff @(posedge clk_pix) begin
+        if (line) begin
+            if      (sy ==   0) bg_colr <= 12'h000;
+            else if (sy ==  60) bg_colr <= 12'h239;
+            else if (sy == 130) bg_colr <= 12'h24A;
+            else if (sy == 175) bg_colr <= 12'h25B;
+            else if (sy == 210) bg_colr <= 12'h26C;
+            else if (sy == 240) bg_colr <= 12'h27D;
+            else if (sy == 265) bg_colr <= 12'h29E;
+            else if (sy == 285) bg_colr <= 12'h2BF;
+            else if (sy == 302) bg_colr <= 12'h260;  // below castle (2x pix)
+            else if (sy == 420) bg_colr <= 12'h000;
+        end
+    end
+
     // paint screen
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
@@ -236,14 +254,18 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
+    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
+    logic show_bg;              // should make background colour configurable palette index
+    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
+
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width (assumes CHANW=4)
+        sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
+        sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
     end
 endmodule

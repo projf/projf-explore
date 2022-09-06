@@ -13,6 +13,7 @@ PROJF_LIBS += -I../../../lib/graphics
 PROJF_LIBS += -I../../../lib/memory
 
 demo: demo.exe
+castle: castle.exe
 
 %.exe: %.mk
 	make -C ./obj_dir -f Vtop_$<
@@ -21,7 +22,7 @@ demo: demo.exe
 	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
-all: demo
+all: demo castle
 
 clean:
 	rm -rf ./obj_dir
