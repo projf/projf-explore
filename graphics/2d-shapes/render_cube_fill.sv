@@ -68,7 +68,7 @@ module render_cube_fill #(
                         vx0 <= 190; vy0 <=  20;
                         vx1 <= 130; vy1 <=  60;
                         vx2 <= 230; vy2 <=  60;
-                        cidx <= 4'hA;
+                        cidx <= 'hA;
                     end
                 endcase
             end

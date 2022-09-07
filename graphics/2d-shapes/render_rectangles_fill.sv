@@ -39,7 +39,7 @@ module render_rectangles_fill #(
                 vx1 <= 160 + 4 * shape_id;
                 vy1 <= 100 + 4 * shape_id;
                 /* verilator lint_on WIDTH */
-                cidx <= shape_id + 1;  // skip 1st colour (black)
+                cidx <= shape_id + 1;  // skip 1st colour (background)
             end
             DRAW: begin
                 draw_start <= 0;

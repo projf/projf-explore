@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Render Circles
+// Project F: 2D Shapes - Render Filled Circles
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_circles #(
+module render_circles_fill #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
@@ -36,7 +36,7 @@ module render_circles #(
                 vx0 <= 160;
                 vy0 <=  90;
                 vr0 <=  80 - 4 * shape_id;
-                cidx <= 'hA;  // colour index
+                cidx <= (shape_id == SHAPE_CNT-1) ? 'h0 : 'h2 + shape_id;  // colour index
             end
             DRAW: begin
                 draw_start <= 0;
@@ -57,7 +57,7 @@ module render_circles #(
         if (rst) state <= IDLE;
     end
 
-    draw_circle #(.CORDW(CORDW)) draw_circle_inst (
+    draw_circle_fill #(.CORDW(CORDW)) draw_circle_inst (
         .clk,
         .rst,
         .start(draw_start),
