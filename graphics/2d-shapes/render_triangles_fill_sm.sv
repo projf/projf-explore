@@ -1,11 +1,11 @@
-// Project F: Lines and Triangles - Render Small Triangles
+// Project F: 2D Shapes - Render Small Filled Triangles
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/lines-and-triangles/
+// Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_triangles_sm #(
+module render_triangles_fill_sm #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=2,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
@@ -22,7 +22,7 @@ module render_triangles_sm #(
     );
 
     localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
+    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
@@ -71,7 +71,7 @@ module render_triangles_sm #(
         if (rst) state <= IDLE;
     end
 
-    draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
+    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
         .clk,
         .rst,
         .start(draw_start),

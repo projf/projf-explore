@@ -1,6 +1,6 @@
 ## Project F: 2D Shapes - iCEBreaker Makefile
 ## (C)2022 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io
+## Learn more at https://projectf.io/posts/fpga-shapes/
 
 # configuration
 SHELL = /bin/sh
@@ -10,33 +10,32 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_LIB = ../../../lib
-ADD_SRC  = ${PATH_LIB}/clock/xd.sv
-ADD_SRC += ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
+ADD_SRC += ${PATH_LIB}/clock/ice40/clock_480p.sv
+ADD_SRC += ${PATH_LIB}/clock/xd2.sv
+ADD_SRC += ${PATH_LIB}/display/bitmap_addr.sv
+ADD_SRC += ${PATH_LIB}/display/clut_simple.sv
 ADD_SRC += ${PATH_LIB}/display/display_480p.sv
-ADD_SRC += ${PATH_LIB}/display/ice40/framebuffer_spram.sv
-ADD_SRC += ${PATH_LIB}/display/linebuffer.sv
+ADD_SRC += ${PATH_LIB}/display/linebuffer_simple.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_circle.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_circle_fill.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_line_1d.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_rectangle.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_rectangle_fill.sv
+ADD_SRC += ${PATH_LIB}/graphics/draw_triangle.sv
 ADD_SRC += ${PATH_LIB}/graphics/draw_triangle_fill.sv
-ADD_SRC += ${PATH_LIB}/maths/lfsr.sv
-ADD_SRC += ${PATH_LIB}/memory/rom_async.sv
-ADD_SRC += ${PATH_LIB}/memory/ice40/bram_sdp.sv
-ADD_SRC += ${PATH_LIB}/memory/ice40/spram_nibble.sv
+ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
+ADD_SRC += ../render_rects_sm.sv
+ADD_SRC += ../render_rects_fill_sm.sv
+ADD_SRC += ../render_triangles_fill_sm.sv
+ADD_SRC += ../render_cube_fill_sm.sv
+ADD_SRC += ../render_circles_sm.sv
+ADD_SRC += ../render_circles_fill_sm.sv
 
-top_castle: top_castle.rpt top_castle.bin
-top_rectangles: top_rectangles.rpt top_rectangles.bin
-top_rectangles_fill: top_rectangles_fill.rpt top_rectangles_fill.bin
-top_triangles_fill: top_triangles_fill.rpt top_triangles_fill.bin
-top_cube_fill: top_cube_fill.rpt top_cube_fill.bin
-top_circles: top_circles.rpt top_circles.bin
-top_rainbow: top_rainbow.rpt top_rainbow.bin
+demo: demo.rpt demo.bin
 
-%.json: %.sv $(ADD_SRC)
-	yosys -ql $(subst .json,,$@)-yosys.log -p 'synth_ice40 -abc9 -device u -top $(subst .json,,$@) -json $@' $< $(ADD_SRC)
+%.json: top_%.sv $(ADD_SRC)
+	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u -top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
@@ -45,11 +44,11 @@ top_rainbow: top_rainbow.rpt top_rainbow.bin
 	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
-	icepack $< $@
+	icepack $< $(subst top_,,$@)
+
+all: demo
 
 clean:
-	rm -f top*.json top*.asc top*.rpt top*.bin top*yosys.log
-
-all: top_castle top_circles top_rectangles top_rectangles_fill top_triangles_fill top_cube_fill top_rainbow
+	rm -f *.json *.asc *.rpt *.bin *yosys.log
 
 .PHONY: all clean

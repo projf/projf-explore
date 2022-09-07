@@ -47,7 +47,7 @@ module render_triangles_fill #(
                         cidx <= 'h2;
                     end
                     default: begin  // shape_id=2
-                        vx0 <=  22; vy0 <=  35;
+                        vx0 <=  22; vy0 <=  36;
                         vx1 <=  62; vy1 <= 150;
                         vx2 <=  98; vy2 <=  96;
                         cidx <= 'h1;

@@ -108,7 +108,7 @@ module top_demo (
     //
 
     // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
+    localparam FRAME_WAIT = 300;  // wait this many frames to start drawing
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin

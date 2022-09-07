@@ -1,15 +1,15 @@
-// Project F: Lines and Triangles - Render Small Triangles
+// Project F: 2D Shapes - Render Filled Rectangles
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/lines-and-triangles/
+// Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_triangles_sm #(
+module render_rects_fill #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=2,   // colour index width (bits)
-    parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
-    ) (
+    parameter CIDXW=4,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
+    ) (  
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
     input  wire logic oe,     // output enable
@@ -21,9 +21,9 @@ module render_triangles_sm #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
+    localparam SHAPE_CNT=15;  // number of shapes to draw
+    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
     // draw state machine
@@ -33,26 +33,13 @@ module render_triangles_sm #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                case (shape_id)
-                    'd0: begin
-                        vx0 <=  30; vy0 <=  10;
-                        vx1 <= 140; vy1 <=  40;
-                        vx2 <=  80; vy2 <=  82;
-                        cidx <= 'h3;  // colour index
-                    end
-                    'd1: begin
-                        vx0 <=  35; vy0 <=  80;
-                        vx1 <= 110; vy1 <=  45;
-                        vx2 <=  85; vy2 <=   5;
-                        cidx <= 'h2;
-                    end
-                    default: begin  // shape_id=2
-                        vx0 <=  11; vy0 <=  18;
-                        vx1 <=  31; vy1 <=  75;
-                        vx2 <=  49; vy2 <=  48;
-                        cidx <= 'h1;
-                    end
-                endcase
+                /* verilator lint_off WIDTH */
+                vx0 <=  80 + 4 * shape_id;
+                vy0 <=  20 + 4 * shape_id;
+                vx1 <= 160 + 4 * shape_id;
+                vy1 <= 100 + 4 * shape_id;
+                /* verilator lint_on WIDTH */
+                cidx <= shape_id + 1;  // skip 1st colour (background)
             end
             DRAW: begin
                 draw_start <= 0;
@@ -71,7 +58,7 @@ module render_triangles_sm #(
         if (rst) state <= IDLE;
     end
 
-    draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
+    draw_rectangle_fill #(.CORDW(CORDW)) draw_rectangle_inst (
         .clk,
         .rst,
         .start(draw_start),
@@ -80,8 +67,6 @@ module render_triangles_sm #(
         .y0(vy0 * SCALE),
         .x1(vx1 * SCALE),
         .y1(vy1 * SCALE),
-        .x2(vx2 * SCALE),
-        .y2(vy2 * SCALE),
         .x,
         .y,
         .drawing,
