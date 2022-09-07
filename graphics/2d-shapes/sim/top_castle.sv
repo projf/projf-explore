@@ -48,8 +48,8 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    // localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
-    localparam PAL_FILE = {LIB_RES,"/palettes/pico8_4b.mem"};  // palette file
+    localparam COLR_TRANS = 'h223;  // transparent colour (matches Sweetie 16 palette)
+    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -64,6 +64,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     // pixel read and write addresses and colours
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic fb_we;  // framebuffer write enable
 
     // framebuffer memory
     bram_sdp #(
@@ -73,7 +74,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we_sr[0]),
+        .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
@@ -98,7 +99,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;  // comment out to draw at full speed
+        // draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
         end else if (line_sys && sy[3:0] == 0) draw_oe <= 1;  // every 16th screen line
@@ -147,9 +148,10 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam LAT_ADDR = 3;  // latency (cycles)
     logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing && !clip, fb_we_sr[LAT_ADDR-1:1]};
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
+    always_comb fb_we = fb_we_sr[0] && !clip;  // check for clipping
 
     //
     // read framebuffer for display output via linebuffer
@@ -256,7 +258,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
     logic show_bg;              // should make background colour configurable palette index
-    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == 12'h000);
+    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == COLR_TRANS);
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin

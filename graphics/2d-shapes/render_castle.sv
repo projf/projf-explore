@@ -21,7 +21,7 @@ module render_castle #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam SHAPE_CNT=19;  // number of shapes to draw
+    localparam SHAPE_CNT=20;  // number of shapes to draw
     logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic signed [CORDW-1:0] vr0;  // circle radius
@@ -37,125 +37,131 @@ module render_castle #(
     enum {IDLE, INIT, DRAW, DONE} state;
     always_ff @(posedge clk) begin
         case (state)
-            INIT: begin  // register coordinates and colour
+            INIT: begin  // register coordinates and colour (Sweetie 16 palette)
                 state <= DRAW;
                 case (shape_id)
-                    'd0: begin  // main building
+                    'd0: begin  // ground
+                        draw_start_rect <= 1;
+                        vx0 <=   0; vy0 <= 120;
+                        vx1 <= 319; vy1 <= 179;
+                        cidx <= 'h0;  // background (transparent)
+                    end
+                    'd1: begin  // main building
                         draw_start_rect <= 1;
                         vx0 <=  60; vy0 <=  70;
                         vx1 <= 190; vy1 <= 120;
-                        cidx <= 'h5;  // dark grey (with pico8_4b palette)
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd1: begin  // drawbridge
+                    'd2: begin  // drawbridge
                         draw_start_rect <= 1;
                         vx0 <= 110; vy0 <= 100;
                         vx1 <= 140; vy1 <= 120;
-                        cidx <= 'h4;  // brown
+                        cidx <= 'hF;  // blue-grey
                     end
-                    'd2: begin  // drawbridge arch
+                    'd3: begin  // drawbridge arch
                         draw_start_circle <= 1;
                         vx0 <= 125; vy0 <= 100;
                         vr0 <=  15;
-                        cidx <= 'h4;  // brown
+                        cidx <= 'hF;  // blue-grey
                     end
-                    'd3: begin  // left tower
+                    'd4: begin  // left tower
                         draw_start_rect <= 1;
                         vx0 <=  40; vy0 <=  45;
                         vx1 <=  60; vy1 <= 120;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd4: begin  // middle tower
+                    'd5: begin  // middle tower
                         draw_start_rect <= 1;
                         vx0 <= 110; vy0 <=  40;
                         vx1 <= 140; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd5: begin  // right tower
+                    'd6: begin  // right tower
                         draw_start_rect <= 1;
                         vx0 <= 190; vy0 <=  45;
                         vx1 <= 210; vy1 <= 120;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd6: begin  // left roof
+                    'd7: begin  // left roof
                         draw_start_tri <= 1;
                         vx0 <=  50; vy0 <=  30;
                         vx1 <=  65; vy1 <=  45;
                         vx2 <=  35; vy2 <=  45;
-                        cidx <= 'h2;  // dark-purple
+                        cidx <= 'h2;  // red
                     end
-                    'd7: begin  // middle roof
+                    'd8: begin  // middle roof
                         draw_start_tri <= 1;
                         vx0 <= 125; vy0 <=  20;
                         vx1 <= 145; vy1 <=  40;
                         vx2 <= 105; vy2 <=  40;
-                        cidx <= 'h2;  // dark-purple
+                        cidx <= 'h2;  // red
                     end
-                    'd8: begin  // right roof
+                    'd9: begin  // right roof
                         draw_start_tri <= 1;
                         vx0 <= 200; vy0 <=  30;
                         vx1 <= 215; vy1 <=  45;
                         vx2 <= 185; vy2 <=  45;
-                        cidx <= 'h2;  // dark-purple
+                        cidx <= 'h2;  // red
                     end
-                    'd9: begin  // left window
+                    'd10: begin  // left window
                         draw_start_rect <= 1;
                         vx0 <=  46; vy0 <=  50;
                         vx1 <=  54; vy1 <=  65;
-                        cidx <= 'h1;  // dark blue
+                        cidx <= 'hF;  // blue-grey
                     end
-                    'd10: begin  // middle window
+                    'd11: begin  // middle window
                         draw_start_rect <= 1;
                         vx0 <= 120; vy0 <=  45;
                         vx1 <= 130; vy1 <=  65;
-                        cidx <= 'h1;  // dark blue
+                        cidx <= 'hF;  // blue-grey
                     end
-                    'd11: begin  // right window
+                    'd12: begin  // right window
                         draw_start_rect <= 1;
                         vx0 <= 196; vy0 <=  50;
                         vx1 <= 204; vy1 <=  65;
-                        cidx <= 'h1;  // dark blue
+                        cidx <= 'hF;  // blue-grey
                     end
-                    'd12: begin  // battlement 1
+                    'd13: begin  // battlement 1
                         draw_start_rect <= 1;
                         vx0 <=  63; vy0 <=  62;
                         vx1 <=  72; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd13: begin  // battlement 2
+                    'd14: begin  // battlement 2
                         draw_start_rect <= 1;
                         vx0 <=   80; vy0 <=  62;
                         vx1 <=   89; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd14: begin  // battlement 3
+                    'd15: begin  // battlement 3
                         draw_start_rect <= 1;
                         vx0 <=  97; vy0 <=  62;
                         vx1 <= 106; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd15: begin  // battlement 4
+                    'd16: begin  // battlement 4
                         draw_start_rect <= 1;
                         vx0 <= 144; vy0 <=  62;
                         vx1 <= 153; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd16: begin  // battlement 5
+                    'd17: begin  // battlement 5
                         draw_start_rect <= 1;
                         vx0 <= 161; vy0 <=  62;
                         vx1 <= 170; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
-                    'd17: begin  // battlement 6
+                    'd18: begin  // battlement 6
                         draw_start_rect <= 1;
                         vx0 <= 178; vy0 <=  62;
                         vx1 <= 187; vy1 <=  70;
-                        cidx <= 'h5;  // dark grey
+                        cidx <= 'hE;  // dark grey
                     end
                     default: begin  // Sun
                         draw_start_circle <= 1;
                         vx0 <= 275; vy0 <=  38;
                         vr0 <= 20;
-                        cidx <= 'h9;  // orange
+                        cidx <= 'h4;  // yellow
                     end
                 endcase
             end

@@ -77,6 +77,7 @@ module top_demo (
     // pixel read and write addresses and colours
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic fb_we;  // framebuffer write enable
 
     // framebuffer memory
     bram_sdp #(
@@ -86,7 +87,7 @@ module top_demo (
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we_sr[0]),
+        .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
@@ -160,9 +161,10 @@ module top_demo (
     localparam LAT_ADDR = 3;  // latency (cycles)
     logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        fb_we_sr <= {drawing && !clip, fb_we_sr[LAT_ADDR-1:1]};
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
+    always_comb fb_we = fb_we_sr[0] && !clip;  // check for clipping
 
     //
     // read framebuffer for display output via linebuffer
