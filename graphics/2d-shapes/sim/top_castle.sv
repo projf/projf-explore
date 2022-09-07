@@ -99,10 +99,10 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
-        // draw_oe <= 0;  // comment out to draw at full speed
+        draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (line_sys && sy[3:0] == 0) draw_oe <= 1;  // every 16th screen line
+        end else if (line_sys) draw_oe <= 1;  // every screen line
     end
 
     // render shapes
@@ -236,13 +236,13 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         if (line) begin
             if      (sy ==   0) bg_colr <= 12'h000;
             else if (sy ==  60) bg_colr <= 12'h239;
-            else if (sy == 130) bg_colr <= 12'h24A;
-            else if (sy == 175) bg_colr <= 12'h25B;
-            else if (sy == 210) bg_colr <= 12'h26C;
-            else if (sy == 240) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 285) bg_colr <= 12'h2BF;
-            else if (sy == 302) bg_colr <= 12'h260;  // below castle (2x pix)
+            else if (sy == 140) bg_colr <= 12'h24A;
+            else if (sy == 195) bg_colr <= 12'h25B;
+            else if (sy == 230) bg_colr <= 12'h26C;
+            else if (sy == 260) bg_colr <= 12'h27D;
+            else if (sy == 285) bg_colr <= 12'h29E;
+            else if (sy == 305) bg_colr <= 12'h2BF;
+            else if (sy == 322) bg_colr <= 12'h370;  // below castle (2x pix)
             else if (sy == 420) bg_colr <= 12'h000;
         end
     end
@@ -256,9 +256,8 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    localparam BG_ENABLED = 1;  // turn sky/grass off/on - assumes background colour is black
-    logic show_bg;              // should make background colour configurable palette index
-    always_comb show_bg = (BG_ENABLED && de && {paint_r, paint_g, paint_b} == COLR_TRANS);
+    logic show_bg;  // where to show background
+    always_comb show_bg = (de && {paint_r, paint_g, paint_b} == COLR_TRANS);
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
