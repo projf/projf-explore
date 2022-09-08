@@ -22,7 +22,7 @@ You can then build `top_castle` as you would for any Vivado project.
 
 ## Verilator Build
 
-If this is the first time you've used Verilator and SDL, you need to [install dependencies](/posts/verilog-sim-verilator-sdl/#installing-dependencies).
+If this is the first time you've used Verilator and SDL, you need to [install dependencies](https://projectf.io/posts/verilog-sim-verilator-sdl/#installing-dependencies).
 
 Make sure you're in the sim directory `projf-explore/demos/castle-drawing/sim`.
 
