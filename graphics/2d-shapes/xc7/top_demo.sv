@@ -1,55 +1,71 @@
-// Project F: Castle Demo (Verilator SDL)
+// Project F: 2D Shapes - Demo (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/castle-drawing/
+// Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
-    input  wire logic clk_pix,      // pixel clock
-    input  wire logic rst_pix,      // sim reset
-    output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
-    output      logic signed [CORDW-1:0] sdl_sy,  // vertical SDL position
-    output      logic sdl_de,       // data enable (low in blanking interval)
-    output      logic sdl_frame,    // high at start of frame
-    output      logic [7:0] sdl_r,  // 8-bit red
-    output      logic [7:0] sdl_g,  // 8-bit green
-    output      logic [7:0] sdl_b   // 8-bit blue
+module top_demo (
+    input  wire logic clk_100m,     // 100 MHz clock
+    input  wire logic btn_rst_n,    // reset button
+    output      logic vga_hsync,    // horizontal sync
+    output      logic vga_vsync,    // vertical sync
+    output      logic [3:0] vga_r,  // 4-bit VGA red
+    output      logic [3:0] vga_g,  // 4-bit VGA green
+    output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // system clock is the same as pixel clock in simulation
-    logic clk_sys, rst_sys;
-    always_comb begin
-        clk_sys = clk_pix;
-        rst_sys = rst_pix;
-    end
+    // generate system clock
+    logic clk_sys;
+    logic clk_sys_locked;
+    /* verilator lint_off UNUSED */
+    logic rst_sys;
+    /* verilator lint_on UNUSED */
+    clock_sys clock_sys_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
+       .clk_sys,
+       .clk_sys_locked
+    );
+    always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
+
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_pix_locked;
+    logic rst_pix;
+    clock_480p clock_pix_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
+       .clk_pix,
+       /* verilator lint_off PINCONNECTEMPTY */
+       .clk_pix_5x(),  // not used for VGA output
+       /* verilator lint_on PINCONNECTEMPTY */
+       .clk_pix_locked
+    );
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
+    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
+    logic hsync, vsync;
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
         .sy,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .hsync(),
-        .vsync(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .hsync,
+        .vsync,
         .de,
         .frame,
         .line
     );
 
-    // library resource path
-    localparam LIB_RES = "../../../lib/res";
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam COLR_TRANS = 'h223;  // transparent colour (matches Sweetie 16 palette)
-    localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
+    localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -102,7 +118,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (line_sys) draw_oe <= 1;  // every screen line
+        end else if (frame_sys) draw_oe <= 1;  // draw one pixel per frame
     end
 
     // render shapes
@@ -110,7 +126,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic drawing;  // actively drawing
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_castle #(  // switch module name to change demo
+    render_rects #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
@@ -230,23 +246,6 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         .colr_out(fb_pix_colr)
     );
 
-    // background colour (sy ignores 16:9 letterbox)
-    logic [COLRW-1:0] bg_colr;
-    always_ff @(posedge clk_pix) begin
-        if (line) begin
-            if      (sy ==   0) bg_colr <= 12'h000;
-            else if (sy ==  60) bg_colr <= 12'h239;
-            else if (sy == 140) bg_colr <= 12'h24A;
-            else if (sy == 195) bg_colr <= 12'h25B;
-            else if (sy == 230) bg_colr <= 12'h26C;
-            else if (sy == 260) bg_colr <= 12'h27D;
-            else if (sy == 285) bg_colr <= 12'h29E;
-            else if (sy == 305) bg_colr <= 12'h2BF;
-            else if (sy == 322) bg_colr <= 12'h370;  // below castle (2x pix)
-            else if (sy == 420) bg_colr <= 12'h000;
-        end
-    end
-
     // paint screen
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
@@ -256,17 +255,18 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    logic show_bg;  // where to show background
-    always_comb show_bg = (de && {paint_r, paint_g, paint_b} == COLR_TRANS);
-
-    // SDL output (8 bits per colour channel)
+    // VGA Pmod output
     always_ff @(posedge clk_pix) begin
-        sdl_sx <= sx;
-        sdl_sy <= sy;
-        sdl_de <= de;
-        sdl_frame <= frame;
-        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
-        sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
+        vga_hsync <= hsync;
+        vga_vsync <= vsync;
+        if (de) begin
+            vga_r <= paint_r;
+            vga_g <= paint_g;
+            vga_b <= paint_b;
+        end else begin  // VGA colour should be black in blanking interval
+            vga_r <= 4'h0;
+            vga_g <= 4'h0;
+            vga_b <= 4'h0;
+        end
     end
 endmodule
