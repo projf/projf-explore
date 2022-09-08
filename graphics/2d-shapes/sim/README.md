@@ -45,6 +45,12 @@ To switch between the different demos, change the render instance near line 115 
 * `render_circles` - circles inside circles
 * `render_circles_fill` - filled circles inside circles
 
+### Fullscreen Mode
+
+To run in fullscreen mode, edit `main_demo.cpp` so that `FULLSCREEN = true`, then rebuild.
+
+You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.
+
 ## Installing Dependencies
 
 To build the simulations, you need:
