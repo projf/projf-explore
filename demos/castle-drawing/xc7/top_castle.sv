@@ -1,4 +1,4 @@
-// Project F: Castle Demo (Arty Pmod VGA)
+// Project F: Castle Drawing (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/castle-drawing/
 

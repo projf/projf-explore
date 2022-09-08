@@ -1,4 +1,4 @@
-// Project F: Castle Demo (Verilator SDL)
+// Project F: Castle Drawing (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/castle-drawing/
 

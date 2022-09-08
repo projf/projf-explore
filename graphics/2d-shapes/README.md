@@ -57,7 +57,7 @@ If Yosys reports "syntax error, unexpected TOK_ENUM", then your version is too o
 To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
-cd projf-explore/2d-shapes/xc7/vivado
+cd projf-explore/graphics/2d-shapes/xc7/vivado
 source ./create_project.tcl
 ```
 
@@ -92,7 +92,7 @@ It's straightforward to adapt the project for other Xilinx 7 Series boards:
 ```tcl
 set board_name <board>
 set fpga_part <fpga-part>
-cd projf-explore/2d-shapes/xc7/vivado
+cd projf-explore/graphics/2d-shapes/xc7/vivado
 source ./create_project.tcl
 ```
 

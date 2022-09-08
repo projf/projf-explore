@@ -1,6 +1,6 @@
-// Project F: 2D Shapes - Castle Demo Verilator C++
+// Project F: Castle Drawing - Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-shapes/
+// Learn more at https://projectf.io/posts/castle-drawing/
 
 #include <stdio.h>
 #include <SDL.h>
