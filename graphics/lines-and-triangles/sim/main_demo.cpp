@@ -10,6 +10,7 @@
 // screen dimensions
 const int H_RES = 640;
 const int V_RES = 480;
+const int FULLSCREEN = false;
 
 typedef struct Pixel {  // for SDL texture
     uint8_t a;  // transparency
@@ -38,6 +39,7 @@ int main(int argc, char* argv[]) {
         printf("Window creation failed: %s\n", SDL_GetError());
         return 1;
     }
+    if (FULLSCREEN) SDL_SetWindowFullscreen(sdl_window, SDL_WINDOW_FULLSCREEN);
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
