@@ -118,7 +118,7 @@ module top_demo (
         draw_oe <= 0;  // comment out to draw at full speed
         if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
             if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (frame_sys) draw_oe <= 1;  // draw one pixel per frame
+        end else if (line_sys) draw_oe <= 1;  // every screen line
     end
 
     // render shapes
