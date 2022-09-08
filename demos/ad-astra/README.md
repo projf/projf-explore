@@ -1,6 +1,6 @@
 # Ad Astra FPGA Demos
 
-These SystemVerilog demos use starfields and hardware sprites to create greetings demos. You can freely build on these [MIT licensed](../../LICENSE) designs. Have fun.
+These SystemVerilog demos use starfields and hardware sprites to create greetings demos.
 
 This demo has an associated Project F blog post:: [Ad Astra](https://projectf.io/posts/fpga-ad-astra/).  
 New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
