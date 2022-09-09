@@ -4,6 +4,8 @@ This folder accompanies the Project F blog post: **[2D Shapes](https://projectf.
 
 File layout:
 
+* `160x90` - render modules for 160x90 with 4 colours
+* `320x180` - render modules for 320x180 with 16 colours
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards

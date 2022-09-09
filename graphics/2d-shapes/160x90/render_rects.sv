@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Render Small Rectangles
+// Project F: 2D Shapes - Render Rectangles (2-bit 160x90)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_rects_sm #(
+module render_rects #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=2,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
@@ -38,8 +38,8 @@ module render_rects_sm #(
                 vy0 <=  10 + shape_id;
                 vx1 <= 130 - shape_id;
                 vy1 <=  80 - shape_id;
+                cidx <= shape_id;  // change colour for each shape
                 /* verilator lint_on WIDTH */
-                cidx <= shape_id[1:0];  // use lowest two bits for colour
             end
             DRAW: begin
                 draw_start <= 0;

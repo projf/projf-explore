@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Render Circles
+// Project F: 2D Shapes - Render Rectangles (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_circles #(
+module render_rects #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
@@ -21,9 +21,9 @@ module render_circles #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam SHAPE_CNT=8;  // number of shapes to draw
+    localparam SHAPE_CNT=64;  // number of shapes to draw
     logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vr0;  // shape coords
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
     // draw state machine
@@ -33,10 +33,13 @@ module render_circles #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                vx0 <= 160;
-                vy0 <=  90;
-                vr0 <=  80 - 4 * shape_id;
-                cidx <= 'hA;  // colour index
+                /* verilator lint_off WIDTH */
+                vx0 <=  60 + shape_id;
+                vy0 <=  20 + shape_id;
+                vx1 <= 260 - shape_id;
+                vy1 <= 160 - shape_id;
+                cidx <= shape_id;  // change colour for each shape
+                /* verilator lint_on WIDTH */
             end
             DRAW: begin
                 draw_start <= 0;
@@ -57,14 +60,15 @@ module render_circles #(
         if (rst) state <= IDLE;
     end
 
-    draw_circle #(.CORDW(CORDW)) draw_circle_inst (
+    draw_rectangle #(.CORDW(CORDW)) draw_rectangle_inst (
         .clk,
         .rst,
         .start(draw_start),
         .oe,
         .x0(vx0 * SCALE),
         .y0(vy0 * SCALE),
-        .r0(vr0 * SCALE),
+        .x1(vx1 * SCALE),
+        .y1(vy1 * SCALE),
         .x,
         .y,
         .drawing,

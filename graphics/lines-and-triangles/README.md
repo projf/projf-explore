@@ -4,6 +4,8 @@ This folder accompanies the Project F blog post: **[Lines and Triangles](https:/
 
 File layout:
 
+* `160x90` - render modules for 160x90 with 4 colours
+* `320x180` - render modules for 320x180 with 16 colours
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
@@ -12,7 +14,7 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 ## Demos
 
-There is one demo top module that can draw a line, cube, or triangles.
+There is one demo top module that can draw several shapes.
 
 To switch between the different demos, change the render instance near line 120 in `top_demo.sv`:
 

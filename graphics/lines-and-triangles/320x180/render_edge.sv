@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Render Filled Triangles
+// Project F: Lines and Triangles - Render Framebuffer Edge (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/fpga-shapes/
+// Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_triangles_fill #(
+module render_edge #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
@@ -21,9 +21,9 @@ module render_triangles_fill #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam SHAPE_CNT=3;  // number of shapes to draw
-    logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
+    localparam LINE_CNT=4;  // number of lines to draw
+    logic [$clog2(LINE_CNT):0] line_id;  // line identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
     logic draw_start, draw_done;  // drawing signals
 
     // draw state machine
@@ -33,34 +33,29 @@ module render_triangles_fill #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                case (shape_id)
+                cidx <= 'h3;  // colour index
+                case (line_id)
                     'd0: begin
-                        vx0 <=  60; vy0 <=  20;
-                        vx1 <= 280; vy1 <=  80;
-                        vx2 <= 160; vy2 <= 164;
-                        cidx <= 'h3;  // colour index
+                        vx0 <=   0; vy0 <=   0; vx1 <= 319; vy1 <=   0;
                     end
                     'd1: begin
-                        vx0 <=  70; vy0 <= 160;
-                        vx1 <= 220; vy1 <=  90;
-                        vx2 <= 170; vy2 <=  10;
-                        cidx <= 'h2;
+                        vx0 <= 319; vy0 <=   0; vx1 <= 319; vy1 <= 179;
                     end
-                    default: begin  // shape_id=2
-                        vx0 <=  22; vy0 <=  36;
-                        vx1 <=  62; vy1 <= 150;
-                        vx2 <=  98; vy2 <=  96;
-                        cidx <= 'h1;
+                    'd2: begin
+                        vx0 <= 319; vy0 <= 179; vx1 <=   0; vy1 <= 179;
+                    end
+                    default: begin  // line_id=3
+                        vx0 <=   0; vy0 <= 179; vx1 <=   0; vy1 <=   0;
                     end
                 endcase
             end
             DRAW: begin
                 draw_start <= 0;
                 if (draw_done) begin
-                    if (shape_id == SHAPE_CNT-1) begin
+                    if (line_id == LINE_CNT-1) begin
                         state <= DONE;
                     end else begin
-                        shape_id <= shape_id + 1;
+                        line_id <= line_id + 1;
                         state <= INIT;
                     end
                 end
@@ -71,7 +66,7 @@ module render_triangles_fill #(
         if (rst) state <= IDLE;
     end
 
-    draw_triangle_fill #(.CORDW(CORDW)) draw_triangle_inst (
+    draw_line #(.CORDW(CORDW)) draw_line_inst (
         .clk,
         .rst,
         .start(draw_start),
@@ -80,8 +75,6 @@ module render_triangles_fill #(
         .y0(vy0 * SCALE),
         .x1(vx1 * SCALE),
         .y1(vy1 * SCALE),
-        .x2(vx2 * SCALE),
-        .y2(vy2 * SCALE),
         .x,
         .y,
         .drawing,

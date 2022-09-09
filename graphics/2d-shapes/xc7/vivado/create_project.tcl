@@ -4,6 +4,9 @@
 
 puts "INFO: Project F - 2D Shapes Project Creation Script"
 
+# render module version
+set render_mods "320x180"
+
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
     set projf_fpga_part "xc7a35ticsg324-1L"
@@ -44,12 +47,12 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7/top_demo.sv"] \
-  [file normalize "${origin_dir}/render_circles_fill.sv"] \
-  [file normalize "${origin_dir}/render_circles.sv"] \
-  [file normalize "${origin_dir}/render_cube_fill.sv"] \
-  [file normalize "${origin_dir}/render_rects_fill.sv"] \
-  [file normalize "${origin_dir}/render_rects.sv"] \
-  [file normalize "${origin_dir}/render_triangles_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_circles_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_circles.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_cube_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_rects_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_rects.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_triangles_fill.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
@@ -134,6 +137,7 @@ set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]
 set_property -name "file_type" -value "XDC" -objects $constr_file_obj
 
 # unset Project F variables
+unset render_mods
 unset projf_board_name
 unset projf_fpga_part
 

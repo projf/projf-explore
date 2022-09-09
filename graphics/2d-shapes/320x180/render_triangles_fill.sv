@@ -1,11 +1,11 @@
-// Project F: 2D Shapes - Render Small Filled Cube
+// Project F: 2D Shapes - Render Filled Triangles (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_cube_fill_sm #(
+module render_triangles_fill #(
     parameter CORDW=16,  // signed coordinate width (bits)
     parameter CIDXW=4,   // colour index width (bits)
     parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
@@ -21,7 +21,7 @@ module render_cube_fill_sm #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam SHAPE_CNT=6;  // number of shapes to draw
+    localparam SHAPE_CNT=3;  // number of shapes to draw
     logic [$clog2(SHAPE_CNT)-1:0] shape_id;  // shape identifier
     logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, draw_done;  // drawing signals
@@ -35,40 +35,22 @@ module render_cube_fill_sm #(
                 state <= DRAW;
                 case (shape_id)
                     'd0: begin
-                        vx0 <=  65; vy0 <=  30;
-                        vx1 <= 115; vy1 <=  30;
-                        vx2 <= 115; vy2 <=  80;
-                        cidx <= 'h1;  // colour index
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        cidx <= 'h3;  // colour index
                     end
                     'd1: begin
-                        vx0 <=  65; vy0 <=  30;
-                        vx1 <= 115; vy1 <=  80;
-                        vx2 <=  65; vy2 <=  80;
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
                         cidx <= 'h2;
                     end
-                    'd2: begin
-                        vx0 <=  65; vy0 <=  30;
-                        vx1 <=  45; vy1 <=  60;
-                        vx2 <=  65; vy2 <=  80;
+                    default: begin  // shape_id=2
+                        vx0 <=  22; vy0 <=  36;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
                         cidx <= 'h1;
-                    end
-                    'd3: begin
-                        vx0 <=  45; vy0 <=  10;
-                        vx1 <=  65; vy1 <=  30;
-                        vx2 <=  45; vy2 <=  60;
-                        cidx <= 'h2;
-                    end
-                    'd4: begin
-                        vx0 <=  45; vy0 <=  10;
-                        vx1 <=  95; vy1 <=  10;
-                        vx2 <=  65; vy2 <=  30;
-                        cidx <= 'h1;
-                    end
-                    default: begin  // shape_id=5
-                        vx0 <=  95; vy0 <=  10;
-                        vx1 <=  65; vy1 <=  30;
-                        vx2 <= 115; vy2 <=  30;
-                        cidx <= 'h2;
                     end
                 endcase
             end

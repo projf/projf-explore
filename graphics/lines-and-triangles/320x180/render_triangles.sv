@@ -1,14 +1,14 @@
-// Project F: Lines and Triangles - Render Small Cube
+// Project F: Lines and Triangles - Render Triangles (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_cube_sm #(
+module render_triangles #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=2,   // colour index width (bits)
-    parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
+    parameter CIDXW=4,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
     ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
@@ -21,9 +21,9 @@ module render_cube_sm #(
     output      logic done      // drawing is complete (high for one tick)
     );
 
-    localparam LINE_CNT=9;  // number of lines to draw
-    logic [$clog2(LINE_CNT):0] line_id;  // line identifier
-    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1;  // line coords
+    localparam SHAPE_CNT=3;  // number of shapes to draw
+    logic [$clog2(SHAPE_CNT):0] shape_id;  // shape identifier
+    logic signed [CORDW-1:0] vx0, vy0, vx1, vy1, vx2, vy2;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
     // draw state machine
@@ -33,44 +33,34 @@ module render_cube_sm #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
-                cidx <= 'h2;  // colour index
-                case (line_id)
+                case (shape_id)
                     'd0: begin
-                        vx0 <=  65; vy0 <=  30; vx1 <= 115; vy1 <=  30;
+                        vx0 <=  60; vy0 <=  20;
+                        vx1 <= 280; vy1 <=  80;
+                        vx2 <= 160; vy2 <= 164;
+                        cidx <= 'h3;  // colour index
                     end
                     'd1: begin
-                        vx0 <= 115; vy0 <=  30; vx1 <= 115; vy1 <=  80;
+                        vx0 <=  70; vy0 <= 160;
+                        vx1 <= 220; vy1 <=  90;
+                        vx2 <= 170; vy2 <=  10;
+                        cidx <= 'h2;
                     end
-                    'd2: begin
-                        vx0 <= 115; vy0 <=  80; vx1 <=  65; vy1 <=  80;
-                    end
-                    'd3: begin
-                        vx0 <=  65; vy0 <=  80; vx1 <=  65; vy1 <=  30;
-                    end
-                    'd4: begin
-                        vx0 <=  65; vy0 <=  80; vx1 <=  45; vy1 <=  60;
-                    end
-                    'd5: begin
-                        vx0 <=  45; vy0 <=  60; vx1 <=  45; vy1 <=  10;
-                    end
-                    'd6: begin
-                        vx0 <=  45; vy0 <=  10; vx1 <=  65; vy1 <=  30;
-                    end
-                    'd7: begin
-                        vx0 <=  45; vy0 <=  10; vx1 <=  95; vy1 <=  10;
-                    end
-                    default: begin  // shape_id=8
-                        vx0 <=  95; vy0 <=  10; vx1 <= 115; vy1 <=  30;
+                    default: begin  // shape_id=2
+                        vx0 <=  22; vy0 <=  36;
+                        vx1 <=  62; vy1 <= 150;
+                        vx2 <=  98; vy2 <=  96;
+                        cidx <= 'h1;
                     end
                 endcase
             end
             DRAW: begin
                 draw_start <= 0;
                 if (draw_done) begin
-                    if (line_id == LINE_CNT-1) begin
+                    if (shape_id == SHAPE_CNT-1) begin
                         state <= DONE;
                     end else begin
-                        line_id <= line_id + 1;
+                        shape_id <= shape_id + 1;
                         state <= INIT;
                     end
                 end
@@ -81,7 +71,7 @@ module render_cube_sm #(
         if (rst) state <= IDLE;
     end
 
-    draw_line #(.CORDW(CORDW)) draw_line_inst (
+    draw_triangle #(.CORDW(CORDW)) draw_triangle_inst (
         .clk,
         .rst,
         .start(draw_start),
@@ -90,6 +80,8 @@ module render_cube_sm #(
         .y0(vy0 * SCALE),
         .x1(vx1 * SCALE),
         .y1(vy1 * SCALE),
+        .x2(vx2 * SCALE),
+        .y2(vy2 * SCALE),
         .x,
         .y,
         .drawing,

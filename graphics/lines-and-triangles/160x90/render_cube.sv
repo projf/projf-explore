@@ -1,4 +1,4 @@
-// Project F: Lines and Triangles - Render Cube
+// Project F: Lines and Triangles - Render Cube (2-bit 160x90)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/lines-and-triangles/
 
@@ -7,8 +7,8 @@
 
 module render_cube #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=4,   // colour index width (bits)
-    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
+    parameter CIDXW=2,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
     ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
@@ -36,31 +36,31 @@ module render_cube #(
                 cidx <= 'h2;  // colour index
                 case (line_id)
                     'd0: begin
-                        vx0 <= 130; vy0 <=  60; vx1 <= 230; vy1 <=  60;
+                        vx0 <=  65; vy0 <=  30; vx1 <= 115; vy1 <=  30;
                     end
                     'd1: begin
-                        vx0 <= 230; vy0 <=  60; vx1 <= 230; vy1 <= 160;
+                        vx0 <= 115; vy0 <=  30; vx1 <= 115; vy1 <=  80;
                     end
                     'd2: begin
-                        vx0 <= 230; vy0 <= 160; vx1 <= 130; vy1 <= 160;
+                        vx0 <= 115; vy0 <=  80; vx1 <=  65; vy1 <=  80;
                     end
                     'd3: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <= 130; vy1 <=  60;
+                        vx0 <=  65; vy0 <=  80; vx1 <=  65; vy1 <=  30;
                     end
                     'd4: begin
-                        vx0 <= 130; vy0 <= 160; vx1 <=  90; vy1 <= 120;
+                        vx0 <=  65; vy0 <=  80; vx1 <=  45; vy1 <=  60;
                     end
                     'd5: begin
-                        vx0 <=  90; vy0 <= 120; vx1 <=  90; vy1 <=  20;
+                        vx0 <=  45; vy0 <=  60; vx1 <=  45; vy1 <=  10;
                     end
                     'd6: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 130; vy1 <=  60;
+                        vx0 <=  45; vy0 <=  10; vx1 <=  65; vy1 <=  30;
                     end
                     'd7: begin
-                        vx0 <=  90; vy0 <=  20; vx1 <= 190; vy1 <=  20;
+                        vx0 <=  45; vy0 <=  10; vx1 <=  95; vy1 <=  10;
                     end
-                    default: begin  // line_id=8
-                        vx0 <= 190; vy0 <=  20; vx1 <= 230; vy1 <=  60;
+                    default: begin  // shape_id=8
+                        vx0 <=  95; vy0 <=  10; vx1 <= 115; vy1 <=  30;
                     end
                 endcase
             end

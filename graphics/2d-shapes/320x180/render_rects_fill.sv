@@ -1,14 +1,14 @@
-// Project F: 2D Shapes - Render Small Filled Rectangles
+// Project F: 2D Shapes - Render Filled Rectangles (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_rects_fill_sm #(
+module render_rects_fill #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=2,   // colour index width (bits)
-    parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
+    parameter CIDXW=4,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
     ) (  
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
@@ -34,12 +34,12 @@ module render_rects_fill_sm #(
                 draw_start <= 1;
                 state <= DRAW;
                 /* verilator lint_off WIDTH */
-                vx0 <=  40 + 2 * shape_id;
-                vy0 <=  10 + 2 * shape_id;
-                vx1 <=  80 + 2 * shape_id;
-                vy1 <=  50 + 2 * shape_id;
-                cidx <= shape_id + 1;  // skip 1st colour (background)
+                vx0 <=  80 + 4 * shape_id;
+                vy0 <=  20 + 4 * shape_id;
+                vx1 <= 160 + 4 * shape_id;
+                vy1 <= 100 + 4 * shape_id;
                 /* verilator lint_on WIDTH */
+                cidx <= shape_id + 1;  // skip 1st colour (background)
             end
             DRAW: begin
                 draw_start <= 0;
