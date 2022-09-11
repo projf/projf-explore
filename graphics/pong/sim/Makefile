@@ -15,7 +15,7 @@ pong: pong.exe
 	make -C ./obj_dir -f Vtop_$<
 
 %.mk: top_%.sv
-	verilator -I../ -I${PATH_LIB} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
+	verilator -I.. -I${PATH_LIB} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
 all: pong

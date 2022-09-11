@@ -16,7 +16,7 @@ bounce: bounce.exe
 	make -C ./obj_dir -f Vtop_$<
 
 %.mk: top_%.sv
-	verilator -I../ -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
+	verilator -I.. -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
 all: rasterbars hitomezashi hello colour_cycle bounce

@@ -47,7 +47,7 @@ Run the simulation executables from `obj_dir`:
 If you want to manually build a simulation, here's an example for 'rasterbars':
 
 ```shell
-verilator -I../ -cc top_rasterbars.sv --exe main_rasterbars.cpp -o rasterbars \
+verilator -I.. -cc top_rasterbars.sv --exe main_rasterbars.cpp -o rasterbars \
     -CFLAGS "$(sdl2-config --cflags)" -LDFLAGS "$(sdl2-config --libs)"
 
 make -C ./obj_dir -f Vtop_rasterbars.mk

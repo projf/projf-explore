@@ -18,7 +18,8 @@ if [ -d "${DIR}/sim" ]; then
             -I${LIB}/essential \
             -I${LIB}/graphics \
             -I${LIB}/maths \
-            -I${LIB}/memory $f;
+            -I${LIB}/memory \
+            -I${DIR}/320x180 $f;
     done
 fi
 
@@ -34,6 +35,7 @@ if [ -d "${DIR}/ice40" ]; then
             -I${LIB}/graphics  -I${LIB}/graphics/ice40 \
             -I${LIB}/maths     -I${LIB}/maths/ice40 \
             -I${LIB}/memory    -I${LIB}/memory/ice40 \
+            -I${DIR}/160x90 \
             -I${LIB}/null/ice40 $f;
     done
 fi
@@ -50,6 +52,7 @@ if [ -d "${DIR}/xc7" ]; then
             -I${LIB}/graphics  -I${LIB}/graphics/xc7 \
             -I${LIB}/maths     -I${LIB}/maths/xc7 \
             -I${LIB}/memory    -I${LIB}/memory/xc7 \
+            -I${DIR}/320x180 \
             -I${LIB}/null/xc7 $f;
     done
 fi
@@ -66,6 +69,7 @@ if [ -d "${DIR}/xc7-hd" ]; then
             -I${LIB}/graphics  -I${LIB}/graphics/xc7 \
             -I${LIB}/maths     -I${LIB}/maths/xc7 \
             -I${LIB}/memory    -I${LIB}/memory/xc7 \
+            -I${DIR}/640x360 \
             -I${LIB}/null/xc7 $f;
     done
 fi

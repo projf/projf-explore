@@ -1,8 +1,11 @@
 # Project F: 2D Shapes - Create Vivado Project
 # (C)2022 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# Learn more at https://projectf.io/posts/fpga-shapes/
 
 puts "INFO: Project F - 2D Shapes Project Creation Script"
+
+# render module version
+set render_mods "320x180"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
@@ -43,29 +46,31 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_castle.sv"] \
-  [file normalize "${origin_dir}/xc7/top_circles.sv"] \
-  [file normalize "${origin_dir}/xc7/top_cube_fill.sv"] \
-  [file normalize "${origin_dir}/xc7/top_rainbow.sv"] \
-  [file normalize "${origin_dir}/xc7/top_rectangles.sv"] \
-  [file normalize "${origin_dir}/xc7/top_rectangles_fill.sv"] \
-  [file normalize "${origin_dir}/xc7/top_triangles_fill.sv"] \
+  [file normalize "${origin_dir}/xc7/top_demo.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_circles_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_circles.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_cube_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_rects_fill.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_rects.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_triangles_fill.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_rectangles" -objects $fs_design_obj
+set_property -name "top" -value "top_demo" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
-  [file normalize "${lib_dir}/clock/xd.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
+  [file normalize "${lib_dir}/clock/xd2.sv"] \
+  [file normalize "${lib_dir}/display/bitmap_addr.sv"] \
+  [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
-  [file normalize "${lib_dir}/display/linebuffer.sv"] \
+  [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
   [file normalize "${lib_dir}/graphics/draw_circle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_circle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
@@ -73,15 +78,13 @@ set design_sources [list \
   [file normalize "${lib_dir}/graphics/draw_rectangle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
-  [file normalize "${lib_dir}/memory/rom_async.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${lib_dir}/res/test/test_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
+  [file normalize "${lib_dir}/res/palettes/sweetie16_4b.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
@@ -134,6 +137,7 @@ set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]
 set_property -name "file_type" -value "XDC" -objects $constr_file_obj
 
 # unset Project F variables
+unset render_mods
 unset projf_board_name
 unset projf_fpga_part
 

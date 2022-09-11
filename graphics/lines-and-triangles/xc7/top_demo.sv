@@ -80,6 +80,7 @@ module top_demo (
     // pixel read and write addresses and colours
     logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
     logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic fb_we;  // framebuffer write enable
 
     // framebuffer memory
     bram_sdp #(
@@ -89,7 +90,7 @@ module top_demo (
     ) bram_inst (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we_sr[0]),
+        .we(fb_we),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
@@ -115,16 +116,15 @@ module top_demo (
     logic draw_oe;  // draw requested
     always_ff @(posedge clk_sys) begin
         draw_oe <= 0;  // comment out to draw at full speed
-        if (frame_sys) begin  // once per frame
-            if (cnt_frame_wait != FRAME_WAIT-1) begin
-                cnt_frame_wait <= cnt_frame_wait + 1;
-            end else draw_oe <= 1;  // request drawing
-        end
+        if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
+            if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
+        end else if (frame_sys) draw_oe <= 1;  // draw one pixel per frame
     end
 
     // render line/edge/cube/triangles
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
+    logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
     render_line #(  // switch module name to change demo
         .CORDW(CORDW),
@@ -157,9 +157,7 @@ module top_demo (
         .offx(0),
         .offy(0),
         .addr(fb_addr_write),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .clip()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .clip
     );
 
     // delay write enable to match address calculation
@@ -169,6 +167,7 @@ module top_demo (
         fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
     end
+    always_comb fb_we = fb_we_sr[0] && !clip;  // check for clipping
 
     //
     // read framebuffer for display output via linebuffer
@@ -191,7 +190,7 @@ module top_demo (
     end
 
     // enable linebuffer input
-    logic lb_en_in;  // enable linebuffer input
+    logic lb_en_in;
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;  // horizontal pixel counter
     always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 

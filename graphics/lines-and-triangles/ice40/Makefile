@@ -2,6 +2,9 @@
 ## (C)2022 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/lines-and-triangles/
 
+# render module version
+RENDER_MODS = 160x90
+
 # configuration
 SHELL = /bin/sh
 FPGA_PKG = sg48
@@ -16,13 +19,9 @@ ADD_SRC += ${PATH_LIB}/display/bitmap_addr.sv
 ADD_SRC += ${PATH_LIB}/display/clut_simple.sv
 ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ${PATH_LIB}/display/linebuffer_simple.sv
-ADD_SRC += ${PATH_LIB}/graphics/draw_line.sv
-ADD_SRC += ${PATH_LIB}/graphics/draw_triangle.sv
+ADD_SRC += ${PATH_LIB}/graphics/draw_*.sv
 ADD_SRC += ${PATH_LIB}/memory/bram_sdp.sv
-ADD_SRC += ../render_cube_sm.sv
-ADD_SRC += ../render_edge_sm.sv
-ADD_SRC += ../render_line_sm.sv
-ADD_SRC += ../render_triangles_sm.sv
+ADD_SRC += ../${RENDER_MODS}/render_*.sv
 
 demo: demo.rpt demo.bin
 

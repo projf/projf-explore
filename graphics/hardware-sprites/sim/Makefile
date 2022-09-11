@@ -21,7 +21,7 @@ hedgehog: hedgehog.exe
 	make -C ./obj_dir -f Vtop_$<
 
 %.mk: top_%.sv
-	verilator -I../ ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
+	verilator -I.. ${PROJF_LIBS} -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
 		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
 all: tinyf_inline tinyf_rom tinyf_scale tinyf_move hourglass hedgehog
