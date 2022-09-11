@@ -174,7 +174,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
     end
 
     // enable linebuffer input
-    logic lb_en_in;  // enable linebuffer input
+    logic lb_en_in;
     logic [$clog2(FB_WIDTH)-1:0] cnt_lbx;  // horizontal pixel counter
     always_comb lb_en_in = (lb_line && cnt_lb_line == 0 && cnt_lbx < FB_WIDTH);
 
