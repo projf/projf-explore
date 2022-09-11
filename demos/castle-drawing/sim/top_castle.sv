@@ -265,7 +265,7 @@ module top_castle #(parameter CORDW=16) (  // signed coordinate width (bits)
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width (assumes CHANW=4)
+        sdl_r <= {2{show_bg ? bg_colr[11:8] : paint_r}};  // double signal width
         sdl_g <= {2{show_bg ? bg_colr[7:4]  : paint_g}};
         sdl_b <= {2{show_bg ? bg_colr[3:0]  : paint_b}};
     end
