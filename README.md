@@ -84,3 +84,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
 I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+
+## Thank You, Sponsors!
+
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [Juri Tsirihhov](https://github.com/jutsir), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
