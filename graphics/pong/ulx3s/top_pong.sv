@@ -59,7 +59,7 @@ module top_pong (
     localparam V_RES = 480;  // vertical screen resolution
 
     logic frame;  // high for one clock tick at the start of vertical blanking
-    always_comb frame = (sy == V_RES && sx == 0);
+    always_comb frame = (sy == V_RES - 1 && sx == 0);
 
     // scores
     logic [3:0] score_l;  // left-side score
