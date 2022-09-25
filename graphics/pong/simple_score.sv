@@ -52,8 +52,8 @@ module simple_score #(
     // determine character pixel address from screen position (scale 4x)
     always_comb begin
         /* verilator lint_off WIDTH */
-        if (score_l_region) pix_addr = (sx-7)/4 + 3*((sy-8)/4);
-        else if (score_r_region) pix_addr = (sx-(H_RES-22))/4 + 3*((sy-8)/4);
+        if (score_l_region) pix_addr = (sx-7)/4 + ((((sy-8)/4) << 1) + ((sy-8)/4));
+        else if (score_r_region) pix_addr = (sx-(H_RES-22))/4 + ((((sy-8)/4) << 1) + ((sy-8)/4));
         else pix_addr = 0;
         /* verilator lint_on WIDTH */
     end
