@@ -21,12 +21,12 @@ module top_pong_1080p (
     localparam WIN        =  4;  // score needed to win a game (max 9)
     localparam SPEEDUP    =  5*4;  // speed up ball after this many shots (max 16)
     localparam BALL_SIZE  =  8*4;  // ball size in pixels
-    localparam BALL_ISPX  =  5*4;  // initial horizontal ball speed
-    localparam BALL_ISPY  =  3*4;  // initial vertical ball speed
+    localparam BALL_ISPX  =  5*6;  // initial horizontal ball speed
+    localparam BALL_ISPY  =  3*6;  // initial vertical ball speed
     localparam PAD_HEIGHT = 48*4;  // paddle height in pixels
     localparam PAD_WIDTH  = 10*4;  // paddle width in pixels
     localparam PAD_OFFS   = 32*4;  // paddle distance from edge of screen in pixels
-    localparam PAD_SPY    =  3*4;  // vertical paddle speed
+    localparam PAD_SPY    =  3*6;  // vertical paddle speed
 
     // generate pixel clock
     logic clk_pix;
@@ -237,7 +237,8 @@ module top_pong_1080p (
     logic pix_score;  // pixel of score char
     simple_score #(
 		.H_RES (H_RES),
-		.CORDW (CORDW)
+		.CORDW (CORDW),
+		.LOG_SCALE (2)
 	) simple_score_inst (
         .clk_pix,
         .sx,

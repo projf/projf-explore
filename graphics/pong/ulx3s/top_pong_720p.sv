@@ -237,7 +237,8 @@ module top_pong_720p (
     logic pix_score;  // pixel of score char
     simple_score #(
 		.H_RES (H_RES),
-		.CORDW (CORDW)
+		.CORDW (CORDW),
+		.LOG_SCALE (1)
 	) simple_score_inst (
         .clk_pix,
         .sx,
