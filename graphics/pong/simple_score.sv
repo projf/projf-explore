@@ -7,7 +7,8 @@
 
 module simple_score #(
     parameter CORDW=10,                // coordinate width
-    parameter H_RES=640                // horizontal screen resolution
+    parameter H_RES=640,               // horizontal screen resolution
+	parameter LOG_SCALE=0
     ) (
     input  wire logic clk_pix,         // pixel clock
     input  wire logic [CORDW-1:0] sx,  // horizontal screen position
@@ -16,6 +17,11 @@ module simple_score #(
     input  wire logic [3:0] score_r,   // score for right-side player (0-9)
     output      logic pix              // draw pixel at this position?
     );
+
+	wire [CORDW-1:0] sx_scaled = sx >> LOG_SCALE;
+	wire [CORDW-1:0] sy_scaled = sy >> LOG_SCALE;
+
+	localparam H_RES_SCALED = H_RES >> LOG_SCALE;
 
     // number characters: big-endian vector, so we can write pixels left to right
     /* verilator lint_off LITENDIAN */
@@ -45,15 +51,15 @@ module simple_score #(
     // subtract one from 'sx' to account for latency for registering 'pix'
     logic score_l_region, score_r_region;
     always_comb begin
-        score_l_region = (sx >= 7 && sx < 19 && sy >= 8 && sy < 28);
-        score_r_region = (sx >= H_RES-22 && sx < H_RES-10 && sy >= 8 && sy < 28);
+        score_l_region = (sx_scaled >= 7 && sx_scaled < 19 && sy_scaled >= 8 && sy_scaled < 28);
+        score_r_region = (sx_scaled >= H_RES_SCALED-22 && sx_scaled < H_RES_SCALED-10 && sy_scaled >= 8 && sy_scaled < 28);
     end
 
     // determine character pixel address from screen position (scale 4x)
     always_comb begin
         /* verilator lint_off WIDTH */
-        if (score_l_region) pix_addr = (sx-7)/4 + ((((sy-8)/4) << 1) + ((sy-8)/4));
-        else if (score_r_region) pix_addr = (sx-(H_RES-22))/4 + ((((sy-8)/4) << 1) + ((sy-8)/4));
+        if (score_l_region) pix_addr = (sx_scaled-7)/4 + ((((sy_scaled-8)/4) << 1) + ((sy_scaled-8)/4));
+        else if (score_r_region) pix_addr = (sx_scaled-(H_RES_SCALED-22))/4 + ((((sy_scaled-8)/4) << 1) + ((sy_scaled-8)/4));
         else pix_addr = 0;
         /* verilator lint_on WIDTH */
     end
