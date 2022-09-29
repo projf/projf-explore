@@ -6,9 +6,12 @@
 // diamond 3.8-3.9 is untested
 // diamond 3.10 or higher is likely to abort with error about unable to use feedback signal
 // cause of this could be from wrong CPHASE/FPHASE parameters
+//
+// TODO: Add reset
 module clock_480p
 (
 	input clk_25mhz, // 25 MHz, 0 deg
+	input wire logic rst, 
 	output clk_tmds_half, // 125 MHz, 0 deg
 	output clk_25m, // 25 MHz, 0 deg
 	output clk_pix_locked
