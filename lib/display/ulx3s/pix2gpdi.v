@@ -29,16 +29,20 @@ module pix2gpdi(
 	tmds_encoder encode_G(.clk(clk_pix), .VD(green), .CD(2'b00)        , .VDE(de), .TMDS(tmds_green));
 	tmds_encoder encode_B(.clk(clk_pix), .VD(blue ), .CD({vsync,hsync}), .VDE(de), .TMDS(tmds_blue));
 
-	reg [4:0] tmds_mod5=1;
+	reg [9:0] tmds_red_r, tmds_green_r, tmds_blue_r;
+	always @(posedge clk_pix)
+		{tmds_red_r, tmds_green_r, tmds_blue_r} <= {tmds_red, tmds_green, tmds_blue};
+
+	reg [4:0] tmds_mod5=2;
 	always @(posedge clk_tmds_half) tmds_mod5 <= {tmds_mod5[3:0],tmds_mod5[4]};
 	wire tmds_shift_load = tmds_mod5[4];
 
 // Shifter now shifts two bits at each clock
 reg [9:0] tmds_shift_red=0, tmds_shift_green=0, tmds_shift_blue=0;
 always @(posedge clk_tmds_half) begin
-	tmds_shift_red   <= tmds_shift_load ? tmds_red   : tmds_shift_red  [9:2];
-	tmds_shift_green <= tmds_shift_load ? tmds_green : tmds_shift_green[9:2];
-	tmds_shift_blue  <= tmds_shift_load ? tmds_blue  : tmds_shift_blue [9:2];
+	tmds_shift_red   <= tmds_shift_load ? tmds_red_r   : tmds_shift_red  [9:2];
+	tmds_shift_green <= tmds_shift_load ? tmds_green_r : tmds_shift_green[9:2];
+	tmds_shift_blue  <= tmds_shift_load ? tmds_blue_r  : tmds_shift_blue [9:2];
 end
 
 // DDR serializers: they send D0 at the rising edge and D1 at the falling edge.
