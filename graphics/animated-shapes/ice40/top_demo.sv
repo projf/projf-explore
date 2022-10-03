@@ -62,7 +62,7 @@ module top_demo (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 2;        // colour index width (bits)
-    localparam PAL_FILE = {LIB_RES,"/palettes/teleport16_4b.mem"};  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/teleport4_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -275,14 +275,14 @@ module top_demo (
     logic [COLRW-1:0] fb_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
-        .CIDXW(2*CIDXW),  // CIDXW is 2-bit on iCE40
+        .CIDXW(CIDXW), 
         .F_PAL(PAL_FILE)
         ) clut_instance (
         .clk_write(clk_pix),
         .clk_read(clk_pix),
         .we(0),
         .cidx_write(0),
-        .cidx_read({2'b00,lb_colr_out}),  // lb_colr_out is 2-bit on iCE40
+        .cidx_read(lb_colr_out),
         .colr_in(0),
         .colr_out(fb_pix_colr)
     );

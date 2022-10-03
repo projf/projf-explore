@@ -25,7 +25,7 @@ module render_square_colr #(
     localparam SP =   1;  // speed pixels/frame
     localparam BW = 320;  // bounce width
     localparam BH = 180;  // bounce height
-    localparam COLR_CHANGE = 6;  // change colour every N draws
+    localparam COLR_CHANGE = 12;  // change colour every N draws
 
     logic [$clog2(COLR_CHANGE)-1:0] cnt_colr;
 
