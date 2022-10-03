@@ -6,4 +6,4 @@ _More details to follow._
 
 ## 16 Colour Palettes
 
-![](../../doc/img/palettes-16.png?raw=true "")
+![](../../../doc/img/palettes-16.png?raw=true "")
