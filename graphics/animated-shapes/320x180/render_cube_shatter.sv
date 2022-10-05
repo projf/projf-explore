@@ -71,41 +71,41 @@ module render_cube_shatter #(
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
-                    'd0: begin  // moves in from right - DONE
+                    'd0: begin  // move in from right
                         vx0 <= 160 + offs; vy0 <=  90;
                         vx1 <= 240 + offs; vy1 <=  90;
                         vx2 <= 240 + offs; vy2 <= 170;
-                        cidx <= (offs == 0) ? 'h1 : 'h2;  // pink
+                        cidx <= (offs == 0) ? 'h4 : 'h5;  // orange
                     end
-                    'd1: begin  // moves in from bottom-right
+                    'd1: begin  // move in from bottom-right
                         vx0 <= 160 + offs; vy0 <=  90 + offs;
                         vx1 <= 240 + offs; vy1 <= 170 + offs;
                         vx2 <= 160 + offs; vy2 <= 170 + offs;
-                        cidx <= (offs == 0) ? 'h1 : 'h2;  // pink
+                        cidx <= (offs == 0) ? 'h4 : 'h5;  // orange
                     end
-                    'd2: begin  // moves in from bottom-left
+                    'd2: begin  // move in from bottom-left
                         vx0 <= 160 - offs; vy0 <=  90 + offs;
                         vx1 <= 120 - offs; vy1 <= 140 + offs;
                         vx2 <= 160 - offs; vy2 <= 170 + offs;
-                        cidx <= (offs == 0) ? 'hA : 'h8;  // green
+                        cidx <= (offs == 0) ? 'hA : 'h9;  // green
                     end
-                    'd3: begin  // moves in from left
+                    'd3: begin  // move in from left
                         vx0 <= 120 - offs; vy0 <=  60;
                         vx1 <= 160 - offs; vy1 <=  90;
                         vx2 <= 120 - offs; vy2 <= 140;
-                        cidx <= (offs == 0) ? 'hA : 'h8;  // green
+                        cidx <= (offs == 0) ? 'hA : 'h9;  // green
                     end
-                    'd4: begin  // moves in from top
+                    'd4: begin  // move in from top
                         vx0 <= 120; vy0 <=  60 - offs;
                         vx1 <= 200; vy1 <=  60 - offs;
                         vx2 <= 160; vy2 <=  90 - offs;
-                        cidx <= (offs == 0) ? 'hB : 'hC;  // blue
+                        cidx <= (offs == 0) ? 'hD : 'hC;  // blue
                     end
-                    default: begin  // shape_id=5 moves in from top-right
+                    default: begin  // shape_id=5: move in from top-right
                         vx0 <= 200 + offs; vy0 <=  60 - offs;
                         vx1 <= 160 + offs; vy1 <=  90 - offs;
                         vx2 <= 240 + offs; vy2 <=  90 - offs;
-                        cidx <= (offs == 0) ? 'hB : 'hC;  // blue
+                        cidx <= (offs == 0) ? 'hD : 'hC;  // blue
                     end
                 endcase
             end

@@ -71,37 +71,37 @@ module render_cube_shatter #(
                 draw_start <= 1;
                 state <= DRAW;
                 case (shape_id)
-                    'd0: begin  // moves in from right - DONE
+                    'd0: begin  // move in from right
                         vx0 <=  80 + offs; vy0 <=  45;
                         vx1 <= 120 + offs; vy1 <=  45;
                         vx2 <= 120 + offs; vy2 <=  85;
                         cidx <= 'h1;
                     end
-                    'd1: begin  // moves in from bottom-right
+                    'd1: begin  // move in from bottom-right
                         vx0 <=  80 + offs; vy0 <=  45 + offs;
                         vx1 <= 120 + offs; vy1 <=  85 + offs;
                         vx2 <=  80 + offs; vy2 <=  85 + offs;
                         cidx <= 'h1;
                     end
-                    'd2: begin  // moves in from bottom-left
+                    'd2: begin  // move in from bottom-left
                         vx0 <=  80 - offs; vy0 <=  45 + offs;
                         vx1 <=  60 - offs; vy1 <=  70 + offs;
                         vx2 <=  80 - offs; vy2 <=  85 + offs;
                         cidx <= 'h2;
                     end
-                    'd3: begin  // moves in from left
+                    'd3: begin  // move in from left
                         vx0 <=  60 - offs; vy0 <=  30;
                         vx1 <=  80 - offs; vy1 <=  45;
                         vx2 <=  60 - offs; vy2 <=  70;
                         cidx <= 'h2;
                     end
-                    'd4: begin  // moves in from top
+                    'd4: begin  // move in from top
                         vx0 <=  60; vy0 <=  30 - offs;
                         vx1 <= 100; vy1 <=  30 - offs;
                         vx2 <=  80; vy2 <=  45 - offs;
                         cidx <= 'h3;
                     end
-                    default: begin  // shape_id=5 moves in from top-right
+                    default: begin  // shape_id=5: move in from top-right
                         vx0 <= 100 + offs; vy0 <=  30 - offs;
                         vx1 <=  80 + offs; vy1 <=  45 - offs;
                         vx2 <= 120 + offs; vy2 <=  45 - offs;
