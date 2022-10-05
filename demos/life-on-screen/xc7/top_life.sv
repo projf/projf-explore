@@ -53,8 +53,8 @@ module top_life (
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_100m),
-                 .rst_i(1'b0), .rst_o(1'b0), .i(frame), .o(frame_sys));
+    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_100m),
+        .flag_src(frame), .flag_dst(frame_sys));
 
     // life signals
     /* verilator lint_off UNUSED */
