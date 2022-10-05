@@ -1,14 +1,14 @@
-// Project F: Animated Shapes - Render Cube Pieces (2-bit 160x90)
+// Project F: Animated Shapes - Render Cube Shatter (4-bit 320x180)
 // (C)2022 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module render_cube_pieces #(
+module render_cube_shatter #(
     parameter CORDW=16,  // signed coordinate width (bits)
-    parameter CIDXW=2,   // colour index width (bits)
-    parameter SCALE=1    // drawing scale: 1=160x90, 2=320x180, 4=640x360, 8=1280x720
+    parameter CIDXW=4,   // colour index width (bits)
+    parameter SCALE=1    // drawing scale: 1=320x180, 2=640x360, 4=1280x720
     ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
@@ -27,7 +27,7 @@ module render_cube_pieces #(
     logic draw_start, draw_done;  // drawing signals
 
     // animate triangle coordinates
-    localparam MAX_OFFS   =  80;  // maximum pixels to move
+    localparam MAX_OFFS   = 160;  // maximum pixels to move
     localparam WAIT_STEPS = 120;  // steps to wait before moving
     logic [CORDW-1:0] offs;       // animation offset
     logic [$clog2(WAIT_STEPS)-1:0] cnt_wait;
@@ -40,7 +40,7 @@ module render_cube_pieces #(
                     if (offs < MAX_OFFS/8) begin  // start slow
                         offs <= (!dir) ? offs + 1 : offs - 1;
                     end else begin
-                        offs <= (!dir) ? offs + 2 : offs - 2;
+                        offs <= (!dir) ? offs + 3 : offs - 3;
                     end
 
                     if ((!dir && offs >= MAX_OFFS-1) || (dir && offs <= 1)) begin
@@ -72,40 +72,40 @@ module render_cube_pieces #(
                 state <= DRAW;
                 case (shape_id)
                     'd0: begin  // moves in from right - DONE
-                        vx0 <=  80 + offs; vy0 <=  45;
-                        vx1 <= 120 + offs; vy1 <=  45;
-                        vx2 <= 120 + offs; vy2 <=  85;
-                        cidx <= 'h1;
+                        vx0 <= 160 + offs; vy0 <=  90;
+                        vx1 <= 240 + offs; vy1 <=  90;
+                        vx2 <= 240 + offs; vy2 <= 170;
+                        cidx <= (offs == 0) ? 'h1 : 'h2;  // pink
                     end
                     'd1: begin  // moves in from bottom-right
-                        vx0 <=  80 + offs; vy0 <=  45 + offs;
-                        vx1 <= 120 + offs; vy1 <=  85 + offs;
-                        vx2 <=  80 + offs; vy2 <=  85 + offs;
-                        cidx <= 'h1;
+                        vx0 <= 160 + offs; vy0 <=  90 + offs;
+                        vx1 <= 240 + offs; vy1 <= 170 + offs;
+                        vx2 <= 160 + offs; vy2 <= 170 + offs;
+                        cidx <= (offs == 0) ? 'h1 : 'h2;  // pink
                     end
                     'd2: begin  // moves in from bottom-left
-                        vx0 <=  80 - offs; vy0 <=  45 + offs;
-                        vx1 <=  60 - offs; vy1 <=  70 + offs;
-                        vx2 <=  80 - offs; vy2 <=  85 + offs;
-                        cidx <= 'h2;
+                        vx0 <= 160 - offs; vy0 <=  90 + offs;
+                        vx1 <= 120 - offs; vy1 <= 140 + offs;
+                        vx2 <= 160 - offs; vy2 <= 170 + offs;
+                        cidx <= (offs == 0) ? 'hA : 'h8;  // green
                     end
                     'd3: begin  // moves in from left
-                        vx0 <=  60 - offs; vy0 <=  30;
-                        vx1 <=  80 - offs; vy1 <=  45;
-                        vx2 <=  60 - offs; vy2 <=  70;
-                        cidx <= 'h2;
+                        vx0 <= 120 - offs; vy0 <=  60;
+                        vx1 <= 160 - offs; vy1 <=  90;
+                        vx2 <= 120 - offs; vy2 <= 140;
+                        cidx <= (offs == 0) ? 'hA : 'h8;  // green
                     end
                     'd4: begin  // moves in from top
-                        vx0 <=  60; vy0 <=  30 - offs;
-                        vx1 <= 100; vy1 <=  30 - offs;
-                        vx2 <=  80; vy2 <=  45 - offs;
-                        cidx <= 'h3;
+                        vx0 <= 120; vy0 <=  60 - offs;
+                        vx1 <= 200; vy1 <=  60 - offs;
+                        vx2 <= 160; vy2 <=  90 - offs;
+                        cidx <= (offs == 0) ? 'hB : 'hC;  // blue
                     end
                     default: begin  // shape_id=5 moves in from top-right
-                        vx0 <= 100 + offs; vy0 <=  30 - offs;
-                        vx1 <=  80 + offs; vy1 <=  45 - offs;
-                        vx2 <= 120 + offs; vy2 <=  45 - offs;
-                        cidx <= 'h3;
+                        vx0 <= 200 + offs; vy0 <=  60 - offs;
+                        vx1 <= 160 + offs; vy1 <=  90 - offs;
+                        vx2 <= 240 + offs; vy2 <=  90 - offs;
+                        cidx <= (offs == 0) ? 'hB : 'hC;  // blue
                     end
                 endcase
             end
