@@ -23,7 +23,7 @@ module render_teleport #(
 
     // animation steps
     localparam ANIM_CNT=5;    // five different frames in animation
-    localparam ANIM_SPEED=4;  // display each animation step four times (15 FPS)
+    localparam ANIM_SPEED=3;  // display each animation step this many times (3==20 FPS)
     logic [$clog2(ANIM_CNT)-1:0] cnt_anim;
     logic [$clog2(ANIM_SPEED)-1:0] cnt_anim_speed;
     logic [CIDXW-1:0] colr_offs;  // colour offset
@@ -41,9 +41,9 @@ module render_teleport #(
         end
     end
 
-    localparam SHAPE_CNT=7;  // number of shapes to draw
+    localparam SHAPE_CNT=8;  // number of shapes to draw
     logic [3:0] shape_id;    // shape identifier
-    logic [CORDW-1:0] dx0, dy0, dx1, dy1;  // shape coords
+    logic signed [CORDW-1:0] dx0, dy0, dx1, dy1;  // shape coords
     logic draw_start, draw_done;  // drawing signals
 
     // draw state machine
@@ -53,57 +53,57 @@ module render_teleport #(
             INIT: begin  // register coordinates and colour
                 draw_start <= 1;
                 state <= DRAW;
+                cidx <= colr_offs + shape_id;
                 case (shape_id)
-                        4'd0: begin  // 12 pixels per anim step
-                            dx0 <=  40 - (cnt_anim * 12);
-                            dy0 <=   0 - (cnt_anim * 12);
-                            dx1 <= 279 + (cnt_anim * 12);
-                            dy1 <= 249 + (cnt_anim * 12);
-                            cidx <= colr_offs;
-                        end
-                        4'd1: begin  // 8 pixels per anim step
-                            dx0 <=  80 - (cnt_anim * 8);
-                            dy0 <=  10 - (cnt_anim * 8);
-                            dx1 <= 239 + (cnt_anim * 8);
-                            dy1 <= 169 + (cnt_anim * 8);
-                            cidx <= colr_offs + 1;
-                        end
-                        4'd2: begin  // 5 pixels per anim step
-                            dx0 <= 105 - (cnt_anim * 5);
-                            dy0 <=  35 - (cnt_anim * 5);
-                            dx1 <= 214 + (cnt_anim * 5);
-                            dy1 <= 144 + (cnt_anim * 5);
-                            cidx <= colr_offs + 2;
-                        end
-                        4'd3: begin  // 4 pixels per anim step
-                            dx0 <= 125 - (cnt_anim * 4);
-                            dy0 <=  55 - (cnt_anim * 4);
-                            dx1 <= 194 + (cnt_anim * 4);
-                            dy1 <= 124 + (cnt_anim * 4);
-                            cidx <= colr_offs + 3;
-                        end
-                        4'd4: begin  // 3 pixels per anim step
-                            dx0 <= 140 - (cnt_anim * 3);
-                            dy0 <=  70 - (cnt_anim * 3);
-                            dx1 <= 179 + (cnt_anim * 3);
-                            dy1 <= 109 + (cnt_anim * 3);
-                            cidx <= colr_offs + 4;
-                        end
-                        4'd5: begin  // 2 pixels per anim step
-                            dx0 <= 150 - (cnt_anim * 2);
-                            dy0 <=  80 - (cnt_anim * 2);
-                            dx1 <= 169 + (cnt_anim * 2);
-                            dy1 <=  99 + (cnt_anim * 2);
-                            cidx <= colr_offs + 5;
-                        end
-                        default: begin   // shape_id=6: 1 pixel per anim step
-                            dx0 <= 155 - (cnt_anim * 1);
-                            dy0 <=  85 - (cnt_anim * 1);
-                            dx1 <= 164 + (cnt_anim * 1);
-                            dy1 <=  94 + (cnt_anim * 1);
-                            cidx <= colr_offs + 6;
-                        end
-                    endcase
+                    'd0: begin  // background
+                        dx0 <=   0;
+                        dy0 <=   0;
+                        dx1 <= 319;
+                        dy1 <= 179;
+                    end
+                    'd1: begin  // 12 pixels per anim step
+                        dx0 <=  40 - (cnt_anim * 12);
+                        dy0 <=   0 - (cnt_anim * 12);
+                        dx1 <= 279 + (cnt_anim * 12);
+                        dy1 <= 249 + (cnt_anim * 12);
+                    end
+                    'd2: begin  // 8 pixels per anim step
+                        dx0 <=  80 - (cnt_anim * 8);
+                        dy0 <=  10 - (cnt_anim * 8);
+                        dx1 <= 239 + (cnt_anim * 8);
+                        dy1 <= 169 + (cnt_anim * 8);
+                    end
+                    'd3: begin  // 5 pixels per anim step
+                        dx0 <= 105 - (cnt_anim * 5);
+                        dy0 <=  35 - (cnt_anim * 5);
+                        dx1 <= 214 + (cnt_anim * 5);
+                        dy1 <= 144 + (cnt_anim * 5);
+                    end
+                    'd4: begin  // 4 pixels per anim step
+                        dx0 <= 125 - (cnt_anim * 4);
+                        dy0 <=  55 - (cnt_anim * 4);
+                        dx1 <= 194 + (cnt_anim * 4);
+                        dy1 <= 124 + (cnt_anim * 4);
+                    end
+                    'd5: begin  // 3 pixels per anim step
+                        dx0 <= 140 - (cnt_anim * 3);
+                        dy0 <=  70 - (cnt_anim * 3);
+                        dx1 <= 179 + (cnt_anim * 3);
+                        dy1 <= 109 + (cnt_anim * 3);
+                    end
+                    'd6: begin  // 2 pixels per anim step
+                        dx0 <= 150 - (cnt_anim * 2);
+                        dy0 <=  80 - (cnt_anim * 2);
+                        dx1 <= 169 + (cnt_anim * 2);
+                        dy1 <=  99 + (cnt_anim * 2);
+                    end
+                    default: begin   // shape_id=7: 1 pixel per anim step
+                        dx0 <= 155 - (cnt_anim * 1);
+                        dy0 <=  85 - (cnt_anim * 1);
+                        dx1 <= 164 + (cnt_anim * 1);
+                        dy1 <=  94 + (cnt_anim * 1);
+                    end
+                endcase
             end
             DRAW: begin
                 draw_start <= 0;
