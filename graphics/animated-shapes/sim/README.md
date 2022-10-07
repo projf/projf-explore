@@ -10,6 +10,82 @@ If you have a dev board, see the main [Animated Shapes README](../README.md) for
 
 ## Demos
 
-There is one demo top module that can draw different things.
+There are two demo top module that can draw different things:
 
-_Full README to follow..._
+* `top_demo_sb` - single buffer animation without screen clear
+* `top_demo` double buffer animation with screen clear
+
+To switch between the different demos, change the render instance near line 155 in `top_demo` or line 100 in `top_demo_sb`:
+
+* `render_square_colr` - colour-cycling square bounces around the screen
+* `render_cube_shatter` - shatter 3D cube drawn from six triangles
+* `render_teleport` - teleport effect with nested squares
+
+## Build & Run
+
+If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
+
+Make sure you're in the sim directory `projf-explore/graphics/animated-shapes/sim`.
+
+Build the demo:
+
+```shell
+make demo
+```
+
+Run the simulation executable from `obj_dir`:
+
+```shell
+./obj_dir/demo
+```
+
+For the single buffer version, replace `demo` with `demo_sb` in the above instructions.
+
+### Fullscreen Mode
+
+To run in fullscreen mode, edit `main_demo.cpp` or `main_demo_sb.cpp` so that `FULLSCREEN = true`, then rebuild.
+
+You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.
+
+## Installing Dependencies
+
+To build the simulations, you need:
+
+1. C++ Toolchain
+2. Verilator
+3. SDL
+
+The simulations should work on any modern platform, but I've confined my instructions to Linux and macOS. Windows installation depends on your choice of compiler, but the sims should work fine there too. For advice on SDL development on Windows, see [Lazy Foo' - Setting up SDL on Windows](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/windows/index.php).
+
+### Linux
+
+For Debian and Ubuntu-based distros, you can use the following. Other distros will be similar.
+
+Install a C++ toolchain via 'build-essential':
+
+```shell
+apt update
+apt install build-essential
+```
+
+Install packages for Verilator and the dev version of SDL:
+
+```shell
+apt install verilator libsdl2-dev
+```
+
+That's it!
+
+_If you want to build the latest version of Verilator yourself, see [Building Verilator for Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/#verilator)._
+
+### macOS
+
+Install the [Homebrew](https://brew.sh/) package manager; this will also install Xcode Command Line Tools.
+
+With Homebrew installed, you can run:
+
+```shell
+brew install verilator sdl2
+```
+
+And you're ready to go.
