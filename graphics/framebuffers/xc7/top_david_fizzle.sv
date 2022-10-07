@@ -18,9 +18,7 @@ module top_david_fizzle (
     // generate system clock
     logic clk_sys;
     logic clk_sys_locked;
-    /* verilator lint_off UNUSED */
     logic rst_sys;
-    /* verilator lint_on UNUSED */
     clock_sys clock_sys_inst (
        .clk_100m,
        .rst(!btn_rst_n),  // reset button is active low
