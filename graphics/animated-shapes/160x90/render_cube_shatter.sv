@@ -85,24 +85,24 @@ module render_cube_shatter #(
                     end
                     'd2: begin  // move in from bottom-left
                         vx0 <=  80 - offs; vy0 <=  45 + offs;
-                        vx1 <=  60 - offs; vy1 <=  70 + offs;
+                        vx1 <=  60 - offs; vy1 <=  65 + offs;
                         vx2 <=  80 - offs; vy2 <=  85 + offs;
                         cidx <= 'h2;
                     end
                     'd3: begin  // move in from left
-                        vx0 <=  60 - offs; vy0 <=  30;
+                        vx0 <=  60 - offs; vy0 <=  25;
                         vx1 <=  80 - offs; vy1 <=  45;
-                        vx2 <=  60 - offs; vy2 <=  70;
+                        vx2 <=  60 - offs; vy2 <=  65;
                         cidx <= 'h2;
                     end
                     'd4: begin  // move in from top
-                        vx0 <=  60; vy0 <=  30 - offs;
-                        vx1 <= 100; vy1 <=  30 - offs;
+                        vx0 <=  60; vy0 <=  25 - offs;
+                        vx1 <= 100; vy1 <=  25 - offs;
                         vx2 <=  80; vy2 <=  45 - offs;
                         cidx <= 'h3;
                     end
                     default: begin  // shape_id=5: move in from top-right
-                        vx0 <= 100 + offs; vy0 <=  30 - offs;
+                        vx0 <= 100 + offs; vy0 <=  25 - offs;
                         vx1 <=  80 + offs; vy1 <=  45 - offs;
                         vx2 <= 120 + offs; vy2 <=  45 - offs;
                         cidx <= 'h3;
