@@ -1,11 +1,11 @@
-// Project F: Framebuffers - David Fizzle (Arty Pmod VGA)
+// Project F: Animated Shapes - Double Buffer Demo (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/framebuffers/
+// Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_david_fizzle (
+module top_demo (
     input  wire logic clk_100m,     // 100 MHz clock
     input  wire logic btn_rst_n,    // reset button
     output      logic vga_hsync,    // horizontal sync
@@ -59,47 +59,59 @@ module top_david_fizzle (
         .line
     );
 
-    // bitmap images
-    localparam BMAP_IMAGE = "david.mem";
-    // localparam BMAP_IMAGE = "test_box_160x120.mem";
-
-    // colour palettes
-    localparam PAL_FILE = "grey16_4b.mem";
-    // localparam PAL_FILE = "greyinvert16_4b.mem";
-    // localparam PAL_FILE = "sepia16_4b.mem";
-    // localparam PAL_FILE = "sweetie16_4b.mem";
-
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam PAL_FILE = "teleport16_4b.mem";  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 160;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 120;  // framebuffer height in pixels
-    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
+    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
+    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
+    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
+    localparam FB_OFFX   =   0;  // horizontal offset
+    localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
 
     // pixel read and write addresses and colours
-    logic fb_we;
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_clear, fb_addr_render;
+    logic [FB_ADDRW-1:0] fb_addr_read;
+    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_clear, fb_colr_render;
+    logic [FB_DATAW-1:0] fb_colr_read, fb_colr_read_0, fb_colr_read_1;
+    logic fb_we;  // framebuffer write enable
 
-    // framebuffer memory
+    // buffer selection
+    logic fb_front;
+
+    // framebuffer memories
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
-        .INIT_F(BMAP_IMAGE)
-    ) bram_inst (
+        .INIT_F("")
+    ) bram_inst_0 (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we),
+        .we(fb_we && fb_front),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
-        .data_out(fb_colr_read)
+        .data_out(fb_colr_read_0)
+    );
+
+    bram_sdp #(
+        .WIDTH(FB_DATAW),
+        .DEPTH(FB_PIXELS),
+        .INIT_F("")
+    ) bram_inst_1 (
+        .clk_write(clk_sys),
+        .clk_read(clk_sys),
+        .we(fb_we && !fb_front),
+        .addr_write(fb_addr_write),
+        .addr_read(fb_addr_read),
+        .data_in(fb_colr_write),
+        .data_out(fb_colr_read_1)
     );
 
     // display flags in system clock domain
@@ -109,43 +121,99 @@ module top_david_fizzle (
     xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line),  .flag_dst(line_sys));
     xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
-        .flag_src(line && sy==0), .flag_dst(line0_sys));
+        .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
-    // fizzlefade!
-    logic lfsr_en;
-    logic [14:0] lfsr;
-    lfsr #(  // 15-bit LFSR (160x120 < 2^15)
-        .LEN(15),
-        .TAPS(15'b110000000000000)
-    ) lsfr_fz (
+    //
+    // draw in framebuffer
+    //
+
+    logic render_start;
+    logic render_done;
+
+    // framebuffer state machine
+    enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
+    always_ff @(posedge clk_sys) begin
+        case (state)
+            INIT: begin
+                state <= CLEAR;
+                fb_front <= ~fb_front; // swap buffers
+                fb_addr_clear <= 0;
+                fb_colr_clear <= 'h0;
+            end
+            CLEAR: begin
+                fb_addr_clear <= fb_addr_clear + 1;
+                if (fb_addr_clear == FB_PIXELS-1) begin
+                    state <= DRAW;
+                    render_start <= 1;
+                end
+            end
+            DRAW: begin
+                state <= render_done ? DONE : DRAW;
+                render_start <= 0;
+            end
+            DONE: state <= IDLE;
+            default: if (frame_sys) state <= INIT;  // IDLE
+        endcase
+        if (rst_sys) state <= IDLE;
+    end
+
+    always_ff @(posedge clk_sys) begin
+        fb_addr_write <= (state == CLEAR) ? fb_addr_clear : fb_addr_render;
+        fb_colr_write <= (state == CLEAR) ? fb_colr_clear : fb_colr_render;
+    end
+
+    // render shapes
+    parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
+    logic drawing;  // actively drawing
+    logic clip;  // location is clipped
+    logic signed [CORDW-1:0] drx, dry;  // draw coordinates
+    render_square_colr #(  // switch module name to change demo
+        .CORDW(CORDW),
+        .CIDXW(CIDXW),
+        .SCALE(DRAW_SCALE)
+    ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .en(lfsr_en),
-        .seed(0),  // use default seed
-        .sreg(lfsr)
+        .oe(1'b1),
+        .start(render_start),
+        .x(drx),
+        .y(dry),
+        .cidx(fb_colr_render),
+        .drawing,
+        .done(render_done)
     );
 
-    // control fade start and rate
-    localparam FADE_WAIT = 300;    // wait for N frames before fading
-    localparam FADE_RATE = 10000;  // every N system cycles update LFSR
-    logic [$clog2(FADE_WAIT)-1:0] cnt_wait;
-    logic [$clog2(FADE_RATE)-1:0] cnt_rate;
+    // calculate pixel address in framebuffer (three-cycle latency)
+    bitmap_addr #(
+        .CORDW(CORDW),
+        .ADDRW(FB_ADDRW)
+    ) bitmap_addr_instance (
+        .clk(clk_sys),
+        .bmpw(FB_WIDTH),
+        .bmph(FB_HEIGHT),
+        .x(drx),
+        .y(dry),
+        .offx(0),
+        .offy(0),
+        .addr(fb_addr_render),
+        .clip
+    );
+
+    // delay write enable to match address calculation
+    localparam LAT_ADDR = 3;  // latency (cycles)
+    logic [LAT_ADDR-1:0] fb_we_sr;
     always_ff @(posedge clk_sys) begin
-        if (frame_sys) cnt_wait <= (cnt_wait != FADE_WAIT-1) ? cnt_wait + 1 : cnt_wait;
-        if (cnt_wait == FADE_WAIT-1) begin
-            if (cnt_rate == FADE_RATE-1) begin
-                lfsr_en <= 1;
-                fb_we <= 1;
-                fb_addr_write <= lfsr;
-                cnt_rate <= 0;
-            end else begin
-                cnt_rate <= cnt_rate + 1;
-                lfsr_en <= 0;
-                fb_we <= 0;
-            end
-        end
-        fb_colr_write <= 4'h7;  // fade colour
+        fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
+        if (rst_sys) fb_we_sr <= 0;
+        fb_we <= (state == CLEAR) || (fb_we_sr[0] && !clip);  // check for clipping
     end
+
+    //
+    // read framebuffer for display output via linebuffer
+    //
+
+    // select buffer to read
+    always_ff @(posedge clk_sys) fb_colr_read <= fb_front ? fb_colr_read_1 : fb_colr_read_0;
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -181,10 +249,10 @@ module top_david_fizzle (
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 4;  // latency compensation: lb_en_out+1, DB+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
-        lb_en_out <= (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
-            && sx >= -LAT_LB && sx < (FB_WIDTH * FB_SCALE) - LAT_LB);
+        lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
     end
 
     // display linebuffer
@@ -224,9 +292,9 @@ module top_david_fizzle (
     logic paint_area;  // area of screen to paint
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
-            && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : 12'h000;
+        paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
+            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
     // VGA Pmod output

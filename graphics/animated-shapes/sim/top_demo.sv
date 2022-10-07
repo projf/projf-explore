@@ -1,69 +1,54 @@
-// Project F: Lines and Triangles - Demo (Arty Pmod VGA)
+// Project F: Animated Shapes - Double Buffer Demo (Verilator SDL)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/lines-and-triangles/
+// Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_demo (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst_n,    // reset button
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
+    input  wire logic clk_pix,      // pixel clock
+    input  wire logic rst_pix,      // sim reset
+    output      logic signed [CORDW-1:0] sdl_sx,  // horizontal SDL position
+    output      logic signed [CORDW-1:0] sdl_sy,  // vertical SDL position
+    output      logic sdl_de,       // data enable (low in blanking interval)
+    output      logic sdl_frame,    // high at start of frame
+    output      logic [7:0] sdl_r,  // 8-bit red
+    output      logic [7:0] sdl_g,  // 8-bit green
+    output      logic [7:0] sdl_b   // 8-bit blue
     );
 
-    // generate system clock
-    logic clk_sys;
-    logic clk_sys_locked;
-    logic rst_sys;
-    clock_sys clock_sys_inst (
-       .clk_100m,
-       .rst(!btn_rst_n),  // reset button is active low
-       .clk_sys,
-       .clk_sys_locked
-    );
-    always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
-
-    // generate pixel clock
-    logic clk_pix;
-    logic clk_pix_locked;
-    logic rst_pix;
-    clock_480p clock_pix_inst (
-       .clk_100m,
-       .rst(!btn_rst_n),  // reset button is active low
-       .clk_pix,
-       /* verilator lint_off PINCONNECTEMPTY */
-       .clk_pix_5x(),  // not used for VGA output
-       /* verilator lint_on PINCONNECTEMPTY */
-       .clk_pix_locked
-    );
-    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
+    // system clock is the same as pixel clock in simulation
+    logic clk_sys, rst_sys;
+    always_comb begin
+        clk_sys = clk_pix;
+        rst_sys = rst_pix;
+    end
 
     // display sync signals and coordinates
-    localparam CORDW = 16;  // signed coordinate width (bits)
     logic signed [CORDW-1:0] sx, sy;
-    logic hsync, vsync;
     logic de, frame, line;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
         .sy,
-        .hsync,
-        .vsync,
+        /* verilator lint_off PINCONNECTEMPTY */
+        .hsync(),
+        .vsync(),
+        /* verilator lint_on PINCONNECTEMPTY */
         .de,
         .frame,
         .line
     );
 
+    // library resource path
+    localparam LIB_RES = "../../../lib/res";
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
+    localparam PAL_FILE = {LIB_RES,"/palettes/teleport16_4b.mem"};  // palette file
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -76,23 +61,42 @@ module top_demo (
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
 
     // pixel read and write addresses and colours
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_clear, fb_addr_render;
+    logic [FB_ADDRW-1:0] fb_addr_read;
+    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_clear, fb_colr_render;
+    logic [FB_DATAW-1:0] fb_colr_read, fb_colr_read_0, fb_colr_read_1;
     logic fb_we;  // framebuffer write enable
 
-    // framebuffer memory
+    // buffer selection
+    logic fb_front;
+
+    // framebuffer memories
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F("")
-    ) bram_inst (
+    ) bram_inst_0 (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we),
+        .we(fb_we && fb_front),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
-        .data_out(fb_colr_read)
+        .data_out(fb_colr_read_0)
+    );
+
+    bram_sdp #(
+        .WIDTH(FB_DATAW),
+        .DEPTH(FB_PIXELS),
+        .INIT_F("")
+    ) bram_inst_1 (
+        .clk_write(clk_sys),
+        .clk_read(clk_sys),
+        .we(fb_we && !fb_front),
+        .addr_write(fb_addr_write),
+        .addr_read(fb_addr_read),
+        .data_in(fb_colr_write),
+        .data_out(fb_colr_read_1)
     );
 
     // display flags in system clock domain
@@ -108,38 +112,60 @@ module top_demo (
     // draw in framebuffer
     //
 
-    // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
-    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_oe;  // draw requested
+    logic render_start;
+    logic render_done;
+
+    // framebuffer state machine
+    enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;  // comment out to draw at full speed
-        if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
-            if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (frame_sys) draw_oe <= 1;  // draw one pixel per frame
+        case (state)
+            INIT: begin
+                state <= CLEAR;
+                fb_front <= ~fb_front; // swap buffers
+                fb_addr_clear <= 0;
+                fb_colr_clear <= 'h0;
+            end
+            CLEAR: begin
+                fb_addr_clear <= fb_addr_clear + 1;
+                if (fb_addr_clear == FB_PIXELS-1) begin
+                    state <= DRAW;
+                    render_start <= 1;
+                end
+            end
+            DRAW: begin
+                state <= render_done ? DONE : DRAW;
+                render_start <= 0;
+            end
+            DONE: state <= IDLE;
+            default: if (frame_sys) state <= INIT;  // IDLE
+        endcase
+        if (rst_sys) state <= IDLE;
     end
 
-    // render line/edge/cube/triangles
+    always_ff @(posedge clk_sys) begin
+        fb_addr_write <= (state == CLEAR) ? fb_addr_clear : fb_addr_render;
+        fb_colr_write <= (state == CLEAR) ? fb_colr_clear : fb_colr_render;
+    end
+
+    // render shapes
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_line #(  // switch module name to change demo
+    render_square_colr #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
     ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .oe(draw_oe),
-        .start(frame_sys),
+        .oe(1'b1),
+        .start(render_start),
         .x(drx),
         .y(dry),
-        .cidx(fb_colr_write),
+        .cidx(fb_colr_render),
         .drawing,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .done()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .done(render_done)
     );
 
     // calculate pixel address in framebuffer (three-cycle latency)
@@ -154,7 +180,7 @@ module top_demo (
         .y(dry),
         .offx(0),
         .offy(0),
-        .addr(fb_addr_write),
+        .addr(fb_addr_render),
         .clip
     );
 
@@ -164,12 +190,15 @@ module top_demo (
     always_ff @(posedge clk_sys) begin
         fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
+        fb_we <= (state == CLEAR) || (fb_we_sr[0] && !clip);  // check for clipping
     end
-    always_comb fb_we = fb_we_sr[0] && !clip;  // check for clipping
 
     //
     // read framebuffer for display output via linebuffer
     //
+
+    // select buffer to read
+    always_ff @(posedge clk_sys) fb_colr_read <= fb_front ? fb_colr_read_1 : fb_colr_read_0;
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -205,7 +234,7 @@ module top_demo (
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 4;  // latency compensation: lb_en_out+1, DB+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
@@ -253,18 +282,14 @@ module top_demo (
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    // VGA Pmod output
+    // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync;
-        vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        sdl_sx <= sx;
+        sdl_sy <= sy;
+        sdl_de <= de;
+        sdl_frame <= frame;
+        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
+        sdl_g <= {2{paint_g}};
+        sdl_b <= {2{paint_b}};
     end
 endmodule

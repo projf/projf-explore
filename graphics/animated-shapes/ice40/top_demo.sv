@@ -1,46 +1,42 @@
-// Project F: Lines and Triangles - Demo (Arty Pmod VGA)
+// Project F: Animated Shapes - Double Buffer Demo (iCEBreaker 12-bit DVI Pmod)
 // (C)2022 Will Green, open source hardware released under the MIT License
-// Learn more at https://projectf.io/posts/lines-and-triangles/
+// Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module top_demo (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst_n,    // reset button
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+    input  wire logic clk_12m,      // 12 MHz clock
+    input  wire logic btn_rst,      // reset button
+    output      logic dvi_clk,      // DVI pixel clock
+    output      logic dvi_hsync,    // DVI horizontal sync
+    output      logic dvi_vsync,    // DVI vertical sync
+    output      logic dvi_de,       // DVI data enable
+    output      logic [3:0] dvi_r,  // 4-bit DVI red
+    output      logic [3:0] dvi_g,  // 4-bit DVI green
+    output      logic [3:0] dvi_b   // 4-bit DVI blue
     );
 
-    // generate system clock
-    logic clk_sys;
-    logic clk_sys_locked;
-    logic rst_sys;
-    clock_sys clock_sys_inst (
-       .clk_100m,
-       .rst(!btn_rst_n),  // reset button is active low
-       .clk_sys,
-       .clk_sys_locked
-    );
-    always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
+    // system clock is the same as pixel clock on iCE40
+    logic clk_sys, rst_sys;
+    always_comb begin
+        clk_sys = clk_pix;
+        rst_sys = rst_pix;
+    end
 
     // generate pixel clock
     logic clk_pix;
     logic clk_pix_locked;
-    logic rst_pix;
     clock_480p clock_pix_inst (
-       .clk_100m,
-       .rst(!btn_rst_n),  // reset button is active low
+       .clk_12m,
+       .rst(btn_rst),
        .clk_pix,
-       /* verilator lint_off PINCONNECTEMPTY */
-       .clk_pix_5x(),  // not used for VGA output
-       /* verilator lint_on PINCONNECTEMPTY */
        .clk_pix_locked
     );
-    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
+
+    // reset in pixel clock domain
+    logic rst_pix;
+    always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 16;  // signed coordinate width (bits)
@@ -59,16 +55,19 @@ module top_demo (
         .line
     );
 
+    // library resource path
+    localparam LIB_RES = "../../../lib/res";
+
     // colour parameters
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
-    localparam CIDXW = 4;        // colour index width (bits)
-    localparam PAL_FILE = "sweetie16_4b.mem";  // palette file
+    localparam CIDXW = 2;        // colour index width (bits)
+    localparam PAL_FILE = {LIB_RES,"/palettes/teleport4_4b.mem"};  // palette file
 
     // framebuffer (FB)
-    localparam FB_WIDTH  = 320;  // framebuffer width in pixels
-    localparam FB_HEIGHT = 180;  // framebuffer height in pixels
-    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
+    localparam FB_WIDTH  = 160;  // framebuffer width in pixels
+    localparam FB_HEIGHT =  90;  // framebuffer height in pixels
+    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
     localparam FB_OFFY   =  60;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
@@ -76,23 +75,42 @@ module top_demo (
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
 
     // pixel read and write addresses and colours
-    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_read;
-    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_read;
+    logic [FB_ADDRW-1:0] fb_addr_write, fb_addr_clear, fb_addr_render;
+    logic [FB_ADDRW-1:0] fb_addr_read;
+    logic [FB_DATAW-1:0] fb_colr_write, fb_colr_clear, fb_colr_render;
+    logic [FB_DATAW-1:0] fb_colr_read, fb_colr_read_0, fb_colr_read_1;
     logic fb_we;  // framebuffer write enable
 
-    // framebuffer memory
+    // buffer selection
+    logic fb_front;
+
+    // framebuffer memories
     bram_sdp #(
         .WIDTH(FB_DATAW),
         .DEPTH(FB_PIXELS),
         .INIT_F("")
-    ) bram_inst (
+    ) bram_inst_0 (
         .clk_write(clk_sys),
         .clk_read(clk_sys),
-        .we(fb_we),
+        .we(fb_we && fb_front),
         .addr_write(fb_addr_write),
         .addr_read(fb_addr_read),
         .data_in(fb_colr_write),
-        .data_out(fb_colr_read)
+        .data_out(fb_colr_read_0)
+    );
+
+    bram_sdp #(
+        .WIDTH(FB_DATAW),
+        .DEPTH(FB_PIXELS),
+        .INIT_F("")
+    ) bram_inst_1 (
+        .clk_write(clk_sys),
+        .clk_read(clk_sys),
+        .we(fb_we && !fb_front),
+        .addr_write(fb_addr_write),
+        .addr_read(fb_addr_read),
+        .data_in(fb_colr_write),
+        .data_out(fb_colr_read_1)
     );
 
     // display flags in system clock domain
@@ -108,38 +126,60 @@ module top_demo (
     // draw in framebuffer
     //
 
-    // reduce drawing speed to make process visible
-    localparam FRAME_WAIT = 200;  // wait this many frames to start drawing
-    logic [$clog2(FRAME_WAIT)-1:0] cnt_frame_wait;
-    logic draw_oe;  // draw requested
+    logic render_start;
+    logic render_done;
+
+    // framebuffer state machine
+    enum {IDLE, INIT, CLEAR, DRAW, DONE} state;
     always_ff @(posedge clk_sys) begin
-        draw_oe <= 0;  // comment out to draw at full speed
-        if (cnt_frame_wait != FRAME_WAIT-1) begin  // wait for initial frames
-            if (frame_sys) cnt_frame_wait <= cnt_frame_wait + 1;
-        end else if (frame_sys) draw_oe <= 1;  // draw one pixel per frame
+        case (state)
+            INIT: begin
+                state <= CLEAR;
+                fb_front <= ~fb_front; // swap buffers
+                fb_addr_clear <= 0;
+                fb_colr_clear <= 'h0;
+            end
+            CLEAR: begin
+                fb_addr_clear <= fb_addr_clear + 1;
+                if (fb_addr_clear == FB_PIXELS-1) begin
+                    state <= DRAW;
+                    render_start <= 1;
+                end
+            end
+            DRAW: begin
+                state <= render_done ? DONE : DRAW;
+                render_start <= 0;
+            end
+            DONE: state <= IDLE;
+            default: if (frame_sys) state <= INIT;  // IDLE
+        endcase
+        if (rst_sys) state <= IDLE;
     end
 
-    // render line/edge/cube/triangles
+    always_ff @(posedge clk_sys) begin
+        fb_addr_write <= (state == CLEAR) ? fb_addr_clear : fb_addr_render;
+        fb_colr_write <= (state == CLEAR) ? fb_colr_clear : fb_colr_render;
+    end
+
+    // render shapes
     parameter DRAW_SCALE = 1;  // relative to framebuffer dimensions
     logic drawing;  // actively drawing
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
-    render_line #(  // switch module name to change demo
+    render_square_colr #(  // switch module name to change demo
         .CORDW(CORDW),
         .CIDXW(CIDXW),
         .SCALE(DRAW_SCALE)
     ) render_instance (
         .clk(clk_sys),
         .rst(rst_sys),
-        .oe(draw_oe),
-        .start(frame_sys),
+        .oe(1'b1),
+        .start(render_start),
         .x(drx),
         .y(dry),
-        .cidx(fb_colr_write),
+        .cidx(fb_colr_render),
         .drawing,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .done()
-        /* verilator lint_on PINCONNECTEMPTY */
+        .done(render_done)
     );
 
     // calculate pixel address in framebuffer (three-cycle latency)
@@ -154,7 +194,7 @@ module top_demo (
         .y(dry),
         .offx(0),
         .offy(0),
-        .addr(fb_addr_write),
+        .addr(fb_addr_render),
         .clip
     );
 
@@ -164,12 +204,15 @@ module top_demo (
     always_ff @(posedge clk_sys) begin
         fb_we_sr <= {drawing, fb_we_sr[LAT_ADDR-1:1]};
         if (rst_sys) fb_we_sr <= 0;
+        fb_we <= (state == CLEAR) || (fb_we_sr[0] && !clip);  // check for clipping
     end
-    always_comb fb_we = fb_we_sr[0] && !clip;  // check for clipping
 
     //
     // read framebuffer for display output via linebuffer
     //
+
+    // select buffer to read
+    always_ff @(posedge clk_sys) fb_colr_read <= fb_front ? fb_colr_read_1 : fb_colr_read_0;
 
     // count lines for scaling via linebuffer
     logic [$clog2(FB_SCALE):0] cnt_lb_line;
@@ -205,7 +248,7 @@ module top_demo (
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, CLUT+1
+    localparam LAT_LB = 4;  // latency compensation: lb_en_out+1, DB+1, LB+1, CLUT+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
@@ -253,18 +296,25 @@ module top_demo (
         {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
     end
 
-    // VGA Pmod output
-    always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync;
-        vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
-    end
+    // DVI Pmod output
+    SB_IO #(
+        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
+    ) dvi_signal_io [14:0] (
+        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        /* verilator lint_off PINCONNECTEMPTY */
+        .D_OUT_1()
+        /* verilator lint_on PINCONNECTEMPTY */
+    );
+
+    // DVI Pmod clock output: 180° out of phase with other DVI signals
+    SB_IO #(
+        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
+    ) dvi_clk_io (
+        .PACKAGE_PIN(dvi_clk),
+        .OUTPUT_CLK(clk_pix),
+        .D_OUT_0(1'b0),
+        .D_OUT_1(1'b1)
+    );
 endmodule

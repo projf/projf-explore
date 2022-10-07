@@ -1,8 +1,11 @@
 # Project F: Animated Shapes - Create Vivado Project
 # (C)2022 Will Green, open source hardware released under the MIT License
-# Learn more at https://projectf.io
+# Learn more at https://projectf.io/posts/animated-shapes/
 
 puts "INFO: Project F - Animated Shapes Project Creation Script"
+
+# render module version
+set render_mods "320x180"
 
 # If the FPGA board/part isn't set use Arty
 if {! [info exists fpga_part]} {
@@ -43,48 +46,40 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_cube_pieces.sv"] \
-  [file normalize "${origin_dir}/xc7/top_sb_bounce.sv"] \
-  [file normalize "${origin_dir}/xc7/top_db_bounce.sv"] \
-  [file normalize "${origin_dir}/xc7/top_rotate.sv"] \
-  [file normalize "${origin_dir}/xc7/top_teleport.sv"] \
+  [file normalize "${origin_dir}/xc7/top_demo.sv"] \
+  [file normalize "${origin_dir}/xc7/top_demo_sb.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_cube_shatter.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_square_colr.sv"] \
+  [file normalize "${origin_dir}/${render_mods}/render_teleport.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_teleport" -objects $fs_design_obj
+set_property -name "top" -value "top_demo" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
-  [file normalize "${lib_dir}/clock/xd.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
+  [file normalize "${lib_dir}/clock/xd2.sv"] \
+  [file normalize "${lib_dir}/display/bitmap_addr.sv"] \
+  [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer_bram.sv"] \
-  [file normalize "${lib_dir}/display/framebuffer_bram_db.sv"] \
-  [file normalize "${lib_dir}/display/linebuffer.sv"] \
-  [file normalize "${lib_dir}/essential/debounce.sv"] \
+  [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line.sv"] \
   [file normalize "${lib_dir}/graphics/draw_line_1d.sv"] \
   [file normalize "${lib_dir}/graphics/draw_rectangle_fill.sv"] \
-  [file normalize "${lib_dir}/graphics/draw_triangle.sv"] \
   [file normalize "${lib_dir}/graphics/draw_triangle_fill.sv"] \
-  [file normalize "${lib_dir}/maths/sine_table.sv"] \
-  [file normalize "${lib_dir}/memory/rom_async.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
-  [file normalize "${origin_dir}/rotate_xy.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
 # Memory design sources
 set mem_design_sources [list \
-  [file normalize "${lib_dir}/maths/res/sine_table_64x8.mem"] \
-  [file normalize "${lib_dir}/res/test/test_box_db_12x9.mem"] \
-  [file normalize "${lib_dir}/res/test/test_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/16_colr_4bit_palette.mem"] \
-  [file normalize "${origin_dir}/res/palette/teleport_16_colr_4bit_palette.mem"] \
+  [file normalize "${lib_dir}/res/palettes/sweetie16_4b.mem"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $mem_design_sources
 set design_mem_obj [get_files -of_objects [get_filesets sources_1] [list "*mem"]]
@@ -100,18 +95,16 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 }
 set fs_sim_obj [get_filesets sim_1]
 
-# Generic simulation sources
+# Generic simulation sources (to be updated with double-buffer tests)
 set sim_sources [list \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
-  [file normalize "${lib_dir}/display/xc7/framebuffer_bram_db_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_db_tb_behav.wcfg" ] \
-  [file normalize "${origin_dir}/xc7/rotate_xy_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/vivado/rotate_xy_tb_behav.wcfg"] \
+  [file normalize "${lib_dir}/display/xc7/display_480p_tb.sv"] \
+  [file normalize "${lib_dir}/display/xc7/vivado/display_480p_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "framebuffer_bram_db_tb" -objects $fs_sim_obj
+set_property -name "top" -value "display_480p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #

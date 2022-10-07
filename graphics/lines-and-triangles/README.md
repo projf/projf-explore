@@ -16,7 +16,7 @@ These designs make use of modules from the [Project F library](../../lib/). Chec
 
 There is one demo top module that can draw several shapes.
 
-To switch between the different demos, change the render instance near line 120 in `top_demo.sv`:
+To switch between the different demos, change the render instance near line 120 in `top_demo`:
 
 * `render_line` - single diagonal line
 * `render_edge` - line around the edge of the framebuffer
@@ -35,7 +35,7 @@ You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardwar
 
 You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
 
-To build the `demo`; project,clone the projf-explore git repo, then:
+To build the `demo` project, clone the projf-explore git repo, then:
 
 ```shell
 cd projf-explore/graphics/lines-and-triangles/ice40

@@ -36,7 +36,7 @@ Run the simulation executable from `obj_dir`:
 
 ### Switching Demo
 
-To switch between the different demos, change the render instance near line 115 in `top_demo.sv`, then rerun make.
+To switch between the different demos, change the render instance near line 115 in `top_demo`, then rerun make.
 
 * `render_rects` - many rectangles inside rectangles
 * `render_rects_fill` - overlapping filled rectangles
