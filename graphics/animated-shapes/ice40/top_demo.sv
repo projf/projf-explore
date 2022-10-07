@@ -275,7 +275,7 @@ module top_demo (
     logic [COLRW-1:0] fb_pix_colr;
     clut_simple #(
         .COLRW(COLRW),
-        .CIDXW(CIDXW), 
+        .CIDXW(CIDXW),
         .F_PAL(PAL_FILE)
         ) clut_instance (
         .clk_write(clk_pix),
