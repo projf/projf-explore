@@ -98,7 +98,7 @@ module render_sinescroll #(
                 cy <= FB_HEIGHT/2-GLYPH_HEIGHT/2 + (sin_data >>> SIN_SHIFT);  // centre
                 state <= CLIP;
             end
-            CLIP: begin
+            CLIP: begin  // only render glyphs in the framebuffer area
                 if (cx > -(GLYPH_WIDTH + GLYPH_SPACE) && cx < FB_WIDTH) begin
                     state <= DRAW;
                     draw_start <= 1;
