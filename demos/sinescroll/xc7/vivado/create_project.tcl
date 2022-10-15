@@ -42,7 +42,7 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_demo.sv"] \
+  [file normalize "${origin_dir}/xc7/top_sinescroll.sv"] \
   [file normalize "${origin_dir}/render_sinescroll.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
@@ -50,7 +50,7 @@ set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
 # Set top module for design sources
-set_property -name "top" -value "top_demo" -objects $fs_design_obj
+set_property -name "top" -value "top_sinescroll" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
@@ -63,7 +63,11 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
   [file normalize "${lib_dir}/graphics/draw_char.sv"] \
+  [file normalize "${lib_dir}/graphics/get_glyph_line.sv"] \
+  [file normalize "${lib_dir}/maths/sine_table.sv"] \
   [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
+  [file normalize "${lib_dir}/memory/rom_async.sv"] \
+  [file normalize "${lib_dir}/memory/rom_sync.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
