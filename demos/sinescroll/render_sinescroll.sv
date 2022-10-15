@@ -41,11 +41,11 @@ module render_sinescroll #(
     );
 
     // greeting message ROM
+    localparam GREET_MSGS  =   1;  // 1 message
+    localparam GREET_LEN   =  71;  // number of code points
     localparam G_ROM_WIDTH =   8;  // highest code point is U+00FF
     localparam G_ROM_DEPTH = GREET_MSGS * GREET_LEN;
     localparam GREET_SPD   =   3;  // speed in pixels/frame
-    localparam GREET_MSGS  =   1;  // 1 message
-    localparam GREET_LEN   =  71;  // number of code points
     
     logic [$clog2(G_ROM_DEPTH)-1:0] greet_rom_addr;
     logic [G_ROM_WIDTH-1:0] greet_rom_data;  // code point
