@@ -11,11 +11,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
   * [display_720p.sv](display_720p.sv) - 1280x720 60Hz (720p)
   * [display_1080p.sv](display_1080p.sv) - 1920x1080 60Hz (1080p)
 * Framebuffer
-  * [framebuffer_bram.sv](framebuffer_bram.sv) - framebuffer backed by block RAM (works with XC7 and iCE40)
-  * [framebuffer_bram_db.sv](framebuffer_bram_db.sv) - double-buffered framebuffer backed by block RAM (recommended for XC7)
-  * [ice40/framebuffer_spram.sv](ice40/framebuffer_spram.sv) - framebuffer backed by SPRAM (works with iCE40)
-  * `ice40/framebuffer_spram_db.sv` - double-buffered framebuffer backed by SPRAM (being worked on)
-  * [linebuffer.sv](linebuffer.sv) - line buffer used by the framebuffer designs for performance and clock isolation
+  * [linebuffer_simple.sv](linebuffer_simple.sv) - line buffer used by framebuffer designs for performance and clock isolation
 * Signal Encoding
   * [tmds_encoder_dvi.sv](tmds_encoder_dvi.sv) - TMDS encoder for DVI (HDMI compatible, but no audio)
   * [xc7/dvi_generator.sv](xc7/dvi_generator.sv) - generates a DVI signal on Xilinx 7 Series
