@@ -1,5 +1,6 @@
-// Project F: Sine Scroller Render (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// Project F: Sine Scroller Render
+// (C)2022 Will Green & Ben Blundell, open source hardware released under the MIT License
+// From "All You Need" by Chapterhouse released at Revision 2022 (with minor emendations)
 
 `default_nettype none
 `timescale 1ns / 1ps
@@ -23,7 +24,6 @@ module render_sinescroll #(
     output      logic done                      // drawing is complete
     );
 
-
     // sine table
     localparam SIN_DEPTH=64;  // entires in sine ROM 0°-90°
     localparam SIN_WIDTH=8;   // width of sine ROM data
@@ -46,7 +46,6 @@ module render_sinescroll #(
     localparam GREET_SPD   =   3;  // speed in pixels/frame
     localparam GREET_MSGS  =   1;  // 1 message
     localparam GREET_LEN   =  71;  // number of code points
-    localparam GREET_LEN_PIX = GREET_LEN * (GLYPH_WIDTH + GLYPH_SPACE);  // in pixels
     
     logic [$clog2(G_ROM_DEPTH)-1:0] greet_rom_addr;
     logic [G_ROM_WIDTH-1:0] greet_rom_data;  // code point
