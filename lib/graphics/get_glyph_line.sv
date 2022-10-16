@@ -6,8 +6,8 @@
 `timescale 1ns / 1ps
 
 module get_glyph_line #(
-    parameter WIDTH=8,       // glyph width in pixels (8 or 16)
-    parameter HEIGHT=16,     // glyph height in pixels (8 or 16)
+    parameter WIDTH=8,       // glyph width in pixels
+    parameter HEIGHT=16,     // glyph height in pixels
     parameter COUNT=256,     // number of characters in font
     parameter OFFSET=0,      // glyph ROM offset
     parameter FONT_FILE="",  // file to load glyphs from

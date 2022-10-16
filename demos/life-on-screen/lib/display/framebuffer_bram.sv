@@ -36,8 +36,8 @@ module framebuffer_bram #(
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd xd_frame (.clk_i(clk_pix), .clk_o(clk_sys),
-                 .rst_i(rst_pix), .rst_o(rst_sys), .i(frame), .o(frame_sys));
+    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_sys),
+        .flag_src(frame), .flag_dst(frame_sys));
 
     // framebuffer (FB)
     localparam FB_PIXELS = WIDTH * HEIGHT;

@@ -1,6 +1,6 @@
 # Life on Screen FPGA Demo
 
-This SystemVerilog demo uses a simple framebuffer to render Conway's Game of Life.
+This SystemVerilog demo uses an (old) framebuffer to render Conway's Game of Life.
 
 This demo has an associated Project F blog post: [Life on Screen](https://projectf.io/posts/life-on-screen/).  
 New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).

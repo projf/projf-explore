@@ -6,10 +6,10 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
-* [draw_char](draw_char.sv) - Draw character from bitmap font
+* [draw_char](draw_char.sv) - Draw character glyph from bitmap font
 * [draw_circle](draw_circle.sv) - Draw circle outline
 * [draw_circle_fill](draw_circle_fill.sv) - Draw filled circle
-* [draw_line](draw_line.sv) - Bresenham's line algorithm
+* [draw_line](draw_line.sv) - Draw arbitrary straight line with Bresenham's algorithm
 * [draw_line_1d.sv](draw_line_1d.sv) - Draw straight line (left to right only)
 * [draw_rectangle](draw_rectangle.sv) - Draw rectangle outline
 * [draw_rectangle_fill](draw_rectangle_fill.sv) - Draw filled rectangle

@@ -7,12 +7,13 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 ## Verilog Modules
 
 * [xd.sv](xd.sv) - clock domain crossing (CDC) with pulse [[docs](https://projectf.io/posts/simple-fpga-cdc)]
+  * NB. This module is temporarily named `xd2.sv` during a library refactor
 * Lattice iCE40 (12 MHz board clock)
-  * [ice40/clock_gen_480p.sv](ice40/clock_gen_480p.sv) - PLL clock generation for VGA 640x480 (25.125 MHz)
+  * [ice40/clock_480p.sv](ice40/clock_480p.sv) - PLL clock generation for VGA 640x480 (25.125 MHz)
 * Xilinx 7 Series (100 MHz board clock)
-  * [xc7/clock_gen_480p.sv](xc7/clock_gen_480p.sv) - PLL clock generation for VGA 640x480 (25.2 MHz)
-  * [xc7/clock_gen_720p.sv](xc7/clock_gen_720p.sv) - PLL clock generation for 1280x720 (74.25 & 371.25 MHz)
-  * [xc7/clock_gen_1080p.sv](xc7/clock_gen_1080p.sv) - PLL clock generation for 1920x1080 (148.5 MHz & 742.5 MHz)
+  * [xc7/clock_480p.sv](xc7/clock_480p.sv) - PLL clock generation for VGA 640x480 (25.2 MHz)
+  * [xc7/clock_720p.sv](xc7/clock_720p.sv) - PLL clock generation for 1280x720 (74.25 & 371.25 MHz)
+  * [xc7/clock_1080p.sv](xc7/clock_1080p.sv) - PLL clock generation for 1920x1080 (148.5 MHz & 742.5 MHz)
 
 _The 5x clocks in the Xilinx 7 Series designs are used for DVI/HDMI TMDS encoding._
 
