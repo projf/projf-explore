@@ -58,8 +58,8 @@ module linebuffer #(
 
     // request new data on at end of line set (needs to be in clk_in domain)
     always_comb get_data = (line && set_end);
-    xd xd_req (.clk_i(clk_out), .clk_o(clk_in),
-               .rst_i(rst_out), .rst_o(rst_in), .i(get_data), .o(data_req));
+    xd2 xd_req (.clk_src(clk_in),.clk_dst(clk_out),
+        .flag_src(get_data), .flag_dst(data_req));
 
     // read data in
     logic [$clog2(LEN)-1:0] addr_in;
