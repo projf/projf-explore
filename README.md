@@ -55,7 +55,7 @@ _Stay tuned for more parts later in 2022._
 * **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/) - Conway's Game of Life in logic
 * **Sine Scroller**: [Designs](demos/sinescroll) - [Blog](https://projectf.io/posts/sinescroll/) - greet your viewers in style
 
-![](../../doc/img/sinescroll-sim.png?raw=true "")
+![](doc/img/sinescroll-sim.png?raw=true "")
 
 ## Requirements
 
