@@ -1,5 +1,6 @@
 // Project F: Sine Scroller (Arty Pmod VGA)
 // (C)2022 Will Green, open source hardware released under the MIT License
+// Learn more at https://projectf.io/posts/sinescroll/
 
 `default_nettype none
 `timescale 1ns / 1ps

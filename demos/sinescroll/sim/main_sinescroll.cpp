@@ -1,5 +1,6 @@
 // Project F: Sine Scroller Verilator C++
 // (C)2022 Will Green, open source software released under the MIT License
+// Learn more at https://projectf.io/posts/sinescroll/
 
 #include <stdio.h>
 #include <SDL.h>

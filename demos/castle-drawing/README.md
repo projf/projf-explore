@@ -3,7 +3,7 @@
 This SystemVerilog demo uses shapes to draw a simple castle and rainbow in 16 colours.
 
 This demo has an associated Project F blog post: [Castle Drawing](https://projectf.io/posts/castle-drawing/).  
-New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/castle-sim.png?raw=true "")
 
