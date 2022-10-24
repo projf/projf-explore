@@ -88,4 +88,4 @@ I believe these features are helpful, especially for beginners. All the SystemVe
 
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [Juri Tsirihhov](https://github.com/jutsir), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [Juri Tsirihhov](https://github.com/jutsir), [Matt Venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
