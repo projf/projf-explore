@@ -1,5 +1,6 @@
 ## Project F: Sine Scroller - Verilator Sim Makefile
 ## (C)2022 Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/sinescroll/
 
 CFLAGS = -O2
 SDL_CFLAGS = `sdl2-config --cflags`

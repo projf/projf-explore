@@ -1,6 +1,7 @@
 // Project F: Sine Scroller Render
 // (C)2022 Will Green & Ben Blundell, open source hardware released under the MIT License
 // From "All You Need" by Chapterhouse released at Revision 2022 (with minor emendations)
+// Learn more at https://projectf.io/posts/sinescroll/
 
 `default_nettype none
 `timescale 1ns / 1ps

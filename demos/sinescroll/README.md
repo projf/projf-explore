@@ -2,8 +2,8 @@
 
 Design from the demo "All You Need" by Chapterhouse released at Revision 2022 (with minor emendations).
 
-This demo will have an associated Project F blog post soon.
-New to graphics development on FPGA? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+This demo has an associated Project F blog post: [Sine Scroller](https://projectf.io/posts/sinescroll/).  
+New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/sinescroll-sim.png?raw=true "")
 

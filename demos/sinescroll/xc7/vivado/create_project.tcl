@@ -1,5 +1,6 @@
 # Project F: Sine Scroller - Create Vivado Project
 # (C)2022 Will Green, open source hardware released under the MIT License
+# Learn more at https://projectf.io/posts/sinescroll/
 
 puts "INFO: Project F - Sine Scroller Project Creation Script"
 
