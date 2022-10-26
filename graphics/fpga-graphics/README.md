@@ -6,6 +6,7 @@ File layout:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
+* `ulx3s` - experimental designs for ULX3S and ECP5 FPGAs
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 
