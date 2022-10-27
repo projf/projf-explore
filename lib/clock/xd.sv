@@ -2,13 +2,10 @@
 // (C)2022 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
-// NB. This module is a temporary copy of xd.sv to aid with refactoring.
-// This version of the module shouldn't be used for new designs.
-
 `default_nettype none
 `timescale 1ns / 1ps
 
-module xd2 (
+module xd (
     input  wire logic clk_src,   // source domain clock
     input  wire logic clk_dst,   // destination domain clock
     input  wire logic flag_src,  // flag in source domain
