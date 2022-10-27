@@ -58,7 +58,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
-  [file normalize "${lib_dir}/clock/xd2.sv"] \
+  [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/bitmap_addr.sv"] \
   [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \

@@ -53,7 +53,7 @@ module top_life (
     );
 
     logic frame_sys;  // start of new frame in system clock domain
-    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_100m),
+    xd xd_frame (.clk_src(clk_pix), .clk_dst(clk_100m),
         .flag_src(frame), .flag_dst(frame_sys));
 
     // life signals
