@@ -2,13 +2,10 @@
 // (C)2022 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
-// NB. This module is a temporary copy of xd2_tb.sv to aid with refactoring.
-// This version of the module shouldn't be used for new designs.
-
 `default_nettype none
 `timescale 1ns / 1ps
 
-module xd2_tb();
+module xd_tb();
 
     parameter CLK_SLOW_PERIOD = 10;  // 10 ns == 100 MHz
     parameter CLK_FAST_PERIOD =  4;  //  4 ns == 250 MHz
@@ -17,14 +14,14 @@ module xd2_tb();
     logic flag_a_src, flag_a_dst;  // for slow->fast
     logic flag_b_src, flag_b_dst;  // for fast->slow
 
-    xd2 xd_slowfast (
+    xd xd_slowfast (
         .clk_src(clk_slow),
         .clk_dst(clk_fast),
         .flag_src(flag_a_src),
         .flag_dst(flag_a_dst)
     );
 
-    xd2 xd_fastslow (
+    xd xd_fastslow (
         .clk_src(clk_fast),
         .clk_dst(clk_slow),       
         .flag_src(flag_b_src),

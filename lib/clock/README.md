@@ -6,8 +6,7 @@ Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://tw
 
 ## Verilog Modules
 
-* [xd.sv](xd.sv) - clock domain crossing (CDC) with pulse [[docs](https://projectf.io/posts/simple-fpga-cdc)]
-  * NB. This module is temporarily named `xd2.sv` during a library refactor
+* [xd.sv](xd.sv) - clock domain crossing (CDC) with pulse [[docs](https://projectf.io//posts/lib-clock-xd/)]
 * Lattice iCE40 (12 MHz board clock)
   * [ice40/clock_480p.sv](ice40/clock_480p.sv) - PLL clock generation for VGA 640x480 (25.125 MHz)
 * Xilinx 7 Series (100 MHz board clock)
