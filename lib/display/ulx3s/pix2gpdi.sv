@@ -1,5 +1,7 @@
 // (C) 2022 Tristan Itschner
 
+`default_nettype none
+
 module pix2gpdi(
 	input  logic       clk_pix, clk_tmds_half,
 	input  logic [7:0] r, g, b,
@@ -15,7 +17,7 @@ tmds_8b_10b encode_B(.clk(clk_pix), .d(b), .c({vs,hs}), .de(de), .q(tmds_b));
 
 // register stage to improve timing
 logic [9:0] r_tmds_r, r_tmds_g, r_tmds_b;
-always_ff @(posedge clk_pix)
+always_ff @(posedge clk_tmds_half)
 	{r_tmds_r, r_tmds_g, r_tmds_b} <= {tmds_r, tmds_g, tmds_b};
 
 // use shift registers as counter to 5

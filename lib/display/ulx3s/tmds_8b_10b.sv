@@ -30,7 +30,7 @@ endfunction
 
 logic [8:0] q_m;
 always_comb
-	if (n1(d) > 4 || (n1(d) == 4 && d[0] == 0)) begin
+	if ((n1(d) > 4) || ((n1(d) == 4) && (d[0] == 0))) begin
 		q_m[0] = d[0];
 		for (int i = 0; i <= 6; i++) 
 			q_m[i + 1] = ~(q_m[i] ^ d[i + 1]);
@@ -38,7 +38,7 @@ always_comb
 	end else begin
 		q_m[0] = d[0];
 		for (int i = 0; i <= 6; i++) 
-			q_m[i + 1] = (q_m[i] ^ d[i + 1]);
+			q_m[i + 1] = q_m[i] ^ d[i + 1];
 		q_m[8] = 1;
 	end
 
@@ -50,17 +50,18 @@ always_ff @(posedge clk)
 			2'b10: q[9:0] <= 10'b0101010100;
 			2'b11: q[9:0] <= 10'b1010101011;
 		endcase
+		cnt <= 0;
 	end else
-		if (cnt == 0 || n1(q_m[7:0]) == n0(q_m[7:0])) begin
-			q[9] <= ~q[8];
-			q[8] <=  q[8];
+		if ((cnt == 0) || (n1(q_m[7:0]) == n0(q_m[7:0]))) begin
+			q[9] <= ~q_m[8];
+			q[8] <=  q_m[8];
 			q[7:0] <= q_m[8] ? q_m[7:0] : ~q_m[7:0];
 			if (q_m[8])
 				cnt <= cnt + n1(q_m[7:0]) - n0(q_m[7:0]);
 			else
 				cnt <= cnt + n0(q_m[7:0]) - n1(q_m[7:0]);
-		end else if ((cnt > 0 && n1(q_m[7:0]) > n0(q_m[7:0])) 
-			|| (cnt < 0 && n0(q_m[7:0]) > n1(q_m[7:0]))) begin
+		end else if (((cnt > 0) && (n1(q_m[7:0]) > n0(q_m[7:0]))) 
+			|| ((cnt < 0) && (n0(q_m[7:0]) > n1(q_m[7:0])))) begin
 				q[9] <= 1;
 				q[8] <= q_m[8];
 				q[7:0] <= ~q_m[7:0];
