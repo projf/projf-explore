@@ -109,11 +109,11 @@ module top_david_scale (
 
     // display flags in system clock domain
     logic frame_sys, line_sys, line0_sys;
-    xd2 xd_frame (.clk_src(clk_pix),.clk_dst(clk_sys),
+    xd xd_frame (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(frame), .flag_dst(frame_sys));
-    xd2 xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
+    xd xd_line  (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line),  .flag_dst(line_sys));
-    xd2 xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
+    xd xd_line0 (.clk_src(clk_pix), .clk_dst(clk_sys),
         .flag_src(line && sy==0), .flag_dst(line0_sys));
 
     // count lines for scaling via linebuffer
