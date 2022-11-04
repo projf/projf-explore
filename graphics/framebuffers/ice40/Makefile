@@ -11,7 +11,7 @@ PCF = icebreaker.pcf
 # included modules
 PATH_LIB = ../../../lib
 ADD_SRC += ${PATH_LIB}/clock/ice40/clock_480p.sv
-ADD_SRC += ${PATH_LIB}/clock/xd2.sv
+ADD_SRC += ${PATH_LIB}/clock/xd.sv
 ADD_SRC += ${PATH_LIB}/display/clut_simple.sv
 ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ${PATH_LIB}/display/linebuffer_simple.sv

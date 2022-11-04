@@ -60,7 +60,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
-  [file normalize "${lib_dir}/clock/xd2.sv"] \
+  [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
@@ -97,22 +97,16 @@ set fs_sim_obj [get_filesets sim_1]
 # Generic simulation sources
 set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/xd_tb.sv"] \
-  [file normalize "${lib_dir}/clock/xc7/xd2_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
-  [file normalize "${lib_dir}/clock/xc7/vivado/xd2_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/clut_simple_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_simple_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/linebuffer_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_simple_tb_behav.wcfg" ] \
-  [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "linebuffer_tb" -objects $fs_sim_obj
+set_property -name "top" -value "linebuffer_simple_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
