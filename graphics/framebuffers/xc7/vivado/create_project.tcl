@@ -100,17 +100,13 @@ set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
   [file normalize "${lib_dir}/display/xc7/clut_simple_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/framebuffer_bram_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_simple_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/linebuffer_tb.sv"] \
-  [file normalize "${lib_dir}/display/xc7/vivado/framebuffer_bram_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_simple_tb_behav.wcfg" ] \
-  [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_tb_behav.wcfg" ] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "linebuffer_tb" -objects $fs_sim_obj
+set_property -name "top" -value "linebuffer_simple_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
