@@ -1,4 +1,5 @@
 // (C) 2022 Tristan Itschner
+// SPDX-License-Identifier: D-FSL-1.0
 
 `default_nettype none
 

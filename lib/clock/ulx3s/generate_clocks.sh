@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # (C) 2022 Tristan Itschner
+# SPDX-License-Identifier: D-FSL-1.0
 
 CLKIN_NAME=clk_25m
 CLKIN=25
