@@ -1,8 +1,8 @@
-# Sine Scrolling Demo
+# Sine Scroller
 
 Design from the demo "All You Need" by Chapterhouse released at Revision 2022 (with minor emendations).
 
-This demo has an associated Project F blog post: [Sine Scroller](https://projectf.io/posts/sinescroll/).  
+This demo effect has an associated Project F blog post: [Sine Scroller](https://projectf.io/posts/sinescroll/).  
 New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/sinescroll-sim.png?raw=true "")

@@ -1,6 +1,9 @@
-# Ad Astra Demos
+# Ad Astra
 
-These SystemVerilog demos use starfields and hardware sprites to create greetings demos.
+These SystemVerilog examples use starfields and hardware sprites to build up a simple greetings demo. The final demo is in file `top_greet.sv`.
+
+I created Ad Astra in 2018; it was my first FPGA demo, but I didn't release it at a party (for one thing it has no music).
+This version remains similar to the original source, but has some minor updates to work with the Project F Verilog library.
 
 This demo has an associated Project F blog post: [Ad Astra](https://projectf.io/posts/fpga-ad-astra/).  
 New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
