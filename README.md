@@ -53,7 +53,7 @@ _Stay tuned for more parts later in 2022._
 * **Ad Astra**: [Designs](demos/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/) - greetings with starfields and hardware sprites
 * **Castle Drawing**: [Designs](demos/castle-drawing) - [Blog](https://projectf.io/posts/castle-drawing/) - draw a castle and rainbow in 16 colours
 * **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/) - Conway's Game of Life in logic
-* **Raster Bars**: [Designs](demos/rasterbars) - [Blog](https://projectf.io/posts/rasterbars/) - the most classical of classic effects
+* **Rasterbars**: [Designs](demos/rasterbars) - [Blog](https://projectf.io/posts/rasterbars/) - classic animated colour bars
 * **Sine Scroller**: [Designs](demos/sinescroll) - [Blog](https://projectf.io/posts/sinescroll/) - greet your viewers in style
 
 ![](doc/img/sinescroll-sim.png?raw=true "")
