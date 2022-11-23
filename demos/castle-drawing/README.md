@@ -6,7 +6,6 @@ This design has an associated Project F blog post: [Castle Drawing](https://proj
 New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/castle-sim.png?raw=true "")
-
 _Castle drawn by Verilator/SDL sim._
 
 ## Arty Build
