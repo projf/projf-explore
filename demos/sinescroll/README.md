@@ -6,6 +6,7 @@ This demo effect has an associated Project F blog post: [Sine Scroller](https://
 New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/sinescroll-sim.png?raw=true "")
+
 _Scrolling with Verilator/SDL sim._
 
 ## Arty Build

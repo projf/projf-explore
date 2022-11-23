@@ -6,6 +6,7 @@ This demo effect has an associated Project F blog post: [Rasterbars](https://pro
 New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 ![](../../doc/img/rasterbars-sim.png?raw=true "")
+
 _Rasters with Verilator/SDL sim._
 
 ## Arty Build
