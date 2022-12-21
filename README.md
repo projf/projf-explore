@@ -51,7 +51,7 @@ Maths & Algorithms is our latest tutorial series:
 
 This repo has [maths demos](maths/demo) to accompany the series.
 
-![](doc/img/verilator-polynomial?raw=true "")
+![](doc/img/verilator-polynomial.png?raw=true "")
 
 ## Demos and Effects
 
