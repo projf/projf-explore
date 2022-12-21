@@ -1,7 +1,7 @@
 # Hello FPGA from Project F
 
 Project F brings FPGAs to life with exciting [open-source](LICENSE) designs you can build on.  
-Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https://twitter.com/WillFlux) for updates.
+Learn more at [projectf.io](https://projectf.io/) and follow [@WillFlux](https://mastodon.social/@WillFlux) for updates.
 
 Hello is a three-part introduction to FPGA development with Verilog; currently available for two boards: the Arty A7 and Nexys Video.
 
