@@ -1,8 +1,6 @@
 # Clock - Verilog Library
 
-Clock-related Verilog designs from Project F, including PLL and clock domain crossing. You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules or discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
-
-Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Clock-related Verilog designs from Project F, including PLL and clock domain crossing. You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules and read the [verilog library overview](https://projectf.io/verilog-lib/) on the blog.
 
 ## Verilog Modules
 
@@ -25,7 +23,7 @@ If you're new to FPGA development, check out the explanation of clocks in [Hello
 
 The [FPGA Graphics](https://projectf.io/posts/fpga-graphics/) series makes extensive use of these clock generation modules.
 
-See [Simple Clock Domain Crossing](https://projectf.io/posts/simple-fpga-cdc) for documentation of the **xd** module.
+See [Simple Clock Domain Crossing](https://projectf.io/posts/lib-clock-xd/) for documentation of the **xd** module.
 
 ## SystemVerilog?
 

@@ -1,8 +1,6 @@
 # Display - Verilog Library
 
-Video display Verilog designs from Project F covering signal generation, TMDS, and buffers. You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules or discover the [background to the Library](https://projectf.io/posts/verilog-library-announcement/).
-
-Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Video display Verilog designs from Project F covering signal generation, TMDS, and buffers. You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules and read the [verilog library overview](https://projectf.io/verilog-lib/) on the blog.
 
 ## Verilog Modules
 

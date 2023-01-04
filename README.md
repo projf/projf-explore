@@ -12,7 +12,7 @@ Get an introduction with [About Project F](https://projectf.io/about/), follow [
 
 The Project F Library includes handy Verilog designs for everyone. From framebuffers and video output to division and square root, rom and ram, and even circle drawing. You can freely build on these [MIT licensed](../../LICENSE) designs.
 
-See [Library](lib/) for designs or get an overview from [Verilog Library blog](https://projectf.io/verilog-lib/).
+See [Library](lib/) for the Verilog designs or get an overview from the [Verilog Library blog](https://projectf.io/verilog-lib/).
 
 ## FPGA Graphics
 
