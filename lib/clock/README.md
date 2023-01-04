@@ -1,8 +1,6 @@
 # Clock - Verilog Library
 
-Clock-related Verilog designs from [Project F](https://projectf.io), including PLL and clock domain crossing. You can freely build on these [MIT licensed](../../LICENSE) designs.
-
-Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
+Clock-related Verilog designs from [Project F](https://projectf.io), including PLL and clock domain crossing. You can freely build on these [MIT licensed](../../LICENSE) designs. Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
 
 ## Verilog Modules
 

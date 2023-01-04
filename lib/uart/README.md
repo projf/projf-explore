@@ -1,8 +1,6 @@
 # UART - Verilog Library
 
-A UART was one of the first SystemVerilog designs I created. These designs are not polished, but I hope you find them useful. You can freely build on these [MIT licensed](../../LICENSE) designs.
-
-Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
+A UART was one of the first SystemVerilog designs I created. These designs are not polished, but I hope you find them useful. You can freely build on these [MIT licensed](../../LICENSE) designs. Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
 
 ## Verilog Modules
 

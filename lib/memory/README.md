@@ -1,8 +1,6 @@
 # Memory - Verilog Library
 
-Memory Verilog designs from [Project F](https://projectf.io), including ROM, block ram, and SPRAM. You can freely build on these [MIT licensed](../../LICENSE) designs.
-
-Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
+Memory Verilog designs from [Project F](https://projectf.io), including ROM, block ram, and SPRAM. You can freely build on these [MIT licensed](../../LICENSE) designs. Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
 
 ## Verilog Modules
 
