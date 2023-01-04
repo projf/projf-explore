@@ -1,6 +1,8 @@
 # Graphics - Verilog Library
 
-Graphics Verilog designs from Project F, including line and shape drawing. You can freely build on these [MIT licensed](../../LICENSE) designs. See the [Library](../) for other helpful Verilog modules and read the [verilog library overview](https://projectf.io/verilog-lib/) on the blog.
+Graphics Verilog designs from [Project F](https://projectf.io), including line and shape drawing. You can freely build on these [MIT licensed](../../LICENSE) designs.
+
+Get an overview of the whole lib from the [Verilog Library blog](https://projectf.io/verilog-lib/).
 
 ## Verilog Modules
 

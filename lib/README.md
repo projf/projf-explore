@@ -1,8 +1,8 @@
 # Verilog Library from Project F
 
-The Project F Library includes handy Verilog designs for everyone. You can freely build on these [MIT licensed](../LICENSE) designs for commercial and non-commercial projects. Have fun.
+The [Project F](https://projectf.io) Library includes handy Verilog designs for everyone. You can freely build on these [MIT licensed](../LICENSE) designs.
 
-Read the [verilog library overview](https://projectf.io/verilog-lib/) on the blog or dive into the designs.
+Get an overview from the [Verilog Library blog](https://projectf.io/verilog-lib/) or dive into the designs.
 
 ## Library Areas
 
