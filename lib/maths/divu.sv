@@ -1,4 +1,4 @@
-// Project F Library - Division: Unsigned Fixed-Point without Rounding
+// Project F Library - Division: Unsigned Fixed-Point with Round to Zero
 // (C)2023 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io/verilog-lib/
 
