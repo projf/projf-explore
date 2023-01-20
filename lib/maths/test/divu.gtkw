@@ -1,0 +1,26 @@
+[*] divu gtkwave config
+[dumpfile] "divu.vcd"
+[savefile] "divu.gtkw"
+[timestart] 0
+[size] 1631 886
+[pos] -1 -1
+*-15.410237 86800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 193
+[signals_width] 178
+[sst_expanded] 1
+[sst_vpaned_height] 270
+@28
+divu.clk
+divu.rst
+divu.start
+divu.busy
+divu.done
+divu.valid
+divu.dbz
+divu.ovf
+@29
+divu.a[7:0]
+divu.b[7:0]
+divu.c[7:0]
+[pattern_trace] 1
+[pattern_trace] 0

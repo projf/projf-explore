@@ -5,8 +5,9 @@ Maths Verilog designs from [Project F](https://projectf.io), including division,
 ## Verilog Modules
 
 * Division
-  * [div.sv](div.sv) - fixed point
-  * [div_int.sv](div_int.sv) - integer
+  * [div.sv](div.sv) - signed fixed-point
+  * [divu.sv](divu.sv) - unsigned fixed-point
+  * [divu_int.sv](divu_int.sv) - unsigned integer
 * Linear Feedback Shift Register: [lfsr.sv](lfsr.sv)
 * Square Root
   * [sqrt.sv](sqrt.sv) - fixed point
@@ -14,8 +15,31 @@ Maths Verilog designs from [Project F](https://projectf.io), including division,
 * Trigonometry
   * [sine_table.sv](sine_table.sv) - sine and cosine from ROM
 
-Locate Vivado test benches in the [xc7](xc7) directory.  
-Find other modules in the [Library](../).
+## Test Benches
+
+Modules in the Verilog library have test benches for cocotb and/or Vivado. Cocotb test bench coverage will expand during 2023.
+
+### cocotb
+
+You can find [cocotb](https://www.cocotb.org) test benches using [Icarus Verilog](http://iverilog.icarus.com) in the [test](test) directory. Use the included Makefile to run tests.
+
+Some tests use the Simple Python Fixed-Point Module: [spfpm](https://pypi.org/project/spfpm/)
+
+Add the following to a Verilog module to generate a VCD waveform file from cocotb test benches:
+
+```verilog
+// generate waveform file with cocotb
+`ifdef COCOTB_SIM
+initial begin
+    $dumpfile($sformatf("%m.vcd"));
+    $dumpvars;
+end
+`endif
+```
+
+### Vivado
+
+You can find Vivado test benches in the [xc7](xc7) directory. Associated waveform configuration is in [xc7/vivado](xc7/vivado).
 
 ## Blog Posts
 
