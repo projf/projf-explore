@@ -17,5 +17,11 @@ webtalk.*
 # Verilator
 obj_dir
 
+# cocotb
+results*.xml
+sim_build*
+__pycache__
+*.vcd
+
 # Mac
 .DS_Store
