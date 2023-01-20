@@ -1,0 +1,25 @@
+[*] div gtkwave config
+[dumpfile] "div.vcd"
+[savefile] "div.gtkw"
+[timestart] 0
+[size] 1599 871
+[pos] -1 -1
+*-16.835270 112004 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 193
+[signals_width] 184
+[sst_expanded] 1
+[sst_vpaned_height] 260
+@28
+div.clk
+div.rst
+div.start
+div.busy
+div.done
+div.valid
+div.dbz
+div.ovf
+div.a[8:0]
+div.b[8:0]
+div.val[8:0]
+[pattern_trace] 1
+[pattern_trace] 0
