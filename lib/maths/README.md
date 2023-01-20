@@ -5,16 +5,16 @@ Maths Verilog designs from [Project F](https://projectf.io), including division,
 ## Verilog Modules
 
 * Division
-  * [div.sv](div.sv) - signed fixed-point with Gaussian rounding
-  * [divu.sv](divu.sv) - unsigned fixed-point that rounds towards zero
-  * [divu_int.sv](divu_int.sv) - unsigned integer with remainder
-* Linear Feedback Shift Register: [lfsr.sv](lfsr.sv)
-* Multiplication: [mul.sv] - signed fixed-point with Gaussian rounding
+  * **[div.sv](div.sv)** - signed fixed-point with Gaussian rounding
+  * **[divu.sv](divu.sv)** - unsigned fixed-point that rounds towards zero
+  * **[divu_int.sv](divu_int.sv)** - unsigned integer with remainder
+* Linear Feedback Shift Register: **[lfsr.sv](lfsr.sv)**
+* Multiplication: **[mul.sv](mul.sv)** - signed fixed-point with Gaussian rounding
 * Square Root
-  * [sqrt.sv](sqrt.sv) - fixed point
-  * [sqrt_int.sv](sqrt_int.sv) - integer
+  * **[sqrt.sv](sqrt.sv)** - fixed point
+  * **[sqrt_int.sv](sqrt_int.sv)** - integer
 * Trigonometry
-  * [sine_table.sv](sine_table.sv) - sine and cosine from ROM
+  * **[sine_table.sv](sine_table.sv)** - sine and cosine from lookup table (ROM)
 
 ## Test Benches
 
