@@ -62,14 +62,15 @@ module mul #(
                 // Gaussian rounding
                 val <= (round && !(even && rbits == HALF)) ? prod_t + 1 : prod_t;
 
-                // check overflow
-                valid <= 0;
-                ovf <= 1;
-                if (sig_diff == prod_t[WIDTH-1+:1]) begin  // is truncated sign as expected?
-                    if (prod[2*WIDTH-1:MSB+1] == '0 || prod[2*WIDTH-1:MSB+1] == '1) begin
-                        valid <= 1;  // last assignment wins
-                        ovf <= 0;
-                    end
+                // overflow
+                if (sig_diff == prod_t[WIDTH-1+:1] &&  // compare input and answer sign
+                    (prod[2*WIDTH-1:MSB+1] == '0 || prod[2*WIDTH-1:MSB+1] == '1)  // overflow bits
+                ) begin
+                    valid <= 1;
+                    ovf <= 0;
+                end else begin
+                    valid <= 0;
+                    ovf <= 1;
                 end
             end
             default: begin
