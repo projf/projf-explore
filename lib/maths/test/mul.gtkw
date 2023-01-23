@@ -4,9 +4,9 @@
 [timestart] 0
 [size] 1614 841
 [pos] -1 -1
-*-15.063766 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.336948 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 193
-[signals_width] 90
+[signals_width] 98
 [sst_expanded] 1
 [sst_vpaned_height] 252
 @28
@@ -20,6 +20,6 @@ mul.ovf
 @29
 mul.a[8:0]
 mul.b[8:0]
-mul.c[8:0]
+mul.val[8:0]
 [pattern_trace] 1
 [pattern_trace] 0
