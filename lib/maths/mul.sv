@@ -29,7 +29,7 @@ module mul #(
     // for rounding
     localparam HALF = {1'b1, {FBITS-1{1'b0}}};
 
-    logic sig_diff; // signs differance of inputs
+    logic sig_diff;  // signs difference of inputs
     logic signed [WIDTH-1:0] a1, b1;  // copy of inputs
     logic signed [WIDTH-1:0] prod_t;  // unrounded, truncated product
     logic signed [2*WIDTH-1:0] prod;  // full product
