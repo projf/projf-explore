@@ -11,12 +11,16 @@ divu:
 divu_int:
 	make -f divu_int.mk
 
-all: div divu divu_int
+mul:
+	make -f mul.mk
+
+all: div divu divu_int mul
 
 clean:
 	make -f div.mk clean
 	make -f divu.mk clean
 	make -f divu_int.mk clean
+	make -f mul.mk clean
 	rm -f results*.xml
 	rm -rf __pycache__
 	rm -rf sim_build

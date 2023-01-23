@@ -59,7 +59,7 @@ module div #(
                 state <= CALC;
                 ovf <= 0;
                 i <= 0;
-                {acc, quo} <= {{WIDTHU{1'b0}}, au, 1'b0};
+                {acc, quo} <= {{WIDTHU{1'b0}}, au, 1'b0};  // initialize calculation
             end
             CALC: begin
                 if (i == WIDTHU-1 && quo_next[WIDTHU-1:WIDTHU-FBITSW] != 0) begin  // overflow
