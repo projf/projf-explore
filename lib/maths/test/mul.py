@@ -63,109 +63,117 @@ async def test_dut_multiply(dut, a, b, log=True):
     await RisingEdge(dut.clk)
     assert dut.done.value == 0, "done is not 0!"
 
+
 # simple tests
 @cocotb.test()
-async def mul_1_1(dut):
+async def simple_1(dut):
     """Test 1*1"""
     await test_dut_multiply(dut=dut, a=1, b=1)
 
 @cocotb.test()
-async def mul_m1_1(dut):
+async def simple_2(dut):
     """Test -1*1"""
     await test_dut_multiply(dut=dut, a=-1, b=1)
 
 @cocotb.test()
-async def mul_3_2(dut):
+async def simple_3(dut):
     """Test 3*2"""
     await test_dut_multiply(dut=dut, a=3, b=2)
 
 @cocotb.test()
-async def mul_1_5_2(dut):
+async def simple_4(dut):
     """Test 1.5*2"""
     await test_dut_multiply(dut=dut, a=1.5, b=2)
 
 @cocotb.test()
-async def mul_1_0_0625(dut):
+async def simple_5(dut):
     """Test 1*0.0625"""
     await test_dut_multiply(dut=dut, a=1, b=0.0625)
 
+@cocotb.test()
+async def simple_6(dut):
+    """Test 3*0"""
+    await test_dut_multiply(dut=dut, a=3, b=0)
+
+
 # wider values
 @cocotb.test()
-async def mul_3_4375_4_5(dut):
+async def wide_1(dut):
     """Test 3.4375*4.5"""
     await test_dut_multiply(dut=dut, a=3.4375, b=4.5)
 
 @cocotb.test()
-async def mul_m3_4375_4_5(dut):
+async def wide_2(dut):
     """Test -3.4375*4.5"""
     await test_dut_multiply(dut=dut, a=-3.4375, b=4.5)
 
 @cocotb.test()
-async def mul_m3_4375_m4_5(dut):
+async def wide_3(dut):
     """Test -3.4375*-4.5"""
     await test_dut_multiply(dut=dut, a=-3.4375, b=-4.5)
 
+
 # rounding: 2.5, 3.5, 4.5, 5.5
 @cocotb.test()
-async def mul_2_5_2_0625(dut):
+async def round_1(dut):
     """Test 2.5*2.0625"""
     await test_dut_multiply(dut=dut, a=2.5, b=2.0625)
 
 @cocotb.test()
-async def mul_3_5_2_0625(dut):
+async def round_2(dut):
     """Test 3.5*2.0625"""
     await test_dut_multiply(dut=dut, a=3.5, b=2.0625)
 
 @cocotb.test()
-async def mul_4_5_2_0625(dut):
+async def round_3(dut):
     """Test 4.5*2.0625"""
     await test_dut_multiply(dut=dut, a=4.5, b=2.0625)
 
 @cocotb.test()
-async def mul_5_5_2_0625(dut):
+async def round_4(dut):
     """Test 5.5*2.0625"""
     await test_dut_multiply(dut=dut, a=5.5, b=2.0625)
 
 # rounding: either side of 3.5
 @cocotb.test()
-async def mul_3_4375_2_0625(dut):
+async def round_5(dut):
     """Test 3.4375*2.0625"""
     await test_dut_multiply(dut=dut, a=3.4375, b=2.0625)
 
 @cocotb.test()
-async def mul_3_5625_2_0625(dut):
+async def round_6(dut):
     """Test 3.5625*2.0625"""
     await test_dut_multiply(dut=dut, a=3.5625, b=2.0625)
 
 # rounding: -2.5, -3.5, -4.5, -5.5
 @cocotb.test()
-async def mul_m2_5_2_0625(dut):
+async def round_neg_1(dut):
     """Test -2.5*2.0625"""
     await test_dut_multiply(dut=dut, a=-2.5, b=2.0625)
 
 @cocotb.test()
-async def mul_m3_5_2_0625(dut):
+async def round_neg_2(dut):
     """Test -3.5*2.0625"""
     await test_dut_multiply(dut=dut, a=-3.5, b=2.0625)
 
 @cocotb.test()
-async def mul_m4_5_2_0625(dut):
+async def round_neg_3(dut):
     """Test -4.5*2.0625"""
     await test_dut_multiply(dut=dut, a=-4.5, b=2.0625)
 
 @cocotb.test()
-async def mul_m5_5_2_0625(dut):
+async def round_neg_4(dut):
     """Test -5.5*2.0625"""
     await test_dut_multiply(dut=dut, a=-5.5, b=2.0625)
 
 # rounding: either side of -3.5
 @cocotb.test()
-async def mul_m3_4375_2_0625(dut):
+async def round_neg_5(dut):
     """Test -3.4375*2.0625"""
     await test_dut_multiply(dut=dut, a=-3.4375, b=2.0625)
 
 @cocotb.test()
-async def mul_m3_5625_2_0625(dut):
+async def round_neg_6(dut):
     """Test -3.5625*2.0625"""
     await test_dut_multiply(dut=dut, a=-3.5625, b=2.0625)
 
@@ -188,12 +196,6 @@ async def ovf_1(dut):
     # wait for calculation to complete
     while not dut.done.value:
         await RisingEdge(dut.clk)
-
-    # divide dut result by scaling factor
-    val = fp_family(dut.val.value.signed_integer/2**FBITS)
-
-    dut._log.info('dut val: ' + dut.val.value.binstr)
-    dut._log.info('         ' + val.toDecimalString(precision=fp_family.fraction_bits))
 
     # check output signals on 'done'
     assert dut.busy.value == 0, "busy is not 0!"
@@ -226,12 +228,6 @@ async def ovf_2(dut):
     while not dut.done.value:
         await RisingEdge(dut.clk)
 
-    # divide dut result by scaling factor
-    val = fp_family(dut.val.value.signed_integer/2**FBITS)
-
-    dut._log.info('dut val: ' + dut.val.value.binstr)
-    dut._log.info('         ' + val.toDecimalString(precision=fp_family.fraction_bits))
-
     # check output signals on 'done'
     assert dut.busy.value == 0, "busy is not 0!"
     assert dut.done.value == 1, "done is not 1!"
@@ -261,12 +257,6 @@ async def ovf_3(dut):
     # wait for calculation to complete
     while not dut.done.value:
         await RisingEdge(dut.clk)
-
-    # divide dut result by scaling factor
-    val = fp_family(dut.val.value.signed_integer/2**FBITS)
-
-    dut._log.info('dut val: ' + dut.val.value.binstr)
-    dut._log.info('         ' + val.toDecimalString(precision=fp_family.fraction_bits))
 
     # check output signals on 'done'
     assert dut.busy.value == 0, "busy is not 0!"
