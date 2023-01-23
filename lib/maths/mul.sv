@@ -1,4 +1,4 @@
-// Project F Library - Multiplication: Signed Fixed-Point
+// Project F Library - Multiplication: Signed Fixed-Point with Gaussian Rounding
 // (C)2023 Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io/verilog-lib/
 
