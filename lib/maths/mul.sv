@@ -29,9 +29,10 @@ module mul #(
     // for rounding
     localparam HALF = {1'b1, {FBITS-1{1'b0}}};
 
+    logic sig_diff; // signs differance of inputs
     logic signed [WIDTH-1:0] a1, b1;  // copy of inputs
-    logic signed [WIDTH-1:0] c1;      // unrounded, truncated product
-    logic signed [2*WIDTH-1:0] cf;    // full product
+    logic signed [WIDTH-1:0] prod_t;  // unrounded, truncated product
+    logic signed [2*WIDTH-1:0] prod;  // full product
     logic [FBITS-1:0] rbits;          // rounding bits
     logic round;  // rounding required
     logic even;   // even number
@@ -43,39 +44,40 @@ module mul #(
         case (state)
             CALC: begin
                 state <= TRUNC;
-                cf <= a1 * b1;
+                prod <= a1 * b1;
             end
             TRUNC: begin
                 // need to check for overflow (need to look at MSB)
                 state <= ROUND;
-                c1    <= cf[MSB:LSB];
-                rbits <= cf[FBITS-1:0];
-                round <= cf[FBITS-1+:1];
-                even  <= ~cf[FBITS+:1];
+                prod_t <= prod[MSB:LSB];
+                rbits  <= prod[FBITS-1:0];
+                round  <= prod[FBITS-1+:1];
+                even  <= ~prod[FBITS+:1];
             end
             ROUND: begin  // round half to even
-                $display("cf: %b (even=%b) (round=%b)", cf, even, round);
-                $display("overflow bits: %b", cf[2*WIDTH-1:MSB+1]);
                 state <= IDLE;
-                val <= (round && !(even && rbits == HALF)) ? c1 + 1 : c1;
-
-                // this check isn't enough as mul can cause "sign change" obscuring overflow
-                if (cf[2*WIDTH-1:MSB+1] == '0 || cf[2*WIDTH-1:MSB+1] == '1) begin // check overflow
-                    valid <= 1;
-                    ovf <= 0;
-                end else begin
-                    valid <= 0;
-                    ovf <= 1;
-                end
-
                 busy <= 0;
                 done <= 1;
+
+                // Gaussian rounding
+                val <= (round && !(even && rbits == HALF)) ? prod_t + 1 : prod_t;
+
+                // check overflow
+                valid <= 0;
+                ovf <= 1;
+                if (sig_diff == prod_t[WIDTH-1+:1]) begin  // is truncated sign as expected?
+                    if (prod[2*WIDTH-1:MSB+1] == '0 || prod[2*WIDTH-1:MSB+1] == '1) begin
+                        valid <= 1;  // last assignment wins
+                        ovf <= 0;
+                    end
+                end
             end
             default: begin
                 if (start) begin
                     state <= CALC;
-                    a1 <= a;
-                    b1 <= b;
+                    a1 <= a;  // register input a
+                    b1 <= b;  // register input b
+                    sig_diff <= (a[WIDTH-1+:1] ^ b[WIDTH-1+:1]);  // register input sign difference
                     busy <= 1;
                     ovf <= 0;
                 end
