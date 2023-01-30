@@ -47,7 +47,8 @@ Maths & Algorithms is our latest tutorial series:
 * [Vectors and Arrays](https://projectf.io/posts/verilog-vectors-arrays) - working with Verilog vectors and arrays
 * [Multiplication with DSPs](https://projectf.io/posts/multiplication-fpga-dsps) - efficient FPGA multiplication
 * [Fixed-Point Numbers](https://projectf.io/posts/fixed-point-numbers-in-verilog/) - precision without complexity
-* _More maths in 2023_
+* [Division in Verilog](https://projectf.io/posts/division-in-verilog) - divided we stand
+* _More maths throughout 2023_
 
 This repo has [maths demos](maths/demo) to accompany the series.
 
@@ -95,4 +96,4 @@ I believe these features are helpful, especially for beginners. All the SystemVe
 
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Juri Tsirihhov](https://github.com/jutsir), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Juri Tsirihhov](https://github.com/jutsir), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
