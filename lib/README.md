@@ -27,7 +27,7 @@ support for vendor primitives. We currently support two FPGA architectures:
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
 
-We also infer block ram (BRAM), see [memory](memory).
+We also infer block ram (BRAM); see [memory](memory).
 
 Porting to other architectures should be straightforward.
 
@@ -41,7 +41,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * `enum` to make finite state machines simpler to work with
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
-I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+I believe these features are helpful, especially for beginners. All the SystemVerilog features are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado.
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).
 
