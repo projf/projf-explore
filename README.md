@@ -1,10 +1,10 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths_ tutorial series; read on to learn more.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths_ tutorial series.
 
 > There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. I find working with FPGAs gives me a sense of delight so often lacking in modern software development.
 
-Get an introduction with [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the [FPGA discussion](https://github.com/projf/projf-explore/discussions) (GitHub) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Get an introduction from [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux), and join the [FPGA discussion](https://github.com/projf/projf-explore/discussions) (GitHub) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
@@ -19,8 +19,6 @@ See [Library](lib/) for the Verilog designs or get an overview from the [Verilog
 In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
 
 ![](doc/img/fpga-graphics-banner.png?raw=true "")
-
-If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
 
 * **Beginning FPGA Graphics**: [Designs](graphics/fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
 * **Racing the Beam**: [Designs](graphics/racing-the-beam) - [Blog](https://projectf.io/posts/racing-the-beam/)
