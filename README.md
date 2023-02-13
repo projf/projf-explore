@@ -48,7 +48,7 @@ Maths & Algorithms is our latest tutorial series:
 * [Multiplication with DSPs](https://projectf.io/posts/multiplication-fpga-dsps) - efficient FPGA multiplication
 * [Fixed-Point Numbers](https://projectf.io/posts/fixed-point-numbers-in-verilog/) - precision without complexity
 * [Division in Verilog](https://projectf.io/posts/division-in-verilog) - divided we stand
-* _More maths throughout 2023_
+* _More maths coming soon_
 
 This repo has [maths demos](maths/demo) to accompany the series.
 

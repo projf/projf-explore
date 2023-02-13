@@ -8,28 +8,27 @@
 `timescale 1ns / 1ps
 
 module mandelbrot #(
-    parameter FUNCW=25,  // function var width (bits)
-    parameter FP_INT=4,  // function var integer part (bits)
+    parameter FP_WIDTH=25,   // total width of fixed-point number: integer + fractional bits
+    parameter FP_INT=4,      // integer bits in fixed-point number
     parameter ITER_MAX=255,  // maximum number of interations
     parameter ITERW=$clog2(ITER_MAX)  // maximum iteration width (bits)
     ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset
     input  wire logic start,  // start calculation
-    input  wire logic signed [FUNCW-1:0] re, im,  // coordinate
+    input  wire logic signed [FP_WIDTH-1:0] re, im,  // coordinate
     output      logic [ITERW-1:0] iter,  // iterations
-    output      logic calculating,  // actively calculating
-    output      logic done  // calculation is complete (high for one tick)
+    output      logic calculating,  // calculation in progress
+    output      logic done  // calculation complete (high for one tick)
     );
 
-    localparam FBITS = FUNCW - FP_INT;  // fractional bits
-
-    logic signed [FUNCW-1:0] x0, y0, x2, y2, x, y;
+    // intermediate values
+    logic signed [FP_WIDTH-1:0] x0, y0, x2, y2, x, y;
 
     // fixed-point multiplication module
-    logic signed [FUNCW-1:0] mul_a, mul_b, mul_val, mul_val_p;
+    logic signed [FP_WIDTH-1:0] mul_a, mul_b, mul_val, mul_val_p;
     logic mul_start, mul_done;
-    mul #(.WIDTH(FUNCW), .FBITS(FBITS)) mul_inst (
+    mul #(.WIDTH(FP_WIDTH), .FBITS(FP_WIDTH - FP_INT)) mul_inst (
         .clk,
         .rst,
         .start(mul_start),
@@ -47,7 +46,7 @@ module mandelbrot #(
     );
 
     /* verilator lint_off UNUSEDSIGNAL */
-    logic signed [FUNCW-1:0] xt, xy2;  // temporaries
+    logic signed [FP_WIDTH-1:0] xt, xy2;  // temporaries
     /* verilator lint_on UNUSEDSIGNAL */
 
     enum {IDLE, STEP1, STEP2, STEP2A, STEP3, STEP4} state;
@@ -55,7 +54,7 @@ module mandelbrot #(
         done <= 0;
         case (state)
             STEP1: begin
-                if ((xy2[FUNCW-1-:FP_INT] <= 4) && (iter < ITER_MAX)) begin
+                if ((xy2[FP_WIDTH-1-:FP_INT] <= 4) && (iter < ITER_MAX)) begin
                     state <= STEP2;
                     mul_a <= x;
                     mul_b <= y;

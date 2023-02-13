@@ -10,31 +10,31 @@ module render_mandel #(
     parameter FB_WIDTH=320,   // framebuffer width in pixels
     parameter FB_HEIGHT=180,  // framebuffer height in pixels
     parameter CIDXW=4,        // colour index width (bits)
-    parameter FUNCW=25,       // function variable width (bits)
-    parameter FP_INT=4,       // function variable integer part (bits)
+    parameter FP_WIDTH=25,    // total width of fixed-point number: integer + fractional bits
+    parameter FP_INT=4,       // integer bits in fixed-point number
     parameter ITER_MAX=255,   // maximum number of interations
     parameter SUPERSAMPLE=1   // combine multiple samples for each coordinate
     ) (
-    input  wire logic clk,                           // clock
-    input  wire logic rst,                           // reset
-    input  wire logic start,                         // start drawing
-    input  wire logic signed [FUNCW-1:0] x_start,    // starting x-coordinate
-    input  wire logic signed [FUNCW-1:0] y_start,    // starting y-coordinate
-    input  wire logic signed [FUNCW-1:0] step,       // coordinate step
-    output      logic signed [CORDW-1:0] x,          // horizontal draw position
-    output      logic signed [CORDW-1:0] y,          // vertical draw position
-    output      logic [CIDXW-1:0] cidx,              // pixel colour
-    output      logic drawing,                       // actively drawing
-    output      logic done                           // drawing is complete (high for one tick)
+    input  wire logic clk,                            // clock
+    input  wire logic rst,                            // reset
+    input  wire logic start,                          // start drawing
+    input  wire logic signed [FP_WIDTH-1:0] x_start,  // left x-coordinate
+    input  wire logic signed [FP_WIDTH-1:0] y_start,  // top y-coordinate
+    input  wire logic signed [FP_WIDTH-1:0] step,     // coordinate step
+    output      logic signed [CORDW-1:0] x,           // horizontal draw position
+    output      logic signed [CORDW-1:0] y,           // vertical draw position
+    output      logic [CIDXW-1:0] cidx,               // pixel colour
+    output      logic drawing,                        // actively drawing
+    output      logic done                            // drawing is complete (high for one tick)
     );
 
     localparam ITERW=$clog2(ITER_MAX);  // maximum iteration width (bits)
-    localparam SF = 2.0**-(FUNCW-FP_INT);  // scale factor for debugging messages
+    localparam SF = 2.0**-(FP_WIDTH-FP_INT);  // scale factor for debugging messages
 
     // function coordinates
-    logic signed [FUNCW-1:0] fx, fy;
-    logic signed [FUNCW-1:0] fx_00, fx_01, fx_10, fx_11;
-    logic signed [FUNCW-1:0] fy_00, fy_01, fy_10, fy_11;
+    logic signed [FP_WIDTH-1:0] fx, fy;
+    logic signed [FP_WIDTH-1:0] fx_00, fx_01, fx_10, fx_11;
+    logic signed [FP_WIDTH-1:0] fy_00, fy_01, fy_10, fy_11;
 
     // control signals
     logic calc_start, calc_done;
@@ -133,7 +133,7 @@ module render_mandel #(
 
     // function to render (top-left sample)
     mandelbrot #(
-        .FUNCW(FUNCW),
+        .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
         .ITER_MAX(ITER_MAX)
     ) mandelbrot_inst_00 (
@@ -151,7 +151,7 @@ module render_mandel #(
 
     // function to render (bottom-left sample)
     mandelbrot #(
-        .FUNCW(FUNCW),
+        .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
         .ITER_MAX(ITER_MAX)
     ) mandelbrot_inst_01 (
@@ -169,7 +169,7 @@ module render_mandel #(
 
     // function to render (bottom-right sample)
     mandelbrot #(
-        .FUNCW(FUNCW),
+        .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
         .ITER_MAX(ITER_MAX)
     ) mandelbrot_inst_10 (
@@ -187,7 +187,7 @@ module render_mandel #(
 
     // function to render (top-right sample)
     mandelbrot #(
-        .FUNCW(FUNCW),
+        .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
         .ITER_MAX(ITER_MAX)
     ) mandelbrot_inst_11 (

@@ -19,14 +19,14 @@ module top_mandel (
     output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // maths function parameters
-    localparam FUNCW = 25;
-    localparam FP_INT = 4;
-    localparam ITER_MAX = 255;  // maximum iterations
+    // maths parameters
+    localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
+    localparam FP_INT =      4;  // integer bits in fixed-point number
+    localparam ITER_MAX =  255;  // maximum iterations (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
-    localparam X_START = 25'b1101_0000_0000_0000_0000_0000_0;  // -3
-    localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // -1.5i
-    localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // 1/64 (320x180)
+    localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
+    localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
+    localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)
 
     // generate system clock
     logic clk_sys;
@@ -127,9 +127,9 @@ module top_mandel (
     //
     // update function params
     //
-    logic signed [FUNCW-1:0] x_start, x_start_p;  // starting x-coordinate
-    logic signed [FUNCW-1:0] y_start, y_start_p;  // starting y-coordinate
-    logic signed [FUNCW-1:0] step, step_p;     // coordinate step
+    logic signed [FP_WIDTH-1:0] x_start, x_start_p;  // left x-coordinate
+    logic signed [FP_WIDTH-1:0] y_start, y_start_p;  // top y-coordinate
+    logic signed [FP_WIDTH-1:0] step, step_p;        // coordinate step
 
     logic start_func, render_required;  // control start of function
     logic drawing;  // actively drawing in framebuffer
@@ -222,7 +222,7 @@ module top_mandel (
         .FB_WIDTH(FB_WIDTH),
         .FB_HEIGHT(FB_HEIGHT),
         .CIDXW(CIDXW),
-        .FUNCW(FUNCW),
+        .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
         .ITER_MAX(ITER_MAX),
         .SUPERSAMPLE(SUPERSAMPLE)

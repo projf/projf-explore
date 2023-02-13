@@ -1,9 +1,15 @@
 # Mandelbrot
 
-This SystemVerilog drawing demo uses fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
+This SystemVerilog drawing demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
 This design has an associated Project F blog post: [Mandelbrot Set in Verilog](https://projectf.io/posts/mandelbrot-set-verilog/).  
-New to FPGA graphics design? Check out [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
+New to FPGA maths? Check out [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/).
+
+The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
+
+By default, we consider up to 255 interations, but you can adjust this by changing `ITER_MAX` in the top module.
+
+The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625). You can zoom in 15 times to the minimum step of 1/2097152 (0.000000476837158). You can adjust the precision by changing `FP_WIDTH` and `FP_INT` in the top module.
 
 ![](../../doc/img/sea-of-chaos.png?raw=true "")
 
