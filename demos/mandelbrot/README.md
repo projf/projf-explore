@@ -57,7 +57,7 @@ The DSP usage of each Mandelbrot module instance depends on `FP_WIDTH`:
 
 18-bit fixed-point only leaves 14 bits for the fraction, so you can't zoom in far, but it's frugal with DSPs. 25 bits is a good compromise as it provides a decent zoom level without consuming too many blocks. Above 25 bits wide, DSP usage rises quickly.
 
-This demo uses four Mandelbrot module instances for supersampling, plus one DSP is used in address calculation. Thus, the total number of DSPs with 25-bit precision is `4 * 2 + 1`: 9 of 90 DSPs on the Artix A7-35T.
+This demo uses four Mandelbrot module instances for supersampling, plus one DSP is used in address calculation. Thus, the total number of DSPs with 25-bit precision is: `4 * 2 + 1 = 9`. There are 90 DSPs on the Artix-7 35T and 740 on the Artix-7 A200T.
 
 Learn more from [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/).
 
