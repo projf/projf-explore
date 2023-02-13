@@ -1,10 +1,12 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths_ tutorial series.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_, and _FPGA Maths_ tutorial series.
 
 > There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. I find working with FPGAs gives me a sense of delight so often lacking in modern software development.
 
-Get an introduction from [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux), and join the [FPGA discussion](https://github.com/projf/projf-explore/discussions) (GitHub) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+The [Project F web site](https://projectf.io) features fifty blog posts on a wide-range of FPGA and Verilog topics.
+
+Follow [@WillFlux](https://mastodon.social/@WillFlux) for update, and join the [FPGA discussion](https://github.com/projf/projf-explore/discussions) (GitHub) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
