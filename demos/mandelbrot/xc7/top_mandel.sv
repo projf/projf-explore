@@ -32,12 +32,6 @@ module top_mandel (
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
     localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)
-    // localparam X_START = 32'b1100_1000_0000_0000_0000_0000_0000_0000;  // starting left: -3.5
-    // localparam Y_START = 32'b1110_1000_0000_0000_0000_0000_0000_0000;  // starting top:  -1.5i
-    // localparam STEP    = 32'b0000_0000_0100_0000_0000_0000_0000_0000;  // starting step: 1/64 (320x180)
-    // localparam X_START = 36'b1100_1000_0000_0000_0000_0000_0000_0000_0000;  // starting left: -3.5
-    // localparam Y_START = 36'b1110_1000_0000_0000_0000_0000_0000_0000_0000;  // starting top:  -1.5i
-    // localparam STEP    = 36'b0000_0000_0100_0000_0000_0000_0000_0000_0000;  // starting step: 1/64 (320x180)
 
     // generate system clock
     logic clk_sys;
