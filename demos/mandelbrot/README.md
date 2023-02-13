@@ -8,7 +8,7 @@ The current version of the demo renders one pixel at a time using four samples. 
 
 By default, we consider up to 255 interations, but you can adjust this by changing `ITER_MAX` in the top module.
 
-The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625). You can zoom in 15 times to the minimum step of 1/2097152 (0.000000476837158). You can adjust the precision by changing `FP_WIDTH` and `FP_INT` in the top module.
+The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625). You can zoom in 15 times to the minimum step of 1/2<sup>21</sup> (0.0000005). You can adjust the precision by changing `FP_WIDTH` and `FP_INT` in the top module.
 
 New to FPGA maths? Check out [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/).
 
@@ -27,18 +27,21 @@ source ./create_project.tcl
 
 You can then build `top_mandel` as you would for any Vivado project.
 
-Arty controls (only work when rendering is complete):
+Arty button controls:
 
 * BTN2 - left/up/zoom-out
 * BTN1 - select mode: horizontal/vertical/zoom
 * BTN0 - right/down/zoom-in
+* RESET - return to starting coordinates and zoom
+
+_NB. Controls don't work if rendering is in progress._
 
 The four green LEDs show status:
 
-* LED4 - rendering in progress
-* LED3 - horizontal motion
-* LED2 - vertical motion
-* LED1 - zoom
+* LD7 - rendering in progress
+* LD6 - horizontal motion
+* LD5 - vertical motion
+* LD4 - zoom
 
 ## Verilator Build
 
@@ -63,6 +66,8 @@ Verilator controls:
 * Up Arrow - left/up/zoom-out
 * Space - select mode: horizontal/vertical/zoom
 * Down Arrow - right/down/zoom-in
+
+_NB. Controls don't work if rendering is in progress._
 
 ### Fullscreen Mode
 

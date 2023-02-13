@@ -1,10 +1,10 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths and Algorithms_ tutorial series; read on to learn more.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths_ tutorial series; read on to learn more.
 
 > There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. I find working with FPGAs gives me a sense of delight so often lacking in modern software development.
 
-Get an introduction with [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://discord.gg/cf869yDbXf). Take a peek into the future with our [roadmap](ROADMAP.md).
+Get an introduction with [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the [FPGA discussion](https://github.com/projf/projf-explore/discussions) (GitHub) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
@@ -49,8 +49,6 @@ Maths & Algorithms is our latest tutorial series:
 * [Fixed-Point Numbers](https://projectf.io/posts/fixed-point-numbers-in-verilog/) - precision without complexity
 * [Division in Verilog](https://projectf.io/posts/division-in-verilog) - divided we stand
 * _More maths coming soon_
-
-This repo has [maths demos](maths/demo) to accompany the series.
 
 ![](doc/img/sea-of-chaos.png?raw=true "")
 
