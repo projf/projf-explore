@@ -29,7 +29,7 @@ module render_mandel #(
     output      logic done                            // drawing is complete (high for one tick)
     );
 
-    localparam ITERW=$clog2(ITER_MAX);  // maximum iteration width (bits)
+    localparam ITERW=$clog2(ITER_MAX+1);  // maximum iteration width (bits)
     localparam SF = 2.0**-(FP_WIDTH-FP_INT);  // scale factor for debugging messages
 
     // function coordinates
@@ -45,16 +45,10 @@ module render_mandel #(
     // iterations
     logic [ITERW-1:0] iter, iter_00, iter_01, iter_10, iter_11;
 
+    // map iterations to colours
     localparam COLR_CNT = 2**CIDXW;  // number of colours
     logic [$clog2(COLR_CNT)-1:0] colr;
-    always_comb begin
-        if (SUPERSAMPLE) begin
-            iter = (iter_00 + iter_01 + iter_10 + iter_11) / 4;  // mean of four samples
-        end else begin
-            iter = iter_00;  // one sample
-        end
-        colr = iter[ITERW-1-:CIDXW];
-    end
+    always_comb colr = iter[ITERW-1-:CIDXW];
 
     // sample coordinates (no need to register as mandelbrot.sv already does)
     always_comb begin
@@ -65,7 +59,7 @@ module render_mandel #(
     end
 
     // calculation state machine
-    enum {IDLE, INIT, CALC, NEXT, DONE} state;
+    enum {IDLE, INIT, CALC, DRAW, NEXT, DONE} state;
     always_ff @(posedge clk) begin
         case (state)
             INIT: begin
@@ -75,11 +69,19 @@ module render_mandel #(
             CALC: begin
                 calc_start <= 0;
                 if (calc_done) begin
-                    state <= NEXT;
-                    drawing <= 1;
-                    if (iter == ITER_MAX) cidx <= 'h00;
-                    else cidx <= (colr == 0) ? 1 : colr;
+                    state <= DRAW;
+                    if (SUPERSAMPLE) begin
+                        iter <= (iter_00 + iter_01 + iter_10 + iter_11) / 4;  // mean of four samples
+                    end else begin
+                        iter <= iter_00;  // one sample
+                    end
                 end
+            end
+            DRAW: begin
+                state <= NEXT;
+                drawing <= 1;
+                if (iter == ITER_MAX) cidx <= 'h00;
+                else cidx <= (colr == 0) ? 1 : colr;
             end
             NEXT: begin
                 drawing <= 0;

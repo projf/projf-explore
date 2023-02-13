@@ -11,7 +11,7 @@ module mandelbrot #(
     parameter FP_WIDTH=25,   // total width of fixed-point number: integer + fractional bits
     parameter FP_INT=4,      // integer bits in fixed-point number
     parameter ITER_MAX=255,  // maximum number of interations
-    parameter ITERW=$clog2(ITER_MAX)  // maximum iteration width (bits)
+    parameter ITERW=$clog2(ITER_MAX+1)  // maximum iteration width (bits)
     ) (
     input  wire logic clk,    // clock
     input  wire logic rst,    // reset

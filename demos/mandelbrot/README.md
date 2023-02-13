@@ -6,7 +6,7 @@ This design has an associated Project F blog post: [Mandelbrot Set in Verilog](h
 
 The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
 
-By default, we consider up to 255 interations, but you can adjust this by changing `ITER_MAX` in the top module.
+We consider up to 255 iterations by default, but you can adjust this by changing `ITER_MAX` in the top module. The minimum number of iterations supported is 128, but you get the best results with 2<sup>n</sup>-1, for example, 511, as this best uses the full range of colours.
 
 The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625). You can zoom in 15 times to the minimum step of 1/2<sup>21</sup> (0.0000005). You can adjust the precision by changing `FP_WIDTH` and `FP_INT` in the top module.
 

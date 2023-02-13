@@ -22,7 +22,7 @@ module top_mandel (
     // maths parameters
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
-    localparam ITER_MAX =  255;  // maximum iterations (2^n-1 recommneded)
+    localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
