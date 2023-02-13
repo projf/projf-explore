@@ -51,11 +51,12 @@ Each Xilinx 7 Series DSP block (DSP48E1) can multiply 25 × 18 bits.
 
 The DSP usage of each Mandelbrot module instance depends on `FP_WIDTH`:
 
-* 18 bits = 1 DSP (zoom in 8 times)
-* 25 bits = 2 DSPs (zoom in 15 times)
-* 32 bits = 4 DSPs (zoom in 22 times)
+* 18 bits = 1 DSP (zoom 8 times)
+* 25 bits = 2 DSPs (zoom 15 times)
+* 28 bits = 3 DSPs (zoom 18 times)
+* 32 bits = 4 DSPs (zoom 22 times)
 
-18-bit fixed-point only leaves 14 bits for the fraction, so you can't zoom in far, but it's frugal with DSPs. 25 bits is a good compromise as it provides a decent zoom level without consuming too many blocks. Above 25 bits wide, DSP usage rises quickly.
+18-bit fixed-point only leaves 14 bits for the fraction, so you can't zoom in far, but it's frugal with DSPs. 25 bits is a good compromise as it provides a decent zoom level without consuming too many blocks. Above 25 bits, DSP usage rises quickly.
 
 This demo uses four Mandelbrot module instances for supersampling, plus one DSP is used in address calculation. Thus, the total number of DSPs with 25-bit precision is: `4 * 2 + 1 = 9`. There are 90 DSPs on the Artix-7 35T and 740 on the Artix-7 A200T.
 
