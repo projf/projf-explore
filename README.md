@@ -1,10 +1,10 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our main projects are the _Verilog Library_, _FPGA Graphics_ and _Maths and Algorithms_ tutorial series; read on to learn more.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_, and _FPGA Maths_ tutorial series.
 
-> There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. I find working with FPGAs gives me a sense of delight so often lacking in modern software development.
+The [Project F website](https://projectf.io) features fifty blog posts on a wide range of FPGA and Verilog topics.
 
-Get an introduction with [About Project F](https://projectf.io/about/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://discord.gg/cf869yDbXf). Take a peek into the future with our [roadmap](ROADMAP.md).
+Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) for updates. Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
@@ -12,7 +12,7 @@ Get an introduction with [About Project F](https://projectf.io/about/), follow [
 
 The Project F Library includes handy Verilog designs for everyone. From framebuffers and video output to division and square root, rom and ram, and even circle drawing. You can freely build on these [MIT licensed](../../LICENSE) designs.
 
-See [Library](lib/) for the Verilog designs or get an overview from the [Verilog Library blog](https://projectf.io/verilog-lib/).
+Visit the [Library](lib/) for the Verilog designs or get an overview from the [Verilog Library blog post](https://projectf.io/verilog-lib/).
 
 ## FPGA Graphics
 
@@ -20,12 +20,10 @@ In this series, we learn about graphics at the hardware level and get a feel for
 
 ![](doc/img/fpga-graphics-banner.png?raw=true "")
 
-If you're new to the series, start by reading [Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/).
-
 * **Beginning FPGA Graphics**: [Designs](graphics/fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
 * **Racing the Beam**: [Designs](graphics/racing-the-beam) - [Blog](https://projectf.io/posts/racing-the-beam/)
 * **FPGA Pong**: [Designs](graphics/pong) - [Blog](https://projectf.io/posts/fpga-pong/)
-* **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no demos with this post)
+* **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no designs in git)
 * **Hardware Sprites**: [Designs](graphics/hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
 * **Framebuffers**: [Designs](graphics/framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
 * **Lines and Triangles**: [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)
@@ -34,7 +32,7 @@ If you're new to the series, start by reading [Beginning FPGA Graphics](https://
 
 ## Hello
 
-A three-part introduction to FPGA development with Verilog; currently available for two boards: the Arty A7 and Nexys Video.
+A three-part introduction to FPGA development with Verilog with dev boards:
 
 * **Hello Arty**: [Designs](hello/hello-arty) - [Blog 1](https://projectf.io/posts/hello-arty-1/) - [Blog 2](https://projectf.io/posts/hello-arty-2/) - [Blog 3](https://projectf.io/posts/hello-arty-3/)
 * **Hello Nexys**: [Designs](hello/hello-nexys) - [Blog 1](https://projectf.io/posts/hello-nexys-1/) - [Blog 2](https://projectf.io/posts/hello-nexys-2/)
@@ -48,17 +46,16 @@ Maths & Algorithms is our latest tutorial series:
 * [Multiplication with DSPs](https://projectf.io/posts/multiplication-fpga-dsps) - efficient FPGA multiplication
 * [Fixed-Point Numbers](https://projectf.io/posts/fixed-point-numbers-in-verilog/) - precision without complexity
 * [Division in Verilog](https://projectf.io/posts/division-in-verilog) - divided we stand
-* _More maths throughout 2023_
+* _More maths soon_
 
-This repo has [maths demos](maths/demo) to accompany the series.
-
-![](doc/img/verilator-polynomial.png?raw=true "")
+![](doc/img/sea-of-chaos.png?raw=true "")
 
 ## Demos and Effects
 
 * **Ad Astra**: [Designs](demos/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/) - greetings with starfields and hardware sprites
 * **Castle Drawing**: [Designs](demos/castle-drawing) - [Blog](https://projectf.io/posts/castle-drawing/) - draw a castle and rainbow in 16 colours
 * **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/) - Conway's Game of Life in logic
+* **Mandelbrot Set**: [Designs](demos/mandelbrot) - Blog (coming soon) - Mandelbrot set with fixed-point maths
 * **Rasterbars**: [Designs](demos/rasterbars) - [Blog](https://projectf.io/posts/rasterbars/) - classic animated colour bars
 * **Sine Scroller**: [Designs](demos/sinescroll) - [Blog](https://projectf.io/posts/sinescroll/) - greet your viewers in style
 
@@ -78,7 +75,7 @@ support for vendor primitives. We currently support two FPGA architectures with 
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
 * **ECP5** - Lattice ECP5 is in testing with ULX3S board
 
-We also infer block ram (BRAM), see [lib/memory](lib/memory).
+We also infer block ram (BRAM); see [lib/memory](lib/memory).
 
 Porting to other architectures should be straightforward.
 
@@ -92,7 +89,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * `enum` to make finite state machines simpler to work with
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
-I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+I believe these features are helpful, especially for beginners. All the SystemVerilog features are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado.
 
 ## Thank You, Sponsors!
 
