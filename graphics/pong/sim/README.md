@@ -32,9 +32,9 @@ Run the simulation executable from `obj_dir`:
 
 The keyboard controls are:
 
-* Down Arrow - down
-* Space - start (fire)
-* Up Arrow - up
+* **Up Arrow** - up
+* **Space Bar** - start (fire)
+* **Down Arrow** - down
 
 You can edit the keyboard controls in `main_pong.cpp`; search for `update keyboard state`.
 

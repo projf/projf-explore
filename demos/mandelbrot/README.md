@@ -1,4 +1,4 @@
-# Mandelbrot
+# Mandelbrot Set
 
 This SystemVerilog drawing demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
@@ -29,19 +29,19 @@ You can then build `top_mandel` as you would for any Vivado project.
 
 Arty button controls:
 
-* BTN2 - left/up/zoom-out
-* BTN1 - select mode: horizontal/vertical/zoom
-* BTN0 - right/down/zoom-in
-* RESET - return to starting coordinates and zoom
+* **BTN2** - left/up/zoom-out
+* **BTN1** - select mode: horizontal/vertical/zoom
+* **BTN0** - right/down/zoom-in
+* **RESET** - return to starting coordinates and zoom
 
 _NB. Controls don't work if rendering is in progress._
 
 The four green LEDs show status:
 
-* LD7 - rendering in progress
-* LD6 - horizontal motion
-* LD5 - vertical motion
-* LD4 - zoom
+* **LD7** - rendering in progress
+* **LD6** - horizontal motion
+* **LD5** - vertical motion
+* **LD4** - zoom
 
 ## Verilator Build
 
@@ -63,9 +63,9 @@ Run the simulation executable from `obj_dir`:
 
 Verilator controls:
 
-* Up Arrow - left/up/zoom-out
-* Space - select mode: horizontal/vertical/zoom
-* Down Arrow - right/down/zoom-in
+* **Up Arrow** - left/up/zoom-out
+* **Space Bar** - select mode: horizontal/vertical/zoom
+* **Down Arrow** - right/down/zoom-in
 
 _NB. Controls don't work if rendering is in progress._
 

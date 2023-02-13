@@ -4,11 +4,9 @@ Project F is a little oasis where you can quench your thirst for FPGA knowledge 
 
 The [Project F website](https://projectf.io) features fifty blog posts on a wide range of FPGA and Verilog topics.
 
-Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) for updates. Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) or [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) for updates. Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
-
-> There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. Working with FPGAs gives me a sense of delight so often lacking in modern software development.
 
 ## Verilog Library
 
@@ -25,7 +23,7 @@ In this series, we learn about graphics at the hardware level and get a feel for
 * **Beginning FPGA Graphics**: [Designs](graphics/fpga-graphics) - [Blog](https://projectf.io/posts/fpga-graphics/)
 * **Racing the Beam**: [Designs](graphics/racing-the-beam) - [Blog](https://projectf.io/posts/racing-the-beam/)
 * **FPGA Pong**: [Designs](graphics/pong) - [Blog](https://projectf.io/posts/fpga-pong/)
-* **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no designs in git for this post)
+* **Display Signals**: [Blog](https://projectf.io/posts/display-signals/) (no designs in git)
 * **Hardware Sprites**: [Designs](graphics/hardware-sprites) - [Blog](https://projectf.io/posts/hardware-sprites/)
 * **Framebuffers**: [Designs](graphics/framebuffers) - [Blog](https://projectf.io/posts/framebuffers/)
 * **Lines and Triangles**: [Designs](graphics/lines-and-triangles) - [Blog](https://projectf.io/posts/lines-and-triangles/)

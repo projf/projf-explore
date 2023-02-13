@@ -39,9 +39,9 @@ If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` wit
 
 The game controls for iCEBreaker:
 
-* Button 1 - down
-* Button 2 - start (fire)
-* Button 3 - up
+* **Button 3** - up
+* **Button 2** - start (fire)
+* **Button 1** - down
 
 ### Problems Building
 
@@ -60,9 +60,9 @@ You can then build Pong as you would any Vivado project.
 
 The game controls for Arty:
 
-* BTN0 - down
-* BTN1 - start (fire)
-* BTN3 - up
+* **BTN2** - up
+* **BTN1** - start (fire)
+* **BTN0** - down
 
 ### Other Xilinx 7 Series Boards
 
