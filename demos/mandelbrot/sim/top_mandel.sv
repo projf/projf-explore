@@ -106,7 +106,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         .flag_src(line && sy==FB_OFFY), .flag_dst(line0_sys));
 
     //
-    // update function params
+    // update rendering params
     //
     logic signed [FP_WIDTH-1:0] x_start, x_start_p;  // left x-coordinate
     logic signed [FP_WIDTH-1:0] y_start, y_start_p;  // top y-coordinate
@@ -114,6 +114,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     logic start_func, render_required;  // control start of function
     logic drawing;  // actively drawing in framebuffer
+    logic render_busy;  // rendering in progress
     logic changed_params;  // function params have changed
 
     enum {HORIZONTAL, VERTICAL, ZOOM, ITER} state;
@@ -129,37 +130,43 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         y_start_p <= y_start;
         step_p <= step;
 
-        if (frame_sys && !changed_params && !drawing) begin
+        if (frame_sys && !changed_params && !render_busy) begin
             case (state)
                 HORIZONTAL: begin
-                    if (sig_up) begin  // move left
+                    if (sig_up) begin
                         x_start_p <= x_start - (step <<< 4);
                         changed_params <= 1;
+                        $display(">> Move left");
                     end else if (sig_dn) begin
                         x_start_p <= x_start + (step <<< 4);
                         changed_params <= 1;
+                        $display(">> Move right");
                     end
                 end
                 VERTICAL: begin
-                    if (sig_up) begin  // move up
+                    if (sig_up) begin
                         y_start_p <= y_start - (step <<< 4);
                         changed_params <= 1;
+                        $display(">> Move up");
                     end else if (sig_dn) begin
                         y_start_p <= y_start + (step <<< 4);
                         changed_params <= 1;
+                        $display(">> Move down");
                     end
                 end
                 ZOOM: begin  // zoom values need adjusting if resolution is not ~320x180
-                    if (sig_up) begin  // zoom out
+                    if (sig_up) begin
                         x_start_p <= x_start - (step <<< 7);
                         y_start_p <= y_start - (step <<< 6) - (step <<< 5);
                         step_p <= 2 * step;
                         changed_params <= 1;
+                        $display(">> Zoom out");
                     end else if (sig_dn) begin
                         x_start_p <= x_start + (step <<< 6);
                         y_start_p <= y_start + (step <<< 5) + (step <<< 4);
                         step_p <= step / 2;
                         changed_params <= 1;
+                        $display(">> Zoom in");
                     end
                 end
             endcase
@@ -167,7 +174,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
         // call function start once unless position/zoom updated
         start_func <= 0;
-        if (changed_params && !drawing) begin  // register new params to improve timing
+        if (changed_params && !render_busy) begin  // register new params to improve timing
             changed_params <= 0;
             if (step_p != 0 && step_p <= STEP) begin  // don't zoom in or out too far
                 render_required <= 1;
@@ -197,7 +204,6 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic clip;  // location is clipped
     logic signed [CORDW-1:0] drx, dry;  // draw coordinates
 
-    // render function
     render_mandel #(
         .CORDW(CORDW),
         .FB_WIDTH(FB_WIDTH),
@@ -218,6 +224,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         .y(dry),
         .cidx(fb_colr_write),
         .drawing,
+        .busy(render_busy),
         /* verilator lint_off PINCONNECTEMPTY */
         .done()
         /* verilator lint_on PINCONNECTEMPTY */

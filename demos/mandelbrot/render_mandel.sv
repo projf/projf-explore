@@ -25,6 +25,7 @@ module render_mandel #(
     output      logic signed [CORDW-1:0] y,           // vertical draw position
     output      logic [CIDXW-1:0] cidx,               // pixel colour
     output      logic drawing,                        // actively drawing
+    output      logic busy,                           // render in progress
     output      logic done                            // drawing is complete (high for one tick)
     );
 
@@ -75,15 +76,17 @@ module render_mandel #(
                 calc_start <= 0;
                 if (calc_done) begin
                     state <= NEXT;
+                    drawing <= 1;
                     if (iter == ITER_MAX) cidx <= 'h00;
                     else cidx <= (colr == 0) ? 1 : colr;
                 end
             end
             NEXT: begin
+                drawing <= 0;
                 if (x == FB_WIDTH-1) begin  // last pixel on line?
                     if (y == FB_HEIGHT-1) begin  // last pixel in buffer?
                         state <= DONE;
-                        drawing <= 0;
+                        busy <= 0;
                     end else begin
                         x <= 0;
                         fx <= x_start;
@@ -107,11 +110,16 @@ module render_mandel #(
                 y <= 0;
                 fx <= x_start;
                 fy <= y_start;
-                drawing <= 1;
+                busy <= 1;
                 $strobe("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(fx)*SF, $itor(fy)*SF, $itor(step)*SF, ITER_MAX);
             end
         endcase
-        if (rst) state <= IDLE;
+        if (rst) begin
+            state <= IDLE;
+            calc_start <= 0;
+            drawing <= 0;
+            busy <= 0;
+        end
     end
 
     // determine when all calculations are complete
