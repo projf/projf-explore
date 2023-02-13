@@ -1,6 +1,6 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our main projects are the _Verilog Library_, _FPGA Graphics_ and _Maths and Algorithms_ tutorial series; read on to learn more.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge, where you can find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_ and _Maths and Algorithms_ tutorial series; read on to learn more.
 
 > There's something profoundly satisfying about designing at the hardware level, be it creating your own arcade game, handling unusual hardware interfaces, building your own robot, creating art, analysing oodles of data, or even developing your own CPU. I find working with FPGAs gives me a sense of delight so often lacking in modern software development.
 
@@ -52,13 +52,14 @@ Maths & Algorithms is our latest tutorial series:
 
 This repo has [maths demos](maths/demo) to accompany the series.
 
-![](doc/img/verilator-polynomial.png?raw=true "")
+![](doc/img/sea-of-chaos.png?raw=true "")
 
 ## Demos and Effects
 
 * **Ad Astra**: [Designs](demos/ad-astra) - [Blog](https://projectf.io/posts/fpga-ad-astra/) - greetings with starfields and hardware sprites
 * **Castle Drawing**: [Designs](demos/castle-drawing) - [Blog](https://projectf.io/posts/castle-drawing/) - draw a castle and rainbow in 16 colours
 * **Life on Screen**: [Designs](demos/life-on-screen) - [Blog](https://projectf.io/posts/life-on-screen/) - Conway's Game of Life in logic
+* **Mandelbrot Set**: [Designs](demos/mandelbrot) - [Blog](https://projectf.io/posts/mandelbrot-set-verilog) - Mandelbrot set with fixed-point maths
 * **Rasterbars**: [Designs](demos/rasterbars) - [Blog](https://projectf.io/posts/rasterbars/) - classic animated colour bars
 * **Sine Scroller**: [Designs](demos/sinescroll) - [Blog](https://projectf.io/posts/sinescroll/) - greet your viewers in style
 
@@ -92,7 +93,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * `enum` to make finite state machines simpler to work with
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
-I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
 
 ## Thank You, Sponsors!
 

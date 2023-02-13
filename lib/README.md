@@ -41,7 +41,7 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * `enum` to make finite state machines simpler to work with
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
-I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
+I believe these features are helpful, especially for beginners. All the SystemVerilog features used are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado. However, if you need to use an older Verilog standard, you can adapt these designs without too much trouble.
 
 For other designs from Project F, see the main [README](../README.md) or visit [projectf.io](https://projectf.io/).
 
