@@ -24,9 +24,20 @@ module top_mandel (
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
+
+    // starting coordinates (match FP_WIDTH)
+    // localparam X_START = 18'b1100_1000_0000_0000_00;  // starting left: -3.5
+    // localparam Y_START = 18'b1110_1000_0000_0000_00;  // starting top:  -1.5i
+    // localparam STEP    = 18'b0000_0000_0100_0000_00;  // starting step: 1/64 (320x180)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
     localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)
+    // localparam X_START = 32'b1100_1000_0000_0000_0000_0000_0000_0000;  // starting left: -3.5
+    // localparam Y_START = 32'b1110_1000_0000_0000_0000_0000_0000_0000;  // starting top:  -1.5i
+    // localparam STEP    = 32'b0000_0000_0100_0000_0000_0000_0000_0000;  // starting step: 1/64 (320x180)
+    // localparam X_START = 36'b1100_1000_0000_0000_0000_0000_0000_0000_0000;  // starting left: -3.5
+    // localparam Y_START = 36'b1110_1000_0000_0000_0000_0000_0000_0000_0000;  // starting top:  -1.5i
+    // localparam STEP    = 36'b0000_0000_0100_0000_0000_0000_0000_0000_0000;  // starting step: 1/64 (320x180)
 
     // generate system clock
     logic clk_sys;
