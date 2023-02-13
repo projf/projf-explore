@@ -373,7 +373,7 @@ module top_mandel (
 
     // show status with LEDs
     always_ff @(posedge clk_sys) begin
-        led[3] <= drawing;
+        led[3] <= render_busy;
         led[2] <= (state == HORIZONTAL);
         led[1] <= (state == VERTICAL);
         led[0] <= (state == ZOOM);
