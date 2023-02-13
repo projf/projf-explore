@@ -2,7 +2,7 @@
 
 This SystemVerilog drawing demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
-This design has an associated Project F blog post: [Mandelbrot Set in Verilog](https://projectf.io/posts/mandelbrot-set-verilog/) (coming soon).
+This design has an associated Project F blog post: _Mandelbrot Set in Verilog_ (coming soon).
 
 The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
 
