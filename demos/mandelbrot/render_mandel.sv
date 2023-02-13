@@ -33,8 +33,8 @@ module render_mandel #(
 
     // function coordinates
     logic signed [FP_WIDTH-1:0] fx, fy;
-    logic signed [FP_WIDTH-1:0] fx_00, fx_01, fx_10, fx_11;
-    logic signed [FP_WIDTH-1:0] fy_00, fy_01, fy_10, fy_11;
+    logic signed [FP_WIDTH-1:0] fx_left, fx_right;
+    logic signed [FP_WIDTH-1:0] fy_top, fy_bottom;
 
     // control signals
     logic calc_start, calc_done;
@@ -55,6 +55,14 @@ module render_mandel #(
         colr = iter[ITERW-1-:CIDXW];
     end
 
+    // sample coordinates (no need to register as mandelbrot.sv already does)
+    always_comb begin
+        fx_left   = fx - (step>>>2);
+        fx_right  = fx + (step>>>2);
+        fy_top    = fy - (step>>>2);
+        fy_bottom = fy + (step>>>2);
+    end
+
     // calculation state machine
     enum {IDLE, INIT, CALC, NEXT, DONE} state;
     always_ff @(posedge clk) begin
@@ -62,15 +70,6 @@ module render_mandel #(
             INIT: begin
                 state <= CALC;
                 calc_start <= 1;
-                // register sample coordinates
-                fx_00 <= fx - (step>>>2);
-                fx_01 <= fx - (step>>>2);
-                fx_10 <= fx + (step>>>2);
-                fx_11 <= fx + (step>>>2);
-                fy_00 <= fy - (step>>>2);
-                fy_01 <= fy + (step>>>2);
-                fy_10 <= fy - (step>>>2);
-                fy_11 <= fy + (step>>>2);
             end
             CALC: begin
                 calc_start <= 0;
@@ -131,7 +130,7 @@ module render_mandel #(
         end
     end
 
-    // function to render (top-left sample)
+    // sample 00 (top-left)
     mandelbrot #(
         .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
@@ -140,8 +139,8 @@ module render_mandel #(
         .clk,
         .rst,
         .start(calc_start),
-        .re(fx_00),
-        .im(fy_00),
+        .re(fx_left),
+        .im(fy_top),
         .iter(iter_00),
         /* verilator lint_off PINCONNECTEMPTY */
         .calculating(),
@@ -149,7 +148,7 @@ module render_mandel #(
         .done(calc_done_00w)
     );
 
-    // function to render (bottom-left sample)
+    // sample 01 (bottom-left)
     mandelbrot #(
         .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
@@ -158,8 +157,8 @@ module render_mandel #(
         .clk,
         .rst,
         .start(calc_start),
-        .re(fx_01),
-        .im(fy_01),
+        .re(fx_left),
+        .im(fy_bottom),
         .iter(iter_01),
         /* verilator lint_off PINCONNECTEMPTY */
         .calculating(),
@@ -167,7 +166,7 @@ module render_mandel #(
         .done(calc_done_01w)
     );
 
-    // function to render (bottom-right sample)
+    // sample 10 (bottom-right)
     mandelbrot #(
         .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
@@ -176,8 +175,8 @@ module render_mandel #(
         .clk,
         .rst,
         .start(calc_start),
-        .re(fx_10),
-        .im(fy_10),
+        .re(fx_right),
+        .im(fy_bottom),
         .iter(iter_10),
         /* verilator lint_off PINCONNECTEMPTY */
         .calculating(),
@@ -185,7 +184,7 @@ module render_mandel #(
         .done(calc_done_10w)
     );
 
-    // function to render (top-right sample)
+    // sample 11 (top-right)
     mandelbrot #(
         .FP_WIDTH(FP_WIDTH),
         .FP_INT(FP_INT),
@@ -194,8 +193,8 @@ module render_mandel #(
         .clk,
         .rst,
         .start(calc_start),
-        .re(fx_11),
-        .im(fy_11),
+        .re(fx_right),
+        .im(fy_top),
         .iter(iter_11),
         /* verilator lint_off PINCONNECTEMPTY */
         .calculating(),
