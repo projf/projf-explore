@@ -21,6 +21,13 @@ All based on an image of David by Michelangelo.
 
 _David by Michelangelo with fizzle fade from david\_fizzle simulation._
 
+## Tested Versions
+
+These simulations have been tested with:
+
+* Verilator 4.038 (Ubuntu 22.04 amd64)
+* Verilator 5.006 (macOS 13 arm64)
+
 ## Build & Run
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).

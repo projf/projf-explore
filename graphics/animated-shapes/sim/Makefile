@@ -1,11 +1,11 @@
 ## Project F: Animated Shapes - Verilator Sim Makefile
-## (C)2022 Will Green, open source hardware released under the MIT License
+## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/animated-shapes/
 
 # render module version
 RENDER_MODS = '320x180'
 
-CFLAGS = -O2
+VFLAGS = -O3 --x-assign fast --x-initial fast --noassert
 SDL_CFLAGS = `sdl2-config --cflags`
 SDL_LDFLAGS = `sdl2-config --libs`
 
@@ -22,9 +22,9 @@ demo_sb: demo_sb.exe
 	make -C ./obj_dir -f Vtop_$<
 
 %.mk: top_%.sv
-	verilator -I.. -I../${RENDER_MODS} ${PROJF_LIBS} \
+	verilator ${VFLAGS} -I.. -I../${RENDER_MODS} ${PROJF_LIBS} \
 	    -cc $< --exe main_$(basename $@).cpp -o $(basename $@) \
-		-CFLAGS "${CFLAGS} ${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
+		-CFLAGS "${SDL_CFLAGS}" -LDFLAGS "${SDL_LDFLAGS}"
 
 all: demo demo_sb
 
