@@ -41,7 +41,7 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/demo
 ```
 
-You can quit a simulation by pressing the **Q** key.
+You can quit the simulation by pressing the **Q** key.
 
 ### Switching Demo
 

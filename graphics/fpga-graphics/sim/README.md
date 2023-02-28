@@ -50,7 +50,7 @@ Run the simulation executables from `obj_dir`:
 ./obj_dir/square
 ```
 
-You can quit a simulation by pressing the **Q** key.
+You can quit the simulation by pressing the **Q** key.
 
 If you want to manually build a simulation, here's an example for 'square':
 

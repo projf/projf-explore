@@ -43,6 +43,8 @@ The keyboard controls are:
 * **Space Bar** - start (fire)
 * **Down Arrow** - down
 
+You can quit the simulation by pressing the **Q** key.
+
 You can edit the keyboard controls in `main_pong.cpp`; search for `update keyboard state`.
 
 _Note: this design uses [simple_480p.sv](../simple_480p.sv) and [simple_score.sv](../simple_score.sv) from the main [Pong](../) folder._

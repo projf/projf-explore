@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Flag of Ethiopia Verilator C++
-// (C)2022 Will Green, open source software released under the MIT License
+// (C)2023 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 #include <stdio.h>
