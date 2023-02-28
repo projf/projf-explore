@@ -104,7 +104,9 @@ module render_mandel #(
             end
             DONE: begin
                 state <= IDLE;
+                /* verilator lint_off WIDTH */
                 $display("       complete: (%f,%f)", $itor(fx)*SF, $itor(fy)*SF);
+                /* verilator lint_on WIDTH */
             end
             default: if (start) begin  // IDLE
                 state <= INIT;
@@ -113,7 +115,9 @@ module render_mandel #(
                 fx <= x_start;
                 fy <= y_start;
                 busy <= 1;
+                /* verilator lint_off WIDTH */
                 $display("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(fx)*SF, $itor(fy)*SF, $itor(step)*SF, ITER_MAX);
+                /* verilator lint_on WIDTH */
             end
         endcase
         if (rst) begin

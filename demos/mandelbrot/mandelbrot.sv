@@ -45,7 +45,9 @@ module mandelbrot #(
         .val(mul_val)
     );
 
+    /* verilator lint_off UNUSED */
     logic signed [FP_WIDTH-1:0] xt, xy2;  // temporaries
+    /* verilator lint_on UNUSED */
 
     enum {IDLE, STEP1, STEP2, STEP2A, STEP3, STEP4} state;
     always_ff @(posedge clk) begin
