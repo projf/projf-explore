@@ -47,7 +47,7 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/sinescroll
 ```
 
-You can quit the demo by pressing the **Q** key.
+You can quit a simulation by pressing the **Q** key.
 
 ### Fullscreen Mode
 

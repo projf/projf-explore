@@ -46,7 +46,7 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/demo
 ```
 
-You can quit the demo by pressing the **Q** key.
+You can quit a simulation by pressing the **Q** key.
 
 For the single buffer version, replace `demo` with `demo_sb` in the above instructions.
 

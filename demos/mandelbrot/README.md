@@ -97,7 +97,7 @@ Verilator controls:
 
 _NB. Controls don't work if rendering is in progress._
 
-You can quit the demo by pressing the **Q** key.
+You can quit a simulation by pressing the **Q** key.
 
 ### Fullscreen Mode
 
