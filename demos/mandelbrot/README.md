@@ -95,9 +95,9 @@ Verilator controls:
 * **Space Bar** - select mode: horizontal/vertical/zoom
 * **Down Arrow** - right/down/zoom-in
 
-You can quit the demo by pressing the **Q** key.
-
 _NB. Controls don't work if rendering is in progress._
+
+You can quit the demo by pressing the **Q** key.
 
 ### Fullscreen Mode
 
