@@ -16,7 +16,7 @@ If you have a dev board, see the main [Hardware Sprites README](../README.md) fo
   * Scale - sprite scaling
   * Move - sprite moving
 * Hourglass - 16-colour 8x8 pixel hourglass sprite
-* Hedgehog - 16 colour hedgehog sprite
+* Hedgehog - 16-colour hedgehog sprite
 
 ![](../../../doc/img/hardware-sprites.png?raw=true "")
 
@@ -52,6 +52,8 @@ Run the simulation executables from `obj_dir`:
 ```shell
 ./obj_dir/hedgehog
 ```
+
+You can quit the simulation by pressing the **Q** key.
 
 ## Installing Dependencies
 

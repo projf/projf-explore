@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Mono David Verilator C++
-// (C)2022 Will Green, open source software released under the MIT License
+// (C)2023 Will Green, open source software released under the MIT License
 // Learn more at https://projectf.io/posts/framebuffers/
 
 #include <stdio.h>
@@ -53,6 +53,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // reference SDL keyboard state array: https://wiki.libsdl.org/SDL_GetKeyboardState
+    const Uint8 *keyb_state = SDL_GetKeyboardState(NULL);
+
+    printf("Simulation running. Press 'Q' in simulation window to quit.\n\n");
+
     // initialize Verilog module
     Vtop_david_mono* top = new Vtop_david_mono;
 
@@ -93,6 +98,8 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
+
+            if (keyb_state[SDL_SCANCODE_Q]) break;  // quit if user presses 'Q'
 
             SDL_UpdateTexture(sdl_texture, NULL, screenbuffer, H_RES*sizeof(Pixel));
             SDL_RenderClear(sdl_renderer);

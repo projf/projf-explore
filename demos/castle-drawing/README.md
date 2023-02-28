@@ -47,8 +47,8 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/castle
 ```
 
+You can quit the simulation by pressing the **Q** key.
+
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_castle.cpp` so that `FULLSCREEN = true`, then rebuild.
-
-You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.

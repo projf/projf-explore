@@ -32,6 +32,8 @@ You can then run the simulation executable from `obj_dir`:
 ./obj_dir/graphing 
 ```
 
+You can quit the simulation by pressing the **Q** key.
+
 # Installing Dependencies
 
 To build the simulations, you need:

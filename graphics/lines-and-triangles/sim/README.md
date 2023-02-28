@@ -41,6 +41,8 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/demo
 ```
 
+You can quit the simulation by pressing the **Q** key.
+
 ### Switching Demo
 
 To switch between the different demos, change the render instance near line 110 in `top_demo`, then rerun make.
@@ -53,8 +55,6 @@ To switch between the different demos, change the render instance near line 110 
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_demo.cpp` so that `FULLSCREEN = true`, then rebuild.
-
-You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.
 
 ## Installing Dependencies
 

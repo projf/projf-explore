@@ -52,6 +52,8 @@ Run the simulation executables from `obj_dir`:
 ./obj_dir/david_scale
 ```
 
+You can quit the simulation by pressing the **Q** key.
+
 ## Installing Dependencies
 
 To build the simulations, you need:

@@ -97,8 +97,8 @@ Verilator controls:
 
 _NB. Controls don't work if rendering is in progress._
 
+You can quit the simulation by pressing the **Q** key.
+
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_mandelbrot.cpp` so that `FULLSCREEN = true`, then rebuild.
-
-You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.

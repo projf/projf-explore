@@ -58,6 +58,8 @@ int main(int argc, char* argv[]) {
     // reference SDL keyboard state array: https://wiki.libsdl.org/SDL_GetKeyboardState
     const Uint8 *keyb_state = SDL_GetKeyboardState(NULL);
 
+    printf("Simulation running. Press 'Q' in simulation window to quit.\n\n");
+
     // initialize Verilog module
     Vtop_mandel* top = new Vtop_mandel;
 
@@ -98,6 +100,8 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
+
+            if (keyb_state[SDL_SCANCODE_Q]) break;  // quit if user presses 'Q'
 
             // update keyboard state
             top->btn_up = keyb_state[SDL_SCANCODE_UP];
