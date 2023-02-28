@@ -99,6 +99,8 @@ int main(int argc, char* argv[]) {
                 }
             }
 
+            if (keyb_state[SDL_SCANCODE_Q]) break;  // quit if user presses 'Q'
+
             // update keyboard state
             top->btn_up = keyb_state[SDL_SCANCODE_UP];
             top->btn_dn = keyb_state[SDL_SCANCODE_DOWN];

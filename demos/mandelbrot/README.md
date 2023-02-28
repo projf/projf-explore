@@ -95,10 +95,10 @@ Verilator controls:
 * **Space Bar** - select mode: horizontal/vertical/zoom
 * **Down Arrow** - right/down/zoom-in
 
+You can quit the demo by pressing the **Q** key.
+
 _NB. Controls don't work if rendering is in progress._
 
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_mandelbrot.cpp` so that `FULLSCREEN = true`, then rebuild.
-
-You can quit the demo with the usual key combination: Ctrl-Q on Linux or Command-Q on macOS.
