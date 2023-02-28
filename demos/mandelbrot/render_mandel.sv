@@ -116,7 +116,7 @@ module render_mandel #(
                 fy <= y_start;
                 busy <= 1;
                 /* verilator lint_off WIDTH */
-                $display("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(fx)*SF, $itor(fy)*SF, $itor(step)*SF, ITER_MAX);
+                $display("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(x_start)*SF, $itor(y_start)*SF, $itor(step)*SF, ITER_MAX);
                 /* verilator lint_on WIDTH */
             end
         endcase
