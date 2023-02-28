@@ -104,7 +104,7 @@ module render_mandel #(
             end
             DONE: begin
                 state <= IDLE;
-                $strobe("       complete: (%f,%f)", $itor(fx)*SF, $itor(fy)*SF);
+                $display("       complete: (%f,%f)", $itor(fx)*SF, $itor(fy)*SF);
             end
             default: if (start) begin  // IDLE
                 state <= INIT;
@@ -113,7 +113,7 @@ module render_mandel #(
                 fx <= x_start;
                 fy <= y_start;
                 busy <= 1;
-                $strobe("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(fx)*SF, $itor(fy)*SF, $itor(step)*SF, ITER_MAX);
+                $display("Render start   : (%f,%f)  step: %f  iter max: %d", $itor(fx)*SF, $itor(fy)*SF, $itor(step)*SF, ITER_MAX);
             end
         endcase
         if (rst) begin
