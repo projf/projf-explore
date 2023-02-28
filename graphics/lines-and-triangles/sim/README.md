@@ -16,6 +16,13 @@ There is one demo that can draw a line, cube, or triangles.
 
 _Triangles drawn by sim demo._
 
+## Tested Versions
+
+This simulation has been tested with:
+
+* Verilator 4.038 (Ubuntu 22.04 amd64)
+* Verilator 5.006 (macOS 13 arm64)
+
 ## Build & Run
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).

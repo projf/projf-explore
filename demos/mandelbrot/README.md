@@ -62,7 +62,16 @@ This demo uses four Mandelbrot module instances for supersampling, plus one DSP 
 
 Learn more from [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/).
 
-## Verilator Build
+## Verilator
+
+### Tested Versions
+
+This simulation have been tested with:
+
+* Verilator 4.038 (Ubuntu 22.04 amd64)
+* Verilator 5.006 (macOS 13 arm64)
+
+### Verilator Build
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](https://projectf.io/posts/verilog-sim-verilator-sdl/#installing-dependencies).
 

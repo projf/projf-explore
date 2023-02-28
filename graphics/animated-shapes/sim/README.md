@@ -21,6 +21,13 @@ To switch between the different demos, change the render instance near line 155 
 * `render_cube_shatter` - shatter 3D cube drawn from six triangles
 * `render_teleport` - teleport effect with nested squares
 
+## Tested Versions
+
+These simulations have been tested with:
+
+* Verilator 4.038 (Ubuntu 22.04 amd64)
+* Verilator 5.006 (macOS 13 arm64)
+
 ## Build & Run
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](#installing-dependencies).
