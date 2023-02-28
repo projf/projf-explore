@@ -346,9 +346,7 @@ module top_mandel (
     // paint screen
     logic paint_area;  // high in area of screen to paint
     logic [COLRW-1:0] paint_colr;
-    /* verilator lint_off UNUSEDSIGNAL */
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
-    /* verilator lint_on UNUSEDSIGNAL */
     always_comb begin
         paint_colr = {lb_colr_out_2, lb_colr_out, lb_colr_out};
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
