@@ -14,7 +14,7 @@ _Pong running as a Verilator simulation on macOS._
 
 ## Tested Versions
 
-These simulations have been tested with:
+This simulation has been tested with:
 
 * Verilator 4.038 (Ubuntu 22.04 amd64)
 * Verilator 5.006 (macOS 13 arm64)

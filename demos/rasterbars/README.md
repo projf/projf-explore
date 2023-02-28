@@ -20,7 +20,16 @@ source ./create_project.tcl
 
 You can then build `top_rasterbars` as you would for any Vivado project.
 
-## Verilator Build
+## Verilator
+
+### Tested Versions
+
+This simulation have been tested with:
+
+* Verilator 4.038 (Ubuntu 22.04 amd64)
+* Verilator 5.006 (macOS 13 arm64)
+
+### Verilator Build
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](https://projectf.io/posts/verilog-sim-verilator-sdl/#installing-dependencies).
 
