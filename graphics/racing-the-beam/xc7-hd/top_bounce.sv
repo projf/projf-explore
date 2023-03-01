@@ -123,10 +123,10 @@ module top_bounce (
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
-        dvi_de    <= de;
-        dvi_r     <= {2{display_r}};  // double signal width from 4 to 8 bits
-        dvi_g     <= {2{display_g}};
-        dvi_b     <= {2{display_b}};
+        dvi_de <= de;
+        dvi_r <= {2{display_r}};
+        dvi_g <= {2{display_g}};
+        dvi_b <= {2{display_b}};
     end
 
     // TMDS encoding and serialization

@@ -72,7 +72,7 @@ module top_colour_cycle #(parameter CORDW=10) (  // coordinate width
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
-        sdl_r <= {2{display_r}};  // double signal width from 4 to 8 bits
+        sdl_r <= {2{display_r}};
         sdl_g <= {2{display_g}};
         sdl_b <= {2{display_b}};
     end
