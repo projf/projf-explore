@@ -28,7 +28,7 @@ _Traditional flag of Ethiopia running as a Verilator simulation._
 
 You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
 
-You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build).
+You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build).
 
 For example, to build `flag_ethiopia`; clone the projf-explore git repo, then:
 
@@ -49,9 +49,7 @@ If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` wit
 
 The iCE40 designs have been tested with:
 
-* Yosys 0.26
-* nextpnr 0.5
-* IceStorm d20a5e9 (2023-02-18)
+* OSS CAD Suite 2023-03-01
 
 ## Arty Build
 
