@@ -11,7 +11,7 @@ If you have a dev board, see the main [Beginning FPGA Graphics README](../README
 ## Demos
 
 * Square
-* Flag of Ethipoia
+* Flag of Ethiopia
 * Flag of Sweden
 * Colour
 
