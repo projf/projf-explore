@@ -1,5 +1,5 @@
 # Project F: FPGA Graphics - Create Vivado Project (Nexys Video)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-graphics/
 
 puts "INFO: Project F - FPGA Graphics Project Creation Script"

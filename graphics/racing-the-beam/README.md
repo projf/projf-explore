@@ -27,9 +27,9 @@ _Raster Bars running as a Verilator simulation._
 
 ## iCEBreaker Build
 
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://bygone.clairexen.net/icestorm/).
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
 
-You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
+You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build).
 
 For example, to build `rasterbars`; clone the projf-explore git repo, then:
 
@@ -46,9 +46,13 @@ iceprog rasterbars.bin
 
 If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
-### Problems Building
+### Tested Versions
 
-If you have problems building the iCE40 designs, make sure you're using Yosys 0.10 or later.
+The iCE40 designs have been tested with:
+
+* Yosys 0.26
+* nextpnr 0.5
+* IceStorm d20a5e9 (2023-02-18)
 
 ## Arty Build
 
@@ -59,7 +63,13 @@ cd projf-explore/graphics/racing-the-beam/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build the demos as you would for any Vivado project.
+You can then build the designs as you would for any Vivado project.
+
+### Tested Versions
+
+The Arty designs have been tested with:
+
+* Vivado 2022.2
 
 ### Other Xilinx 7 Series Boards
 

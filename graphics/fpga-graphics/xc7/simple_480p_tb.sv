@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Simple 640x480p60 Display Test Bench (XC7)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none

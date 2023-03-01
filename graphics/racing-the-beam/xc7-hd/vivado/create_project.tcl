@@ -1,5 +1,5 @@
 # Project F: Racing the Beam - Create Vivado Project (Nexys Video)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/racing-the-beam/
 
 puts "INFO: Project F - Racing the Beam Project Creation Script"
