@@ -1,5 +1,5 @@
 // Project F: FPGA Pong - Simple Score Drawing
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 
 `default_nettype none
@@ -17,7 +17,7 @@ module simple_score #(
     output      logic pix              // draw pixel at this position?
     );
 
-    // number characters: big-endian vector, so we can write pixels left to right
+    // number characters: MSB first, so we can write pixels left to right
     /* verilator lint_off LITENDIAN */
     logic [0:14] chars [10];  // ten characters of 15 pixels each
     /* verilator lint_on LITENDIAN */
