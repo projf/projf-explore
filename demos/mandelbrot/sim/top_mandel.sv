@@ -332,7 +332,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         paint_colr = {lb_colr_out_2, lb_colr_out, lb_colr_out};
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? paint_colr : 24'h001020;
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? paint_colr : 24'h001030;
     end
 
     // SDL output (8 bits per colour channel)
