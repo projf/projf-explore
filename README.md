@@ -93,4 +93,4 @@ I believe these features are helpful, especially for beginners. All the SystemVe
 
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Juri Tsirihhov](https://github.com/jutsir), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Didier Malenfant](https://github.com/DidierMalenfant), [Juri Tsirihhov](https://github.com/jutsir), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.

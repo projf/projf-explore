@@ -31,6 +31,10 @@ module top_colour #(parameter CORDW=10) (  // coordinate width
         .de
     );
 
+    // screen dimensions (must match display_inst)
+    localparam H_RES = 640;  // horizontal screen resolution
+    localparam V_RES = 480;  // vertical screen resolution
+
     // determine colour from screen position
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
@@ -38,7 +42,11 @@ module top_colour #(parameter CORDW=10) (  // coordinate width
             paint_r = sx[7:4];  // 16 horizontal pixels of each red level
             paint_g = sy[7:4];  // 16 vertical pixels of each green level
             paint_b = 4'h4;     // constant blue level
-        end else begin  // otherwise black
+        end else if (sx < H_RES && sy < V_RES) begin  // otherwise dark blue
+            paint_r = 4'h0;
+            paint_g = 4'h1;
+            paint_b = 4'h2;
+        end else begin  // black in blanking interval
             paint_r = 4'h0;
             paint_g = 4'h0;
             paint_b = 4'h0;
