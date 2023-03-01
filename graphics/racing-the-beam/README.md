@@ -9,7 +9,7 @@ File layout:
 * `xc7` - designs for Arty and other Xilinx 7 Series boards
 * `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
 
-These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules used.
+These designs make use of modules from the [Project F library](../../lib/).
 
 ## Demos
 
