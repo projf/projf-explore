@@ -42,7 +42,7 @@ module top_colour #(parameter CORDW=10) (  // coordinate width
             paint_r = sx[7:4];  // 16 horizontal pixels of each red level
             paint_g = sy[7:4];  // 16 vertical pixels of each green level
             paint_b = 4'h4;     // constant blue level
-        end else if (sx < H_RES-1 && sy < V_RES-1) begin  // otherwise dark blue
+        end else if (sx < H_RES && sy < V_RES) begin  // otherwise dark blue
             paint_r = 4'h0;
             paint_g = 4'h1;
             paint_b = 4'h2;
