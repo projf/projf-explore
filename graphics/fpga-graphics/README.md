@@ -14,7 +14,7 @@ These designs make use of modules from the [Project F library](../../lib/).
 ## Demos
 
 * Square
-* Flag of Ethipoia
+* Flag of Ethiopia
 * Flag of Sweden
 * Colour
 
