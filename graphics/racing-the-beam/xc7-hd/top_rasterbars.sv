@@ -1,5 +1,5 @@
 // Project F: Racing the Beam - Raster Bars (Nexys Video)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/racing-the-beam/
 
 `default_nettype none
@@ -82,16 +82,24 @@ module top_rasterbars (
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb {paint_r, paint_g, paint_b} = bar_colr;
 
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // DVI signals (8 bits per colour channel)
     logic [7:0] dvi_r, dvi_g, dvi_b;
     logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
-        dvi_de    <= de;
-        dvi_r     <= {2{paint_r}};
-        dvi_g     <= {2{paint_g}};
-        dvi_b     <= {2{paint_b}};
+        dvi_de <= de;
+        dvi_r <= {2{display_r}};
+        dvi_g <= {2{display_g}};
+        dvi_b <= {2{display_b}};
     end
 
     // TMDS encoding and serialization

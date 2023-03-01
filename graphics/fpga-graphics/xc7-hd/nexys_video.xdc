@@ -1,5 +1,5 @@
 ## Project F: FPGA Graphics - Nexys Video Board Constraints
-## (C)2022 Will Green, Open source hardware released under the MIT License
+## (C)2023 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
 ## FPGA Configuration I/O Options

@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Square (iCEBreaker 12-bit DVI Pmod)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
@@ -47,12 +47,20 @@ module top_square (
         square = (sx > 220 && sx < 420) && (sy > 140 && sy < 340);
     end
 
-    // paint colours: white inside square, blue outside
+    // paint colour: white inside square, blue outside
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (square) ? 4'hF : 4'h1;
         paint_g = (square) ? 4'hF : 4'h3;
         paint_b = (square) ? 4'hF : 4'h7;
+    end
+
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
     end
 
     // DVI Pmod output
@@ -61,7 +69,7 @@ module top_square (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */

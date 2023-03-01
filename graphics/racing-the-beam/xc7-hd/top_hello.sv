@@ -1,5 +1,5 @@
 // Project F: Racing the Beam - Hello (Nexys Video)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/racing-the-beam/
 
 `default_nettype none
@@ -46,7 +46,7 @@ module top_hello (
         .de
     );
 
-    // bitmap: big-endian vector, so we can write pixels left to right
+    // bitmap: MSB first, so we can write pixels left to right
     /* verilator lint_off LITENDIAN */
     logic [0:19] bmap [11];  // 20 pixels by 11 lines
     /* verilator lint_on LITENDIAN */
@@ -65,7 +65,7 @@ module top_hello (
         bmap[10] = 20'b1110_1100_1010_1110_1110;
     end
 
-    // paint at 32x scale in active screen area
+    // paint at 64x scale in active screen area
     logic picture;
     logic [4:0] x;  // 20 columns need five bits
     logic [3:0] y;  // 11 rows need four bits
@@ -75,12 +75,20 @@ module top_hello (
         picture = de ? bmap[y][x] : 0;  // look up pixel (unless we're in blanking)
     end
 
-    // paint colours: yellow lines, blue background
+    // paint colour: yellow lines, blue background
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (picture) ? 4'hF : 4'h1;
         paint_g = (picture) ? 4'hC : 4'h3;
         paint_b = (picture) ? 4'h0 : 4'h7;
+    end
+
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
     end
 
     // DVI signals (8 bits per colour channel)
@@ -89,10 +97,10 @@ module top_hello (
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
-        dvi_de    <= de;
-        dvi_r     <= {2{paint_r}};
-        dvi_g     <= {2{paint_g}};
-        dvi_b     <= {2{paint_b}};
+        dvi_de <= de;
+        dvi_r <= {2{display_r}};
+        dvi_g <= {2{display_g}};
+        dvi_b <= {2{display_b}};
     end
 
     // TMDS encoding and serialization

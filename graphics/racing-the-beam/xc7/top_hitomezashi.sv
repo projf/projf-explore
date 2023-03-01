@@ -1,5 +1,5 @@
 // Project F: Racing the Beam - Hitomezashi (Arty Pmod VGA)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/racing-the-beam/
 
 `default_nettype none
@@ -44,7 +44,7 @@ module top_hitomezashi (
         .de
     );
 
-    // stitch start values: big-endian vector, so we can write left to right
+    // stitch start values: MSB first, so we can write left to right
     /* verilator lint_off LITENDIAN */
     logic [0:39] v_start;  // 40 vertical lines
     logic [0:29] h_start;  // 30 horizontal lines
@@ -67,7 +67,7 @@ module top_hitomezashi (
         stitch = (v_line && v_on) || (h_line && h_on);
     end
 
-    // paint colours: yellow lines, blue background
+    // paint colour: yellow lines, blue background
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (stitch) ? 4'hF : 4'h1;
@@ -75,18 +75,20 @@ module top_hitomezashi (
         paint_b = (stitch) ? 4'h0 : 4'h7;
     end
 
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        vga_r <= display_r;
+        vga_g <= display_g;
+        vga_b <= display_b;
     end
 endmodule

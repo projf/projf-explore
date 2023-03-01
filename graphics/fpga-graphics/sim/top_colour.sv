@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Colour Test (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
@@ -31,26 +31,26 @@ module top_colour #(parameter CORDW=10) (  // coordinate width
         .de
     );
 
-    // screen dimensions (must match display_inst)
-    localparam H_RES = 640;  // horizontal screen resolution
-    localparam V_RES = 480;  // vertical screen resolution
-
-    // determine colour from screen position
+    // paint colour: based on screen position
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         if (sx < 256 && sy < 256) begin  // colour square in top-left 256x256 pixels
             paint_r = sx[7:4];  // 16 horizontal pixels of each red level
             paint_g = sy[7:4];  // 16 vertical pixels of each green level
             paint_b = 4'h4;     // constant blue level
-        end else if (sx < H_RES && sy < V_RES) begin  // otherwise dark blue
+        end else begin  // background colour
             paint_r = 4'h0;
             paint_g = 4'h1;
-            paint_b = 4'h2;
-        end else begin  // black in blanking interval
-            paint_r = 4'h0;
-            paint_g = 4'h0;
-            paint_b = 4'h0;
+            paint_b = 4'h3;
         end
+    end
+
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
     end
 
     // SDL output (8 bits per colour channel)
@@ -58,8 +58,8 @@ module top_colour #(parameter CORDW=10) (  // coordinate width
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
-        sdl_r <= {2{paint_r}};  // double signal width from 4 to 8 bits
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};  // double signal width from 4 to 8 bits
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule

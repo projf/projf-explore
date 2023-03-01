@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Sprite from Inline Bitmap
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
@@ -25,7 +25,7 @@ module sprite_inline #(
     /* verilator lint_off LITENDIAN */
     logic [0:SPR_WIDTH-1] bmap [SPR_HEIGHT];
     /* verilator lint_on LITENDIAN */
-    initial begin  // big endian vector, so we can write initial block left to right
+    initial begin  // MSB first, so we can write initial block left to right
         bmap[0]  = 8'b1111_1100;
         bmap[1]  = 8'b1100_0000;
         bmap[2]  = 8'b1100_0000;
