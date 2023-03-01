@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Flag of Ethiopia (Nexys Video)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
@@ -46,7 +46,7 @@ module top_flag_ethiopia (
         .de
     );
 
-    // traditional flag of Ethiopia
+    // paint colour: traditional flag of Ethiopia
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         if (sy < 240) begin  // top of flag is green
@@ -64,6 +64,14 @@ module top_flag_ethiopia (
         end
     end
 
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // DVI signals (8 bits per colour channel)
     logic [7:0] dvi_r, dvi_g, dvi_b;
     logic dvi_hsync, dvi_vsync, dvi_de;
@@ -71,9 +79,9 @@ module top_flag_ethiopia (
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
         dvi_de    <= de;
-        dvi_r     <= {2{paint_r}};
-        dvi_g     <= {2{paint_g}};
-        dvi_b     <= {2{paint_b}};
+        dvi_r     <= {2{display_r}};  // double signal width from 4 to 8 bits
+        dvi_g     <= {2{display_g}};
+        dvi_b     <= {2{display_b}};
     end
 
     // TMDS encoding and serialization

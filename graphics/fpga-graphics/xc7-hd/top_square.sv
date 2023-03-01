@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Square (Nexys Video)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
@@ -50,12 +50,20 @@ module top_square (
         square = (sx > 440 && sx < 840) && (sy > 160 && sy < 560);
     end
 
-    // paint colours: white inside square, blue outside
+    // paint colour: white inside square, blue outside
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (square) ? 4'hF : 4'h1;
         paint_g = (square) ? 4'hF : 4'h3;
         paint_b = (square) ? 4'hF : 4'h7;
+    end
+
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
     end
 
     // DVI signals (8 bits per colour channel)
@@ -65,9 +73,9 @@ module top_square (
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
         dvi_de    <= de;
-        dvi_r     <= {2{paint_r}};
-        dvi_g     <= {2{paint_g}};
-        dvi_b     <= {2{paint_b}};
+        dvi_r     <= {2{display_r}};  // double signal width from 4 to 8 bits
+        dvi_g     <= {2{display_g}};
+        dvi_b     <= {2{display_b}};
     end
 
     // TMDS encoding and serialization

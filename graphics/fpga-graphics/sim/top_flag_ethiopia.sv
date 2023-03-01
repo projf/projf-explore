@@ -1,5 +1,5 @@
 // Project F: FPGA Graphics - Flag of Ethiopia (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-graphics/
 
 `default_nettype none
@@ -31,7 +31,7 @@ module top_flag_ethiopia #(parameter CORDW=10) (  // coordinate width
         .de
     );
 
-    // traditional flag of Ethiopia
+    // paint colour: traditional flag of Ethiopia
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         if (sy < 160) begin  // top of flag is green
@@ -49,13 +49,21 @@ module top_flag_ethiopia #(parameter CORDW=10) (  // coordinate width
         end
     end
 
+    // display colour: black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
-        sdl_r <= {2{paint_r}};  // double signal width from 4 to 8 bits
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};  // double signal width from 4 to 8 bits
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule
