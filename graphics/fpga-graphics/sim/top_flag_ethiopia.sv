@@ -49,7 +49,7 @@ module top_flag_ethiopia #(parameter CORDW=10) (  // coordinate width
         end
     end
 
-    // display colour: black in blanking interval
+    // display colour: paint screen but black in blanking interval
     logic [3:0] display_r, display_g, display_b;
     always_comb begin
         display_r = (de) ? paint_r : 4'h0;

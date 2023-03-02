@@ -18,9 +18,9 @@ _Pong running as a Verilator simulation on macOS._
 
 ## iCEBreaker Build
 
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](http://bygone.clairexen.net/icestorm/).
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
 
-You can get pre-built tool binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build). If you want to build the tools yourself, check out [Building iCE40 FPGA Toolchain on Linux](https://projectf.io/posts/building-ice40-fpga-toolchain/).
+You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build).
 
 To build `pong`; clone the projf-explore git repo, then:
 
@@ -43,9 +43,11 @@ The game controls for iCEBreaker:
 * **Button 2** - start (fire)
 * **Button 1** - down
 
-### Problems Building
+### Tested Versions
 
-If you have problems building the iCE40 designs, make sure you're using Yosys 0.10 or later.
+The iCE40 designs have been tested with:
+
+* OSS CAD Suite 2023-03-01
 
 ## Arty Build
 
@@ -63,6 +65,12 @@ The game controls for Arty:
 * **BTN2** - up
 * **BTN1** - start (fire)
 * **BTN0** - down
+
+### Tested Versions
+
+The Arty designs have been tested with:
+
+* Vivado 2022.2
 
 ### Other Xilinx 7 Series Boards
 

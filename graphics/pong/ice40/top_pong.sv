@@ -245,7 +245,7 @@ module top_pong (
         .pix(pix_score)
     );
 
-    // paint colours
+    // paint colour
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         if (pix_score) {paint_r, paint_g, paint_b} = 12'hF30;  // score
@@ -254,13 +254,21 @@ module top_pong (
         else {paint_r, paint_g, paint_b} = 12'h137;  // background
     end
 
+    // display colour: paint screen but black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // DVI Pmod output
     SB_IO #(
         .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */

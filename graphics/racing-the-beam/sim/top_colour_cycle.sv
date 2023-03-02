@@ -59,7 +59,7 @@ module top_colour_cycle #(parameter CORDW=10) (  // coordinate width
         paint_b = colr_level;  // blue level changes over time
     end
 
-    // display colour: black in blanking interval
+    // display colour: paint screen but black in blanking interval
     logic [3:0] display_r, display_g, display_b;
     always_comb begin
         display_r = (de) ? paint_r : 4'h0;
