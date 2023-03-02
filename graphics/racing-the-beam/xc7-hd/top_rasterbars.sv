@@ -82,7 +82,7 @@ module top_rasterbars (
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb {paint_r, paint_g, paint_b} = bar_colr;
 
-    // display colour: black in blanking interval
+    // display colour: paint colour but black in blanking interval
     logic [3:0] display_r, display_g, display_b;
     always_comb begin
         display_r = (de) ? paint_r : 4'h0;

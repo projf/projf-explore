@@ -1,6 +1,6 @@
 # Mandelbrot Set
 
-This SystemVerilog drawing demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
+This SystemVerilog demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
 This design has an associated Project F blog post: _Mandelbrot Set in Verilog_ (coming soon).
 

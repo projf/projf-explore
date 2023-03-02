@@ -75,7 +75,7 @@ module top_hitomezashi (
         paint_b = (stitch) ? 4'h0 : 4'h7;
     end
 
-    // display colour: black in blanking interval
+    // display colour: paint colour but black in blanking interval
     logic [3:0] display_r, display_g, display_b;
     always_comb begin
         display_r = (de) ? paint_r : 4'h0;
