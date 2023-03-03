@@ -343,7 +343,7 @@ module top_mandel (
     logic [FB_DATAW-1:0] lb_colr_out_2;
     always_comb lb_colr_out_2 = lb_colr_out/2;
 
-    // paint screen
+    // paint colour
     logic paint_area;  // high in area of screen to paint
     logic [COLRW-1:0] paint_colr;
     /* verilator lint_off UNUSED */
@@ -353,22 +353,26 @@ module top_mandel (
         paint_colr = {lb_colr_out_2, lb_colr_out, lb_colr_out};
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? paint_colr : 24'h001030;
+        {paint_r, paint_g, paint_b} = (paint_area) ? paint_colr : 24'h001030;
+    end
+
+    // display colour: paint colour but black in blanking interval
+    /* verilator lint_off UNUSED */
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    /* verilator lint_on UNUSED */
+    always_comb begin
+        display_r = (de) ? paint_r : 8'h0;
+        display_g = (de) ? paint_g : 8'h0;
+        display_b = (de) ? paint_b : 8'h0;
     end
 
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        if (de) begin  // future improvement: dither output
-            vga_r <= paint_r[7:4];
-            vga_g <= paint_g[7:4];
-            vga_b <= paint_b[7:4];
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        vga_r <= display_r[7:4];  // future improvement: dither output
+        vga_g <= display_g[7:4];
+        vga_b <= display_b[7:4];
     end
 
     // show status with LEDs

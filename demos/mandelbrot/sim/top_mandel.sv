@@ -324,7 +324,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [FB_DATAW-1:0] lb_colr_out_2;
     always_comb lb_colr_out_2 = lb_colr_out/2;
 
-    // paint screen
+    // paint colour
     logic paint_area;  // high in area of screen to paint
     logic [COLRW-1:0] paint_colr;
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
@@ -335,14 +335,22 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? paint_colr : 24'h001030;
     end
 
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 8'h0;
+        display_g = (de) ? paint_g : 8'h0;
+        display_b = (de) ? paint_b : 8'h0;
+    end
+
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= paint_r;
-        sdl_g <= paint_g;
-        sdl_b <= paint_b;
+        sdl_r <= {display_r};
+        sdl_g <= {display_g};
+        sdl_b <= {display_b};
     end
 endmodule
