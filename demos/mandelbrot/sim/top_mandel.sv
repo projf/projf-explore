@@ -123,9 +123,13 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic changed_params;  // function params have changed
 
     enum {HORIZONTAL, VERTICAL, ZOOM, ITER} state;
-
-    // switch modes
     always_ff @(posedge clk_sys) begin
+        // no change in params by default
+        x_start_p <= x_start;
+        y_start_p <= y_start;
+        step_p <= step;
+    
+        // switch modes
         if (!changed_params && !render_busy) begin
             case (state)
                 HORIZONTAL: begin
@@ -148,14 +152,6 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                 end
             endcase
         end
-    end
-
-    // update position/zoom
-    always_ff @(posedge clk_sys) begin
-        // no change in params by default
-        x_start_p <= x_start;
-        y_start_p <= y_start;
-        step_p <= step;
 
         if (frame_sys && !changed_params && !render_busy) begin
             case (state)
