@@ -59,9 +59,9 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     );
 
     // debounce buttons
-    logic sig_fire, sig_up, sig_dn;
+    logic sig_mode, sig_up, sig_dn;
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_fire));
+    debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_mode));
     debounce deb_up (.clk(clk_sys), .in(btn_up), .out(sig_up), .ondn(), .onup());
     debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(sig_dn), .ondn(), .onup());
     /* verilator lint_on PINCONNECTEMPTY */
@@ -123,13 +123,35 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic changed_params;  // function params have changed
 
     enum {HORIZONTAL, VERTICAL, ZOOM, ITER} state;
-    always_ff @(posedge clk_sys) begin
-        case (state)
-            HORIZONTAL: if (sig_fire) state <= VERTICAL;
-            VERTICAL:   if (sig_fire) state <= ZOOM;
-            ZOOM:       if (sig_fire) state <= HORIZONTAL;
-        endcase
 
+    // switch modes
+    always_ff @(posedge clk_sys) begin
+        if (!changed_params && !render_busy) begin
+            case (state)
+                HORIZONTAL: begin
+                    if (sig_mode) begin
+                        state <= VERTICAL;
+                        $display(">> Mode: vertical");
+                    end
+                end
+                VERTICAL: begin
+                    if (sig_mode) begin
+                        state <= ZOOM;
+                        $display(">> Mode: zoom");
+                    end
+                end
+                ZOOM: begin
+                    if (sig_mode) begin
+                        state <= HORIZONTAL;
+                        $display(">> Mode: horizontal");
+                    end
+                end
+            endcase
+        end
+    end
+
+    // update position/zoom
+    always_ff @(posedge clk_sys) begin
         // no change in params by default
         x_start_p <= x_start;
         y_start_p <= y_start;
