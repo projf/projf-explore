@@ -81,8 +81,8 @@ module top_mandel (
     logic sig_mode, sig_up, sig_dn;
     /* verilator lint_off PINCONNECTEMPTY */
     debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_mode));
-    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(sig_up), .ondn(), .onup());
-    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(sig_dn), .ondn(), .onup());
+    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(), .ondn(), .onup(sig_up));
+    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(), .ondn(), .onup(sig_dn));
     /* verilator lint_on PINCONNECTEMPTY */
 
     // colour parameters
