@@ -62,8 +62,8 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic sig_mode, sig_up, sig_dn;
     /* verilator lint_off PINCONNECTEMPTY */
     debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_mode));
-    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(sig_up), .ondn(), .onup());
-    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(sig_dn), .ondn(), .onup());
+    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(), .ondn(), .onup(sig_up));
+    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(), .ondn(), .onup(sig_dn));
     /* verilator lint_on PINCONNECTEMPTY */
 
     // colour parameters
@@ -124,36 +124,11 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     enum {HORIZONTAL, VERTICAL, ZOOM, ITER} state;
     always_ff @(posedge clk_sys) begin
-        // no change in params by default
-        x_start_p <= x_start;
+        x_start_p <= x_start;  // no change in params by default
         y_start_p <= y_start;
         step_p <= step;
-    
-        // switch modes
-        if (!changed_params && !render_busy) begin
-            case (state)
-                HORIZONTAL: begin
-                    if (sig_mode) begin
-                        state <= VERTICAL;
-                        $display(">> Mode: vertical");
-                    end
-                end
-                VERTICAL: begin
-                    if (sig_mode) begin
-                        state <= ZOOM;
-                        $display(">> Mode: zoom");
-                    end
-                end
-                ZOOM: begin
-                    if (sig_mode) begin
-                        state <= HORIZONTAL;
-                        $display(">> Mode: horizontal");
-                    end
-                end
-            endcase
-        end
 
-        if (frame_sys && !changed_params && !render_busy) begin
+        if (!changed_params && !render_busy) begin
             case (state)
                 HORIZONTAL: begin
                     if (sig_up) begin
@@ -165,6 +140,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         changed_params <= 1;
                         $display(">> Move right");
                     end
+                    if (sig_mode) begin
+                        state <= VERTICAL;
+                        $display(">> Mode: vertical");
+                    end
                 end
                 VERTICAL: begin
                     if (sig_up) begin
@@ -175,6 +154,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         y_start_p <= y_start + (step <<< 4);
                         changed_params <= 1;
                         $display(">> Move down");
+                    end
+                    if (sig_mode) begin
+                        state <= ZOOM;
+                        $display(">> Mode: zoom");
                     end
                 end
                 ZOOM: begin  // zoom values need adjusting if resolution is not ~320x180
@@ -190,6 +173,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         step_p <= step / 2;
                         changed_params <= 1;
                         $display(">> Zoom in");
+                    end
+                    if (sig_mode) begin
+                        state <= HORIZONTAL;
+                        $display(">> Mode: horizontal");
                     end
                 end
             endcase
