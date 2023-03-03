@@ -59,11 +59,11 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     );
 
     // debounce buttons
-    logic sig_fire, sig_up, sig_dn;
+    logic sig_mode, sig_up, sig_dn;
     /* verilator lint_off PINCONNECTEMPTY */
-    debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_fire));
-    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(sig_up), .ondn(), .onup());
-    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(sig_dn), .ondn(), .onup());
+    debounce deb_fire (.clk(clk_sys), .in(btn_fire), .out(), .ondn(), .onup(sig_mode));
+    debounce deb_up (.clk(clk_sys), .in(btn_up), .out(), .ondn(), .onup(sig_up));
+    debounce deb_dn (.clk(clk_sys), .in(btn_dn), .out(), .ondn(), .onup(sig_dn));
     /* verilator lint_on PINCONNECTEMPTY */
 
     // colour parameters
@@ -124,18 +124,11 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     enum {HORIZONTAL, VERTICAL, ZOOM, ITER} state;
     always_ff @(posedge clk_sys) begin
-        case (state)
-            HORIZONTAL: if (sig_fire) state <= VERTICAL;
-            VERTICAL:   if (sig_fire) state <= ZOOM;
-            ZOOM:       if (sig_fire) state <= HORIZONTAL;
-        endcase
-
-        // no change in params by default
-        x_start_p <= x_start;
+        x_start_p <= x_start;  // no change in params by default
         y_start_p <= y_start;
         step_p <= step;
 
-        if (frame_sys && !changed_params && !render_busy) begin
+        if (!changed_params && !render_busy) begin
             case (state)
                 HORIZONTAL: begin
                     if (sig_up) begin
@@ -147,6 +140,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         changed_params <= 1;
                         $display(">> Move right");
                     end
+                    if (sig_mode) begin
+                        state <= VERTICAL;
+                        $display(">> Mode: vertical");
+                    end
                 end
                 VERTICAL: begin
                     if (sig_up) begin
@@ -157,6 +154,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         y_start_p <= y_start + (step <<< 4);
                         changed_params <= 1;
                         $display(">> Move down");
+                    end
+                    if (sig_mode) begin
+                        state <= ZOOM;
+                        $display(">> Mode: zoom");
                     end
                 end
                 ZOOM: begin  // zoom values need adjusting if resolution is not ~320x180
@@ -172,6 +173,10 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
                         step_p <= step / 2;
                         changed_params <= 1;
                         $display(">> Zoom in");
+                    end
+                    if (sig_mode) begin
+                        state <= HORIZONTAL;
+                        $display(">> Mode: horizontal");
                     end
                 end
             endcase
@@ -324,7 +329,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [FB_DATAW-1:0] lb_colr_out_2;
     always_comb lb_colr_out_2 = lb_colr_out/2;
 
-    // paint screen
+    // paint colour
     logic paint_area;  // high in area of screen to paint
     logic [COLRW-1:0] paint_colr;
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
@@ -335,14 +340,22 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         {paint_r, paint_g, paint_b} = (de && paint_area) ? paint_colr : 24'h001030;
     end
 
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 8'h0;
+        display_g = (de) ? paint_g : 8'h0;
+        display_b = (de) ? paint_b : 8'h0;
+    end
+
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= paint_r;
-        sdl_g <= paint_g;
-        sdl_b <= paint_b;
+        sdl_r <= {display_r};
+        sdl_g <= {display_g};
+        sdl_b <= {display_b};
     end
 endmodule
