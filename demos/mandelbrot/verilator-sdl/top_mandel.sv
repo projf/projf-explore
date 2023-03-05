@@ -20,16 +20,13 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     output      logic [7:0] sdl_b   // 8-bit blue
     );
 
-    // maths parameters
+    // Mandelbrot parameters
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
 
-    // starting coordinates (match FP_WIDTH)
-    // localparam X_START = 18'b1100_1000_0000_0000_00;  // starting left: -3.5
-    // localparam Y_START = 18'b1110_1000_0000_0000_00;  // starting top:  -1.5i
-    // localparam STEP    = 18'b0000_0000_0100_0000_00;  // starting step: 1/64 (320x180)
+    // starting coordinates (width must match FP_WIDTH)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
     localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)

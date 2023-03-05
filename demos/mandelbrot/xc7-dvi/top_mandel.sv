@@ -1,4 +1,4 @@
-// Project F: Mandelbrot Set (Arty Pmod VGA)
+// Project F: Mandelbrot Set (Nexys Video)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
@@ -6,29 +6,29 @@
 `timescale 1ns / 1ps
 
 module top_mandel (
-    input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst_n,    // reset button
-    input  wire logic btn_fire,     // fire button
-    input  wire logic btn_up,       // up button
-    input  wire logic btn_dn,       // down button
-    output      logic [3:0] led,    // four green LEDs
-    output      logic vga_hsync,    // horizontal sync
-    output      logic vga_vsync,    // vertical sync
-    output      logic [3:0] vga_r,  // 4-bit VGA red
-    output      logic [3:0] vga_g,  // 4-bit VGA green
-    output      logic [3:0] vga_b   // 4-bit VGA blue
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    input  wire logic btn_fire,       // fire button
+    input  wire logic btn_up,         // up button
+    input  wire logic btn_dn,         // down button
+    output      logic [3:0] led,      // four green LEDs
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
-    // maths parameters
+    // Mandelbrot parameters
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
 
-    // starting coordinates (match FP_WIDTH)
-    // localparam X_START = 18'b1100_1000_0000_0000_00;  // starting left: -3.5
-    // localparam Y_START = 18'b1110_1000_0000_0000_00;  // starting top:  -1.5i
-    // localparam STEP    = 18'b0000_0000_0100_0000_00;  // starting step: 1/64 (320x180)
+    // starting coordinates (width must match FP_WIDTH)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
     localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)
@@ -46,16 +46,14 @@ module top_mandel (
     always_ff @(posedge clk_sys) rst_sys <= !clk_sys_locked;  // wait for clock lock
 
     // generate pixel clock
-    logic clk_pix;
+    logic clk_pix, clk_pix_5x;
     logic clk_pix_locked;
     logic rst_pix;
-    clock_480p clock_pix_inst (
+    clock_720p clock_pix_inst (
        .clk_100m,
        .rst(!btn_rst_n),  // reset button is active low
        .clk_pix,
-       /* verilator lint_off PINCONNECTEMPTY */
-       .clk_pix_5x(),  // not used for VGA output
-       /* verilator lint_on PINCONNECTEMPTY */
+       .clk_pix_5x,
        .clk_pix_locked
     );
     always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
@@ -65,7 +63,7 @@ module top_mandel (
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_480p #(.CORDW(CORDW)) display_inst (
+    display_720p  #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
@@ -93,9 +91,9 @@ module top_mandel (
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
     localparam FB_HEIGHT = 180;  // framebuffer height in pixels
-    localparam FB_SCALE  =   2;  // framebuffer display scale (1-63)
+    localparam FB_SCALE  =   4;  // framebuffer display scale (1-63)
     localparam FB_OFFX   =   0;  // horizontal offset
-    localparam FB_OFFY   =  60;  // vertical offset
+    localparam FB_OFFY   =   0;  // vertical offset
     localparam FB_PIXELS = FB_WIDTH * FB_HEIGHT;  // total pixels in buffer
     localparam FB_ADDRW  = $clog2(FB_PIXELS);  // address width
     localparam FB_DATAW  = CIDXW;  // colour bits per pixel
@@ -351,9 +349,7 @@ module top_mandel (
     // paint colour
     logic paint_area;  // high in area of screen to paint
     logic [COLRW-1:0] paint_colr;
-    /* verilator lint_off UNUSED */
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
-    /* verilator lint_on UNUSED */
     always_comb begin
         paint_colr = {lb_colr_out_2, lb_colr_out, lb_colr_out};
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
@@ -362,23 +358,53 @@ module top_mandel (
     end
 
     // display colour: paint colour but black in blanking interval
-    /* verilator lint_off UNUSED */
     logic [CHANW-1:0] display_r, display_g, display_b;
-    /* verilator lint_on UNUSED */
     always_comb begin
         display_r = (de) ? paint_r : 8'h0;
         display_g = (de) ? paint_g : 8'h0;
         display_b = (de) ? paint_b : 8'h0;
     end
 
-    // VGA Pmod output
+    // DVI signals (8 bits per colour channel)
+    logic [CHANW-1:0] dvi_r, dvi_g, dvi_b;
+    logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        vga_hsync <= hsync;
-        vga_vsync <= vsync;
-        vga_r <= display_r[7:4];  // future improvement: dither output
-        vga_g <= display_g[7:4];
-        vga_b <= display_b[7:4];
+        dvi_hsync <= hsync;
+        dvi_vsync <= vsync;
+        dvi_de <= de;
+        dvi_r <= display_r;  // double signal width from 4 to 8 bits
+        dvi_g <= display_g;
+        dvi_b <= display_b;
     end
+
+    // TMDS encoding and serialization
+    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
+    dvi_generator dvi_out (
+        .clk_pix,
+        .clk_pix_5x,
+        .rst_pix(!clk_pix_locked),
+        .de(dvi_de),
+        .data_in_ch0(dvi_b),
+        .data_in_ch1(dvi_g),
+        .data_in_ch2(dvi_r),
+        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
+        .ctrl_in_ch1(2'b00),
+        .ctrl_in_ch2(2'b00),
+        .tmds_ch0_serial,
+        .tmds_ch1_serial,
+        .tmds_ch2_serial,
+        .tmds_clk_serial
+    );
+
+    // TMDS output pins
+    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
+        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
+    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
+        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
+    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
+        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
+    tmds_out tmds_clk (.tmds(tmds_clk_serial),
+        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 
     // show status with LEDs
     always_ff @(posedge clk_sys) begin
