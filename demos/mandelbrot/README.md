@@ -4,21 +4,50 @@ This SystemVerilog demo uses Q4.21 fixed-point multiplication and a small frameb
 
 This design has an associated Project F blog post: _Mandelbrot Set in Verilog_ (coming soon).
 
-The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
+I've included project files for:
 
-We consider up to 255 iterations by default, but you can adjust this by changing `ITER_MAX` in the top module. The minimum number of iterations supported is 128, but you get the best results with 2<sup>n</sup>-1, for example, 511, as this best uses the full range of colours.
+* [Digilent Arty A7-35T](#arty-a7-35t-build)
+* [Digilent Nexys Video](#nexys-video-dvi-build)
+* [Verilator/SDL Simulation](#verilator-build)
 
-The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625).
-
-With the default 25-bit precision, you can zoom in 15 times to a minimum step of 1/2<sup>21</sup>. You can adjust the precision by changing `FP_WIDTH` in the top module (don't forget to adjust `X_START`, `Y_START`, and `STEP`) and see _DSP Usage_ (below).
-
-New to FPGA maths? Check out [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/).
+It should be straightforward to adapt to any FPGA board with video output.
 
 ![](../../doc/img/sea-of-chaos.png?raw=true "")
 
 _Mandelbrot set drawn by Verilator/SDL sim._
 
-## Arty VGA Build
+## Demo Parameters
+
+We consider up to 255 iterations by default, but you can adjust this by changing `ITER_MAX` in the top module. The minimum number of iterations supported is 128, but you get the best results with 2<sup>n</sup>-1, for example, 511, as this best uses the full range of colours.
+
+The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625).
+
+With the default 25-bit precision, you can zoom in 15 times to a minimum step of 1/2<sup>21</sup>. You can adjust the precision by changing `FP_WIDTH` in the top module (don't forget to adjust `X_START`, `Y_START`, and `STEP`).
+
+### Resolution
+
+To change the render resolution you need to adjust three things in `top_mandel`:
+
+1. The rendering step parameter: `STEP`
+2. The framebuffer dimensions:
+    a. `FB_WIDTH`
+    b. `FB_HEIGHT`
+    c. `FB_SCALE`
+3. The zoom scale factors:
+    a. `x_start_p <= x_start - (step <<< 7);`
+    b. `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
+    c. `x_start_p <= x_start + (step <<< 6);`
+    d. `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
+
+_NB. The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
+
+## Xilinx 7-Series FPGAs
+
+This demo have been tested with:
+
+* Vivado 2022.2
+
+### Arty A7-35T Build
 
 To create a Vivado project for the Digilent Arty [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
@@ -45,7 +74,7 @@ Four green LEDs show status:
 * **LD5** - vertical motion
 * **LD4** - zoom
 
-## Nexys Video DVI Build
+### Nexys Video DVI Build
 
 To create a Vivado project for the Digilent [Nexys Video](https://reference.digilentinc.com/reference/programmable-logic/nexys-video/reference-manual) with DVI output; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
@@ -74,9 +103,7 @@ Four green LEDs show status:
 
 ## Verilator
 
-### Tested Versions
-
-This simulation have been tested with:
+This demo have been tested with:
 
 * Verilator 4.038 (Ubuntu 22.04 amd64)
 * Verilator 5.006 (macOS 13 arm64)
@@ -112,20 +139,3 @@ You can quit the simulation by pressing the **Q** key.
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_mandelbrot.cpp` so that `FULLSCREEN = true`, then rebuild.
-
-## Resolution
-
-To change the render resolution you need to adjust three things in `top_mandel`:
-
-1. The rendering step parameter: `STEP`
-2. The framebuffer dimensions:
-    a. `FB_WIDTH`
-    b. `FB_HEIGHT`
-    c. `FB_SCALE`
-3. The zoom scale factors:
-    a. `x_start_p <= x_start - (step <<< 7);`
-    b. `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
-    c. `x_start_p <= x_start + (step <<< 6);`
-    d. `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
-
-_NB. The current version of the demo only processes one pixel at a time, so higher resolutions are slow to render._
