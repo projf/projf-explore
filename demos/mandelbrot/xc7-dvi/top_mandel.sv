@@ -1,4 +1,4 @@
-// Project F: Mandelbrot Set (Nexys Video)
+// Project F: Mandelbrot Set (Nexys Video DVI)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
@@ -372,7 +372,7 @@ module top_mandel (
         dvi_hsync <= hsync;
         dvi_vsync <= vsync;
         dvi_de <= de;
-        dvi_r <= display_r;  // double signal width from 4 to 8 bits
+        dvi_r <= display_r;
         dvi_g <= display_g;
         dvi_b <= display_b;
     end

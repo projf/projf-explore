@@ -368,7 +368,7 @@ module top_mandel (
         display_b = (de) ? paint_b : 8'h0;
     end
 
-    // VGA Pmod output
+    // VGA signals (4 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
