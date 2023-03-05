@@ -112,11 +112,10 @@ This demo have been tested with:
 
 If this is the first time you've used Verilator and SDL, you need to [install dependencies](https://projectf.io/posts/verilog-sim-verilator-sdl/#installing-dependencies).
 
-Make sure you're in the sim directory `projf-explore/demos/mandelbrot/sim`.
-
 Build the demo:
 
 ```shell
+cd projf-explore/demos/mandelbrot/verilator-sdl
 make
 ```
 
