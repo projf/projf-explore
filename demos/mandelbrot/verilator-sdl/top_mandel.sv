@@ -24,7 +24,8 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
-    localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
+    localparam SUPERSAMPLE = 1;  // combine multiple samples for each pixel
+    localparam COLR_SCHEME = 0;  // 0: blue-purple-gold, 1: blue-green
 
     // starting coordinates (width must match FP_WIDTH)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
@@ -325,18 +326,24 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     // generate colour
     logic [FB_DATAW-1:0] mandel_r, mandel_g, mandel_b;
     always_comb begin
-        if (lb_colr_out == 0) begin  // black in the set
-            mandel_r = 8'h00;
-            mandel_g = 8'h00;
-            mandel_b = 8'h00;
-        end else if (lb_colr_out <= 8'h66) begin
-            mandel_r = 8'h00 + lb_colr_out;
-            mandel_g = 8'h00 + (lb_colr_out >> 1);  // divide by 2
-            mandel_b = 8'h33 + lb_colr_out;
+        if (COLR_SCHEME) begin
+                mandel_r = (lb_colr_out >> 1);  // reduce red by a factor of two
+                mandel_g = lb_colr_out;
+                mandel_b = lb_colr_out;
         end else begin
-            mandel_r = 8'h66 + lb_colr_out - 8'h66;
-            mandel_g = 8'h33 + lb_colr_out - 8'h66;
-            mandel_b = 8'h99 + 8'h66 - lb_colr_out;
+            if (lb_colr_out == 0) begin  // black in the set
+                mandel_r = 8'h00;
+                mandel_g = 8'h00;
+                mandel_b = 8'h00;
+            end else if (lb_colr_out <= 8'h66) begin  // purple
+                mandel_r = 8'h00 + lb_colr_out;
+                mandel_g = 8'h00 + (lb_colr_out >> 1);  // divide by 2
+                mandel_b = 8'h33 + lb_colr_out;
+            end else begin  // turning to gold
+                mandel_r = 8'h66 + lb_colr_out - 8'h66;
+                mandel_g = 8'h33 + lb_colr_out - 8'h66;
+                mandel_b = 8'h99 + 8'h66 - lb_colr_out;
+            end
         end
     end
 
