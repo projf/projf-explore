@@ -26,7 +26,7 @@ With the default 25-bit precision, you can zoom in 15 times to a minimum step of
 
 ### Resolution
 
-To change the render resolution you need to adjust three things in `top_mandel`:
+To change the render resolution, you need to adjust the following in `top_mandel.sv`:
 
 1. The rendering step parameter: `STEP`
 2. The framebuffer dimensions:
