@@ -1,20 +1,12 @@
-# Project F: Mandelbrot Set - Create Vivado Project
+# Project F: Mandelbrot Set - Arty A7-35 Vivado Project
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
-puts "INFO: Project F - Mandelbrot Set Project Creation Script"
+puts "INFO: Project F - Mandelbrot Set Project Script (Arty A7-35)"
 
-# If the FPGA board/part isn't set use Arty
-if {! [info exists fpga_part]} {
-    set projf_fpga_part "xc7a35ticsg324-1L"
-} else {
-    set projf_fpga_part ${fpga_part}
-}
-if {! [info exists board_name]} {
-    set projf_board_name "arty"
-} else {
-    set projf_board_name ${board_name}
-}
+# Set the FPGA board/part
+set projf_fpga_part "xc7a35ticsg324-1L"
+set projf_board_name "arty-a7-35"
 
 # Set the project name
 set _xil_proj_name_ "mandelbrot"
@@ -27,7 +19,7 @@ puts "INFO: Library directory: ${lib_dir}"
 puts "INFO: Origin directory:  ${origin_dir}"
 
 # Set the directory path for the project
-set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
+set orig_proj_dir "[file normalize "${origin_dir}/xc7-vga/${projf_board_name}"]"
 
 # Create Vivado project
 create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${projf_fpga_part}
@@ -43,7 +35,7 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_mandel.sv"] \
+  [file normalize "${origin_dir}/xc7-vga/top_mandel.sv"] \
   [file normalize "${origin_dir}/render_mandel.sv"] \
   [file normalize "${origin_dir}/mandelbrot.sv"] \
 ]
@@ -80,7 +72,7 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set fs_constr_obj [get_filesets constrs_1]
 
 set constr_sources [list \
-  [file normalize "$origin_dir/xc7/${projf_board_name}.xdc"] \
+  [file normalize "$origin_dir/xc7-vga/${projf_board_name}/${projf_board_name}.xdc"] \
 ]
 add_files -norecurse -fileset $fs_constr_obj $constr_sources
 set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]

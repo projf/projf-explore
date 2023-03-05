@@ -18,12 +18,12 @@ New to FPGA maths? Check out [Numbers in Verilog](https://projectf.io/posts/numb
 
 _Mandelbrot set drawn by Verilator/SDL sim._
 
-## Arty Build
+## Arty VGA Build
 
-To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the **Digilent Arty** [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
-cd projf-explore/demos/mandelbrot/xc7/vivado
+cd projf-explore/demos/mandelbrot/xc7-vga/arty-a7-35
 source ./create_project.tcl
 ```
 
@@ -61,6 +61,10 @@ The DSP usage of each Mandelbrot module instance depends on `FP_WIDTH`:
 This demo uses four Mandelbrot module instances for supersampling, plus one DSP is used in address calculation. Thus, the total number of DSPs with 25-bit precision is: `4 * 2 + 1 = 9`. There are 90 DSPs on the Artix-7 35T and 740 on the Artix-7 A200T.
 
 Learn more from [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/).
+
+## Nexys Video DVI Build
+
+_details to follow_
 
 ## Verilator
 
