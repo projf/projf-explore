@@ -49,7 +49,7 @@ This demo have been tested with:
 
 ### Arty A7-35T Build
 
-To create a Vivado project for the Digilent Arty [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the Digilent [Arty A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/demos/mandelbrot/xc7-vga/arty-a7-35
