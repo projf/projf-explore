@@ -30,14 +30,14 @@ To change the render resolution you need to adjust three things in `top_mandel`:
 
 1. The rendering step parameter: `STEP`
 2. The framebuffer dimensions:
-    a. `FB_WIDTH`
-    b. `FB_HEIGHT`
-    c. `FB_SCALE`
+    - `FB_WIDTH`
+    - `FB_HEIGHT`
+    - `FB_SCALE`
 3. The zoom scale factors:
-    a. `x_start_p <= x_start - (step <<< 7);`
-    b. `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
-    c. `x_start_p <= x_start + (step <<< 6);`
-    d. `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
+    - `x_start_p <= x_start - (step <<< 7);`
+    - `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
+    - `x_start_p <= x_start + (step <<< 6);`
+    - `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
 
 _NB. The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling._
 
