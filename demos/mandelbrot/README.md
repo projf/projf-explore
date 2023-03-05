@@ -20,7 +20,7 @@ _Mandelbrot set drawn by Verilator/SDL sim._
 
 ## Arty VGA Build
 
-To create a Vivado project for the **Digilent Arty** [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the Digilent Arty [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual) with Pmod VGA; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/demos/mandelbrot/xc7-vga/arty-a7-35
@@ -38,33 +38,39 @@ Arty button controls:
 
 _NB. Controls don't work if rendering is in progress._
 
-The four green LEDs show status:
+Four green LEDs show status:
 
 * **LD7** - rendering in progress
 * **LD6** - horizontal motion
 * **LD5** - vertical motion
 * **LD4** - zoom
 
-### DSP Usage
-
-Each Xilinx 7 Series DSP block (DSP48E1) can multiply 25 × 18 bits.
-
-The DSP usage of each Mandelbrot module instance depends on `FP_WIDTH`:
-
-* 18 bits = 1 DSP (zoom 8 times)
-* 25 bits = 2 DSPs (zoom 15 times)
-* 28 bits = 3 DSPs (zoom 18 times)
-* 32 bits = 4 DSPs (zoom 22 times)
-
-18-bit fixed-point only leaves 14 bits for the fraction, so you can't zoom in far, but it's frugal with DSPs. 25 bits is a good compromise as it provides a decent zoom level without consuming too many blocks. Above 25 bits, DSP usage rises quickly.
-
-This demo uses four Mandelbrot module instances for supersampling, plus one DSP is used in address calculation. Thus, the total number of DSPs with 25-bit precision is: `4 * 2 + 1 = 9`. There are 90 DSPs on the Artix-7 35T and 740 on the Artix-7 A200T.
-
-Learn more from [Multiplication with FPGA DSPs](https://projectf.io/posts/multiplication-fpga-dsps/).
-
 ## Nexys Video DVI Build
 
-_details to follow_
+To create a Vivado project for the Digilent [Nexys Video](https://reference.digilentinc.com/reference/programmable-logic/nexys-video/reference-manual) with DVI output; clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+
+```tcl
+cd projf-explore/demos/mandelbrot/xc7-dvi/nexys-video
+source ./create_project.tcl
+```
+
+You can then build `top_mandel` as you would for any Vivado project.
+
+Arty button controls:
+
+* **BTNU** - left/up/zoom-out
+* **BTNC** - select mode: horizontal/vertical/zoom
+* **BTND** - right/down/zoom-in
+* **CPU_RESET** - return to starting coordinates and zoom
+
+_NB. Controls don't work if rendering is in progress._
+
+Four green LEDs show status:
+
+* **LD3** - rendering in progress
+* **LD2** - horizontal motion
+* **LD1** - vertical motion
+* **LD0** - zoom
 
 ## Verilator
 
@@ -106,3 +112,20 @@ You can quit the simulation by pressing the **Q** key.
 ### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_mandelbrot.cpp` so that `FULLSCREEN = true`, then rebuild.
+
+## Resolution
+
+To change the render resolution you need to adjust three things in `top_mandel`:
+
+1. The rendering step parameter: `STEP`
+2. The framebuffer dimensions:
+    a. `FB_WIDTH`
+    b. `FB_HEIGHT`
+    c. `FB_SCALE`
+3. The zoom scale factors:
+    a. `x_start_p <= x_start - (step <<< 7);`
+    b. `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
+    c. `x_start_p <= x_start + (step <<< 6);`
+    d. `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
+
+_NB. The current version of the demo only processes one pixel at a time, so higher resolutions are slow to render._
