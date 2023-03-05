@@ -1,4 +1,4 @@
-## Project F: Board Constraints: Nexys Video
+## Project F: Board Constraints: Nexys Video DVI
 ## (C)2023 Will Green, open source hardware released under the MIT License
 
 ## FPGA Configuration I/O Options

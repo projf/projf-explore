@@ -1,4 +1,4 @@
-## Project F: Board Constraints: Arty A7-35T
+## Project F: Board Constraints: Arty A7-35T Pmod VGA
 ## (C)2023 Will Green, open source hardware released under the MIT License
 
 ## FPGA Configuration I/O Options

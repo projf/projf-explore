@@ -345,14 +345,14 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
         display_b = (de) ? paint_b : 8'h0;
     end
 
-    // SDL output (8 bits per colour channel)
+    // SDL signals (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
         sdl_sx <= sx;
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {display_r};
-        sdl_g <= {display_g};
-        sdl_b <= {display_b};
+        sdl_r <= display_r;
+        sdl_g <= display_g;
+        sdl_b <= display_b;
     end
 endmodule
