@@ -19,7 +19,7 @@ module top_mandel (
     output      logic [3:0] vga_b   // 4-bit VGA blue
     );
 
-    // maths parameters
+    // Mandelbrot parameters
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)

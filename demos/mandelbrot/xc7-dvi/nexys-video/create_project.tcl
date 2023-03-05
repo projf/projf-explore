@@ -1,11 +1,11 @@
-# Project F: Vivado Project Creation Script: Arty A7-35
+# Project F: Vivado Project Creation Script: Nexys Video
 # (C)2023 Will Green, open source hardware released under the MIT License
 
 # project settings
 set projf_project_name "mandelbrot"
-set projf_arch "xc7-vga"
-set projf_fpga_part "xc7a35ticsg324-1L"
-set projf_board_name "arty-a7-35"
+set projf_arch "xc7-dvi"
+set projf_board_name "nexys-video"
+set projf_fpga_part "xc7a200tsbg484-1"
 
 puts "INFO: Project F: ${projf_project_name} (${projf_board_name})"
 
@@ -45,13 +45,17 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
   [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/bitmap_addr.sv"] \
-  [file normalize "${lib_dir}/display/display_480p.sv"] \
+  [file normalize "${lib_dir}/display/display_720p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
-  [file normalize "${lib_dir}/essential/debounce.sv"] \
+  [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
+  [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
+  [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
+  [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
+  [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
   [file normalize "${lib_dir}/maths/mul.sv"] \
   [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
   [file normalize "${origin_dir}/render_mandel.sv"] \
