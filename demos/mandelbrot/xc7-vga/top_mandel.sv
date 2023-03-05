@@ -25,13 +25,11 @@ module top_mandel (
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
     localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
 
-    // starting coordinates (match FP_WIDTH)
-    // localparam X_START = 18'b1100_1000_0000_0000_00;  // starting left: -3.5
-    // localparam Y_START = 18'b1110_1000_0000_0000_00;  // starting top:  -1.5i
-    // localparam STEP    = 18'b0000_0000_0100_0000_00;  // starting step: 1/64 (320x180)
+    // starting coordinates (wifth must match FP_WIDTH)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
     localparam Y_START = 25'b1110_1000_0000_0000_0000_0000_0;  // starting top:  -1.5i
     localparam STEP    = 25'b0000_0000_0100_0000_0000_0000_0;  // starting step: 1/64 (320x180)
+    // localparam STEP    = 25'b0000_0000_0010_0000_0000_0000_0;  // starting step: 1/128 (640x360)
 
     // generate system clock
     logic clk_sys;
