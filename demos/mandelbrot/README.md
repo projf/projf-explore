@@ -39,7 +39,7 @@ To change the render resolution you need to adjust three things in `top_mandel`:
     c. `x_start_p <= x_start + (step <<< 6);`
     d. `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
 
-_NB. The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling.
+_NB. The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling._
 
 ## Xilinx 7-Series FPGAs
 
