@@ -58,7 +58,7 @@ source ./create_project.tcl
 
 You can then build `top_mandel` as you would for any Vivado project.
 
-Arty button controls:
+Button controls:
 
 * **BTN2** - left/up/zoom-out
 * **BTN1** - select mode: horizontal/vertical/zoom
@@ -85,7 +85,7 @@ source ./create_project.tcl
 
 You can then build `top_mandel` as you would for any Vivado project.
 
-Arty button controls:
+Button controls:
 
 * **BTNU** - left/up/zoom-out
 * **BTNC** - select mode: horizontal/vertical/zoom
@@ -125,7 +125,7 @@ Run the simulation executable from `obj_dir`:
 ./obj_dir/mandelbrot
 ```
 
-Verilator controls:
+Keyboard controls:
 
 * **Up Arrow** - left/up/zoom-out
 * **Space Bar** - select mode: horizontal/vertical/zoom
@@ -134,7 +134,5 @@ Verilator controls:
 _NB. Controls don't work if rendering is in progress._
 
 You can quit the simulation by pressing the **Q** key.
-
-### Fullscreen Mode
 
 To run in fullscreen mode, edit `main_mandelbrot.cpp` so that `FULLSCREEN = true`, then rebuild.
