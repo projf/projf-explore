@@ -1,6 +1,5 @@
-## Project F: Mandelbrot Set - Verilator Sim Makefile
+## Project F: Verilator/SDL Makefile
 ## (C)2023 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
 VFLAGS = -O3 --x-assign fast --x-initial fast --noassert
 SDL_CFLAGS = `sdl2-config --cflags`

@@ -14,7 +14,7 @@ It should be straightforward to adapt to any FPGA board with video output.
 
 ![](../../doc/img/sea-of-chaos.png?raw=true "")
 
-_Mandelbrot set drawn by Verilator/SDL sim._
+_Mandelbrot set rendered by Verilator/SDL._
 
 ## Demo Parameters
 
