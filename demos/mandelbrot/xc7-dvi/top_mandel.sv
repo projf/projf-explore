@@ -347,9 +347,9 @@ module top_mandel (
     logic [FB_DATAW-1:0] mandel_r, mandel_g, mandel_b;
     always_comb begin
         if (COLR_SCHEME) begin
-                mandel_r = (lb_colr_out >> 1);  // reduce red by a factor of two
-                mandel_g = lb_colr_out;
-                mandel_b = lb_colr_out;
+            mandel_r = (lb_colr_out >> 1);  // reduce red by a factor of two
+            mandel_g = lb_colr_out;
+            mandel_b = lb_colr_out;
         end else begin
             if (lb_colr_out == 0) begin  // black in the set
                 mandel_r = 8'h00;
