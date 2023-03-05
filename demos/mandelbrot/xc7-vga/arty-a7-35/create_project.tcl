@@ -1,11 +1,11 @@
-# Project F: Vivado Project Creation Script: Arty A7-35
+# Project F: Vivado Project Creation Script: Arty A7-35T
 # (C)2023 Will Green, open source hardware released under the MIT License
 
 # project settings
 set projf_project_name "mandelbrot"
 set projf_arch "xc7-vga"
-set projf_fpga_part "xc7a35ticsg324-1L"
 set projf_board_name "arty-a7-35"
+set projf_fpga_part "xc7a35ticsg324-1L"
 
 puts "INFO: Project F: ${projf_project_name} (${projf_board_name})"
 

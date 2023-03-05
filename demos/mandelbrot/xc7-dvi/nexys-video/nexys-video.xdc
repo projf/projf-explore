@@ -1,7 +1,5 @@
-## Project F: Mandelbrot Set - Nexys Video Board Constraints
+## Project F: Board Constraints: Nexys Video
 ## (C)2023 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
-
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]

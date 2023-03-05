@@ -1,6 +1,5 @@
-## Project F: Mandelbrot Set - Arty A7-35 Board Constraints
+## Project F: Board Constraints: Arty A7-35T
 ## (C)2023 Will Green, open source hardware released under the MIT License
-## Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
 ## FPGA Configuration I/O Options
 set_property CONFIG_VOLTAGE 3.3 [current_design]
