@@ -1,6 +1,6 @@
 # Mandelbrot Set
 
-This SystemVerilog demo uses Q4.21 fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
+This SystemVerilog demo uses fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
 This design has an associated Project F blog post: _Mandelbrot Set in Verilog_ (coming soon).
 
@@ -10,7 +10,7 @@ I've included project files for:
 * [Digilent Nexys Video](#nexys-video-dvi-build)
 * [Verilator/SDL Simulation](#verilator-build)
 
-It should be straightforward to adapt to any FPGA board with video output.
+This demo makes use of modules from the [Project F library](../../lib).
 
 ![](../../doc/img/sea-of-chaos.png?raw=true "")
 
