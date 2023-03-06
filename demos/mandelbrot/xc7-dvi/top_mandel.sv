@@ -26,7 +26,8 @@ module top_mandel (
     localparam FP_WIDTH =   25;  // total width of fixed-point number: integer + fractional bits
     localparam FP_INT =      4;  // integer bits in fixed-point number
     localparam ITER_MAX =  255;  // maximum iterations: minimum of 128, but (2^n-1 recommneded)
-    localparam SUPERSAMPLE = 1;  // combine multiple samples for each coordinate
+    localparam SUPERSAMPLE = 1;  // combine multiple samples for each pixel
+    localparam COLR_SCHEME = 1;  // 0: blue-purple-gold, 1: blue-green
 
     // starting coordinates (width must match FP_WIDTH)
     localparam X_START = 25'b1100_1000_0000_0000_0000_0000_0;  // starting left: -3.5
@@ -63,7 +64,7 @@ module top_mandel (
     logic signed [CORDW-1:0] sx, sy;
     logic hsync, vsync;
     logic de, frame, line;
-    display_720p  #(.CORDW(CORDW)) display_inst (
+    display_720p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
         .rst_pix,
         .sx,
@@ -84,9 +85,8 @@ module top_mandel (
     /* verilator lint_on PINCONNECTEMPTY */
 
     // colour parameters
-    localparam CHANW = 8;        // colour channel width (bits)
-    localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
-    localparam CIDXW = 8;        // colour index width (bits)
+    localparam CHANW = 8;  // colour channel width (bits)
+    localparam CIDXW = 8;  // colour index width (bits)
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -320,7 +320,7 @@ module top_mandel (
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LAT_LB = 2;  // output latency compensation: lb_en_out+1, LB+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, gen-colour+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
@@ -343,18 +343,37 @@ module top_mandel (
         .data_out(lb_colr_out)
     );
 
-    logic [FB_DATAW-1:0] lb_colr_out_2;
-    always_comb lb_colr_out_2 = lb_colr_out/2;
+    // generate colour
+    logic [FB_DATAW-1:0] mandel_r, mandel_g, mandel_b;
+    always_ff @(posedge clk_pix) begin
+        if (COLR_SCHEME) begin
+            mandel_r <= (lb_colr_out >> 1);  // reduce red by a factor of two
+            mandel_g <= lb_colr_out;
+            mandel_b <= lb_colr_out;
+        end else begin
+            if (lb_colr_out == 0) begin  // black in the set
+                mandel_r <= 8'h00;
+                mandel_g <= 8'h00;
+                mandel_b <= 8'h00;
+            end else if (lb_colr_out <= 8'h66) begin  // blue then purple
+                mandel_r <= 8'h00 + lb_colr_out;
+                mandel_g <= 8'h00 + (lb_colr_out >> 1);  // divide by 2
+                mandel_b <= 8'h33 + lb_colr_out;
+            end else begin  // turning to gold
+                mandel_r <= 8'h66 + lb_colr_out - 8'h66;
+                mandel_g <= 8'h33 + lb_colr_out - 8'h66;
+                mandel_b <= 8'h99 + 8'h66 - lb_colr_out;
+            end
+        end
+    end
 
     // paint colour
     logic paint_area;  // high in area of screen to paint
-    logic [COLRW-1:0] paint_colr;
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
-        paint_colr = {lb_colr_out_2, lb_colr_out, lb_colr_out};
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (paint_area) ? paint_colr : 24'h001030;
+        {paint_r, paint_g, paint_b} = paint_area ? {mandel_r, mandel_g, mandel_b} : 24'h000000;
     end
 
     // display colour: paint colour but black in blanking interval
