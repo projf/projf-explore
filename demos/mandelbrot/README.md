@@ -20,26 +20,7 @@ _Mandelbrot set rendered by Verilator/SDL._
 
 We consider up to 255 iterations by default, but you can adjust this by changing `ITER_MAX` in the top module. The minimum number of iterations supported is 128, but you get the best results with 2<sup>n</sup>-1, for example, 511, as this best uses the full range of colours.
 
-The starting position (top-left corner) is (-3.5,-1.5i) with a step of 1/64 (0.015625).
-
 With the default 25-bit precision, you can zoom in 15 times to a minimum step of 1/2<sup>21</sup>. You can adjust the precision by changing `FP_WIDTH` in the top module (don't forget to adjust `X_START`, `Y_START`, and `STEP`).
-
-### Resolution
-
-To change the render resolution, you need to adjust the following in `top_mandel.sv`:
-
-1. The rendering step parameter: `STEP`
-2. The framebuffer dimensions:
-    - `FB_WIDTH`
-    - `FB_HEIGHT`
-    - `FB_SCALE`
-3. The zoom scale factors:
-    - `x_start_p <= x_start - (step <<< 7);`
-    - `y_start_p <= y_start - (step <<< 6) - (step <<< 5);`
-    - `x_start_p <= x_start + (step <<< 6);`
-    - `y_start_p <= y_start + (step <<< 5) + (step <<< 4);`
-
-_NB. The current version of the demo renders one pixel at a time using four samples. Rendering performance could be increased significantly by tackling multiple pixels simultaneously and only rendering new pixels when scrolling._
 
 ## Xilinx 7-Series FPGAs
 
