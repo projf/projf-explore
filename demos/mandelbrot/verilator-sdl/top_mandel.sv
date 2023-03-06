@@ -300,7 +300,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     // enable linebuffer output
     logic lb_en_out;
-    localparam LAT_LB = 2;  // output latency compensation: lb_en_out+1, LB+1
+    localparam LAT_LB = 3;  // output latency compensation: lb_en_out+1, LB+1, gen-colour+1
     always_ff @(posedge clk_pix) begin
         lb_en_out <= (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX - LAT_LB && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX - LAT_LB);
@@ -325,24 +325,24 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
 
     // generate colour
     logic [FB_DATAW-1:0] mandel_r, mandel_g, mandel_b;
-    always_comb begin
+    always_ff @(posedge clk_pix) begin
         if (COLR_SCHEME) begin
-            mandel_r = (lb_colr_out >> 1);  // reduce red by a factor of two
-            mandel_g = lb_colr_out;
-            mandel_b = lb_colr_out;
+            mandel_r <= (lb_colr_out >> 1);  // reduce red by a factor of two
+            mandel_g <= lb_colr_out;
+            mandel_b <= lb_colr_out;
         end else begin
             if (lb_colr_out == 0) begin  // black in the set
-                mandel_r = 8'h00;
-                mandel_g = 8'h00;
-                mandel_b = 8'h00;
+                mandel_r <= 8'h00;
+                mandel_g <= 8'h00;
+                mandel_b <= 8'h00;
             end else if (lb_colr_out <= 8'h66) begin  // blue then purple
-                mandel_r = 8'h00 + lb_colr_out;
-                mandel_g = 8'h00 + (lb_colr_out >> 1);  // divide by 2
-                mandel_b = 8'h33 + lb_colr_out;
+                mandel_r <= 8'h00 + lb_colr_out;
+                mandel_g <= 8'h00 + (lb_colr_out >> 1);  // divide by 2
+                mandel_b <= 8'h33 + lb_colr_out;
             end else begin  // turning to gold
-                mandel_r = 8'h66 + lb_colr_out - 8'h66;
-                mandel_g = 8'h33 + lb_colr_out - 8'h66;
-                mandel_b = 8'h99 + 8'h66 - lb_colr_out;
+                mandel_r <= 8'h66 + lb_colr_out - 8'h66;
+                mandel_g <= 8'h33 + lb_colr_out - 8'h66;
+                mandel_b <= 8'h99 + 8'h66 - lb_colr_out;
             end
         end
     end
