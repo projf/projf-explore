@@ -9,7 +9,7 @@ module render_mandel #(
     parameter CORDW=16,       // signed coordinate width (bits)
     parameter FB_WIDTH=320,   // framebuffer width in pixels
     parameter FB_HEIGHT=180,  // framebuffer height in pixels
-    parameter CIDXW=4,        // colour index width (bits)
+    parameter CIDXW=8,        // colour index width (bits)
     parameter FP_WIDTH=25,    // total width of fixed-point number: integer + fractional bits
     parameter FP_INT=4,       // integer bits in fixed-point number
     parameter ITER_MAX=255,   // maximum number of interations
@@ -52,10 +52,10 @@ module render_mandel #(
 
     // sample coordinates (no need to register as mandelbrot.sv already does)
     always_comb begin
-        fx_left   = fx - (step>>>2);
-        fx_right  = fx + (step>>>2);
-        fy_top    = fy - (step>>>2);
-        fy_bottom = fy + (step>>>2);
+        fx_left   = fx - (step >>> 2);
+        fx_right  = fx + (step >>> 2);
+        fy_top    = fy - (step >>> 2);
+        fy_bottom = fy + (step >>> 2);
     end
 
     // calculation state machine
