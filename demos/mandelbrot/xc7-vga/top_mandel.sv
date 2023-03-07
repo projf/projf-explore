@@ -1,4 +1,4 @@
-// Project F: Mandelbrot Set (Arty Pmod VGA)
+// Project F: Mandelbrot Set (XC7 VGA)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/mandelbrot-set-verilog/
 
