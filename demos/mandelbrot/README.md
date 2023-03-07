@@ -2,7 +2,7 @@
 
 This SystemVerilog demo uses fixed-point multiplication and a small framebuffer to render the Mandelbrot set.
 
-This design has an associated Project F blog post: [Mandelbrot Set in Verilog](https://projectf.io/posts/mandelbrot-verilog/).
+This design has an associated Project F blog post: [Mandelbrot in Verilog](https://projectf.io/posts/mandelbrot-verilog/).
 
 I've included project files for:
 
