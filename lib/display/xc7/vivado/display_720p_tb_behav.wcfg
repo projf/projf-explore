@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="display_720p_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="display_720p_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="18.000100001 ms"></ZoomEndTime>
+      <Cursor1Time time="18.000100000 ms"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="108"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="12" />
+   <wvobject type="logic" fp_name="/display_720p_tb/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/clk_100m">
+      <obj_property name="ElementShortName">clk_100m</obj_property>
+      <obj_property name="ObjectShortName">clk_100m</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/clk_pix">
+      <obj_property name="ElementShortName">clk_pix</obj_property>
+      <obj_property name="ObjectShortName">clk_pix</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/clk_pix_locked">
+      <obj_property name="ElementShortName">clk_pix_locked</obj_property>
+      <obj_property name="ObjectShortName">clk_pix_locked</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/rst_pix">
+      <obj_property name="ElementShortName">rst_pix</obj_property>
+      <obj_property name="ObjectShortName">rst_pix</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/display_720p_tb/sx">
+      <obj_property name="ElementShortName">sx[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sx[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/display_720p_tb/sy">
+      <obj_property name="ElementShortName">sy[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sy[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/hsync">
+      <obj_property name="ElementShortName">hsync</obj_property>
+      <obj_property name="ObjectShortName">hsync</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/vsync">
+      <obj_property name="ElementShortName">vsync</obj_property>
+      <obj_property name="ObjectShortName">vsync</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/de">
+      <obj_property name="ElementShortName">de</obj_property>
+      <obj_property name="ObjectShortName">de</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/frame">
+      <obj_property name="ElementShortName">frame</obj_property>
+      <obj_property name="ObjectShortName">frame</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/display_720p_tb/line">
+      <obj_property name="ElementShortName">line</obj_property>
+      <obj_property name="ObjectShortName">line</obj_property>
+   </wvobject>
+</wave_config>
