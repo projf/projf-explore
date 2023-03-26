@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Hourglass (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
@@ -95,9 +95,17 @@ module top_hourglass #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic drawing_t1;
     always_ff @(posedge clk_pix) drawing_t1 <= drawing && (spr_pix_indx != TRANS_INDX);
 
-    // paint colours
+    // paint colour: sprite or background
     logic [CHANW-1:0] paint_r, paint_g, paint_b;
     always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
@@ -105,8 +113,8 @@ module top_hourglass #(parameter CORDW=16) (  // signed coordinate width (bits)
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule

@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Sprite Inline Bitmap Test Bench
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none

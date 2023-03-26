@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Tiny F from ROM (Arty Pmod VGA)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
@@ -77,7 +77,7 @@ module top_tinyf_rom (
         .drawing
     );
 
-    // paint colours: yellow sprite, blue background
+    // paint colour: yellow sprite, blue background
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (drawing && pix) ? 4'hF : 4'h1;
@@ -85,18 +85,20 @@ module top_tinyf_rom (
         paint_b = (drawing && pix) ? 4'h0 : 4'h7;
     end
 
+    // display colour: paint colour but black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
+
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        vga_r <= display_r;
+        vga_g <= display_g;
+        vga_b <= display_b;
     end
 endmodule
