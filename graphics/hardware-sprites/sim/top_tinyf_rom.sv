@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Tiny F from ROM (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
@@ -60,12 +60,20 @@ module top_tinyf_rom #(parameter CORDW=16) (  // signed coordinate width (bits)
         .drawing
     );
 
-    // paint colours: yellow sprite, blue background
+    // paint colour: yellow sprite, blue background
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
         paint_r = (drawing && pix) ? 4'hF : 4'h1;
         paint_g = (drawing && pix) ? 4'hC : 4'h3;
         paint_b = (drawing && pix) ? 4'h0 : 4'h7;
+    end
+
+    // display colour: paint colour but black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
     end
 
     // SDL output (8 bits per colour channel)
@@ -74,8 +82,8 @@ module top_tinyf_rom #(parameter CORDW=16) (  // signed coordinate width (bits)
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width from 4 to 8 bits
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule

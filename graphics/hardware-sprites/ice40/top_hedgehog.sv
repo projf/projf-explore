@@ -1,5 +1,5 @@
 // Project F: Hardware Sprites - Hedgehog (iCEBreaker 12-bit DVI Pmod)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/hardware-sprites/
 
 `default_nettype none
@@ -139,9 +139,17 @@ module top_hedgehog (
         end
     end
 
-    // paint colours
+    // paint colour: sprite or background
     logic [CHANW-1:0] paint_r, paint_g, paint_b;
     always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : bg_colr;
+
+    // display colour: paint colour but black in blanking interval
+    logic [3:0] display_r, display_g, display_b;
+    always_comb begin
+        display_r = (de) ? paint_r : 4'h0;
+        display_g = (de) ? paint_g : 4'h0;
+        display_b = (de) ? paint_b : 4'h0;
+    end
 
     // DVI Pmod output
     SB_IO #(
@@ -149,7 +157,7 @@ module top_hedgehog (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
