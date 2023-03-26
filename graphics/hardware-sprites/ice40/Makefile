@@ -38,7 +38,7 @@ hedgehog: hedgehog.rpt hedgehog.bin
 %.bin: %.asc
 	icepack $< $(subst top_,,$@)
 
-all: tinyf_inline tinyf_rom tinyf_scale hourglass hedgehog
+all: tinyf_inline tinyf_rom tinyf_scale tinyf_move hourglass hedgehog
 
 clean:
 	rm -f *.json *.asc *.rpt *.bin *yosys.log
