@@ -6,12 +6,10 @@ Memory Verilog designs from [Project F](https://projectf.io), including ROM, blo
 
 * [rom_async.sv](rom_async.sv) - asynchronous ROM in logic (no clock)
 * [rom_sync.sv](rom_sync.sv) - synchronous ROM in logic (uses clock)
-* [ice40/bram_sdp.sv](ice40/bram_sdp.sv) - iCE40 simple dual-port block RAM (one read port, one write port)
+* [bram_sdp.sv](bram_sdp.sv) - simple dual-port block RAM (one read port, one write port)
 * [ice40/spram.sv](ice40/spram.sv) - iCE40 single port RAM (16-bit data width)
 * [ice40/spram_nibble.sv](ice40/spram_nibble.sv) - iCE40 single port RAM (4-bit data width)
-* [xc7/bram_sdp.sv](xc7/bram_sdp.sv) - XC7 simple dual-port block RAM (one read port, one write port)
 
-Locate Vivado test benches in the [xc7](xc7) directory.  
 Find other modules in the [Library](../).
 
 ## Blog Posts
@@ -19,9 +17,9 @@ Find other modules in the [Library](../).
 The following blog posts document and make use of these memory modules:
 
 * Practical ROM usage: [Hardware Spites](https://projectf.io/posts/hardware-sprites/)
-* Practical BRAM and SPRAM usage: [Lines & Triangles](https://projectf.io/posts/lines-and-triangles/)
+* Practical BRAM usage: [Lines & Triangles](https://projectf.io/posts/lines-and-triangles/)
 * [SPRAM on iCE40 FPGA](https://projectf.io/posts/spram-ice40-fpga/) - learn how to use SPRAM with Yosys and contrast it with Block RAM
-* [Initialize Memory in Verilog](https://projectf.io/posts/initialize-memory-in-verilog/) - use $readmemh and $readmemb to initialize the contents of ROM or RAM
+* [Initialize Memory in Verilog](https://projectf.io/posts/initialize-memory-in-verilog/) - use `$readmemh` and `$readmemb` to initialize the contents of ROM or RAM
 
 ## Memory Modules Interface
 
