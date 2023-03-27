@@ -1,5 +1,5 @@
 // Project F: Maths Demo - Function: x⁴−x²
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none

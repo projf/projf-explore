@@ -1,5 +1,5 @@
 // Project F: Maths Demo - Graphing (Arty Pmod VGA)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -7,7 +7,7 @@
 
 module top_graphing (
     input  wire logic clk_100m,     // 100 MHz clock
-    input  wire logic btn_rst,      // reset button (active low)
+    input  wire logic btn_rst_n,    // reset button (active low)
     output      logic vga_hsync,    // horizontal sync
     output      logic vga_vsync,    // vertical sync
     output      logic [3:0] vga_r,  // 4-bit VGA red
@@ -17,13 +17,18 @@ module top_graphing (
 
     // generate pixel clock
     logic clk_pix;
-    logic clk_locked;
-    clock_gen_480p clock_pix_inst (
-       .clk(clk_100m),
-       .rst(!btn_rst),  // reset button is active low
+    logic clk_pix_locked;
+    logic rst_pix;
+    clock_480p clock_pix_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
        .clk_pix,
-       .clk_locked
+       /* verilator lint_off PINCONNECTEMPTY */
+       .clk_pix_5x(),  // not used for VGA output
+       /* verilator lint_on PINCONNECTEMPTY */
+       .clk_pix_locked
     );
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 12;
@@ -32,7 +37,7 @@ module top_graphing (
     logic de;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst_pix(!clk_locked),
+        .rst_pix,
         .sx,
         .sy,
         .hsync,

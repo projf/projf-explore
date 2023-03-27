@@ -1,5 +1,5 @@
 // Project F: Maths Demo - Graphing (iCEBreaker 12-bit DVI Pmod)
-// (C)2021 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
@@ -19,13 +19,15 @@ module top_graphing (
 
     // generate pixel clock
     logic clk_pix;
-    logic clk_locked;
-    clock_gen_480p clock_pix_inst (
-       .clk(clk_12m),
+    logic clk_pix_locked;
+    logic rst_pix;
+    clock_480p clock_pix_inst (
+       .clk_12m,
        .rst(btn_rst),
        .clk_pix,
-       .clk_locked
+       .clk_pix_locked
     );
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 12;
@@ -34,7 +36,7 @@ module top_graphing (
     logic de;
     display_480p #(.CORDW(CORDW)) display_inst (
         .clk_pix,
-        .rst_pix(!clk_locked),
+        .rst_pix,
         .sx,
         .sy,
         .hsync,

@@ -1,5 +1,5 @@
 ## Project F: Maths Demo - iCEBreaker Makefile
-## (C)2021 Will Green, open source hardware released under the MIT License
+## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
 # configuration
@@ -10,7 +10,7 @@ PCF = icebreaker.pcf
 
 # included modules
 PATH_LIB = ../../../lib
-ADD_SRC  = ${PATH_LIB}/clock/ice40/clock_gen_480p.sv
+ADD_SRC  = ${PATH_LIB}/clock/ice40/clock_480p.sv
 ADD_SRC += ${PATH_LIB}/display/display_480p.sv
 ADD_SRC += ../func_circle.sv ../func_cubed.sv 
 ADD_SRC += ../func_polynomial.sv ../func_squared.sv
