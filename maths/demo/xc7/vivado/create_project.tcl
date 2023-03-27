@@ -1,5 +1,5 @@
 # Project F: Maths Demo - Create Vivado Project
-# (C)2021 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - Maths Demo Project Creation Script"
@@ -55,7 +55,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_480p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${origin_dir}/func_circle.sv"] \
   [file normalize "${origin_dir}/func_cubed.sv"] \

@@ -1,5 +1,5 @@
 ## Project F: Maths Demo - Nexys Video Board Constraints
-## (C)2021 Will Green, Open source hardware released under the MIT License
+## (C)2023 Will Green, Open source hardware released under the MIT License
 ## Learn more at https://projectf.io
 
 ## FPGA Configuration I/O Options
@@ -11,7 +11,7 @@ set_property -dict {PACKAGE_PIN R4 IOSTANDARD LVCMOS33} [get_ports {clk_100m}];
 create_clock -name clk_100m -period 10.00 [get_ports {clk_100m}];
 
 ## Buttons
-set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst}];
+set_property -dict {PACKAGE_PIN G4  IOSTANDARD LVCMOS15} [get_ports {btn_rst_n}];
 
 ## HDMI Source
 set_property -dict {PACKAGE_PIN T1  IOSTANDARD TMDS_33} [get_ports {hdmi_tx_clk_p}];

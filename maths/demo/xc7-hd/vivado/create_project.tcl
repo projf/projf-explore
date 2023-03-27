@@ -1,5 +1,5 @@
 # Project F: Maths Demo - Create Vivado Project (Nexys Video)
-# (C)2021 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - Maths Demo Project Creation Script"
@@ -54,7 +54,7 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
 # Design sources (used in simulation)
 set design_sources [list \
-  [file normalize "${lib_dir}/clock/xc7/clock_gen_720p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
   [file normalize "${lib_dir}/display/display_720p.sv"] \
   [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
   [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
