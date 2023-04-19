@@ -5,7 +5,7 @@
 # Using this script:
 #   1. Add Vivado env to shell: source /opt/Xilinx/Vivado/2022.2/.settings64-Vivado.sh
 #   2. Run build script: vivado -mode batch -nolog -nojournal -source build.tcl
-#   3. Program board: openFPGALoader -b arty pong.bit
+#   3. Program board: openFPGALoader -b arty ../pong.bit
 
 # build settings
 set design_name "pong"
@@ -14,15 +14,15 @@ set board_name "arty"
 set fpga_part "xc7a35ticsg324-1L"
 
 # set reference directories for source files
-set origin_dir [file normalize "./../../"]
 set lib_dir [file normalize "./../../../../lib"]
+set origin_dir [file normalize "./../../"]
 
 # read design sources
+read_verilog -sv "${lib_dir}/clock/xc7/clock_480p.sv"
+read_verilog -sv "${lib_dir}/essential/debounce.sv"
 read_verilog -sv "${origin_dir}/${arch}/top_${design_name}.sv"
 read_verilog -sv "${origin_dir}/simple_480p.sv"
 read_verilog -sv "${origin_dir}/simple_score.sv"
-read_verilog -sv "${lib_dir}/clock/xc7/clock_480p.sv"
-read_verilog -sv "${lib_dir}/essential/debounce.sv"
 
 # read constraints
 read_xdc "${origin_dir}/${arch}/${board_name}.xdc"
