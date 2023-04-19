@@ -50,6 +50,7 @@ module simple_score #(
     end
 
     // determine character pixel address from screen position (scale 4x)
+    logic [3:0] pix_addr;
     always_comb begin
         /* verilator lint_off WIDTH */
         if (score_l_region) pix_addr = (sx-7)/4 + 3*((sy-8)/4);
@@ -59,7 +60,6 @@ module simple_score #(
     end
 
     // score pixel for current screen position
-    logic [3:0] pix_addr;
     always_ff @(posedge clk_pix) begin
         if (score_l_region) pix <= chars[char_l][pix_addr];
         else if (score_r_region) pix <= chars[char_r][pix_addr];
