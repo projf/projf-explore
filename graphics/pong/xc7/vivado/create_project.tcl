@@ -1,4 +1,4 @@
-# Project F: FPGA Pong - Create Vivado Project
+# Project F: FPGA Pong - Create Vivado Project (XC7 VGA)
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-pong/
 
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "pong"
+set _xil_proj_name_ "pong-vga"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]

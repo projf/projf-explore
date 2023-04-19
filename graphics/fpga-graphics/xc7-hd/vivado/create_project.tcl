@@ -1,4 +1,4 @@
-# Project F: FPGA Graphics - Create Vivado Project (Nexys Video)
+# Project F: FPGA Graphics - Create Vivado Project (XC7 DVI)
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-graphics/
 
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "fpga-graphics-hd"
+set _xil_proj_name_ "fpga-graphics-dvi"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]

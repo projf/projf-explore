@@ -1,4 +1,4 @@
-# Project F: Racing the Beam - Create Vivado Project (Nexys Video)
+# Project F: Racing the Beam - Create Vivado Project (XC7 DVI)
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/racing-the-beam/
 
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "racing-the-beam-hd"
+set _xil_proj_name_ "racing-the-beam-dvi"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]

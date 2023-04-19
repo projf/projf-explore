@@ -1,4 +1,4 @@
-# Project F: Framebuffers - Create Vivado Project
+# Project F: Framebuffers - Create Vivado Project (XC7 VGA)
 # (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "framebuffers"
+set _xil_proj_name_ "framebuffers-vga"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]
