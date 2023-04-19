@@ -1,4 +1,4 @@
-// Project F: FPGA Pong - Pong Game (Arty Pmod VGA)
+// Project F: FPGA Pong - Pong Game (Nexys Video)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 
