@@ -119,7 +119,7 @@ module top_hourglass (
     always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
 
     // display colour: paint colour but black in blanking interval
-    logic [3:0] display_r, display_g, display_b;
+    logic [CHANW-1:0] display_r, display_g, display_b;
     always_comb begin
         display_r = (de) ? paint_r : 4'h0;
         display_g = (de) ? paint_g : 4'h0;
@@ -127,7 +127,7 @@ module top_hourglass (
     end
 
     // DVI signals (8 bits per colour channel)
-    logic [7:0] dvi_r, dvi_g, dvi_b;
+    logic [2*CHANW-1:0] dvi_r, dvi_g, dvi_b;
     logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
         dvi_hsync <= hsync;
