@@ -237,7 +237,7 @@ module top_pong (
 
     // draw the score
     logic pix_score;  // pixel of score char
-    simple_score simple_score_inst (
+    simple_score #(.CORDW(CORDW), .H_RES(H_RES)) simple_score_inst (
         .clk_pix,
         .sx,
         .sy,

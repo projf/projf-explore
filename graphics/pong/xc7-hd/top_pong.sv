@@ -1,53 +1,66 @@
-// Project F: FPGA Pong - Pong Game (Verilator SDL)
+// Project F: FPGA Pong - Pong Game (Nexys Video)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-pong/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-module top_pong #(parameter CORDW=10) (    // coordinate width
-    input  wire logic clk_pix,             // pixel clock
-    input  wire logic sim_rst,             // sim reset
-    input  wire logic btn_fire,            // fire button
-    input  wire logic btn_up,              // up button
-    input  wire logic btn_dn,              // down button
-    output      logic [CORDW-1:0] sdl_sx,  // horizontal SDL position
-    output      logic [CORDW-1:0] sdl_sy,  // vertical SDL position
-    output      logic sdl_de,              // data enable (low in blanking interval)
-    output      logic [7:0] sdl_r,         // 8-bit red
-    output      logic [7:0] sdl_g,         // 8-bit green
-    output      logic [7:0] sdl_b          // 8-bit blue
+module top_pong (
+    input  wire logic clk_100m,       // 100 MHz clock
+    input  wire logic btn_rst_n,      // reset button
+    input  wire logic btn_fire,       // fire button
+    input  wire logic btn_up,         // up button
+    input  wire logic btn_dn,         // down button
+    output      logic hdmi_tx_ch0_p,  // HDMI source channel 0 diff+
+    output      logic hdmi_tx_ch0_n,  // HDMI source channel 0 diff-
+    output      logic hdmi_tx_ch1_p,  // HDMI source channel 1 diff+
+    output      logic hdmi_tx_ch1_n,  // HDMI source channel 1 diff-
+    output      logic hdmi_tx_ch2_p,  // HDMI source channel 2 diff+
+    output      logic hdmi_tx_ch2_n,  // HDMI source channel 2 diff-
+    output      logic hdmi_tx_clk_p,  // HDMI source clock diff+
+    output      logic hdmi_tx_clk_n   // HDMI source clock diff-
     );
 
     // gameplay parameters
     localparam WIN        =  4;  // score needed to win a game (max 9)
     localparam SPEEDUP    =  5;  // speed up ball after this many shots (max 16)
-    localparam BALL_SIZE  =  8;  // ball size in pixels
-    localparam BALL_ISPX  =  5;  // initial horizontal ball speed
-    localparam BALL_ISPY  =  3;  // initial vertical ball speed
-    localparam PAD_HEIGHT = 48;  // paddle height in pixels
-    localparam PAD_WIDTH  = 10;  // paddle width in pixels
-    localparam PAD_OFFS   = 32;  // paddle distance from edge of screen in pixels
-    localparam PAD_SPY    =  3;  // vertical paddle speed
+    localparam BALL_SIZE  = 16 ; // ball size in pixels
+    localparam BALL_ISPX  = 10;  // initial horizontal ball speed
+    localparam BALL_ISPY  =  6;  // initial vertical ball speed
+    localparam PAD_HEIGHT = 96;  // paddle height in pixels
+    localparam PAD_WIDTH  = 20;  // paddle width in pixels
+    localparam PAD_OFFS   = 64;  // paddle distance from edge of screen in pixels
+    localparam PAD_SPY    =  6;  // vertical paddle speed
+
+    // generate pixel clock
+    logic clk_pix;
+    logic clk_pix_5x;
+    logic clk_pix_locked;
+    clock_720p clock_pix_inst (
+       .clk_100m,
+       .rst(!btn_rst_n),  // reset button is active low
+       .clk_pix,
+       .clk_pix_5x,
+       .clk_pix_locked
+    );
 
     // display sync signals and coordinates
+    localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
-    logic de;
-    simple_480p display_inst (
+    logic hsync, vsync, de;
+    simple_720p display_inst (
         .clk_pix,
-        .rst_pix(sim_rst),
+        .rst_pix(!clk_pix_locked),  // wait for clock lock
         .sx,
         .sy,
-        /* verilator lint_off PINCONNECTEMPTY */
-        .hsync(),
-        .vsync(),
-        /* verilator lint_on PINCONNECTEMPTY */
+        .hsync,
+        .vsync,
         .de
     );
 
     // screen dimensions (must match display_inst)
-    localparam H_RES = 640;  // horizontal screen resolution
-    localparam V_RES = 480;  // vertical screen resolution
+    localparam H_RES = 1280;  // horizontal screen resolution
+    localparam V_RES =  720;  // vertical screen resolution
 
     logic frame;  // high for one clock tick at the start of vertical blanking
     always_comb frame = (sy == V_RES && sx == 0);
@@ -103,7 +116,7 @@ module top_pong #(parameter CORDW=10) (    // coordinate width
             end
             default: state_next = NEW_GAME;
         endcase
-        if (sim_rst) state_next = NEW_GAME;
+        if (!clk_pix_locked) state_next = NEW_GAME;
     end
 
     // update game state
@@ -252,13 +265,44 @@ module top_pong #(parameter CORDW=10) (    // coordinate width
         display_b = (de) ? paint_b : 4'h0;
     end
 
-    // SDL output (8 bits per colour channel)
+    // DVI signals (8 bits per colour channel)
+    logic [7:0] dvi_r, dvi_g, dvi_b;
+    logic dvi_hsync, dvi_vsync, dvi_de;
     always_ff @(posedge clk_pix) begin
-        sdl_sx <= sx;
-        sdl_sy <= sy;
-        sdl_de <= de;
-        sdl_r <= {2{display_r}};
-        sdl_g <= {2{display_g}};
-        sdl_b <= {2{display_b}};
+        dvi_hsync <= hsync;
+        dvi_vsync <= vsync;
+        dvi_de <= de;
+        dvi_r <= {2{display_r}};
+        dvi_g <= {2{display_g}};
+        dvi_b <= {2{display_b}};
     end
+
+    // TMDS encoding and serialization
+    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
+    dvi_generator dvi_out (
+        .clk_pix,
+        .clk_pix_5x,
+        .rst_pix(!clk_pix_locked),
+        .de(dvi_de),
+        .data_in_ch0(dvi_b),
+        .data_in_ch1(dvi_g),
+        .data_in_ch2(dvi_r),
+        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
+        .ctrl_in_ch1(2'b00),
+        .ctrl_in_ch2(2'b00),
+        .tmds_ch0_serial,
+        .tmds_ch1_serial,
+        .tmds_ch2_serial,
+        .tmds_clk_serial
+    );
+
+    // TMDS output pins
+    tmds_out tmds_ch0 (.tmds(tmds_ch0_serial),
+        .pin_p(hdmi_tx_ch0_p), .pin_n(hdmi_tx_ch0_n));
+    tmds_out tmds_ch1 (.tmds(tmds_ch1_serial),
+        .pin_p(hdmi_tx_ch1_p), .pin_n(hdmi_tx_ch1_n));
+    tmds_out tmds_ch2 (.tmds(tmds_ch2_serial),
+        .pin_p(hdmi_tx_ch2_p), .pin_n(hdmi_tx_ch2_n));
+    tmds_out tmds_clk (.tmds(tmds_clk_serial),
+        .pin_p(hdmi_tx_clk_p), .pin_n(hdmi_tx_clk_n));
 endmodule

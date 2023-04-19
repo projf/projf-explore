@@ -48,7 +48,6 @@ set top_sources [list \
   [file normalize "${origin_dir}/xc7-hd/top_hello.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_hitomezashi.sv"] \
   [file normalize "${origin_dir}/xc7-hd/top_rasterbars.sv"] \
-
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
