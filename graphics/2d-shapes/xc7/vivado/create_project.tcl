@@ -1,4 +1,4 @@
-# Project F: 2D Shapes - Create Vivado Project
+# Project F: 2D Shapes - Create Vivado Project (XC7 VGA)
 # (C)2022 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-shapes/
 
@@ -20,7 +20,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "2d-shapes"
+set _xil_proj_name_ "2d-shapes-vga"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]

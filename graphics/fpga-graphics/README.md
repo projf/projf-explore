@@ -6,8 +6,8 @@ File layout:
 
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
-* `xc7` - designs for Arty and other Xilinx 7 Series boards
-* `xc7-hd` - experimental designs for Nexys Video and larger Xilinx 7 Series FPGAs
+* `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
+* `xc7-dvi` - experimental designs for Nexys Video and other Xilinx 7 Series boards with DVI output
 
 These designs make use of modules from the [Project F library](../../lib/).
 
@@ -128,11 +128,11 @@ $ ./fpga-graphics/lint.sh
 ##   Checking ./xc7/top_flag_ethiopia.sv
 ##   Checking ./xc7/top_flag_sweden.sv
 ##   Checking ./xc7/top_square.sv
-## Linting top modules in ./xc7-hd
-##   Checking ./xc7-hd/top_colour.sv
-##   Checking ./xc7-hd/top_flag_ethiopia.sv
-##   Checking ./xc7-hd/top_flag_sweden.sv
-##   Checking ./xc7-hd/top_square.sv
+## Linting top modules in ./xc7-dvi
+##   Checking ./xc7-dvi/top_colour.sv
+##   Checking ./xc7-dvi/top_flag_ethiopia.sv
+##   Checking ./xc7-dvi/top_flag_sweden.sv
+##   Checking ./xc7-dvi/top_square.sv
 ```
 
 You can learn more about this from [Verilog Lint with Verilator](https://projectf.io/posts/verilog-lint-with-verilator/).

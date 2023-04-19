@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Project F: Lint Script
-# (C)2022 Will Green, open source software released under the MIT License
-# Learn more at https://projectf.io
+# (C)2023 Will Green, open source software released under the MIT License
+# Learn more at https://projectf.io/posts/verilog-lint-with-verilator/
 
 DIR=`dirname $0`
 LIB="${DIR}/../../lib"
@@ -40,7 +40,7 @@ if [ -d "${DIR}/ice40" ]; then
     done
 fi
 
-# Xilinx 7 Series
+# Xilinx 7 Series (VGA Output)
 if [ -d "${DIR}/xc7" ]; then
     echo "## Linting top modules in ${DIR}/xc7"
     for f in ${DIR}/xc7/top_*\.*v; do
@@ -57,12 +57,12 @@ if [ -d "${DIR}/xc7" ]; then
     done
 fi
 
-# Xilinx 7 Series (HD with HDMI)
-if [ -d "${DIR}/xc7-hd" ]; then
-    echo "## Linting top modules in ${DIR}/xc7-hd"
-    for f in ${DIR}/xc7-hd/top_*\.*v; do
+# Xilinx 7 Series (DVI Output)
+if [ -d "${DIR}/xc7-dvi" ]; then
+    echo "## Linting top modules in ${DIR}/xc7-dvi"
+    for f in ${DIR}/xc7-dvi/top_*\.*v; do
         echo "##   Checking ${f}";
-        verilator --lint-only -Wall -I${DIR} -I${DIR}/xc7-hd \
+        verilator --lint-only -Wall -I${DIR} -I${DIR}/xc7-dvi \
             -I${LIB}/clock     -I${LIB}/clock/xc7 \
             -I${LIB}/display   -I${LIB}/display/xc7 \
             -I${LIB}/essential -I${LIB}/essential/xc7 \
