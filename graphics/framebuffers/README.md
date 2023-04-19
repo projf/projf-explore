@@ -7,7 +7,7 @@ File layout:
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `res` - resources: bitmaps and palettes
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
-* `xc7` - designs for Arty and other Xilinx 7 Series boards
+* `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules used.
 
