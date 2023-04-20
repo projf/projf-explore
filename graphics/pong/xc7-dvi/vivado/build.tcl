@@ -3,7 +3,7 @@
 # Learn more at https://projectf.io/posts/fpga-pong/
 
 # Using this script:
-#   1. Add Vivado env to shell: source /opt/Xilinx/Vivado/2022.2/.settings64-Vivado.sh
+#   1. Add Vivado env to shell: . /opt/Xilinx/Vivado/2022.2/settings64.sh
 #   2. Run build script: vivado -mode batch -nolog -nojournal -source build.tcl
 #   3. Program board: openFPGALoader -b nexysVideo ../pong.bit
 
