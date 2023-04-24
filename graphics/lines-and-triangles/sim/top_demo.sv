@@ -1,5 +1,5 @@
 // Project F: Lines and Triangles - Demo (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/lines-and-triangles/
 
 `default_nettype none
@@ -48,6 +48,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
     localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
 
     // framebuffer (FB)
@@ -234,9 +235,13 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
+            && sx >= FB_OFFX && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX);
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
@@ -244,8 +249,8 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule

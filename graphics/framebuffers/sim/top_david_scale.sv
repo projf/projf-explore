@@ -1,5 +1,5 @@
 // Project F: Framebuffers - Scaled David (Verilator SDL)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
@@ -60,6 +60,7 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -180,8 +181,12 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
     always_comb begin
         paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
             && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : 12'h000;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // SDL output (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
@@ -189,8 +194,8 @@ module top_david_scale #(parameter CORDW=16) (  // signed coordinate width (bits
         sdl_sy <= sy;
         sdl_de <= de;
         sdl_frame <= frame;
-        sdl_r <= {2{paint_r}};  // double signal width (assumes CHANW=4)
-        sdl_g <= {2{paint_g}};
-        sdl_b <= {2{paint_b}};
+        sdl_r <= {2{display_r}};
+        sdl_g <= {2{display_g}};
+        sdl_b <= {2{display_b}};
     end
 endmodule

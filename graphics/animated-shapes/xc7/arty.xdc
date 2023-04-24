@@ -1,5 +1,5 @@
 ## Project F: Animated Shapes - Arty A7-35 Vivado Board Constraints
-## (C)2022 Will Green, open source hardware released under the MIT License
+## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/animated-shapes/
 
 ## FPGA Configuration I/O Options

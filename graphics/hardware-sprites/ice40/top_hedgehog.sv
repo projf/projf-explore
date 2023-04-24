@@ -128,14 +128,14 @@ module top_hedgehog (
     logic [COLRW-1:0] bg_colr;
     always_ff @(posedge clk_pix) begin
         if (line) begin
-            if      (sy == 0)   bg_colr <= 12'h239;
-            else if (sy == 80)  bg_colr <= 12'h24A;
-            else if (sy == 140) bg_colr <= 12'h25B;
-            else if (sy == 190) bg_colr <= 12'h26C;
-            else if (sy == 230) bg_colr <= 12'h27D;
-            else if (sy == 265) bg_colr <= 12'h29E;
-            else if (sy == 295) bg_colr <= 12'h2BF;
-            else if (sy == 320) bg_colr <= 12'h260;
+            if      (sy == 0)   bg_colr <= 'h239;
+            else if (sy == 80)  bg_colr <= 'h24A;
+            else if (sy == 140) bg_colr <= 'h25B;
+            else if (sy == 190) bg_colr <= 'h26C;
+            else if (sy == 230) bg_colr <= 'h27D;
+            else if (sy == 265) bg_colr <= 'h29E;
+            else if (sy == 295) bg_colr <= 'h2BF;
+            else if (sy == 320) bg_colr <= 'h260;
         end
     end
 
@@ -144,12 +144,8 @@ module top_hedgehog (
     always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : bg_colr;
 
     // display colour: paint colour but black in blanking interval
-    logic [3:0] display_r, display_g, display_b;
-    always_comb begin
-        display_r = (de) ? paint_r : 4'h0;
-        display_g = (de) ? paint_g : 4'h0;
-        display_b = (de) ? paint_b : 4'h0;
-    end
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // DVI Pmod output
     SB_IO #(

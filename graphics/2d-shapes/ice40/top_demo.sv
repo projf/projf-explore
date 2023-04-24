@@ -1,5 +1,5 @@
 // Project F: 2D Shapes - Demo (iCEBreaker 12-bit DVI Pmod)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/fpga-shapes/
 
 `default_nettype none
@@ -62,6 +62,7 @@ module top_demo (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 2;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
     localparam PAL_FILE = {LIB_RES,"/palettes/sweetie16_4b.mem"};  // palette file
 
     // framebuffer (FB)
@@ -248,9 +249,13 @@ module top_demo (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
+            && sx >= FB_OFFX && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX);
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // DVI Pmod output
     SB_IO #(
@@ -258,7 +263,7 @@ module top_demo (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */

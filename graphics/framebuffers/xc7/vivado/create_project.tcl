@@ -1,5 +1,5 @@
 # Project F: Framebuffers - Create Vivado Project (XC7 VGA)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io
 
 puts "INFO: Project F - Framebuffers Project Creation Script"
@@ -65,7 +65,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
   [file normalize "${lib_dir}/maths/lfsr.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 

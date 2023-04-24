@@ -1,5 +1,5 @@
 # Project F: Animated Shapes - Create Vivado Project (VGA)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/animated-shapes/
 
 puts "INFO: Project F - Animated Shapes Project Creation Script"

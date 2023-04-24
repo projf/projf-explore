@@ -1,5 +1,5 @@
 // Project F: Framebuffers - 16 Colour David (Arty Pmod VGA)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
@@ -63,6 +63,7 @@ module top_david_16colr (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -127,21 +128,19 @@ module top_david_16colr (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
-        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr: 12'h000;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        vga_r <= display_r;
+        vga_g <= display_g;
+        vga_b <= display_b;
     end
 endmodule

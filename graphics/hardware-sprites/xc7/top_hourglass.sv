@@ -118,11 +118,7 @@ module top_hourglass (
 
     // display colour: paint colour but black in blanking interval
     logic [CHANW-1:0] display_r, display_g, display_b;
-    always_comb begin
-        display_r = (de) ? paint_r : 4'h0;
-        display_g = (de) ? paint_g : 4'h0;
-        display_b = (de) ? paint_b : 4'h0;
-    end
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin

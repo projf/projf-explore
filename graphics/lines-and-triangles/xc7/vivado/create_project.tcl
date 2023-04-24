@@ -1,5 +1,5 @@
 # Project F: Lines and Triangles - Create Vivado Project (XC7 VGA)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/lines-and-triangles/
 
 puts "INFO: Project F - Lines and Triangles Project Creation Script"

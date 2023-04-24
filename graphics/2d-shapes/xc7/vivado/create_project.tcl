@@ -1,5 +1,5 @@
 # Project F: 2D Shapes - Create Vivado Project (XC7 VGA)
-# (C)2022 Will Green, open source hardware released under the MIT License
+# (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-shapes/
 
 puts "INFO: Project F - 2D Shapes Project Creation Script"
