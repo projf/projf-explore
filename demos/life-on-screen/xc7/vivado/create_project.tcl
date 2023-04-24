@@ -59,7 +59,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/display_480p.sv"] \
   [file normalize "${lib_dir}/memory/rom_async.sv"] \
-  [file normalize "${lib_dir}/memory/xc7/bram_sdp.sv"] \
+  [file normalize "${lib_dir}/memory/bram_sdp.sv"] \
   [file normalize "${origin_dir}/lib/display/framebuffer_bram.sv"] \
   [file normalize "${origin_dir}/lib/display/linebuffer.sv"] \
   [file normalize "${origin_dir}/life.sv"] \
