@@ -236,7 +236,7 @@ module top_demo #(parameter CORDW=16) (  // signed coordinate width (bits)
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : BG_COLR;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
 
     // display colour: paint colour but black in blanking interval

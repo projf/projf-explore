@@ -132,7 +132,7 @@ module top_david_16colr (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : BG_COLR;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
 
     // display colour: paint colour but black in blanking interval

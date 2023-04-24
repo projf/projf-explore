@@ -227,7 +227,7 @@ module top_david_fizzle (
     always_comb begin
         paint_area = (sy >= 0 && sy < (FB_HEIGHT * FB_SCALE)
             && sx >= 0 && sx < FB_WIDTH * FB_SCALE);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : BG_COLR;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr : BG_COLR;
     end
 
     // display colour: paint colour but black in blanking interval
