@@ -1,5 +1,5 @@
 // Project F: Animated Shapes - Double Buffer Demo (Arty Pmod VGA)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
@@ -63,6 +63,7 @@ module top_demo (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
     localparam PAL_FILE = "teleport16_4b.mem";  // palette file
 
     // framebuffer (FB)
@@ -293,22 +294,20 @@ module top_demo (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
-            && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr: 12'h000;
+            && sx >= FB_OFFX && sx < (FB_WIDTH * FB_SCALE) + FB_OFFX);
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : BG_COLR;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // VGA Pmod output
     always_ff @(posedge clk_pix) begin
         vga_hsync <= hsync;
         vga_vsync <= vsync;
-        if (de) begin
-            vga_r <= paint_r;
-            vga_g <= paint_g;
-            vga_b <= paint_b;
-        end else begin  // VGA colour should be black in blanking interval
-            vga_r <= 4'h0;
-            vga_g <= 4'h0;
-            vga_b <= 4'h0;
-        end
+        vga_r <= display_r;
+        vga_g <= display_g;
+        vga_b <= display_b;
     end
 endmodule

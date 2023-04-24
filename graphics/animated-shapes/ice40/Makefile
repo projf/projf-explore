@@ -1,5 +1,5 @@
 ## Project F: Animated Shapes - iCEBreaker Makefile
-## (C)2022 Will Green, open source hardware released under the MIT License
+## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/animated-shapes/
 
 # render module version

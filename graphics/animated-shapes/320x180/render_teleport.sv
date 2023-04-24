@@ -1,5 +1,5 @@
 // Project F: Animated Shapes - Render Teleport (4-bit 320x180)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/animated-shapes/
 
 `default_nettype none
