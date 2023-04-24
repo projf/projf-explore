@@ -67,6 +67,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     // colour parameters
     localparam CHANW = 8;  // colour channel width (bits)
     localparam CIDXW = 8;  // colour index width (bits)
+    localparam BG_COLR = 'h113377;  // background colour
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 320;  // framebuffer width in pixels
@@ -353,16 +354,12 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = paint_area ? {mandel_r, mandel_g, mandel_b} : 0;
+        {paint_r, paint_g, paint_b} = paint_area ? {mandel_r, mandel_g, mandel_b} : BG_COLR;
     end
 
     // display colour: paint colour but black in blanking interval
     logic [CHANW-1:0] display_r, display_g, display_b;
-    always_comb begin
-        display_r = (de) ? paint_r : 8'h0;
-        display_g = (de) ? paint_g : 8'h0;
-        display_b = (de) ? paint_b : 8'h0;
-    end
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // SDL signals (8 bits per colour channel)
     always_ff @(posedge clk_pix) begin
