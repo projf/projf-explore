@@ -67,6 +67,7 @@ module top_david_16colr (
     localparam CHANW = 4;        // colour channel width (bits)
     localparam COLRW = 3*CHANW;  // colour width: three channels (bits)
     localparam CIDXW = 4;        // colour index width (bits)
+    localparam BG_COLR = 'h137;  // background colour
 
     // framebuffer (FB)
     localparam FB_WIDTH  = 160;  // framebuffer width in pixels
@@ -131,7 +132,7 @@ module top_david_16colr (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
-        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr: 'h137;
+        {paint_r, paint_g, paint_b} = (de && paint_area) ? fb_pix_colr : BG_COLR;
     end
 
     // display colour: paint colour but black in blanking interval
