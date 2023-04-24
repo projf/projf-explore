@@ -1,5 +1,5 @@
 ## Project F: Lines and Triangles - Arty A7-35 Vivado Board Constraints
-## (C)2022 Will Green, open source hardware released under the MIT License
+## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/lines-and-triangles/
 
 ## FPGA Configuration I/O Options
