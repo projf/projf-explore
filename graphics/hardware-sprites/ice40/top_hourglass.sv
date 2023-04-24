@@ -116,12 +116,8 @@ module top_hourglass (
     always_comb {paint_r, paint_g, paint_b} = (drawing_t1) ? spr_pix_colr : BG_COLR;
 
     // display colour: paint colour but black in blanking interval
-    logic [3:0] display_r, display_g, display_b;
-    always_comb begin
-        display_r = (de) ? paint_r : 4'h0;
-        display_g = (de) ? paint_g : 4'h0;
-        display_b = (de) ? paint_b : 4'h0;
-    end
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // DVI Pmod output
     SB_IO #(

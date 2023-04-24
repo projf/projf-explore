@@ -1,5 +1,5 @@
 // Project F: Framebuffers - 16 Colour David (iCEBreaker 12-bit DVI Pmod)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/framebuffers/
 
 `default_nettype none
@@ -131,8 +131,12 @@ module top_david_16colr (
     logic [CHANW-1:0] paint_r, paint_g, paint_b;  // colour channels
     always_comb begin
         paint_area = (sy >= 0 && sy < FB_HEIGHT && sx >= 0 && sx < FB_WIDTH);
-        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr: 12'h000;
+        {paint_r, paint_g, paint_b} = paint_area ? fb_pix_colr: 'h137;
     end
+
+    // display colour: paint colour but black in blanking interval
+    logic [CHANW-1:0] display_r, display_g, display_b;
+    always_comb {display_r, display_g, display_b} = (de) ? {paint_r, paint_g, paint_b} : 0;
 
     // DVI Pmod output
     SB_IO #(
@@ -140,7 +144,7 @@ module top_david_16colr (
     ) dvi_signal_io [14:0] (
         .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
         .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, paint_r, paint_g, paint_b}),
+        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
         /* verilator lint_off PINCONNECTEMPTY */
         .D_OUT_1()
         /* verilator lint_on PINCONNECTEMPTY */
