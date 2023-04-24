@@ -332,17 +332,17 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
             mandel_b <= lb_colr_out;
         end else begin
             if (lb_colr_out == 0) begin  // black in the set
-                mandel_r <= 8'h00;
-                mandel_g <= 8'h00;
-                mandel_b <= 8'h00;
+                mandel_r <= 'h00;
+                mandel_g <= 'h00;
+                mandel_b <= 'h00;
             end else if (lb_colr_out <= 8'h66) begin  // blue then purple
-                mandel_r <= 8'h00 + lb_colr_out;
-                mandel_g <= 8'h00 + (lb_colr_out >> 1);  // divide by 2
-                mandel_b <= 8'h33 + lb_colr_out;
+                mandel_r <= 'h00 + lb_colr_out;
+                mandel_g <= 'h00 + (lb_colr_out >> 1);  // divide by 2
+                mandel_b <= 'h33 + lb_colr_out;
             end else begin  // turning to gold
-                mandel_r <= 8'h66 + lb_colr_out - 8'h66;
-                mandel_g <= 8'h33 + lb_colr_out - 8'h66;
-                mandel_b <= 8'h99 + 8'h66 - lb_colr_out;
+                mandel_r <= 'h66 + lb_colr_out - 'h66;
+                mandel_g <= 'h33 + lb_colr_out - 'h66;
+                mandel_b <= 'h99 + 'h66 - lb_colr_out;
             end
         end
     end
@@ -353,7 +353,7 @@ module top_mandel #(parameter CORDW=16) (  // signed coordinate width (bits)
     always_comb begin
         paint_area = (sy >= FB_OFFY && sy < (FB_HEIGHT * FB_SCALE) + FB_OFFY
             && sx >= FB_OFFX && sx < FB_WIDTH * FB_SCALE + FB_OFFX);
-        {paint_r, paint_g, paint_b} = paint_area ? {mandel_r, mandel_g, mandel_b} : 24'h000000;
+        {paint_r, paint_g, paint_b} = paint_area ? {mandel_r, mandel_g, mandel_b} : 0;
     end
 
     // display colour: paint colour but black in blanking interval
