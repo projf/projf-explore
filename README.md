@@ -66,14 +66,13 @@ Maths & Algorithms is our latest tutorial series:
 ### FPGA Architecture
 
 Our designs seek to be vendor-neutral, but some functionality requires
-support for vendor primitives. We currently support two FPGA architectures with a third in testing:
+support for vendor primitives. We currently support two FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
   * `BUFG`, `MMCME2_BASE`
   * HDMI support: `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
-* **ECP5** - Lattice ECP5 is in testing with ULX3S board
 
 We also infer block ram (BRAM); see [lib/memory](lib/memory).
 
@@ -93,4 +92,4 @@ I believe these features are helpful, especially for beginners. All the SystemVe
 
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Didier Malenfant](https://github.com/DidierMalenfant), [Juri Tsirihhov](https://github.com/jutsir), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Didier Malenfant](https://github.com/DidierMalenfant), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.

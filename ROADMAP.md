@@ -1,16 +1,14 @@
 # Project F Roadmap
 
-This doc summarises forthcoming work on Project F. This doc will receive much-needed attention in early 2023.
+This doc summarises forthcoming work on Project F.
 
 Until then, check out the latest [Project F News](https://projectf.io/tags/news/).
 
 * Maths and Algorithms
   * Verilog Vectors and Arrays (in progress)
   * Revised Intro to Fixed-Point (coming soon)
-  * Fixed-Point Multiplication (coming soon)
   * _more maths in 2023_
 * Board Support
-  * ULX3S (ECP5) support for _FPGA Graphics_ (in progress)
   * Nexys Video support for _FPGA Graphics_ (in progress)
 * Demos
   * Port remaining _All You Need Effects_ to Arty
