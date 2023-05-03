@@ -1,6 +1,9 @@
-// Project F Library - 24x18 Display for Testing
-// (C)2022 Will Green, open source hardware released under the MIT License
+// Project F Library - 24x18 Test Display
+// (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
+
+// Smaller display designed for test benches
+// 24x18 (432) active pixels, 35x30 (1050) pixels inc. blanking
 
 `default_nettype none
 `timescale 1ns / 1ps
