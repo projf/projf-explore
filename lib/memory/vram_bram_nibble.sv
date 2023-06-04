@@ -5,7 +5,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-module vram_bram #(
+module vram_bram_nibble #(
     parameter  WIDTH=16,             // data width
     parameter  DEPTH=16384,          // memory depth
     localparam ADDRW=$clog2(DEPTH),  // address width
