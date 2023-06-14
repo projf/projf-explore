@@ -20,7 +20,7 @@ module rom_sync #(
 
     initial begin
         if (INIT_F != 0) begin
-            $display("Create synchronous ROM '%m' with init file '%s'.", INIT_F);
+            $display("Create rom_sync with init file '%s'.", INIT_F);
             $readmemh(INIT_F, memory);
         end
     end

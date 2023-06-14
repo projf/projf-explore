@@ -24,7 +24,7 @@ module bram_sdp #(
 
     initial begin
         if (INIT_F != 0) begin
-            $display("Load init file '%s' into block ram '%m'.", INIT_F);
+            $display("Load init file '%s' into bram_sdp.", INIT_F);
             $readmemh(INIT_F, memory);
         end
     end
