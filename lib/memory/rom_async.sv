@@ -19,7 +19,7 @@ module rom_async #(
 
     initial begin
         if (INIT_F != 0) begin
-            $display("Creating rom_async from init file '%s'.", INIT_F);
+            $display("Create rom_async with init file '%s'.", INIT_F);
             $readmemh(INIT_F, memory);
         end
     end
