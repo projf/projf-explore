@@ -38,7 +38,7 @@ async def test_dut_multiply(dut, a, b, log=True):
         await RisingEdge(dut.clk)
 
     # model product
-    model_c = fp_family(a * b)
+    model_c = fp_family(float(fp_family(a)) * float(fp_family(b)))
 
     # divide dut result by scaling factor
     val = fp_family(dut.val.value.signed_integer/2**FBITS)
@@ -177,6 +177,37 @@ async def round_neg_6(dut):
     """Test -3.5625*2.0625"""
     await test_dut_multiply(dut=dut, a=-3.5625, b=2.0625)
 
+
+# test non-binary values (can't be precisely represented in binary)
+@cocotb.test()
+async def nonbin_1(dut):
+    """Test 1*0.2"""
+    await test_dut_multiply(dut=dut, a=1, b=0.2)
+
+@cocotb.test()
+async def nonbin_2(dut):
+    """Test 1.9*0.2"""
+    await test_dut_multiply(dut=dut, a=1.9, b=0.2)
+
+@cocotb.test()
+async def nonbin_3(dut):
+    """Test 0.4/0.2"""
+    await test_dut_multiply(dut=dut, a=0.4, b=0.2)
+
+# test fails - model and DUT choose different sides of true value
+@cocotb.test(expect_fail=True)
+async def nonbin_4(dut):
+    """Test 3.6*0.6"""
+    await test_dut_multiply(dut=dut, a=3.6, b=0.6)
+
+# test fails - model and DUT choose different sides of true value
+@cocotb.test(expect_fail=True)
+async def nonbin_5(dut):
+    """Test 0.4*0.1"""
+    await test_dut_multiply(dut=dut, a=0.4, b=0.1)
+
+
+# overflow tests
 @cocotb.test()
 async def ovf_1(dut):
     """Test 8*8 [overflow]"""
@@ -207,7 +238,6 @@ async def ovf_1(dut):
     await RisingEdge(dut.clk)
     assert dut.done.value == 0, "done is not 0!"
 
-# overflow tests
 @cocotb.test()
 async def ovf_2(dut):
     """Test 5*4 [overflow]"""
