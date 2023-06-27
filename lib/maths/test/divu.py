@@ -37,8 +37,9 @@ async def test_dut_divide(dut, a, b, log=True):
     while not dut.done.value:
         await RisingEdge(dut.clk)
 
-    # model division
-    model_val = fp_family(a / b)
+    # model quotient: covert twice to ensure division is handled consistently
+    #                 https://github.com/rwpenney/spfpm/issues/14
+    model_val = fp_family(float(fp_family(a)) / float(fp_family(b)))
 
     # divide dut result by scaling factor
     val = fp_family(dut.val.value.signed_integer/2**FBITS)
@@ -153,7 +154,7 @@ async def min_3(dut):
     """Test 0/2"""
     await test_dut_divide(dut=dut, a=0, b=2)
 
-
+# max edge tests
 @cocotb.test()
 async def max_1(dut):
     """Test 15.9375/1"""
@@ -163,6 +164,35 @@ async def max_1(dut):
 async def max_2(dut):
     """Test 7.9375/0.5"""
     await test_dut_divide(dut=dut, a=7.9375, b=0.5)
+
+
+# test non-binary values (can't be precisely represented in binary)
+@cocotb.test()
+async def nonbin_1(dut):
+    """Test 1/0.2"""
+    await test_dut_divide(dut=dut, a=1, b=0.2)
+
+@cocotb.test()
+async def nonbin_2(dut):
+    """Test 1.9/0.2"""
+    await test_dut_divide(dut=dut, a=1.9, b=0.2)
+
+@cocotb.test()
+async def nonbin_3(dut):
+    """Test 0.4/0.2"""
+    await test_dut_divide(dut=dut, a=0.4, b=0.2)
+
+# test fails - model and DUT choose different sides of true value
+@cocotb.test(expect_fail=True)
+async def nonbin_4(dut):
+    """Test 3.6/0.6"""
+    await test_dut_divide(dut=dut, a=3.6, b=0.6)
+
+# test fails - model and DUT choose different sides of true value
+@cocotb.test(expect_fail=True)
+async def nonbin_5(dut):
+    """Test 0.4/0.1"""
+    await test_dut_divide(dut=dut, a=0.4, b=0.1)
 
 
 # divide by zero and overflow tests

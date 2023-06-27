@@ -18,8 +18,13 @@ div.done
 div.valid
 div.dbz
 div.ovf
+@40000420
+[fpshift_count] 4
 div.a[8:0]
+[fpshift_count] 4
 div.b[8:0]
+@40000421
+[fpshift_count] 4
 div.val[8:0]
 [pattern_trace] 1
 [pattern_trace] 0
