@@ -37,13 +37,14 @@ async def test_dut_divide(dut, a, b, log=True):
     while not dut.done.value:
         await RisingEdge(dut.clk)
 
-    # model quotient
-    model_val = fp_family(a / b)
+    # model quotient: covert twice to ensure division is handled consistently
+    #                 https://github.com/rwpenney/spfpm/issues/14
+    model_val = fp_family(float(fp_family(a)) / float(fp_family(b)))
 
     # divide dut result by scaling factor
     val = fp_family(dut.val.value.signed_integer/2**FBITS)
 
-    # log numberical signals
+    # log numerical signals
     if (log):
         dut._log.info('dut a:     ' + dut.a.value.binstr)
         dut._log.info('dut b:     ' + dut.b.value.binstr)
