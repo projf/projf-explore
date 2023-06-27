@@ -182,6 +182,10 @@ async def min_4(dut):  # negative
     """Test -0.0625/2"""
     await test_dut_divide(dut=dut, a=-0.0625, b=2)
 
+@cocotb.test()
+async def min_5(dut):
+    """Test 1/0.2"""
+    await test_dut_divide(dut=dut, a=1, b=0.2)
 
 # max edge tests
 @cocotb.test()
