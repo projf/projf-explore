@@ -46,7 +46,7 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_demo.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_demo.sv"] \
   [file normalize "${origin_dir}/${render_mods}/render_cube.sv"] \
   [file normalize "${origin_dir}/${render_mods}/render_edge.sv"] \
   [file normalize "${origin_dir}/${render_mods}/render_line.sv"] \
