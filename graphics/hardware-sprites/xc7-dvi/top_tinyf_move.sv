@@ -22,6 +22,7 @@ module top_tinyf_move (
     logic clk_pix;
     logic clk_pix_5x;
     logic clk_pix_locked;
+    logic rst_pix;
     clock_720p clock_pix_inst (
        .clk_100m,
        .rst(!btn_rst_n),  // reset button is active low
@@ -29,10 +30,7 @@ module top_tinyf_move (
        .clk_pix_5x,
        .clk_pix_locked
     );
-
-    // reset in pixel clock domain
-    logic rst_pix;
-    always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 16;  // signed coordinate width (bits)
