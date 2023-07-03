@@ -20,16 +20,14 @@ module top_tinyf_scale (
     // generate pixel clock
     logic clk_pix;
     logic clk_pix_locked;
+    logic rst_pix;
     clock_480p clock_pix_inst (
        .clk_12m,
        .rst(btn_rst),
        .clk_pix,
        .clk_pix_locked
     );
-
-    // reset in pixel clock domain
-    logic rst_pix;
-    always_comb rst_pix = !clk_pix_locked;  // wait for clock lock
+    always_ff @(posedge clk_pix) rst_pix <= !clk_pix_locked;  // wait for clock lock
 
     // display sync signals and coordinates
     localparam CORDW = 16;  // signed coordinate width (bits)

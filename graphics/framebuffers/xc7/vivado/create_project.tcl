@@ -99,7 +99,6 @@ set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/xd_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/xd_tb_behav.wcfg" ] \
   [file normalize "${lib_dir}/display/display_24x18.sv"] \
-  [file normalize "${lib_dir}/display/xc7/clut_simple_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/linebuffer_simple_tb.sv"] \
   [file normalize "${lib_dir}/display/xc7/vivado/linebuffer_simple_tb_behav.wcfg" ] \
 ]

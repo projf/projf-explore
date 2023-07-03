@@ -52,7 +52,7 @@ The iCE40 designs have been tested with:
 
 ## Arty Build
 
-To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the Digilent Arty ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/graphics/pong/xc7/vivado
@@ -89,6 +89,29 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Nexys Video Build
+
+To create a Vivado project for the Digilent [Nexys Video](https://digilent.com/reference/programmable-logic/nexys-video/reference-manual); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+
+```tcl
+cd projf-explore/graphics/pong/xc7-dvi/vivado
+source ./create_project.tcl
+```
+
+You can then build Pong as you would for any Vivado project.
+
+The game controls for Nexys Video:
+
+* **BTNU** - up
+* **BTNC** - start (fire)
+* **BTND** - down
+
+### Tested Versions
+
+The Nexys Video designs have been tested with:
+
+* Vivado 2022.2
 
 ## Verilator SDL Simulation
 

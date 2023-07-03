@@ -69,7 +69,7 @@ if [ -d "${DIR}/xc7-dvi" ]; then
             -I${LIB}/graphics  -I${LIB}/graphics/xc7 \
             -I${LIB}/maths     -I${LIB}/maths/xc7 \
             -I${LIB}/memory    -I${LIB}/memory/xc7 \
-            -I${DIR}/640x360 \
+            -I${DIR}/320x180 \
             -I${LIB}/null/xc7 $f;
     done
 fi
