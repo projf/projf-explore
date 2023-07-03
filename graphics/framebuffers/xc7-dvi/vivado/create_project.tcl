@@ -58,6 +58,8 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 # Design sources (used in simulation)
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
+  [file normalize "${lib_dir}/clock/xc7/clock_sys.sv"] \
+  [file normalize "${lib_dir}/clock/xd.sv"] \
   [file normalize "${lib_dir}/display/clut_simple.sv"] \
   [file normalize "${lib_dir}/display/display_720p.sv"] \
   [file normalize "${lib_dir}/display/linebuffer_simple.sv"] \
