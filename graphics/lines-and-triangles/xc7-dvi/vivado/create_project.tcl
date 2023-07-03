@@ -1,8 +1,8 @@
-# Project F: Framebuffers - Create Vivado Project (XC7 DVI)
+# Project F: Lines and Triangles - Create Vivado Project (XC7 DVI)
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/hardware-sprites/
 
-puts "INFO: Project F - Framebuffers Project Creation Script"
+puts "INFO: Project F - Lines and Triangles Project Creation Script"
 
 # render module version
 set render_mods "320x180"
@@ -20,7 +20,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "framebuffers-dvi"
+set _xil_proj_name_ "lines-and-triangles-dvi"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]
