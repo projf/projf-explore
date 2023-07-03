@@ -8,7 +8,7 @@ File layout:
 * `res` - resources: sprite bitmaps and palettes
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
-* `xc7-dvi` - experimental designs for Nexys Video and other Xilinx 7 Series boards with DVI output
+* `xc7-dvi` - designs for Nexys Video and other Xilinx 7 Series boards with DVI output
 
 These designs make use of modules from the [Project F library](../../lib/). Check the included iCE40 [Makefile](ice40/Makefile) or Vivado [create_project.tcl](xc7/vivado/create_project.tcl) to see the list of modules used.
 
@@ -55,7 +55,7 @@ If you have problems building the iCE40 designs, make sure you're using Yosys 0.
 
 ## Arty Build
 
-To create a Vivado project for the **Digilent Arty** ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+To create a Vivado project for the Digilent Arty ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
 ```tcl
 cd projf-explore/graphics/hardware-sprites/xc7/vivado
@@ -100,6 +100,23 @@ source ./create_project.tcl
 ```
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
+
+## Nexys Video Build
+
+To create a Vivado project for the Digilent [Nexys Video](https://digilent.com/reference/programmable-logic/nexys-video/reference-manual); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
+
+```tcl
+cd projf-explore/graphics/hardware-sprites/xc7-dvi/vivado
+source ./create_project.tcl
+```
+
+You can then build the designs as you would for any Vivado project.
+
+### Tested Versions
+
+The Nexys Video designs have been tested with:
+
+* Vivado 2022.2
 
 ## Verilator SDL Simulation
 
