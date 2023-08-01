@@ -47,15 +47,15 @@ module top_flag_sweden (
     // paint colour: flag of Sweden (16:10 ratio)
     logic [3:0] paint_r, paint_g, paint_b;
     always_comb begin
-        if (sy >= 400) begin  // black outside the flag area
+        if (sx >= 1152) begin  // black outside the flag area
             paint_r = 4'h0;
             paint_g = 4'h0;
             paint_b = 4'h0;
-        end else if (sy > 160 && sy < 240) begin  // yellow cross horizontal
+        end else if (sy > 288 && sy < 432) begin  // yellow cross horizontal
             paint_r = 4'hF;
             paint_g = 4'hC;
             paint_b = 4'h0;
-        end else if (sx > 200 && sx < 280) begin  // yellow cross vertical
+        end else if (sx > 360 && sx < 504) begin  // yellow cross vertical
             paint_r = 4'hF;
             paint_g = 4'hC;
             paint_b = 4'h0;
