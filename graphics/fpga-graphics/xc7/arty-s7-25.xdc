@@ -1,4 +1,4 @@
-## Project F: FPGA Graphics - Arty S7-25 Board Constraints
+## Project F: FPGA Graphics - Arty S7-25 Board Constraints (VGA)
 ## (C)2023 Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 

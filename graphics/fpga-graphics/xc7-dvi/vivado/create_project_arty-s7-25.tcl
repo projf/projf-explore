@@ -1,4 +1,4 @@
-# Project F: FPGA Graphics - Create Vivado Project (XC7 VGA - Arty S7-25)
+# Project F: FPGA Graphics - Create Vivado Project (XC7 DVI - Arty S7-25)
 # (C)2023 Will Green, open source hardware released under the MIT License
 # Learn more at https://projectf.io/posts/fpga-graphics/
 
@@ -17,7 +17,7 @@ if {! [info exists board_name]} {
 }
 
 # Set the project name
-set _xil_proj_name_ "fpga-graphics-vga"
+set _xil_proj_name_ "fpga-graphics-dvi"
 
 # Set the reference directories for source file relative paths
 set lib_dir [file normalize "./../../../../lib"]
@@ -27,7 +27,7 @@ puts "INFO: Library directory: ${lib_dir}"
 puts "INFO: Origin directory:  ${origin_dir}"
 
 # Set the directory path for the project
-set orig_proj_dir "[file normalize "${origin_dir}/xc7/vivado"]"
+set orig_proj_dir "[file normalize "${origin_dir}/xc7-dvi/vivado"]"
 
 # Create Vivado project
 create_project ${_xil_proj_name_} ${orig_proj_dir} -part ${projf_fpga_part}
@@ -43,16 +43,15 @@ set fs_design_obj [get_filesets sources_1]
 
 # Top design sources (not used in simulation)
 set top_sources [list \
-  [file normalize "${origin_dir}/xc7/top_colour.sv"] \
-  [file normalize "${origin_dir}/xc7/top_flag_ethiopia.sv"] \
-  [file normalize "${origin_dir}/xc7/top_flag_sweden.sv"] \
-  [file normalize "${origin_dir}/xc7/top_square.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_colour.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_flag_ethiopia.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_flag_sweden.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_square.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $top_sources
 set design_top_obj [get_files -of_objects [get_filesets sources_1]]
 set_property -name "used_in_simulation" -value "0" -objects $design_top_obj
 
-# Set top module for design sources
 set_property -name "top" -value "top_square" -objects $fs_design_obj
 set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 
@@ -60,7 +59,12 @@ set_property -name "top_auto_set" -value "0" -objects $fs_design_obj
 set design_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_480p.sv"] \
   [file normalize "${lib_dir}/clock/xc7/clock_720p.sv"] \
-  [file normalize "${origin_dir}/simple_480p.sv"] \
+  [file normalize "${lib_dir}/display/tmds_encoder_dvi.sv"] \
+  [file normalize "${lib_dir}/display/xc7/dvi_generator.sv"] \
+  [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
+  [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
+  [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
+  [file normalize "${origin_dir}/simple_720p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
 
@@ -78,13 +82,13 @@ set fs_sim_obj [get_filesets sim_1]
 set sim_sources [list \
   [file normalize "${lib_dir}/clock/xc7/clock_tb.sv"] \
   [file normalize "${lib_dir}/clock/xc7/vivado/clock_tb_behav.wcfg"] \
-  [file normalize "${origin_dir}/xc7/simple_480p_tb.sv"] \
-  [file normalize "${origin_dir}/xc7/vivado/simple_480p_tb_behav.wcfg"] \
+  [file normalize "${origin_dir}/xc7-dvi/simple_720p_tb.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/vivado/simple_720p_tb_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $fs_sim_obj $sim_sources
 
 # Set 'sim_1' fileset properties
-set_property -name "top" -value "simple_480p_tb" -objects $fs_sim_obj
+set_property -name "top" -value "simple_720p_tb" -objects $fs_sim_obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $fs_sim_obj
 
 #
@@ -98,7 +102,7 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set fs_constr_obj [get_filesets constrs_1]
 
 set constr_sources [list \
-  [file normalize "$origin_dir/xc7/${projf_board_name}.xdc"] \
+  [file normalize "$origin_dir/xc7-dvi/${projf_board_name}.xdc"] \
 ]
 add_files -norecurse -fileset $fs_constr_obj $constr_sources
 set constr_file_obj [get_files -of_objects [get_filesets constrs_1]]
