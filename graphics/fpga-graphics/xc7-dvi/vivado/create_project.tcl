@@ -44,6 +44,7 @@ set fs_design_obj [get_filesets sources_1]
 # Top design sources (not used in simulation)
 set top_sources [list \
   [file normalize "${origin_dir}/xc7-dvi/top_colour.sv"] \
+  [file normalize "${origin_dir}/xc7-dvi/top_colour_480p.sv"] \
   [file normalize "${origin_dir}/xc7-dvi/top_flag_ethiopia.sv"] \
   [file normalize "${origin_dir}/xc7-dvi/top_flag_sweden.sv"] \
   [file normalize "${origin_dir}/xc7-dvi/top_square.sv"] \
@@ -64,6 +65,7 @@ set design_sources [list \
   [file normalize "${lib_dir}/display/xc7/oserdes_10b.sv"] \
   [file normalize "${lib_dir}/display/xc7/tmds_out.sv"] \
   [file normalize "${lib_dir}/essential/xc7/async_reset.sv"] \
+  [file normalize "${origin_dir}/simple_480p.sv"] \
   [file normalize "${origin_dir}/simple_720p.sv"] \
 ]
 add_files -norecurse -fileset $fs_design_obj $design_sources
