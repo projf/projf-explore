@@ -59,13 +59,17 @@ module top_hitomezashi (
     logic stitch;
     logic v_line, v_on;
     logic h_line, h_on;
+    logic last_h_stitch;
     always_comb begin
         v_line = (sx[3:0] == 4'b0000);
         h_line = (sy[3:0] == 4'b0000);
         v_on = sy[4] ^ v_start[sx[9:4]];
         h_on = sx[4] ^ h_start[sy[8:4]];
-        stitch = (v_line && v_on) || (h_line && h_on);
+        stitch = (v_line && v_on) || (h_line && h_on) || last_h_stitch;
     end
+
+    // last stich fix thanks to Serg Ko (@vfr1200f)
+    always_ff @(posedge clk_pix) last_h_stitch <= h_line && h_on;
 
     // paint colour: yellow lines, blue background
     logic [3:0] paint_r, paint_g, paint_b;
