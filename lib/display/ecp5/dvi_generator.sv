@@ -1,4 +1,4 @@
-// Project F Library - DVI Generator (XC7)
+// Project F Library - DVI Generator (ECP5)
 // Copyright Will Green, Open Source Hardware released under the MIT License
 // Learn more at https://projectf.io
 
@@ -51,44 +51,18 @@ module dvi_generator (
         .tmds(tmds_ch2)
     );
 
-    // common async reset for serdes
-    logic rst_oserdes;
-    async_reset async_reset_inst (
-        .clk(clk_pix),
-        .rst_in(rst_pix),
-        .rst_out(rst_oserdes)
-    );
+    logic [9:0] tmds_ch0_shift, tmds_ch1_shift, tmds_ch2_shift;
+    logic [4:0] shift5 = 1;  // 5-bit circular shift buffer
+    always_ff @(posedge clk_pix_5x) begin
+        shift5 <= {shift5[3:0], shift5[4]};
+        tmds_ch0_shift <= shift5[4] ? tmds_ch0 : tmds_ch0_shift >> 2;  // shift two bits for DDR
+        tmds_ch1_shift <= shift5[4] ? tmds_ch1 : tmds_ch1_shift >> 2;
+        tmds_ch2_shift <= shift5[4] ? tmds_ch2 : tmds_ch2_shift >> 2;
+    end
 
-    oserdes_10b serialize_ch0 (
-        .clk(clk_pix),
-        .clk_hs(clk_pix_5x),
-        .rst(rst_oserdes),
-        .data_in(tmds_ch0),
-        .serial_out(tmds_ch0_serial)
-    );
+    ODDRX1F serialize_ch0 (.D0(tmds_ch0_shift[0]), .D1(tmds_ch0_shift[1]), .Q(tmds_ch0_serial), .SCLK(clk_pix_5x), .RST(0));
+    ODDRX1F serialize_ch1 (.D0(tmds_ch1_shift[0]), .D1(tmds_ch1_shift[1]), .Q(tmds_ch1_serial), .SCLK(clk_pix_5x), .RST(0));
+    ODDRX1F serialize_ch2 (.D0(tmds_ch2_shift[0]), .D1(tmds_ch2_shift[1]), .Q(tmds_ch2_serial), .SCLK(clk_pix_5x), .RST(0));
 
-    oserdes_10b serialize_ch1 (
-        .clk(clk_pix),
-        .clk_hs(clk_pix_5x),
-        .rst(rst_oserdes),
-        .data_in(tmds_ch1),
-        .serial_out(tmds_ch1_serial)
-    );
-
-    oserdes_10b serialize_ch2 (
-        .clk(clk_pix),
-        .clk_hs(clk_pix_5x),
-        .rst(rst_oserdes),
-        .data_in(tmds_ch2),
-        .serial_out(tmds_ch2_serial)
-    );
-
-    oserdes_10b serialize_chc (
-        .clk(clk_pix),
-        .clk_hs(clk_pix_5x),
-        .rst(rst_oserdes),
-        .data_in(10'b0000011111),
-        .serial_out(tmds_clk_serial)
-    );
-
+    always_comb tmds_clk_serial = clk_pix;  // clock isn't following same path as other channels
 endmodule

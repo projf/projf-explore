@@ -1,11 +1,11 @@
 // Project F Library - 640x480p60 Clock Generation (XC7)
-// (C)2022 Will Green, open source hardware released under the MIT License
+// Copyright Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-// Generates 25.2 MHz (640x480 60 Hz) with 100 MHz input clock
+// Generate 25.2 MHz (640x480 60 Hz) with 100 MHz input clock
 // MMCME2_BASE and BUFG are documented in Xilinx UG472
 
 module clock_480p (

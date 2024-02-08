@@ -1,0 +1,34 @@
+## Project F: FPGA Graphics - ULX3S Board Constraints
+## Copyright Will Green, open source hardware released under the MIT License
+## Learn more at https://projectf.io/posts/fpga-graphics/
+
+BLOCK RESETPATHS;
+BLOCK ASYNCPATHS;
+
+## Board Clock: 25 MHz
+LOCATE COMP "clk_25m" SITE "G2";
+IOBUF  PORT "clk_25m" PULLMODE=NONE IO_TYPE=LVCMOS33;
+FREQUENCY PORT "clk_25m" 25 MHZ;
+
+## Buttons
+LOCATE COMP "btn_rst_n" SITE "D6";  # use B0 for reset
+IOBUF  PORT "btn_rst_n" PULLMODE=UP IO_TYPE=LVCMOS33 DRIVE=4;
+
+## HDMI-compatible connector (AKA GPDI)
+# NB. IO_TYPE=LVCMOS33D generates gpdi_dn from gpdi_dp
+LOCATE COMP "gpdi_dp[0]" SITE "A16";  # channel 0 +
+LOCATE COMP "gpdi_dn[0]" SITE "B16";  # channel 0 -
+LOCATE COMP "gpdi_dp[1]" SITE "A14";  # channel 1 +
+LOCATE COMP "gpdi_dn[1]" SITE "C14";  # channel 1 -
+LOCATE COMP "gpdi_dp[2]" SITE "A12";  # channel 2 +
+LOCATE COMP "gpdi_dn[2]" SITE "A13";  # channel 2 -
+LOCATE COMP "gpdi_dp[3]" SITE "A17";  # clock +
+LOCATE COMP "gpdi_dn[3]" SITE "B18";  # clock -
+IOBUF PORT "gpdi_dp[0]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dn[0]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dp[1]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dn[1]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dp[2]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dn[2]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dp[3]" IO_TYPE=LVCMOS33D DRIVE=4;
+IOBUF PORT "gpdi_dn[3]" IO_TYPE=LVCMOS33D DRIVE=4;

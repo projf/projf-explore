@@ -9,10 +9,15 @@
 *.xpr
 webtalk.*
 
-# IceStorm
+# iCE40
 *yosys.log
 *.bin
 *.rpt
+
+# ECP5
+*yosys.log
+*.bit
+*.svf
 
 # Verilator
 obj_dir
