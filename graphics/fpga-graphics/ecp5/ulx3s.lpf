@@ -11,8 +11,8 @@ IOBUF  PORT "clk_25m" PULLMODE=NONE IO_TYPE=LVCMOS33;
 FREQUENCY PORT "clk_25m" 25 MHZ;
 
 ## Buttons
-LOCATE COMP "btn_rst" SITE "T1";  # use fire 2 for reset
-IOBUF PORT "btn_rst" IO_TYPE=LVCMOS33;
+LOCATE COMP "btn_rst_n" SITE "D6";  # use B0 for reset
+IOBUF  PORT "btn_rst_n" PULLMODE=UP IO_TYPE=LVCMOS33 DRIVE=4;
 
 ## HDMI-compatible connector (AKA GPDI)
 # NB. IO_TYPE=LVCMOS33D generates gpdi_dn from gpdi_dp

@@ -53,7 +53,7 @@ module clock_480p (
         .FEEDBK_PATH("CLKOP"),
         .CLKFB_DIV(126)
     ) pll_i (
-        .RST(1'b0),
+        .RST(rst),
         .STDBY(1'b0),
         .CLKI(clk_25m),
         .CLKOP(clk_pix_5x),

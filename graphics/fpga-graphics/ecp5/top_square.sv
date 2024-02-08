@@ -7,7 +7,7 @@
 
 module top_square (
     input  wire logic clk_25m,       // 25 MHz clock
-    input  wire logic btn_rst,       // reset button
+    input  wire logic btn_rst_n,     // reset button
     output      logic [3:0] gpdi_dp  // DVI out
     );
 
@@ -17,7 +17,7 @@ module top_square (
     logic clk_pix_locked;
     clock_720p clock_pix_inst (
        .clk_25m,
-       .rst(btn_rst),
+       .rst(!btn_rst_n),  // reset button is active low
        .clk_pix,
        .clk_pix_5x,
        .clk_pix_locked
