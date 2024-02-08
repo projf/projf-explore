@@ -4,6 +4,7 @@ This folder accompanies the Project F blog post: **[Beginning FPGA Graphics](htt
 
 File layout:
 
+* `ecp5` - designs for ULX3S and other ECP5 boards
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
@@ -24,11 +25,36 @@ Learn more about the designs and demos from _[Beginning FPGA Graphics](https://p
 
 _Traditional flag of Ethiopia running as a Verilator simulation._
 
+## ULX3S Build
+
+I have tested these designs with recent (early 2024) versions of Yosys and nextpnr. You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
+
+Once the tools are installed, it's straightforward to build the designs.
+
+For example, to build `square`; clone the projf-explore git repo, then:
+
+```shell
+cd projf-explore/graphics/fpga-graphics/ecp5
+make square
+```
+
+After the build completes, you'll have a bit file, such as `square.bit`. Use the bit file to program your board:
+
+```shell
+openFPGALoader --board=ulx3s square.bit
+```
+
+If you get the error `JTAG init failed with: unable to open ftdi device`, try running `openFPGALoader` with `sudo`.
+
+_NB. ULX3S support was added in February 2024 and likely has some rough edges._
+
 ## iCEBreaker Build
 
 You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
 
-You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ](https://github.com/YosysHQ/oss-cad-suite-build).
+You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
+
+Once the tools are installed, it's straightforward to build the designs.
 
 For example, to build `flag_ethiopia`; clone the projf-explore git repo, then:
 

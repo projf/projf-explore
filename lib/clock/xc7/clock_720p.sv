@@ -1,11 +1,11 @@
 // Project F Library - 1280x720p60 Clock Generation (XC7)
-// (C)2022 Will Green, Open source hardware released under the MIT License
+// Copyright Will Green, Open source hardware released under the MIT License
 // Learn more at https://projectf.io
 
 `default_nettype none
 `timescale 1ns / 1ps
 
-// Generates 74.25 MHz (1280x720 60 Hz) with 100 MHz input clock
+// Generate 74.25 MHz (1280x720 60 Hz) with 100 MHz input clock
 // MMCME2_BASE and BUFG are documented in Xilinx UG472
 
 module clock_720p (

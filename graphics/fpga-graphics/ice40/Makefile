@@ -1,5 +1,5 @@
 ## Project F: FPGA Graphics - iCEBreaker Makefile
-## (C)2023 Will Green, open source hardware released under the MIT License
+## Copyright Will Green, open source hardware released under the MIT License
 ## Learn more at https://projectf.io/posts/fpga-graphics/
 
 # configuration
@@ -18,15 +18,19 @@ flag_ethiopia: flag_ethiopia.rpt flag_ethiopia.bin
 flag_sweden: flag_sweden.rpt flag_sweden.bin
 colour: colour.rpt colour.bin
 
+# synthesis
 %.json: top_%.sv $(ADD_SRC)
 	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -abc9 -device u -top top_$(basename $@) -json $@' $< $(ADD_SRC)
 
+# place and route
 %.asc: %.json
 	nextpnr-ice40 --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --pcf ${PCF} --asc $@
 
+# timing
 %.rpt: %.asc
 	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
+# pack bitstream
 %.bin: %.asc
 	icepack $< $(subst top_,,$@)
 
