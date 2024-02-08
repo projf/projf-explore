@@ -31,7 +31,7 @@ I have tested these designs with recent (early 2024) versions of Yosys and nextp
 
 Once the tools are installed, it's straightforward to build the designs.
 
-For example, to build `square`; clone the projf-explore git repo, then:
+For example, to build `square`; clone the projf-explore git repo, check the correct FPGA model is set near the top of `projf-explore/graphics/fpga-graphics/ecp5/Makefile` then:
 
 ```shell
 cd projf-explore/graphics/fpga-graphics/ecp5

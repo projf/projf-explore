@@ -23,6 +23,9 @@ ADD_SRC += ${PATH_LIB}/display/tmds_encoder_dvi.sv
 ADD_SRC += ../simple_720p.sv
 
 square: square.bit square.svf
+flag_ethiopia: flag_ethiopia.bit flag_ethiopia.svf
+flag_sweden: flag_sweden.bit flag_sweden.svf
+colour: colour.bit colour.svf
 
 # synthesis
 %.json: top_%.sv $(ADD_SRC)
@@ -40,7 +43,7 @@ square: square.bit square.svf
 %.svf: %.config
 	ecppack --compress --input $< --svf $@
 
-all: square
+all: square flag_ethiopia flag_sweden colour
 
 clean:
 	rm -f *.json *.config *.bit .*.d *.svf *yosys.log
