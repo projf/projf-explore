@@ -90,6 +90,10 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 
 I believe these features are helpful, especially for beginners. All the SystemVerilog features are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado.
 
+## Project F Blog
+
+You can find 50+ original posts on FPGAs and RISC-V at [projectf.io](https://projectf.io).
+
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Didier Malenfant](https://github.com/DidierMalenfant), [LaDirth](https://github.com/LaDirth), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [STjurny](https://github.com/STjurny) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [matt venn](https://github.com/mattvenn), and [Paul Sajna](https://github.com/sajattack) for their recent generosity.
