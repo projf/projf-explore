@@ -1,22 +1,16 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include the _Verilog Library_, _FPGA Graphics_, and _FPGA Maths_ tutorial series.
+Project F is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include _FPGA Graphics_, _FPGA Maths_, and the _Verilog Library_.
 
-The [Project F website](https://projectf.io) features fifty blog posts on a wide range of FPGA and Verilog topics.
+The [Project F blog](https://projectf.io) features over fifty posts covering FPGAs, Verilog, and RISC-V.
 
-Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) for updates. Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
-## Verilog Library
-
-The Project F Library includes handy Verilog designs for everyone. From framebuffers and video output to division and square root, rom and ram, and even circle drawing. You can freely build on these [MIT licensed](../../LICENSE) designs.
-
-Visit the [Library](lib/) for the Verilog designs or get an overview from the [Verilog Library blog post](https://projectf.io/verilog-lib/).
-
 ## FPGA Graphics
 
-In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog.
+In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog. I recently started adding Lattice ECP5 support to this series.
 
 ![](doc/img/fpga-graphics-banner.png?raw=true "")
 
@@ -39,14 +33,13 @@ A three-part introduction to FPGA development with Verilog with dev boards:
 
 ## Maths and Algorithms
 
-Maths & Algorithms is our latest tutorial series:
+Put maths to work in Verilog algorithms:
 
 * [Numbers in Verilog](https://projectf.io/posts/numbers-in-verilog/) - introduction to numbers in Verilog
 * [Vectors and Arrays](https://projectf.io/posts/verilog-vectors-arrays) - working with Verilog vectors and arrays
 * [Multiplication with DSPs](https://projectf.io/posts/multiplication-fpga-dsps) - efficient FPGA multiplication
 * [Fixed-Point Numbers](https://projectf.io/posts/fixed-point-numbers-in-verilog/) - precision without complexity
 * [Division in Verilog](https://projectf.io/posts/division-in-verilog) - divided we stand
-* _More maths soon_
 
 ![](doc/img/sea-of-chaos.png?raw=true "")
 
@@ -61,18 +54,25 @@ Maths & Algorithms is our latest tutorial series:
 
 ![](doc/img/sinescroll-sim.png?raw=true "")
 
+## Verilog Library
+
+The Project F Library includes handy Verilog designs for everyone. From framebuffers and video output to division and square root, rom and ram, and even circle drawing. You can freely build on these [MIT licensed](../../LICENSE) designs.
+
+Visit the [Library](lib/) for the Verilog designs or get an overview from the [Verilog Library blog post](https://projectf.io/verilog-lib/).
+
 ## Requirements
 
 ### FPGA Architecture
 
-Our designs seek to be vendor-neutral, but some functionality requires
-support for vendor primitives. We currently support two FPGA architectures:
+Our designs seek to be vendor-neutral, but some functionality requires support for vendor primitives. We currently support these FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
   * `BUFG`, `MMCME2_BASE`
   * HDMI support: `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
+* **ECP5** (WIP) - Lattice ECP5 FPGAs, such as LFE5U-45
+  * `EHXPLLL`, `ODDRX1F`
 
 We also infer block ram (BRAM); see [lib/memory](lib/memory).
 
@@ -90,10 +90,6 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 
 I believe these features are helpful, especially for beginners. All the SystemVerilog features are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado.
 
-## Project F Blog
-
-You can find 50+ original posts on FPGAs and RISC-V at [projectf.io](https://projectf.io).
-
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [matt venn](https://github.com/mattvenn), and [Paul Sajna](https://github.com/sajattack) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Justin Finkelstein](https://github.com/iamfinky), [Kilometer780](https://github.com/Kilometer780), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [Renaldas Zioma](https://github.com/rejunity) for their recent generosity.
