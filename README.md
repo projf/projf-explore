@@ -65,14 +65,15 @@ Maths & Algorithms is our latest tutorial series:
 
 ### FPGA Architecture
 
-Our designs seek to be vendor-neutral, but some functionality requires
-support for vendor primitives. We currently support two FPGA architectures:
+Our designs seek to be vendor-neutral, but some functionality requires support for vendor primitives. We currently support these FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
   * `BUFG`, `MMCME2_BASE`
   * HDMI support: `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
+* **ECP5** (WIP) - Lattice ECP5 FPGAs, such as LFE5U-45
+  * `EHXPLLL`, `ODDRX1F`
 
 We also infer block ram (BRAM); see [lib/memory](lib/memory).
 
@@ -96,4 +97,4 @@ You can find 50+ original posts on FPGAs and RISC-V at [projectf.io](https://pro
 
 ## Thank You, Sponsors!
 
-Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [matt venn](https://github.com/mattvenn), and [Paul Sajna](https://github.com/sajattack) for their recent generosity.
+Thank you to all my sponsors for supporting Project F. Special thanks go to the following: [David C. Norris](https://github.com/dcnorris), [Justin Finkelstein](https://github.com/iamfinky), [Kilometer780](https://github.com/Kilometer780), [matt venn](https://github.com/mattvenn), [Paul Sajna](https://github.com/sajattack), and [Renaldas Zioma](https://github.com/rejunity) for their recent generosity.
