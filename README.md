@@ -4,7 +4,7 @@ Project F is a little oasis where you can quench your thirst for FPGA knowledge 
 
 The [Project F website](https://projectf.io) features fifty blog posts on a wide range of FPGA and Verilog topics.
 
-Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) for updates. Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
