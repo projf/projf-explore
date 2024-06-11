@@ -2,7 +2,7 @@
 
 Project F is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include _FPGA Graphics_, _FPGA Maths_, and the _Verilog Library_.
 
-The [Project F website](https://projectf.io) features over fifty blog posts covering FPGAs, Verilog, and RISC-V.
+The [Project F blog](https://projectf.io) features over fifty posts covering FPGAs, Verilog, and RISC-V.
 
 Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
 
@@ -89,10 +89,6 @@ We use a few simple features of SystemVerilog to make Verilog more pleasant:
 * Matching names in module instances: `.clk_pix` instead of `.clk_pix(clk_pix)`
 
 I believe these features are helpful, especially for beginners. All the SystemVerilog features are compatible with recent versions of Verilator, Yosys, Icarus Verilog, and Xilinx Vivado.
-
-## Project F Blog
-
-You can find 50+ original posts on FPGAs and RISC-V at [projectf.io](https://projectf.io).
 
 ## Thank You, Sponsors!
 
