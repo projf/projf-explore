@@ -4,13 +4,13 @@ Project F is a little oasis where you can quench your thirst for FPGA knowledge 
 
 The [Project F blog](https://projectf.io) features over fifty posts covering FPGAs, Verilog, and RISC-V.
 
-Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) and [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) on GitHub.
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
 ## FPGA Graphics
 
-In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog. I recently started adding Lattice ECP5 support to this series.
+In this series, we learn about graphics at the hardware level and get a feel for the power of FPGAs. We'll learn how screens work, play Pong, create starfields and sprites, paint Michelangelo's David, draw lines and triangles, and animate characters and shapes. Along the way, you'll experience a range of designs and techniques, from memory and finite state machines to crossing clock domains and translating C algorithms into Verilog. I recently began adding Lattice ECP5 support to this series.
 
 ![](doc/img/fpga-graphics-banner.png?raw=true "")
 
@@ -67,11 +67,10 @@ Visit the [Library](lib/) for the Verilog designs or get an overview from the [V
 Our designs seek to be vendor-neutral, but some functionality requires support for vendor primitives. We currently support these FPGA architectures:
 
 * **XC7** - Xilinx 7 Series FPGAs, such as Spartan-7 and Artix-7
-  * `BUFG`, `MMCME2_BASE`
-  * HDMI support: `OBUFDS`, `OSERDES2`
+  * `BUFG`, `MMCME2_BASE`, `OBUFDS`, `OSERDES2`
 * **iCE40** - Lattice iCE40 FPGAs, such as iCE40 UltraPlus
   * `SB_IO`, `SB_PLL40_PAD`, `SB_SPRAM256KA`
-* **ECP5** (WIP) - Lattice ECP5 FPGAs, such as LFE5U-45
+* **ECP5** - Lattice ECP5 FPGAs, such as LFE5U-45
   * `EHXPLLL`, `ODDRX1F`
 
 We also infer block ram (BRAM); see [lib/memory](lib/memory).

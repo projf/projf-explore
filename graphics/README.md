@@ -24,4 +24,4 @@ _Castle scene generated using a design from [2D Shapes](2d-shapes) on an iCEBrea
 
 Project F brings FPGAs to life with exciting and accessible [open-source](../LICENSE) designs you can learn from and build on.
 
-Learn more at [projectf.io](https://projectf.io/), follow [@WillFlux](https://mastodon.social/@WillFlux) for updates, and join the FPGA discussion on [1BitSquared Discord](https://discord.gg/cf869yDbXf).
+Learn more at [projectf.io](https://projectf.io/), follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) on GitHub.
