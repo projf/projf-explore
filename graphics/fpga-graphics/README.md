@@ -12,6 +12,8 @@ File layout:
 
 These designs make use of modules from the [Project F library](../../lib/).
 
+Jump to build instructions for: [Arty](#arty-build) | [iCEBreaker](#icebreaker-build) | [Nexys Video](#nexys-video-build) | [ULX3S](#ulx3s-build) | [Verilator](sim/README.md)
+
 ## Demos
 
 * Square
@@ -24,58 +26,6 @@ Learn more about the designs and demos from _[Beginning FPGA Graphics](https://p
 ![](../../doc/img/flag_ethiopia.png?raw=true "")
 
 _Traditional flag of Ethiopia running as a Verilator simulation._
-
-## ULX3S Build
-
-I have tested these designs with recent (early 2024) versions of Yosys and nextpnr. You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
-
-Once the tools are installed, it's straightforward to build the designs.
-
-For example, to build `square`; clone the projf-explore git repo, check the correct FPGA model is set near the top of `projf-explore/graphics/fpga-graphics/ecp5/Makefile` then:
-
-```shell
-cd projf-explore/graphics/fpga-graphics/ecp5
-make square
-```
-
-After the build completes, you'll have a bit file, such as `square.bit`. Use the bit file to program your board:
-
-```shell
-openFPGALoader --board=ulx3s square.bit
-```
-
-If you get the error `JTAG init failed with: unable to open ftdi device`, try running `openFPGALoader` with `sudo`.
-
-_NB. ULX3S support was added in February 2024 and likely has some rough edges._
-
-## iCEBreaker Build
-
-You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
-
-You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
-
-Once the tools are installed, it's straightforward to build the designs.
-
-For example, to build `flag_ethiopia`; clone the projf-explore git repo, then:
-
-```shell
-cd projf-explore/graphics/fpga-graphics/ice40
-make flag_ethiopia
-```
-
-After the build completes, you'll have a bin file, such as `flag_ethiopia.bin`. Use the bin file to program your board:
-
-```shell
-iceprog flag_ethiopia.bin
-```
-
-If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
-
-### Tested Versions
-
-The iCE40 designs have been tested with:
-
-* OSS CAD Suite 2023-03-01
 
 ## Arty Build
 
@@ -129,6 +79,35 @@ source ./create_project.tcl
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
+## iCEBreaker Build
+
+You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
+
+You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
+
+Once the tools are installed, it's straightforward to build the designs.
+
+For example, to build `flag_ethiopia`; clone the projf-explore git repo, then:
+
+```shell
+cd projf-explore/graphics/fpga-graphics/ice40
+make flag_ethiopia
+```
+
+After the build completes, you'll have a bin file, such as `flag_ethiopia.bin`. Use the bin file to program your board:
+
+```shell
+iceprog flag_ethiopia.bin
+```
+
+If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
+
+### Tested Versions
+
+The iCE40 designs have been tested with:
+
+* OSS CAD Suite 2023-03-01
+
 ## Nexys Video Build
 
 To create a Vivado project for the Digilent [Nexys Video](https://digilent.com/reference/programmable-logic/nexys-video/reference-manual); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
@@ -145,6 +124,38 @@ You can then build the designs as you would for any Vivado project.
 The Nexys Video designs have been tested with:
 
 * Vivado 2022.2
+
+## ULX3S Build
+
+I have tested these designs with recent (early 2024) versions of Yosys and nextpnr. You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
+
+Once the tools are installed, it's straightforward to build the designs.
+
+For example, to build `square`; clone the projf-explore git repo, check the correct FPGA model is set near the top of `projf-explore/graphics/fpga-graphics/ecp5/Makefile` then:
+
+```shell
+cd projf-explore/graphics/fpga-graphics/ecp5
+make square
+```
+
+After the build completes, you'll have a bit file, such as `square.bit`. Use the bit file to program your board:
+
+```shell
+openFPGALoader --board=ulx3s square.bit
+```
+
+### Board Programming without Root
+
+Allow non-root Linux users to program the ULX3S by creating `/etc/udev/rules.d/80-fpga-ulx3s.rules` with the following:
+
+```shell
+# usb-serial tty device
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", MODE="664", GROUP="dialout"
+# ujprog libusb access
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", GROUP="dialout", MODE="666"
+```
+
+You need to reinsert the USB cable for the new udev config to take effect.
 
 ## Verilator SDL Simulation
 
