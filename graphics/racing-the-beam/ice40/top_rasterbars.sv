@@ -1,4 +1,4 @@
-// Project F: Racing the Beam - Colour Test (iCEBreaker 12-bit DVI Pmod)
+// Project F: Racing the Beam - Raster Bars (iCEBreaker 12-bit DVI Pmod)
 // (C)2023 Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/racing-the-beam/
 
