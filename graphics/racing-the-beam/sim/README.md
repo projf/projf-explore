@@ -10,11 +10,11 @@ If you have a dev board, see the main [Racing the Beam README](../README.md) for
 
 ## Demos
 
-* Raster Bars
-* Hitomezashi
-* Hello
-* Colour Cycle
-* Bounce
+* Raster Bars - `rasterbars`
+* Hitomezashi - `hitomezashi`
+* Hello - `hello`
+* Colour Cycle - `colour_cycle`
+* Bounce - `bounce`
 
 ![](../../../doc/img/rasterbars.png?raw=true "")
 
@@ -26,6 +26,8 @@ These simulations have been tested with:
 
 * Verilator 4.038 (Ubuntu 22.04 amd64)
 * Verilator 5.006 (macOS 13 arm64)
+
+These simulations run at 640x480.
 
 ## Build & Run
 

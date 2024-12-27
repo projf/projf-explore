@@ -4,7 +4,7 @@ This folder accompanies the Project F blog post: **[Beginning FPGA Graphics](htt
 
 File layout:
 
-* `ecp5` - designs for ULX3S and other ECP5 boards
+* `ecp5` - designs for ULX3S and other ECP5 boards with DVI output
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
@@ -16,10 +16,10 @@ Jump to build instructions for: [Arty](#arty-build) | [iCEBreaker](#icebreaker-b
 
 ## Demos
 
-* Square
-* Flag of Ethiopia
-* Flag of Sweden
-* Colour
+* Square - `square`
+* Flag of Ethiopia - `flag_ethiopia`
+* Flag of Sweden - `flag_sweden`
+* Colour - `colour`
 
 Learn more about the designs and demos from _[Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/)_, or read on for build instructions.
 
@@ -27,7 +27,7 @@ Learn more about the designs and demos from _[Beginning FPGA Graphics](https://p
 
 _Traditional flag of Ethiopia running as a Verilator simulation._
 
-## Arty Build
+## Arty Build (640x480)
 
 To create a Vivado project for the Digilent Arty ([original](https://digilent.com/reference/programmable-logic/arty/reference-manual) or [A7-35T](https://reference.digilentinc.com/reference/programmable-logic/arty-a7/reference-manual)); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
@@ -79,7 +79,7 @@ source ./create_project.tcl
 
 Replace `<board>` and `<fpga-part>` with the actual board and part names.
 
-## iCEBreaker Build
+## iCEBreaker Build (640x480)
 
 You can build projects for [iCEBreaker](https://docs.icebreaker-fpga.org/hardware/icebreaker/) using the included [Makefile](ice40/Makefile) with [Yosys](https://yosyshq.net/yosys/), [nextpnr](https://github.com/YosysHQ/nextpnr), and [IceStorm Tools](https://github.com/YosysHQ/icestorm).
 
@@ -108,7 +108,7 @@ The iCE40 designs have been tested with:
 
 * OSS CAD Suite 2023-03-01
 
-## Nexys Video Build
+## Nexys Video Build (1280x720)
 
 To create a Vivado project for the Digilent [Nexys Video](https://digilent.com/reference/programmable-logic/nexys-video/reference-manual); clone the projf-explore git repo, then start Vivado and run the following in the Tcl console:
 
@@ -125,7 +125,7 @@ The Nexys Video designs have been tested with:
 
 * Vivado 2022.2
 
-## ULX3S Build
+## ULX3S Build (1280x720)
 
 I have tested these designs with recent (early 2024) versions of Yosys and nextpnr. You can get pre-built binaries for Linux, Mac, and Windows from [YosysHQ OSS CAD Suite](https://github.com/YosysHQ/oss-cad-suite-build).
 
@@ -157,7 +157,7 @@ ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", GROUP="dialout", MODE="666"
 
 You need to reinsert the USB cable for the new udev config to take effect.
 
-## Verilator SDL Simulation
+## Verilator SDL Simulation (640x480)
 
 You can simulate these designs on your computer using Verilator and SDL. The [Simulation README](sim/README.md) has build instructions.
 

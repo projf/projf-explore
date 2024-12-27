@@ -10,10 +10,10 @@ If you have a dev board, see the main [Beginning FPGA Graphics README](../README
 
 ## Demos
 
-* Square
-* Flag of Ethiopia
-* Flag of Sweden
-* Colour
+* Square - `square`
+* Flag of Ethiopia - `flag_ethiopia`
+* Flag of Sweden - `flag_sweden`
+* Colour - `colour`
 
 ![](../../../doc/img/flag_ethiopia.png?raw=true "")
 
@@ -25,6 +25,8 @@ These simulations have been tested with:
 
 * Verilator 4.038 (Ubuntu 22.04 amd64)
 * Verilator 5.006 (macOS 13 arm64)
+
+These simulations run at 640x480.
 
 ## Build & Run
 
