@@ -1,37 +1,33 @@
-// Project F: Racing the Beam - Raster Bars (iCEBreaker 12-bit DVI Pmod)
-// (C)2023 Will Green, open source hardware released under the MIT License
+// Project F: Racing the Beam - Raster Bars (ULX3S)
+// Copyright Will Green, open source hardware released under the MIT License
 // Learn more at https://projectf.io/posts/racing-the-beam/
 
 `default_nettype none
 `timescale 1ns / 1ps
 
 module top_rasterbars (
-    input  wire logic clk_12m,      // 12 MHz clock
-    input  wire logic btn_rst,      // reset button
-    output      logic dvi_clk,      // DVI pixel clock
-    output      logic dvi_hsync,    // DVI horizontal sync
-    output      logic dvi_vsync,    // DVI vertical sync
-    output      logic dvi_de,       // DVI data enable
-    output      logic [3:0] dvi_r,  // 4-bit DVI red
-    output      logic [3:0] dvi_g,  // 4-bit DVI green
-    output      logic [3:0] dvi_b   // 4-bit DVI blue
+    input  wire logic clk_25m,       // 25 MHz clock
+    input  wire logic btn_rst_n,     // reset button
+    output      logic [3:0] gpdi_dp  // DVI out
     );
 
     // generate pixel clock
     logic clk_pix;
+    logic clk_pix_5x;
     logic clk_pix_locked;
-    clock_480p clock_pix_inst (
-       .clk_12m,
-       .rst(btn_rst),
+    clock_720p clock_pix_inst (
+       .clk_25m,
+       .rst(!btn_rst_n),  // reset button is active low
        .clk_pix,
+       .clk_pix_5x,
        .clk_pix_locked
     );
 
     // display sync signals and coordinates
-    localparam CORDW = 10;  // screen coordinate width in bits
+    localparam CORDW = 12;  // screen coordinate width in bits
     logic [CORDW-1:0] sx, sy;
     logic hsync, vsync, de;
-    simple_480p display_inst (
+    simple_720p display_inst (
         .clk_pix,
         .rst_pix(!clk_pix_locked),  // wait for clock lock
         .sx,
@@ -42,12 +38,12 @@ module top_rasterbars (
     );
 
     // screen dimensions (must match display_inst)
-    localparam V_RES_FULL = 525;  // vertical screen resolution (including blanking)
-    localparam H_RES      = 640;  // horizontal screen resolution
+    localparam V_RES_FULL =  750;  // vertical screen resolution (including blanking)
+    localparam H_RES      = 1280;  // horizontal screen resolution
 
     localparam START_COLR = 12'h126;  // bar start colour (blue: 12'h126) (gold: 12'h640)
     localparam COLR_NUM   = 10;       // colours steps in each bar (don't overflow)
-    localparam LINE_NUM   =  2;       // lines of each colour
+    localparam LINE_NUM   =  4;       // lines of each colour
 
     logic [11:0] bar_colr;  // 12 bit colour (4 bits per channel)
     logic bar_inc;  // increase (or decrease) brightness
@@ -87,25 +83,34 @@ module top_rasterbars (
         display_b = (de) ? paint_b : 4'h0;
     end
 
-    // DVI Pmod output
-    SB_IO #(
-        .PIN_TYPE(6'b010100)  // PIN_OUTPUT_REGISTERED
-    ) dvi_signal_io [14:0] (
-        .PACKAGE_PIN({dvi_hsync, dvi_vsync, dvi_de, dvi_r, dvi_g, dvi_b}),
-        .OUTPUT_CLK(clk_pix),
-        .D_OUT_0({hsync, vsync, de, display_r, display_g, display_b}),
-        /* verilator lint_off PINCONNECTEMPTY */
-        .D_OUT_1()
-        /* verilator lint_on PINCONNECTEMPTY */
-    );
+    // DVI signals (8 bits per colour channel)
+    logic [7:0] dvi_r, dvi_g, dvi_b;
+    logic dvi_hsync, dvi_vsync, dvi_de;
+    always_ff @(posedge clk_pix) begin
+        dvi_hsync <= hsync;
+        dvi_vsync <= vsync;
+        dvi_de <= de;
+        dvi_r <= {2{display_r}};
+        dvi_g <= {2{display_g}};
+        dvi_b <= {2{display_b}};
+    end
 
-    // DVI Pmod clock output: 180° out of phase with other DVI signals
-    SB_IO #(
-        .PIN_TYPE(6'b010000)  // PIN_OUTPUT_DDR
-    ) dvi_clk_io (
-        .PACKAGE_PIN(dvi_clk),
-        .OUTPUT_CLK(clk_pix),
-        .D_OUT_0(1'b0),
-        .D_OUT_1(1'b1)
+    // TMDS encoding and serialization
+    logic tmds_ch0_serial, tmds_ch1_serial, tmds_ch2_serial, tmds_clk_serial;
+    dvi_generator dvi_out (
+        .clk_pix,
+        .clk_pix_5x,
+        .rst_pix(!clk_pix_locked),
+        .de(dvi_de),
+        .data_in_ch0(dvi_b),
+        .data_in_ch1(dvi_g),
+        .data_in_ch2(dvi_r),
+        .ctrl_in_ch0({dvi_vsync, dvi_hsync}),
+        .ctrl_in_ch1(2'b00),
+        .ctrl_in_ch2(2'b00),
+        .tmds_ch0_serial(gpdi_dp[0]),
+        .tmds_ch1_serial(gpdi_dp[1]),
+        .tmds_ch2_serial(gpdi_dp[2]),
+        .tmds_clk_serial(gpdi_dp[3])
     );
 endmodule

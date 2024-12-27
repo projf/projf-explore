@@ -6,14 +6,14 @@ This folder contains Verilator simulations to accompany the Project F blog post:
 
 If you're new to graphics simulations check out the blog post on [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
-If you have a dev board, see the main [Beginning FPGA Graphics README](../README.md) for build instructions.
+These simulations run at 640x480.
 
 ## Demos
 
-* Square
-* Flag of Ethiopia
-* Flag of Sweden
-* Colour
+* Square - `square`
+* Flag of Ethiopia - `flag_ethiopia`
+* Flag of Sweden - `flag_sweden`
+* Colour - `colour`
 
 ![](../../../doc/img/flag_ethiopia.png?raw=true "")
 

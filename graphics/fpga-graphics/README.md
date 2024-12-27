@@ -4,7 +4,7 @@ This folder accompanies the Project F blog post: **[Beginning FPGA Graphics](htt
 
 File layout:
 
-* `ecp5` - designs for ULX3S and other ECP5 boards
+* `ecp5` - designs for ULX3S and other Lattice ECP5 boards with DVI output
 * `ice40` - designs for iCEBreaker and other Lattice iCE40 boards
 * `sim` - simulation with Verilator and LibSDL; see the [Simulation README](sim/README.md)
 * `xc7` - designs for Arty and other Xilinx 7 Series boards with VGA output
@@ -16,10 +16,10 @@ Jump to build instructions for: [Arty](#arty-build) | [iCEBreaker](#icebreaker-b
 
 ## Demos
 
-* Square
-* Flag of Ethiopia
-* Flag of Sweden
-* Colour
+* Square - `square`
+* Flag of Ethiopia - `flag_ethiopia`
+* Flag of Sweden - `flag_sweden`
+* Colour - `colour`
 
 Learn more about the designs and demos from _[Beginning FPGA Graphics](https://projectf.io/posts/fpga-graphics/)_, or read on for build instructions.
 
@@ -36,7 +36,7 @@ cd projf-explore/graphics/fpga-graphics/xc7/vivado
 source ./create_project.tcl
 ```
 
-You can then build the designs as you would for any Vivado project.
+You can then build the designs as you would for any Vivado project. These designs run at 640x480 on the Arty.
 
 ### Tested Versions
 
@@ -102,6 +102,8 @@ iceprog flag_ethiopia.bin
 
 If you get the error `Can't find iCE FTDI USB device`, try running `iceprog` with `sudo`.
 
+These designs run at 640x480 on the iCEBreaker.
+
 ### Tested Versions
 
 The iCE40 designs have been tested with:
@@ -117,7 +119,7 @@ cd projf-explore/graphics/fpga-graphics/xc7-dvi/vivado
 source ./create_project.tcl
 ```
 
-You can then build the designs as you would for any Vivado project.
+You can then build the designs as you would for any Vivado project. These designs run at 1280x720 on the Nexys Video.
 
 ### Tested Versions
 
@@ -143,6 +145,8 @@ After the build completes, you'll have a bit file, such as `square.bit`. Use the
 ```shell
 openFPGALoader --board=ulx3s square.bit
 ```
+
+These designs run at 1280x720 on the ULX3S.
 
 ### Board Programming without Root
 

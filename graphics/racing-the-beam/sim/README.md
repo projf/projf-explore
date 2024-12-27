@@ -8,13 +8,15 @@ If you're new to graphics simulations check out the blog post on [Verilog Simula
 
 If you have a dev board, see the main [Racing the Beam README](../README.md) for build instructions.
 
+These simulations run at 640x480.
+
 ## Demos
 
-* Raster Bars
-* Hitomezashi
-* Hello
-* Colour Cycle
-* Bounce
+* Raster Bars - `rasterbars`
+* Hitomezashi - `hitomezashi`
+* Hello - `hello`
+* Colour Cycle - `colour_cycle`
+* Bounce - `bounce`
 
 ![](../../../doc/img/rasterbars.png?raw=true "")
 
