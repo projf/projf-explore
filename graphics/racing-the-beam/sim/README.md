@@ -1,12 +1,14 @@
 # Simulations for Racing the Beam
 
-This folder contains Verilator simulations to accompany the Project F blog post: **[Racing the Beam](https://projectf.io/posts/racing-the-beam/)**. These simulations run at 640x480.
+This folder contains Verilator simulations to accompany the Project F blog post: **[Racing the Beam](https://projectf.io/posts/racing-the-beam/)**.
 
 [Verilator](https://www.veripool.org/verilator/) creates C++ simulations of Verilog designs, while [SDL](https://www.libsdl.org) produces simple cross-platform graphics applications. By combining the two, you can simulate a hardware design on your PC: no dev board required! Verilator is fast, but it's still much slower than an FPGA. However, for these simple designs, you can reach 60 FPS on a modern PC.
 
 If you're new to graphics simulations check out the blog post on [Verilog Simulation with Verilator and SDL](https://projectf.io/posts/verilog-sim-verilator-sdl/).
 
 If you have a dev board, see the main [Racing the Beam README](../README.md) for build instructions.
+
+These simulations run at 640x480.
 
 ## Demos
 
