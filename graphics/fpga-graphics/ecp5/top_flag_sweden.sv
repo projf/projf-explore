@@ -19,7 +19,9 @@ module top_flag_sweden (
         .CLKI_DIV(5),
         .CLKFB_DIV(74),
         .CLKOP_DIV(2),
-        .CLKOS_DIV(10)
+        .CLKOP_CPHASE(1),
+        .CLKOS_DIV(10),
+        .CLKOS_CPHASE(5)
     ) clock2_gen_inst (
        .clk_in(clk_25m),
        .clk_5x_out(clk_pix_5x),
