@@ -17,7 +17,7 @@ TARGET_FREQ = 74     # target frequency (MHz) for 1280x720
 
 # included modules
 PATH_LIB = ../../../lib
-ADD_SRC += ${PATH_LIB}/clock/ecp5/clock_720p.sv
+ADD_SRC += ${PATH_LIB}/clock/ecp5/clock2_gen.v
 ADD_SRC += ${PATH_LIB}/display/ecp5/dvi_generator.sv
 ADD_SRC += ${PATH_LIB}/display/tmds_encoder_dvi.sv
 ADD_SRC += ../simple_720p.sv

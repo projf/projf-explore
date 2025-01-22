@@ -15,12 +15,16 @@ module top_colour (
     logic clk_pix;
     logic clk_pix_5x;
     logic clk_pix_locked;
-    clock_720p clock_pix_inst (
-       .clk_25m,
-       .rst(!btn_rst_n),  // reset button is active low
-       .clk_pix,
-       .clk_pix_5x,
-       .clk_pix_locked
+    clock2_gen #(  // 74 MHz (PLL can't do exact 74.25 MHz for 720p)
+        .CLKI_DIV(5),
+        .CLKFB_DIV(74),
+        .CLKOP_DIV(2),
+        .CLKOS_DIV(10)
+    ) clock2_gen_inst (
+       .clk_in(clk_25m),
+       .clk_5x_out(clk_pix_5x),
+       .clk_out(clk_pix),
+       .clk_locked(clk_pix_locked)
     );
 
     // display sync signals and coordinates
