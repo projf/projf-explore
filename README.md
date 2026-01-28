@@ -1,10 +1,10 @@
 # Project F - FPGA Development
 
-Project F is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. Our projects include _FPGA Graphics_, _FPGA Maths_, and the _Verilog Library_.
+Project F Explore is a little oasis where you can quench your thirst for FPGA knowledge and find accessible, [open-source](LICENSE) designs to learn from and build on. The [Project F blog](https://projectf.io) features over fifty posts covering FPGAs, Verilog, and RISC-V.
 
-The [Project F blog](https://projectf.io) features over fifty posts covering FPGAs, Verilog, and RISC-V.
+My latest project is 🏝️ Isle FPGA Computer, which has its own repo at [github.com/projf/isle](https://github.com/projf/isle); learn more and get started with [Isle FPGA Computer](http://projectf.io/isle/fpga-computer.html).
 
-Follow @WillFlux on [Mastodon](https://mastodon.social/@WillFlux) or [X](https://x.com/WillFlux). Join the [Project F Discussions](https://github.com/projf/projf-explore/discussions) on GitHub.
+Follow [@WillFlux@mastodon.social](https://mastodon.social/@WillFlux) or [@willflux.bsky.social](https://bsky.app/profile/willflux.bsky.social) for updates on my FPGA and RISC-V projects.
 
 ![](doc/img/fpga-ad-astra-banner.png?raw=true "")
 
